@@ -1,7 +1,7 @@
 import type { Nh3dVersionCheckResult, Nh3dVersionTag } from "./types";
 
-const githubRepoOwner = "JamesIV4";
-const githubRepoName = "nethack-3d";
+const githubRepoOwner = "kafuji";
+const githubRepoName = "nethack-3d-plus";
 const githubRepoUrl = `https://github.com/${githubRepoOwner}/${githubRepoName}`;
 const githubReleasesApiUrl = `https://api.github.com/repos/${githubRepoOwner}/${githubRepoName}/releases?per_page=100`;
 const versionCheckTimeoutMs = 20000;
