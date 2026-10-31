@@ -38,7 +38,7 @@ const monsterHitVerbs: Readonly<Record<string, string>> = {
 const characterWords: Readonly<Record<string, string>> = {
   lawful: "秩序の", neutral: "中立の", chaotic: "混沌の", unaligned: "無心の",
   male: "男性の", female: "女性の",
-  human: "人間の", elven: "エルフの", elf: "エルフの", dwarvish: "ドワーフの", dwarf: "ドワーフの",
+  human: "人間の", elven: "エルフの", elf: "エルフの", dwarvish: "ドワーフの", dwarven: "ドワーフの", dwarf: "ドワーフの",
   gnomish: "ノームの", gnome: "ノームの", orcish: "オークの", orc: "オークの",
   archeologist: "考古学者", barbarian: "野蛮人", caveman: "洞窟人", cavewoman: "洞窟人",
   healer: "薬師", knight: "騎士", monk: "武闘家", priest: "僧侶", priestess: "尼僧",
@@ -120,12 +120,54 @@ const fixedMessages: Readonly<Record<string, string>> = {
   "In what direction?": "どの方向？",
   "The door is closed.": "扉は閉まっている．",
   "This door is locked.": "この扉には鍵が掛かっている．",
+  // End-of-game prompts and headings (JNetHack end.c / insight.c / do.c).
+  "Beware, there will be no return! Still climb?": "気をつけろ，戻れないぞ！それでも上る？",
+  "Do you want to see your attributes?": "属性を見ますか？",
+  "Do you want to see the dungeon overview?": "迷宮の概要を見ますか？",
+  "Do you want to see your conduct?": "自発的挑戦を見ますか？",
+  "Do you want to see your conduct and achievements?": "自発的挑戦と達成を見ますか？",
+  "Final Attributes:": "最終属性:",
+  "Final Status:": "最終状態:",
+  "Final Characteristics:": "最終特性：",
+  "Attributes:": "属性:",
+  "Status:": "状態:",
+  "Characteristics:": "特性：",
+  "You survived.": "あなたは生き延びた．",
+  "Your wallet was empty.": "あなたの財布は空っぽだった．",
+  "Your wallet is empty.": "あなたの財布は空っぽだ．",
+};
+
+// Characteristic names in end-of-game lines, matching the character sheet.
+const characteristicNames: Readonly<Record<string, string>> = {
+  strength: "腕力",
+  dexterity: "器用さ",
+  constitution: "耐久力",
+  intelligence: "知性",
+  wisdom: "賢さ",
+  charisma: "魅力",
 };
 
 export const coreGameTextRules: readonly CoreRule[] = [
   {
     pattern: /^.+$/,
     translate: (m) => fixedMessages[m[0]] ?? null,
+  },
+  {
+    // insight.c characteristics: "Your strength was 11 (limit:18)."
+    pattern: /^Your (strength|dexterity|constitution|intelligence|wisdom|charisma) (is|was) (\S+) \(limit:(\S+)\)\.$/,
+    translate: (m) =>
+      `あなたの${characteristicNames[m[1]!]}は${m[3]}(上限:${m[4]})${m[2] === "is" ? "である" : "であった"}．`,
+  },
+  {
+    pattern: /^Your armor class (is|was) (-?\d+)\.$/,
+    translate: (m) => `あなたのACは${m[2]}${m[1] === "is" ? "である" : "であった"}．`,
+  },
+  {
+    pattern: /^You (?:are|were) in (.+?), on level (\d+)\.$/,
+    translate: (m, c) => {
+      const dungeon = known(c, m[1]!);
+      return dungeon ? `あなたは${dungeon}の地下${m[2]}階にいた．` : null;
+    },
   },
   {
     // getobj(): "What do you want to eat? [fg or ?*]"
