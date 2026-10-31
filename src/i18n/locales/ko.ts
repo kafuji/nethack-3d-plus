@@ -405,6 +405,20 @@ export const ko = {
   },
   soundEffects: {
     byKey: {
+      "status-hungry": "상태: 배고픔",
+      "status-weak": "상태: 쇠약 (배고픔)",
+      "status-fainting": "상태: 기절 직전",
+      "status-confused": "상태: 혼란",
+      "status-stunned": "상태: 기절",
+      "status-blind": "상태: 실명",
+      "status-hallucinating": "상태: 환각",
+      "status-poisoned": "상태: 중독",
+      "status-sick": "상태: 식중독 / 질병",
+      "status-stoning": "상태: 석화 중",
+      "status-slimed": "상태: 점액화",
+      "status-strangled": "상태: 질식",
+      "status-paralyzed": "상태: 마비 / 수면",
+      "status-recovered": "상태: 회복",
       "player-walk": "플레이어 걷기",
       hit: "타격",
       "monster-killed": "몬스터 처치(플레이어)",
@@ -1014,6 +1028,15 @@ export const ko = {
           },
         },
         groupSound: "사운드",
+        musicEnabled: {
+          label: "배경 음악",
+          description:
+            "상황(평온, 전투, 위험)에 따라 바뀌는 배경 음악을 재생합니다. 사운드가 켜져 있어야 합니다.",
+        },
+        musicVolume: {
+          label: "음악 볼륨",
+          description: "배경 음악의 볼륨입니다.",
+        },
         soundEnabled: {
           label: "사운드 사용",
           description:

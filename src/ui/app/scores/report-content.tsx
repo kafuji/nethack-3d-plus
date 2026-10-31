@@ -1,4 +1,7 @@
 import { resolveArchivedDungeonOverview } from "../../../runtime/dungeon-overview";
+import { translateScoreText } from "./score-i18n";
+import { translateReportLine } from "../../../i18n/report-text";
+import { translateGameMessage } from "../../../i18n/game-messages";
 import type {
   RunTelemetryLootEvent
 } from "../../../game/ui-types";
@@ -21,12 +24,6 @@ import {
 import {
   formatTopScoreInteger
 } from "./format";
-import {
-  plusStrings
-} from "../shared/translations";
-
-// nh3d-plus: localized via src/plus/i18n.
-const topScoreStrings = plusStrings.topScores;
 
 /** Score inventory, kill breakdown, loot grouping and raw report rendering. */
 export function resolveTopScoreInventoryFallbackGlyph(
@@ -60,7 +57,7 @@ export function groupTopScoreInventoryItems(
 
   const sections: TopScoreInventorySection[] = [];
   let currentSection: TopScoreInventorySection = {
-    title: topScoreStrings.reports.pack,
+    title: "Pack",
     items: [],
   };
 
@@ -75,7 +72,7 @@ export function groupTopScoreInventoryItems(
     if (item.isCategory) {
       pushCurrentSection();
       currentSection = {
-        title: item.text || topScoreStrings.reports.pack,
+        title: item.text || "Pack",
         items: [],
       };
       continue;
@@ -93,19 +90,19 @@ export function buildTopScoreKillBreakdownGroups(
   const telemetry = resolveTopScoreTelemetry(score);
   return [
     {
-      label: topScoreStrings.reports.killsByWeapon,
+      label: "Kills by weapon",
       values: telemetry.weaponKills,
-      emptyLabel: topScoreStrings.reports.noWeaponKills,
+      emptyLabel: "No weapon-attributed kills were tracked for this run.",
     },
     {
-      label: topScoreStrings.reports.killsBySpell,
+      label: "Kills by spell",
       values: telemetry.spellKills,
-      emptyLabel: topScoreStrings.reports.noSpellKills,
+      emptyLabel: "No spell-attributed kills were tracked for this run.",
     },
     {
-      label: topScoreStrings.reports.killsByPet,
+      label: "Kills by pet",
       values: telemetry.petKills,
-      emptyLabel: topScoreStrings.reports.noPetKills,
+      emptyLabel: "No pet-attributed kills were tracked for this run.",
     },
   ];
 }
@@ -119,7 +116,7 @@ export function groupTopScoreLootTimelineEvents(
   }
   const sections = new Map<string, RunTelemetryLootEvent[]>();
   for (const event of telemetry.lootEvents) {
-    const title = String(event.category || topScoreStrings.reports.pack).trim() || topScoreStrings.reports.pack;
+    const title = String(event.category || "Pack").trim() || "Pack";
     const existing = sections.get(title) ?? [];
     existing.push(event);
     sections.set(title, existing);
@@ -144,33 +141,34 @@ export function buildTopScoreRawReportSections(
   return [
     {
       id: "attributes",
-      title: topScoreStrings.reports.finalAttributes,
+      title: "Final attributes",
       lines: reports.attributes,
-      emptyLabel: topScoreStrings.reports.noFinalAttributes,
+      emptyLabel: "No final-attributes report was archived for this run.",
     },
     {
       id: "vanquished",
-      title: topScoreStrings.reports.vanquished,
+      title: "Creatures vanquished",
       lines: reports.vanquished,
-      emptyLabel: topScoreStrings.reports.noVanquished,
+      emptyLabel: "No vanquished-creatures report was archived for this run.",
     },
     {
       id: "conduct",
-      title: topScoreStrings.reports.conduct,
+      title: "Conduct",
       lines: reports.conduct,
-      emptyLabel: topScoreStrings.reports.noConduct,
+      emptyLabel: "No conduct report was archived for this run.",
     },
     {
       id: "dungeon-overview",
-      title: topScoreStrings.reports.dungeonOverview,
+      title: "Dungeon overview",
       lines: resolveArchivedDungeonOverview(reports.dungeonOverview, score.detail?.timeline),
-      emptyLabel: topScoreStrings.reports.noDungeonOverview,
+      emptyLabel: "No dungeon-overview report was archived for this run.",
     },
   ];
 }
 
 export function renderTopScoreRawReportBlock(
   section: TopScoreRawReportSection,
+  locale: import("../../../i18n/core").SupportedLocale = "en",
 ): JSX.Element {
   return (
     <details
@@ -179,19 +177,19 @@ export function renderTopScoreRawReportBlock(
       open={Boolean(section.lines?.length)}
     >
       <summary className="nh3d-top-score-report-summary">
-        <span>{section.title}</span>
+        <span>{translateScoreText(section.title, locale)}</span>
         <span>
           {section.lines?.length
-            ? topScoreStrings.reports.lineCount(formatTopScoreInteger(section.lines.length))
-            : topScoreStrings.reports.notCaptured}
+            ? locale === "ja" ? `${formatTopScoreInteger(section.lines.length)} 行` : `${formatTopScoreInteger(section.lines.length)} lines`
+            : translateScoreText("Not captured", locale)}
         </span>
       </summary>
       {section.lines?.length ? (
         <pre className="nh3d-top-score-report-pre">
-          {section.lines.join("\n")}
+          {section.lines.map((line) => translateGameMessage(translateReportLine(line, locale), locale)).join("\n")}
         </pre>
       ) : (
-        <div className="nh3d-top-scores-empty">{section.emptyLabel}</div>
+        <div className="nh3d-top-scores-empty">{translateScoreText(section.emptyLabel, locale)}</div>
       )}
     </details>
   );

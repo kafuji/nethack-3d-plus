@@ -1,0 +1,20 @@
+{
+  "sourceRows": 17278,
+  "candidateRows": 11587,
+  "rejected": {
+    "not_a_complete_english_sentence": 7615,
+    "edge_whitespace": 438,
+    "identification_needs_review": 3,
+    "numeric_mismatch": 30,
+    "no_japanese": 1,
+    "format_or_key": 70,
+    "added_parenthetical": 462,
+    "editorial_marker": 116,
+    "empty": 14,
+    "negative_needs_review": 32,
+    "conflicting_translation": 24
+  },
+  "conflicts": 12,
+  "accepted": 2782,
+  "sha256": "973650880dfbf16871b572855a23d385a0794043ed7c414317544b1d0c3d709c"
+}

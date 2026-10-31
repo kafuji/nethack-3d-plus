@@ -8,11 +8,14 @@ import {
   getMenuSelectionInput,
   isSelectableQuestionMenuItem
 } from "./question-choices";
+import { translateSkillName } from "../../../i18n/game-skills";
+import type { SupportedLocale } from "../../../i18n/core";
 
 /** Enhancement menu content rendering. */
 export function renderEnhanceMenuContent(
   enhanceMenuData: EnhanceMenuData,
   options: {
+    locale?: SupportedLocale;
     activeMenuSelectionInput?: string | null;
     onChooseSelectionInput?: ((selectionInput: string) => void) | null;
     onFocusSelectionInput?: ((selectionInput: string) => void) | null;
@@ -21,6 +24,7 @@ export function renderEnhanceMenuContent(
   const activeMenuSelectionInput = options.activeMenuSelectionInput ?? null;
   const onChooseSelectionInput = options.onChooseSelectionInput ?? null;
   const onFocusSelectionInput = options.onFocusSelectionInput ?? null;
+  const locale = options.locale ?? "en";
   return (
     <div className="nh3d-enhance-menu">
       <div className="nh3d-enhance-summary">
@@ -63,7 +67,7 @@ export function renderEnhanceMenuContent(
           key={`enhance-group-${group.id}`}
         >
           <div className="nh3d-menu-category nh3d-enhance-group-title">
-            {group.title}
+            {translateSkillName(group.title, locale)}
           </div>
           <div className="nh3d-enhance-skill-grid">
             {group.entries.map((entry) => {
@@ -89,7 +93,7 @@ export function renderEnhanceMenuContent(
                 >
                   <div className="nh3d-enhance-skill-head">
                     <span className="nh3d-enhance-skill-name">
-                      {entry.name}
+                      {translateSkillName(entry.name, locale)}
                     </span>
                     <span className="nh3d-enhance-skill-badges">
                       {acceleratorLabel ? (
@@ -103,11 +107,11 @@ export function renderEnhanceMenuContent(
                     </span>
                   </div>
                   <div className="nh3d-enhance-rank-row">
-                    <span>{entry.currentRank}</span>
+                    <span>{translateSkillName(entry.currentRank, locale)}</span>
                     {entry.nextRank ? (
                       <>
                         <span className="nh3d-enhance-rank-arrow">{"->"}</span>
-                        <span>{entry.nextRank}</span>
+                        <span>{translateSkillName(entry.nextRank, locale)}</span>
                       </>
                     ) : (
                       <span className="nh3d-enhance-rank-max">
@@ -131,18 +135,18 @@ export function renderEnhanceMenuContent(
                 >
                   <div className="nh3d-enhance-skill-head">
                     <span className="nh3d-enhance-skill-name">
-                      {entry.name}
+                      {translateSkillName(entry.name, locale)}
                     </span>
                     <span className="nh3d-enhance-state-chip">
                       {entry.availabilityLabel}
                     </span>
                   </div>
                   <div className="nh3d-enhance-rank-row">
-                    <span>{entry.currentRank}</span>
+                    <span>{translateSkillName(entry.currentRank, locale)}</span>
                     {entry.nextRank ? (
                       <>
                         <span className="nh3d-enhance-rank-arrow">{"->"}</span>
-                        <span>{entry.nextRank}</span>
+                        <span>{translateSkillName(entry.nextRank, locale)}</span>
                       </>
                     ) : (
                       <span className="nh3d-enhance-rank-max">

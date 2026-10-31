@@ -1,19 +1,6 @@
 // Fork-only English strings, mounted at `en.plus`. Other locales override
 // these from src/plus/i18n/<locale>.ts and fall back to English otherwise.
 export const plusEn = {
-  gameText: {
-    label: "Translate game text",
-    description:
-      "Show NetHack messages, prompts, and item names in the interface language. Uses JNetHack translations; untranslated text stays in English.",
-  },
-  startupMenu: {
-    topScores: "Top Scores",
-  },
-  characterSheet: {
-    starting: "Starting",
-    current: "Current",
-    deities: "Deities",
-  },
   solidColorPicker: {
     selectedColor: (hex: string) => `Selected color: ${hex}`,
     hint: "Move over the full atlas and click a pixel to set the solid chroma key color.",
@@ -25,20 +12,6 @@ export const plusEn = {
   statChanges: {
     experience: (delta: string) => `XP ${delta}`,
     experienceLevel: (level: number) => `Experience Level ${level}`,
-  },
-  // Window titles created by the client (not by NetHack); keyed by English title.
-  windowTitles: {
-    "Message History": "Message History",
-    "NetHack Message": "NetHack Message",
-    "NetHack Information": "NetHack Information",
-    "Command Help": "Command Help",
-    "NetHack Help": "NetHack Help",
-    "NetHack History": "NetHack History",
-    "Key Help": "Key Help",
-    "NetHack License": "NetHack License",
-    "Option Help": "Option Help",
-    "Wizard Help": "Wizard Help",
-    "Port Help": "Port Help",
   },
   contextActions: {
     pickup: "Pick Up",
@@ -59,12 +32,6 @@ export const plusEn = {
     cast: "Cast",
     apply: "Apply",
     info: "Info",
-  },
-  messageNav: {
-    earliest: "Show earliest NetHack message",
-    previous: "Show previous NetHack message",
-    next: "Show next NetHack message",
-    latest: "Show latest NetHack message",
   },
   techniqueMenu: {
     name: "Name",

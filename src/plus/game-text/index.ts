@@ -1,42 +1,14 @@
 // Entry point for display-time game text translation.
 //
-// The translator and its ~260 KB dictionary are loaded lazily, and only when
-// the interface language is Japanese and the player has not turned the
-// feature off. Until loading finishes the original English text is shown.
-import { useSyncExternalStore } from "react";
+// The translator and its dictionary are loaded lazily, and only when the
+// interface language is Japanese. Until loading finishes the original English
+// text is shown. src/plus/game-text/fallback.ts plugs this into the curated
+// translations in src/i18n as a second tier before unreviewed references.
 import { getCurrentLocale } from "../../i18n/core";
 import type { GameTextData, GameTextTranslator } from "./translator";
 
-const settingStorageKey = "nh3d-plus-game-text-translation";
-
 let translator: GameTextTranslator | null = null;
 let loading: Promise<void> | null = null;
-let version = 0;
-const listeners = new Set<() => void>();
-
-function notify(): void {
-  version += 1;
-  for (const listener of listeners) listener();
-}
-
-/** Whether the player wants game text translated (default: on). */
-export function isGameTextTranslationPreferred(): boolean {
-  try {
-    return globalThis.localStorage?.getItem(settingStorageKey) !== "off";
-  } catch {
-    return true;
-  }
-}
-
-export function setGameTextTranslationPreferred(enabled: boolean): void {
-  try {
-    globalThis.localStorage?.setItem(settingStorageKey, enabled ? "on" : "off");
-  } catch {
-    // Storage unavailable: the preference only lasts for this session.
-  }
-  if (enabled) ensureGameTextTranslatorLoaded();
-  notify();
-}
 
 /** Game text translation applies to the Japanese interface only. */
 export function isGameTextTranslationAvailable(): boolean {
@@ -44,7 +16,7 @@ export function isGameTextTranslationAvailable(): boolean {
 }
 
 function isActive(): boolean {
-  return isGameTextTranslationAvailable() && isGameTextTranslationPreferred();
+  return isGameTextTranslationAvailable();
 }
 
 export function ensureGameTextTranslatorLoaded(): void {
@@ -53,7 +25,6 @@ export function ensureGameTextTranslatorLoaded(): void {
     .then(([module, data]) => {
       const json = data as unknown as { default?: GameTextData } & GameTextData;
       translator = new module.GameTextTranslator(json.default ?? json);
-      notify();
     })
     .catch((error: unknown) => {
       console.error("Failed to load game text translations:", error);
@@ -74,10 +45,10 @@ export function localizeGameItemText(text: string | null | undefined): string {
   return translator.translateItemText(value);
 }
 
-/** Translate a multi-line text window (quest messages, legacy intro). */
-export function localizeGameWindow(lines: readonly string[]): string[] {
-  if (!translator || !isActive()) return [...lines];
-  return translator.translateWindow(lines);
+/** Translate a recognized quest/legacy text window as a whole, or return null. */
+export function localizeGameQuestDocument(lines: readonly string[]): string[] | null {
+  if (!translator || !isActive()) return null;
+  return translator.translateQuestDocument(lines);
 }
 
 /** Status line pieces: player title, location label, hunger/encumbrance words. */
@@ -92,22 +63,3 @@ export function localizeGameStatus(
   return translator.translateStatusWord(value);
 }
 
-function subscribe(listener: () => void): () => void {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-/**
- * Re-render the calling component once the translator finishes loading or
- * the preference changes. Returns the current translation functions.
- */
-export function useGameTextLocalization(): {
-  text: (value: string | null | undefined) => string;
-  item: (value: string | null | undefined) => string;
-  status: typeof localizeGameStatus;
-  window: typeof localizeGameWindow;
-} {
-  useSyncExternalStore(subscribe, () => version, () => version);
-  ensureGameTextTranslatorLoaded();
-  return { text: localizeGameText, item: localizeGameItemText, status: localizeGameStatus, window: localizeGameWindow };
-}

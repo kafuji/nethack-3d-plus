@@ -425,6 +425,20 @@ export const fr = {
   },
   soundEffects: {
     byKey: {
+      "status-hungry": "État : Affamé",
+      "status-weak": "État : Faible (faim)",
+      "status-fainting": "État : Défaillant",
+      "status-confused": "État : Confus",
+      "status-stunned": "État : Étourdi",
+      "status-blind": "État : Aveugle",
+      "status-hallucinating": "État : Hallucinations",
+      "status-poisoned": "État : Empoisonné",
+      "status-sick": "État : Intoxication / Malade",
+      "status-stoning": "État : Pétrification",
+      "status-slimed": "État : Englué",
+      "status-strangled": "État : Étranglé",
+      "status-paralyzed": "État : Paralysé / Endormi",
+      "status-recovered": "État : Rétabli",
       "player-walk": "Pas du joueur",
       hit: "Impact",
       "monster-killed": "Monstre tue (joueur)",
@@ -1043,6 +1057,15 @@ export const fr = {
           },
         },
         groupSound: "Son",
+        musicEnabled: {
+          label: "Musique de fond",
+          description:
+            "Joue une musique de fond qui change selon la situation (calme, combat, danger). Nécessite que le son soit activé.",
+        },
+        musicVolume: {
+          label: "Volume de la musique",
+          description: "Volume de la musique de fond.",
+        },
         soundEnabled: {
           label: "Activer le son",
           description:

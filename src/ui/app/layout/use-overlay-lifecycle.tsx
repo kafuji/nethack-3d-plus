@@ -35,6 +35,7 @@ export interface UseOverlayLifecycleDependencies {
   readonly newGamePrompt: NewGamePromptState;
   readonly hasHydratedUserTilesets: boolean;
   readonly hasAskedControllerSupportThisSession: boolean;
+  readonly controllerEnabled: boolean;
   readonly setIsControllerSupportPromptVisible: React.Dispatch<React.SetStateAction<boolean>>;
   readonly isMobileGameRunning: boolean;
   readonly setIsMobileActionSheetVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -81,6 +82,7 @@ export function useOverlayLifecycle(dependencies: UseOverlayLifecycleDependencie
     newGamePrompt,
     hasHydratedUserTilesets,
     hasAskedControllerSupportThisSession,
+    controllerEnabled,
     setIsControllerSupportPromptVisible,
     isMobileGameRunning,
     setIsMobileActionSheetVisible,
@@ -184,7 +186,7 @@ export function useOverlayLifecycle(dependencies: UseOverlayLifecycleDependencie
     if (typeof window === "undefined") {
       return;
     }
-    if (!hasHydratedUserTilesets || hasAskedControllerSupportThisSession) {
+    if (!hasHydratedUserTilesets || hasAskedControllerSupportThisSession || controllerEnabled) {
       return;
     }
 
@@ -214,6 +216,7 @@ export function useOverlayLifecycle(dependencies: UseOverlayLifecycleDependencie
     hasAskedControllerSupportThisSession,
     hasHydratedUserTilesets,
     isControllerSupportPromptVisible,
+    controllerEnabled,
   ]);
 
   useEffect(() => {

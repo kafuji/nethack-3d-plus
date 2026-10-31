@@ -33,6 +33,9 @@ import type {
 import {
   t
 } from "../shared/translations";
+import { useI18n } from "../../../i18n";
+import { translateStatusBadgeLabel } from "../../../i18n/status-text";
+import { translateCharacterLine } from "../../../i18n/character-text";
 
 /** Stat changes, highlights, HP and power percentages, status panel renderers */
 export function usePlayerStatusState() {
@@ -67,6 +70,7 @@ export interface UsePlayerStatusPresentationDependencies {
 
 /** Stat changes, highlights, HP and power percentages, status panel renderers */
 export function usePlayerStatusPresentation(dependencies: UsePlayerStatusPresentationDependencies) {
+  const { locale } = useI18n();
   const {
     setCoreStatBoldUntilTurn,
     isMobileGameRunning,
@@ -234,7 +238,7 @@ export function usePlayerStatusPresentation(dependencies: UsePlayerStatusPresent
                     }`}
                   key={`character-status-${index}`}
                 >
-                  {line}
+                  {translateCharacterLine(line, locale)}
                 </div>
               );
             })}
@@ -246,7 +250,7 @@ export function usePlayerStatusPresentation(dependencies: UsePlayerStatusPresent
                 className={`nh3d-character-chip is-${status.severity}`}
                 key={`character-status-badge-${status.label}`}
               >
-                {status.label}
+                {translateStatusBadgeLabel(status.label, locale)}
               </div>
             ))}
           </div>
@@ -277,7 +281,7 @@ export function usePlayerStatusPresentation(dependencies: UsePlayerStatusPresent
                 className="nh3d-character-chip"
                 key={`character-attributes-${index}`}
               >
-                {line}
+                {translateCharacterLine(line, locale)}
               </div>
             ))
           ) : (

@@ -7,14 +7,15 @@ import type {
   Nh3dClientOptions
 } from "../../../game/ui-types";
 import type * as React from "react";
+import { useI18n } from "../../../i18n";
+import { translateRuntimeText } from "../../../i18n/runtime-text";
+import { GameMessageText } from "./GameMessageText";
 import {
   t
 } from "../shared/translations";
 import {
   mobileActions
 } from "../menus/mobile-actions";
-// nh3d-plus: display-time game text translation.
-import { useGameTextLocalization } from "../../../plus/game-text";
 
 export interface UseMessageLogStyleDependencies {
   readonly clientOptions: Nh3dClientOptions;
@@ -90,6 +91,7 @@ export interface UseMessageLogViewDependencies {
 
 /** Floating log text/timing and desktop/mobile log rendering */
 export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
+  const { locale } = useI18n();
   const {
     clientOptions,
     terminalDesktopGutterVisible,
@@ -102,7 +104,6 @@ export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
     isDesktopGameRunning,
     statusText,
   } = dependencies;
-  const gameText = useGameTextLocalization();
 
   const gameMessageLog =
     clientOptions.liveMessageLog ? (
@@ -119,7 +120,7 @@ export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
           )
           : null}
         {gameMessages.map((message, index) => (
-          <div key={`${index}-${message}`}>{gameText.text(message)}</div>
+          <div key={`${index}-${message}`}><GameMessageText message={message} /></div>
         ))}
       </div>
     ) : null;
@@ -132,7 +133,7 @@ export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
           : ""
           }`}
       >
-        <div id="game-status">{statusText}</div>
+        <div id="game-status">{translateRuntimeText(statusText, locale)}</div>
         {gameMessageLog ? (
           <div className="nh3d-overflow-glow-frame">{gameMessageLog}</div>
         ) : null}

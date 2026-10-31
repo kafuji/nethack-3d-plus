@@ -5,6 +5,8 @@ import {
   type TopScoreRecord
 } from "../../../runtime/top-score-storage";
 import AnimatedDialog from "../../modals/AnimatedDialog";
+import { useI18n } from "../../../i18n";
+import { translateScoreCharacterLine, translateScoreText } from "./score-i18n";
 import type * as React from "react";
 import type {
   TopScoreMetric,
@@ -30,12 +32,8 @@ import {
   formatTopScoreSnapshotStatus
 } from "./format";
 import {
-  commonStrings,
-  plusStrings
+  commonStrings
 } from "../shared/translations";
-
-// nh3d-plus: localized via src/plus/i18n.
-const topScoreStrings = plusStrings.topScores;
 
 export interface TopScoresDialogProps {
   startupInitialLoadingVisible: boolean;
@@ -88,6 +86,8 @@ export function TopScoresDialog({
   topScoresPageCount,
   loadTopScoresForRuntime,
 }: TopScoresDialogProps) {
+  const { locale } = useI18n();
+  const ja = locale === "ja";
   return (
     <AnimatedDialog
       className="nh3d-dialog nh3d-dialog-options nh3d-dialog-fixed-actions nh3d-dialog-has-mobile-close nh3d-top-scores-dialog"
@@ -99,14 +99,14 @@ export function TopScoresDialog({
       onKeyDown={handleStartupMainMenuKeyDown}
       onPointerDownCapture={handleStartupMainMenuPointerDownCapture}
     >
-      {renderMobileDialogCloseButton(closeTopScoresDialog, topScoreStrings.closeLabel)}
+      {renderMobileDialogCloseButton(closeTopScoresDialog, translateScoreText("Close top scores", locale))}
       {topScoresDialogRuntime ? (
         <RuntimeVersionBadge
           label={resolveRuntimeVersionDisplayLabel(topScoresDialogRuntime)}
           startup
         />
       ) : null}
-      <div className="nh3d-options-title">{topScoreStrings.title}</div>
+      <div className="nh3d-options-title">{translateScoreText("Top Scores", locale)}</div>
       <div className="nh3d-top-scores-summary">
         {topScoresSummaryStats.length > 0 ? (
           <div className="nh3d-top-scores-summary-grid">
@@ -116,14 +116,14 @@ export function TopScoresDialog({
                 key={`top-score-summary-${metric.label}`}
               >
                 <div className="nh3d-top-scores-summary-label">
-                  {metric.label}
+                  {translateScoreText(metric.label, locale)}
                 </div>
                 <div className="nh3d-top-scores-summary-value">
                   {metric.value}
                 </div>
                 {metric.detail ? (
                   <div className="nh3d-top-scores-summary-detail">
-                    {metric.detail}
+                    {metric.label === "Best score" || metric.label === "Latest entry" ? metric.detail : translateScoreText(metric.detail, locale)}
                   </div>
                 ) : null}
               </div>
@@ -131,7 +131,7 @@ export function TopScoresDialog({
           </div>
         ) : (
           <div className="nh3d-top-scores-summary-empty">
-            {topScoresLoading ? topScoreStrings.loadingLedger : topScoreStrings.noScoresYet}
+            {topScoresLoading ? (ja ? "記録を読み込み中…" : "Loading the ledger...") : (ja ? "記録はまだありません。" : "No scores yet.")}
           </div>
         )}
       </div>
@@ -148,7 +148,7 @@ export function TopScoresDialog({
             }
           }}
         >
-          <span>{topScoreStrings.sortBy}</span>
+          <span>{ja ? "並び順" : "Sort by"}</span>
           <span className="nh3d-top-scores-select-shell">
             <button
               aria-expanded={topScoresSortMenuOpen}
@@ -160,11 +160,11 @@ export function TopScoresDialog({
               }}
               type="button"
             >
-              {selectedTopScoreSortOption.label}
+              {translateScoreText(selectedTopScoreSortOption.label, locale)}
             </button>
             {topScoresSortMenuOpen ? (
               <div
-                aria-label={topScoreStrings.sortMenuLabel}
+                aria-label={ja ? "記録の並び順" : "Sort top scores by"}
                 className="nh3d-top-scores-sort-menu"
                 role="listbox"
               >
@@ -182,7 +182,7 @@ export function TopScoresDialog({
                     role="option"
                     type="button"
                   >
-                    {option.label}
+                    {translateScoreText(option.label, locale)}
                   </button>
                 ))}
               </div>
@@ -197,12 +197,12 @@ export function TopScoresDialog({
           data-nh3d-overflow-glow-host="parent"
         >
           {topScoresLoading ? (
-            <div className="nh3d-top-scores-empty">{topScoreStrings.loadingLedger}</div>
+            <div className="nh3d-top-scores-empty">{ja ? "記録を読み込み中…" : "Loading the ledger..."}</div>
           ) : topScoresError ? (
-            <div className="nh3d-top-scores-empty">{topScoresError}</div>
+            <div className="nh3d-top-scores-empty">{translateScoreText(topScoresError, locale)}</div>
           ) : visibleTopScores.length <= 0 ? (
             <div className="nh3d-top-scores-empty">
-              {topScoreStrings.emptyLedger}
+              {ja ? "冒険の記録はまだありません。得点が記録される冒険を終えると、ここに表示されます。" : "No adventurers have claimed a place in the ledger yet. Finish a scoring run to write the first entry."}
             </div>
           ) : (
             <div className="nh3d-top-scores-list">
@@ -226,11 +226,11 @@ export function TopScoresDialog({
                             {formatTopScorePlayerName(score)}
                           </div>
                           <div className="nh3d-top-score-card-points">
-                            {topScoreStrings.pointsShort(formatTopScoreInteger(score.points))}
+                            {formatTopScoreInteger(score.points)} {ja ? "点" : "pts"}
                           </div>
                         </div>
                         <div className="nh3d-top-score-card-archetype">
-                          {formatTopScoreCharacterLine(score)}
+                          {translateScoreCharacterLine(formatTopScoreCharacterLine(score), locale)}
                         </div>
                         <div className="nh3d-top-score-card-summary">
                           {formatTopScoreResultSummary(score)}
@@ -239,7 +239,7 @@ export function TopScoresDialog({
                       {snapshotStatus ? (
                         <div className="nh3d-top-score-card-status">
                           <span className="nh3d-top-score-badge">
-                            {snapshotStatus}
+                            {translateScoreText(snapshotStatus, locale)}
                           </span>
                         </div>
                       ) : null}
@@ -252,10 +252,10 @@ export function TopScoresDialog({
                           key={`${score.id}-${metric.label}`}
                         >
                           <div className="nh3d-top-score-mini-stat-label">
-                            {metric.label}
+                            {translateScoreText(metric.label, locale)}
                           </div>
                           <div className="nh3d-top-score-mini-stat-value">
-                            {metric.value}
+                            {metric.label === "Depth" ? translateScoreText(metric.value, locale) : metric.value}
                           </div>
                         </div>
                       ))}
@@ -268,7 +268,7 @@ export function TopScoresDialog({
                             className="nh3d-top-score-badge"
                             key={`${score.id}-label-${label}`}
                           >
-                            {label}
+                            {translateScoreText(label, locale)}
                           </span>
                         ))}
                       </div>
@@ -277,7 +277,7 @@ export function TopScoresDialog({
                         onClick={() => setSelectedTopScore(score)}
                         type="button"
                       >
-                        {topScoreStrings.openRunBreakdown}
+                        {ja ? "冒険の詳細を見る" : "Open run breakdown"}
                       </button>
                     </div>
                   </article>
@@ -288,7 +288,7 @@ export function TopScoresDialog({
         </div>
       </div>
       <div className="nh3d-top-scores-pagination">
-        {topScoreStrings.pagination(topScoresCurrentPageIndex + 1, topScoresPageCount)}
+        {ja ? `${topScoresCurrentPageIndex + 1} / ${topScoresPageCount} ページ` : `Page ${topScoresCurrentPageIndex + 1} of ${topScoresPageCount}`}
       </div>
       <div className="nh3d-menu-actions">
         <button
@@ -299,7 +299,7 @@ export function TopScoresDialog({
           }
           type="button"
         >
-          {topScoreStrings.previous}
+          {ja ? "前へ" : "Previous"}
         </button>
         <button
           className="nh3d-menu-action-button"
@@ -314,7 +314,7 @@ export function TopScoresDialog({
           }
           type="button"
         >
-          {topScoreStrings.next}
+          {ja ? "次へ" : "Next"}
         </button>
         <button
           className="nh3d-menu-action-button"
@@ -326,7 +326,7 @@ export function TopScoresDialog({
           }}
           type="button"
         >
-          {topScoreStrings.refresh}
+          {ja ? "更新" : "Refresh"}
         </button>
         <button
           className="nh3d-menu-action-button nh3d-menu-action-cancel"

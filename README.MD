@@ -13,7 +13,7 @@ Classic NetHack, presented as an interactive 3D dungeon. Play from above, step i
 ## Fork Changes
 
 - Update checks, web build paths, and project links point to this fork.
-- Japanese: fuller interface translation, plus optional display-time translation of in-game messages, prompts, and item names based on [JNetHack](https://github.com/jnethack/jnethack-alpha) (NetHack General Public License).
+- Japanese: fuller interface translation, and in-game messages, prompts, item names and quest texts translated at display time. Curated translations come first, then [JNetHack](https://github.com/jnethack/jnethack-alpha) data (NetHack General Public License), then unreviewed Nehww references marked 参考訳.
 - Upstream: [JamesIV4/nethack-3d](https://github.com/JamesIV4/nethack-3d), synced at 1.6.2 (`3b6fd23`). See [Fork Maintenance](docs/fork-maintenance.md) for the sync workflow.
 
 ## New in 1.6.0: The VR Update
@@ -128,6 +128,16 @@ Dynamic lighting surrounds the player, while defeated monsters can shatter into 
 1. `npm i`
 2. `npm run dev`
 3. Open `http://localhost:5173/`
+
+On Windows, after installing dependencies, you can also run the local server
+and open the game in your browser from PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start-local.ps1
+```
+
+Keep the terminal open while playing; press `Ctrl+C` to stop the server. The
+script uses `http://127.0.0.1:5173/` and reports an error if the port is busy.
 
 ### Quest Development
 

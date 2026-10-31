@@ -7,6 +7,8 @@ import {
 } from "react";
 import type { FpsCrosshairContextState, Nh3dClientOptions, Nethack3DEngineController } from "../../../game/ui-types";
 import type * as React from "react";
+import { useI18n } from "../../../i18n";
+import { translateTileContextTitle } from "../../../i18n/tile-context";
 import { getWebXrState, subscribeWebXr } from "../../../quest/webxr/presentation";
 import { getXrSettings, subscribeXrSettings } from "../../../quest/webxr/settings";
 import type {
@@ -176,12 +178,13 @@ export interface UseTileContextTitleDependencies {
 
 /** FPS/tile context retention, title, action routing and positioning */
 export function useTileContextTitle(dependencies: UseTileContextTitleDependencies) {
+  const { locale } = useI18n();
   const {
     fpsCrosshairContextRenderState,
     fpsContextTitleAnimationInstance,
   } = dependencies;
 
-  const fpsContextTitle = String(fpsCrosshairContextRenderState?.title || "");
+  const fpsContextTitle = translateTileContextTitle(String(fpsCrosshairContextRenderState?.title || ""), locale);
 
   const fpsContextTitleAnimationKey =
     `fps-context-title-${fpsContextTitleAnimationInstance}`;

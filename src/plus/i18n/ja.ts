@@ -19,28 +19,12 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
   },
   characterSheet: {
     commands: {
-      conduct: {
-        label: "コンダクト",
-      },
       technique: {
         label: "技",
       },
     },
   },
   plus: {
-    gameText: {
-      label: "ゲーム内テキストを日本語化",
-      description:
-        "NetHack のメッセージ、質問、アイテム名を日本語で表示します。JNetHack の訳を使用し、未対応の文は英語のまま表示されます。",
-    },
-    startupMenu: {
-      topScores: "ハイスコア",
-    },
-    characterSheet: {
-      starting: "開始時",
-      current: "現在",
-      deities: "神々",
-    },
     solidColorPicker: {
       selectedColor: (hex: string) => `選択中の色: ${hex}`,
       hint: "アトラス全体の上でカーソルを動かし、ピクセルをクリックして単色クロマキーの色を設定します。",
@@ -52,19 +36,6 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
     statChanges: {
       experience: (delta: string) => `経験値 ${delta}`,
       experienceLevel: (level: number) => `経験レベル ${level}`,
-    },
-    windowTitles: {
-      "Message History": "メッセージ履歴",
-      "NetHack Message": "NetHack メッセージ",
-      "NetHack Information": "NetHack 情報",
-      "Command Help": "コマンドヘルプ",
-      "NetHack Help": "NetHack ヘルプ",
-      "NetHack History": "NetHack の歴史",
-      "Key Help": "キーヘルプ",
-      "NetHack License": "NetHack ライセンス",
-      "Option Help": "オプションヘルプ",
-      "Wizard Help": "Wizard ヘルプ",
-      "Port Help": "移植版ヘルプ",
     },
     contextActions: {
       pickup: "拾う",
@@ -85,12 +56,6 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
       cast: "呪文を唱える",
       apply: "使う",
       info: "情報",
-    },
-    messageNav: {
-      earliest: "最初の NetHack メッセージを表示",
-      previous: "前の NetHack メッセージを表示",
-      next: "次の NetHack メッセージを表示",
-      latest: "最新の NetHack メッセージを表示",
     },
     techniqueMenu: {
       name: "名前",
@@ -567,9 +532,6 @@ const jaPlusTerminologyFixes: LocaleOverrides<TranslationDictionary> = {
   app: {
     saveTransfer: {
       imported: "インポートしました。「ゲームをロード」を選択してください。",
-    },
-    characterStats: {
-      armorClassDescription: "低いほど有利です。アーマークラス (AC) は敵の命中率を下げます。",
     },
     inventoryContextActions: {
       tip: "中身を出す",

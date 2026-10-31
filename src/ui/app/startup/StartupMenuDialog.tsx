@@ -5,6 +5,8 @@ import {
   supportsRuntimeTopScores
 } from "../../../runtime/runtime-capabilities";
 import AnimatedDialog from "../../modals/AnimatedDialog";
+import { useI18n } from "../../../i18n";
+import { translateScoreText } from "../scores/score-i18n";
 import type * as React from "react";
 import type {
   StartupFlowStep
@@ -14,7 +16,6 @@ import {
 } from "./RuntimeVersionBadge";
 import {
   commonStrings,
-  plusStrings,
   t
 } from "../shared/translations";
 
@@ -47,6 +48,7 @@ export function StartupMenuDialog({
   openTopScoresDialog,
   openClientOptionsDialog,
 }: StartupMenuDialogProps) {
+  const { locale } = useI18n();
   return (
     <AnimatedDialog
       className="nh3d-dialog nh3d-dialog-question nh3d-dialog-fixed-actions startup nh3d-character-setup-dialog"
@@ -100,7 +102,7 @@ export function StartupMenuDialog({
               onClick={openTopScoresDialog}
               type="button"
             >
-              {plusStrings.startupMenu.topScores}
+              {translateScoreText("Top Scores", locale)}
             </button>
           ) : null}
           <button

@@ -30,6 +30,10 @@ import {
   type Nh3dSoundFileUploadOverrides,
 } from "../audio/sound-pack-storage";
 import {
+  previewNh3dSynthSound,
+  resolveNh3dSynthSoundKeyFromPath,
+} from "../audio/status-effect-synth";
+import {
   useConfirmationDialog,
   type ConfirmationDialogRequest,
 } from "./modals/useConfirmationDialog";
@@ -595,6 +599,17 @@ export default function SoundPackSettings({
 
       if (!previewUrl) {
         throw new Error(soundPackStrings.noPreviewSource);
+      }
+
+      const synthKey = resolveNh3dSynthSoundKeyFromPath(previewUrl);
+      if (synthKey) {
+        previewAudioRef.current?.pause();
+        await previewNh3dSynthSound(
+          synthKey,
+          Math.max(0, Math.min(1, Number(variation.volume ?? 1))),
+        );
+        setPlayingSoundSlotKey(null);
+        return;
       }
 
       const audio = previewAudioRef.current ?? new Audio();

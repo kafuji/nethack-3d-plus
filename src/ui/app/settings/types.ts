@@ -54,7 +54,8 @@ export type ClientOptionSlider = {
   | "liveMessageFadeOutTimeMs"
   | "manualMobileBottomSafeZoneVerticalPx"
   | "manualMobileBottomSafeZoneHorizontalPx"
-  | "manualMobileRightSafeZoneHorizontalPx";
+  | "manualMobileRightSafeZoneHorizontalPx"
+  | "musicVolume";
   label: string;
   description: string;
   type: "slider";
@@ -154,6 +155,7 @@ export type ClientOptionToggleKey =
   | "manualMobileBottomSafeZoneEnabled"
   | "showVersionNotificationsOnLaunch"
   | "soundEnabled"
+  | "musicEnabled"
   | "blockAmbientOcclusion"
   | "darkCorridorWalls367"
   | "overrideNh5DarkCorridorWallTiles"

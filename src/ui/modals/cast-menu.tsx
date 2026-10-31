@@ -1,5 +1,8 @@
 import type { NethackMenuItem } from "../../game/ui-types";
 import { getTranslationStrings } from "../../i18n/core";
+import { useI18n } from "../../i18n";
+import { translateSkillName, translateSpellName } from "../../i18n/game-skills";
+import type { SupportedLocale } from "../../i18n/core";
 
 export type CastSpellEntry = {
   id: string;
@@ -424,11 +427,12 @@ export function parseCastSpellMenu(
 
 function renderSpellRowContent(
   entry: CastSpellEntry,
-  options: { showRetentionColumn: boolean },
+  options: { showRetentionColumn: boolean; locale: SupportedLocale },
 ): JSX.Element {
+  const name = translateSpellName(entry.name, options.locale);
   const spellDisplayName = entry.accelerator
-    ? `${entry.accelerator}) ${entry.name}`
-    : entry.name;
+    ? `${entry.accelerator}) ${name}`
+    : name;
   const showRetentionColumn = options.showRetentionColumn;
 
   return (
@@ -441,7 +445,7 @@ function renderSpellRowContent(
         <span className="nh3d-cast-row-category-label">
           {castMenuStrings.schoolLabel}
         </span>
-        <span className="nh3d-cast-row-category-value">{entry.category}</span>
+        <span className="nh3d-cast-row-category-value">{translateSkillName(entry.category, options.locale)}</span>
       </span>
       <span className="nh3d-cast-chip-stack">
         <span className={`nh3d-cast-chip nh3d-cast-chip-fail is-${entry.failBand}`}>
@@ -465,6 +469,7 @@ export function CastSpellMenu({
   onChooseSpell,
   onFocusSpell = null,
 }: CastSpellMenuProps): JSX.Element {
+  const { locale } = useI18n();
   const showRetentionColumn = menuData.hasRetentionData;
   return (
     <div className="nh3d-cast-menu">
@@ -525,11 +530,11 @@ export function CastSpellMenu({
                 onFocus={() => onFocusSpell?.(entry.selectionInput)}
                 type="button"
               >
-                {renderSpellRowContent(entry, { showRetentionColumn })}
+                {renderSpellRowContent(entry, { showRetentionColumn, locale })}
               </button>
             ) : (
               <div className={rowClassName} key={entry.id}>
-                {renderSpellRowContent(entry, { showRetentionColumn })}
+                {renderSpellRowContent(entry, { showRetentionColumn, locale })}
               </div>
             );
           })}

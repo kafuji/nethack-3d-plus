@@ -540,6 +540,21 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "musicEnabled",
+    label: t.clientOptions.config.musicEnabled.label,
+    description: t.clientOptions.config.musicEnabled.description,
+    type: "boolean",
+  },
+  {
+    key: "musicVolume",
+    label: t.clientOptions.config.musicVolume.label,
+    description: t.clientOptions.config.musicVolume.description,
+    type: "slider",
+    min: 0,
+    max: 1,
+    step: 0.05,
+  },
+  {
     key: "group-combat",
     label: t.clientOptions.config.groupCombat,
     type: "group",

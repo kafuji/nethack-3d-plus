@@ -404,6 +404,20 @@ export const ru = {
   },
   soundEffects: {
     byKey: {
+      "status-hungry": "Состояние: Голод",
+      "status-weak": "Состояние: Слабость (голод)",
+      "status-fainting": "Состояние: Обморок",
+      "status-confused": "Состояние: Замешательство",
+      "status-stunned": "Состояние: Оглушение",
+      "status-blind": "Состояние: Слепота",
+      "status-hallucinating": "Состояние: Галлюцинации",
+      "status-poisoned": "Состояние: Отравление",
+      "status-sick": "Состояние: Пищевое отравление / Болезнь",
+      "status-stoning": "Состояние: Окаменение",
+      "status-slimed": "Состояние: Слизь",
+      "status-strangled": "Состояние: Удушье",
+      "status-paralyzed": "Состояние: Паралич / Сон",
+      "status-recovered": "Состояние: Восстановление",
       "player-walk": "Шаг игрока",
       hit: "Удар",
       "monster-killed": "Монстр убит (игрок)",
@@ -1021,6 +1035,15 @@ export const ru = {
           },
         },
         groupSound: "Звук",
+        musicEnabled: {
+          label: "Фоновая музыка",
+          description:
+            "Воспроизводит фоновую музыку, меняющуюся по ситуации (спокойствие, бой, опасность). Требуется включённый звук.",
+        },
+        musicVolume: {
+          label: "Громкость музыки",
+          description: "Громкость фоновой музыки.",
+        },
         soundEnabled: {
           label: "Включить звук",
           description:

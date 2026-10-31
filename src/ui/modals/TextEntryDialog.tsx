@@ -5,6 +5,7 @@ export interface TextEntryDialogProps {
   open: boolean;
   id: string;
   prompt: string;
+  promptContent?: ReactNode;
   value: string;
   onChange: (value: string) => void;
   onSubmit: (value: string) => void;
@@ -22,7 +23,7 @@ export interface TextEntryDialogProps {
   inputClassName?: string;
 }
 
-function TextEntryContents({ prompt, value, onChange, onSubmit, onCancel,
+function TextEntryContents({ prompt, promptContent, value, onChange, onSubmit, onCancel,
   confirmLabel, cancelLabel, placeholder, maxLength, inputRef, focusKey,
   context, closeButton, inputClassName,
 }: TextEntryDialogProps) {
@@ -44,7 +45,7 @@ function TextEntryContents({ prompt, value, onChange, onSubmit, onCancel,
   return <>
     {closeButton}
     {context}
-    <div className="nh3d-question-text" id={labelId}>{prompt}</div>
+    <div className="nh3d-question-text" id={labelId}>{promptContent ?? prompt}</div>
     <input
       aria-labelledby={labelId}
       autoCapitalize="none"

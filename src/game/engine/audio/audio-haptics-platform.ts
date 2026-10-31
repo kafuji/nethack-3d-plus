@@ -2,9 +2,16 @@ import { Capacitor } from "@capacitor/core";
 import { Haptics } from "@capacitor/haptics";
 import { WebHaptics } from "web-haptics";
 import { FmodRuntime } from "../../../audio";
+import type { BackgroundMusic } from "../../../audio/music";
+import {
+  resolveConditionStatusBadges,
+  resolveHungerStatusBadge,
+} from "../../../ui/app/status/conditions";
+import type { Nh3dClientOptions, PlayerStatsSnapshot } from "../../ui-types";
 import type { FmodRuntimeOptions, FmodThreadingDiagnostics } from "../../../audio";
 import { logWithOriginal } from "../../../logging";
 import { MessageSoundHooks } from "../../message-sound-hooks";
+import { Nh3dStatusSoundTracker } from "../../../audio/status-effect-synth";
 import type { Nh3dAndroidBridge } from "../shared/types";
 import type { DirectionPrompts } from "../ui/direction-prompts";
 import type { EngineState } from "../runtime/engine-state";
@@ -22,7 +29,7 @@ export interface AudioHapticsPlatformDependencies {
   >;
   readonly engineState: Pick<
     EngineState,
-    "clientOptions" | "disposed"
+    "clientOptions" | "disposed" | "characterCreationConfig"
   >;
   readonly movementInput: Pick<
     MovementInput,
@@ -62,6 +69,10 @@ export class AudioHapticsPlatform {
   fmodRuntime!: FmodRuntime;
 
   messageSoundHooks!: MessageSoundHooks;
+
+  backgroundMusic!: BackgroundMusic;
+
+  private readonly statusSoundTracker = new Nh3dStatusSoundTracker();
 
   readonly deploymentTarget: string = this.resolveDeploymentTarget();
 
@@ -155,6 +166,36 @@ export class AudioHapticsPlatform {
     }
     this.messageSoundHooks.resumeFromUserGesture();
     this.fmodRuntime.resumeFromUserGesture();
+    this.backgroundMusic?.resumeFromUserGesture();
+  }
+
+  syncBackgroundMusicWithClientOptions(
+    options: Pick<Nh3dClientOptions, "soundEnabled" | "musicEnabled" | "musicVolume">,
+  ): void {
+    this.backgroundMusic?.setSettings({
+      soundEnabled: options.soundEnabled,
+      musicEnabled: options.musicEnabled,
+      musicVolume: options.musicVolume,
+    });
+  }
+
+  notifyBackgroundMusicPlayerStats(stats: PlayerStatsSnapshot): void {
+    const runtimeVersion =
+      this.dependencies.engineState.characterCreationConfig.runtimeVersion ?? "3.6.7";
+    const statusSoundKey = this.statusSoundTracker.update(stats, runtimeVersion);
+    if (statusSoundKey) {
+      this.messageSoundHooks?.playStatusEffectSound(statusSoundKey);
+    }
+    if (!this.backgroundMusic) return;
+    const dangerCondition =
+      resolveHungerStatusBadge(stats.hunger)?.severity === "danger" ||
+      resolveConditionStatusBadges(stats.conditionMask, runtimeVersion).some(
+        (badge) => badge.severity === "danger",
+      );
+    this.backgroundMusic.notifyPlayerStats(
+      { hp: stats.hp, maxHp: stats.maxHp, time: stats.time },
+      dangerCondition,
+    );
   }
 
   triggerDamageRumble(durationMs: number, intensity: number): void {

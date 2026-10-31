@@ -221,6 +221,12 @@ export class GameTextTranslator {
     return lines.map((line) => this.translate(line));
   }
 
+  /** Whole quest/legacy text only (no per-line fallback); null when unknown. */
+  translateQuestDocument(lines: readonly string[]): string[] | null {
+    const quest = this.translateQuestText(lines.join(" "));
+    return quest === null ? null : quest.split("\n");
+  }
+
   private translateQuestText(text: string): string | null {
     const normalized = normalizeSpaces(text);
     if (normalized.length < 8) return null;

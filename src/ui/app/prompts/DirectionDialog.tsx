@@ -1,4 +1,5 @@
 import type { Nh3dClientOptions, Nethack3DEngineController } from "../../../game/ui-types";
+import { GamePromptText } from "./GamePromptText";
 import AnimatedDialog from "../../modals/AnimatedDialog";
 import {
   t
@@ -43,7 +44,7 @@ export function DirectionDialog({
             () => controller?.cancelActivePrompt(),
             t.dialogs.direction.cancelLabel,
           )}
-          <div className="nh3d-direction-text">{directionQuestion}</div>
+          <div className="nh3d-direction-text"><GamePromptText prompt={directionQuestion} /></div>
           <div className="nh3d-direction-fps-hint">
             {isFpsPlayMode
               ? t.directionHelp.fps

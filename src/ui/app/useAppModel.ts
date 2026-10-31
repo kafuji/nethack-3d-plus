@@ -1174,6 +1174,7 @@ export function useAppModel() {
     get newGamePrompt() { return newGamePrompt; },
     get hasHydratedUserTilesets() { return hasHydratedUserTilesets; },
     get hasAskedControllerSupportThisSession() { return hasAskedControllerSupportThisSession; },
+    get controllerEnabled() { return clientOptions.controllerEnabled; },
     get setIsControllerSupportPromptVisible() { return setIsControllerSupportPromptVisible; },
     get isMobileGameRunning() { return isMobileGameRunning; },
     get setIsMobileActionSheetVisible() { return setIsMobileActionSheetVisible; },

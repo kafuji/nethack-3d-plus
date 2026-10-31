@@ -10,6 +10,10 @@ import {
   type TopScoreRecord
 } from "../../../runtime/top-score-storage";
 import AnimatedDialog from "../../modals/AnimatedDialog";
+import { useI18n } from "../../../i18n";
+import { translateInventoryCategory, translateInventoryItem } from "../../../i18n/inventory-text";
+import { translateGameLocation } from "../../../i18n/game-location";
+import { translateScoreCharacterLine, translateScoreEventLabel, translateScoreText, translateScoreTimelineMeta } from "./score-i18n";
 import type * as React from "react";
 import type {
   TopScoreBreakdownGroup,
@@ -36,20 +40,14 @@ import {
 import {
   formatTopScoreTimelineClusterTurnLabel,
   formatTopScoreTimelineEventBadge,
-  localizeTopScoreStoredLocation,
-  localizeTopScoreStoredTimelineText,
   formatTopScoreTimelineEventMeta
 } from "./timeline-labels";
 import {
   renderTopScoreRawReportBlock
 } from "./report-content";
 import {
-  commonStrings,
-  plusStrings
+  commonStrings
 } from "../shared/translations";
-
-// nh3d-plus: localized via src/plus/i18n.
-const topScoreStrings = plusStrings.topScores;
 
 export interface TopScoreDetailDialogProps {
   selectedTopScore: TopScoreRecord | null;
@@ -98,6 +96,8 @@ export function TopScoreDetailDialog({
   selectedTopScoreFinalAttributesReport,
   selectedTopScorePostmortemReportSections,
 }: TopScoreDetailDialogProps) {
+  const { locale } = useI18n();
+  const ja = locale === "ja";
   return (
     <AnimatedDialog
       className="nh3d-dialog nh3d-dialog-character nh3d-dialog-fixed-actions nh3d-dialog-has-mobile-close nh3d-overflow-glow-frame nh3d-top-score-detail-dialog"
@@ -108,7 +108,7 @@ export function TopScoreDetailDialog({
         <>
           {renderMobileDialogCloseButton(
             () => setSelectedTopScore(null),
-            topScoreStrings.closeDetailLabel,
+            translateScoreText("Close top score details", locale),
           )}
           <div
             className="nh3d-character-sheet-scroll"
@@ -122,10 +122,10 @@ export function TopScoreDetailDialog({
             <div className="nh3d-top-score-hero">
               <div className="nh3d-top-score-hero-copy">
                 <div className="nh3d-top-score-hero-score">
-                  {topScoreStrings.points(formatTopScoreInteger(selectedTopScore.points))}
+                  {formatTopScoreInteger(selectedTopScore.points)} {ja ? "点" : "points"}
                 </div>
                 <div className="nh3d-top-score-hero-archetype">
-                  {formatTopScoreCharacterLine(selectedTopScore)}
+                  {translateScoreCharacterLine(formatTopScoreCharacterLine(selectedTopScore), locale)}
                 </div>
                 <div className="nh3d-top-score-hero-summary">
                   {formatTopScoreResultSummary(selectedTopScore)}
@@ -139,16 +139,16 @@ export function TopScoreDetailDialog({
                   key={`top-score-hero-stat-${metric.label}`}
                 >
                   <div className="nh3d-top-score-hero-stat-label">
-                    {metric.label}
+                    {translateScoreText(metric.label, locale)}
                   </div>
                   <div className="nh3d-top-score-hero-stat-value">
-                    {metric.value}
+                    {metric.label === "Depth" ? translateScoreText(metric.value, locale) : metric.value}
                   </div>
                 </div>
               ))}
             </div>
             <section className="nh3d-character-panel nh3d-top-score-panel-wide nh3d-top-score-timeline-panel">
-              <div className="nh3d-character-panel-title">{topScoreStrings.sections.runTimeline}</div>
+              <div className="nh3d-character-panel-title">{ja ? "冒険の軌跡" : "Run Timeline"}</div>
               {selectedTopScoreTimelineSummaryMetrics.length > 0 ? (
                 <div className="nh3d-top-score-timeline-summary-grid">
                   {selectedTopScoreTimelineSummaryMetrics.map((metric) => (
@@ -157,14 +157,14 @@ export function TopScoreDetailDialog({
                       key={`top-score-timeline-summary-${metric.label}`}
                     >
                       <div className="nh3d-top-score-timeline-summary-label">
-                        {metric.label}
+                        {translateScoreText(metric.label, locale)}
                       </div>
                       <div className="nh3d-top-score-timeline-summary-value">
                         {metric.value}
                       </div>
                       {metric.detail ? (
                         <div className="nh3d-top-score-timeline-summary-detail">
-                          {metric.detail}
+                          {translateScoreText(metric.detail, locale)}
                         </div>
                       ) : null}
                     </div>
@@ -175,7 +175,7 @@ export function TopScoreDetailDialog({
                 <>
                   <div className="nh3d-top-score-timeline-toolbar">
                     <div className="nh3d-top-score-timeline-intro">
-                      {topScoreStrings.timeline.filterIntro}
+                      {ja ? "見たい出来事を選んで絞り込めます。" : "Filter the run by what mattered most."}
                     </div>
                     <div className="nh3d-top-score-timeline-filters">
                       {topScoreTimelineFilterConfigs.map((filter) => {
@@ -202,7 +202,7 @@ export function TopScoreDetailDialog({
                             }
                             type="button"
                           >
-                            <span>{filter.label}</span>
+                            <span>{translateScoreText(filter.label, locale)}</span>
                             <span>{count}</span>
                           </button>
                         );
@@ -210,7 +210,7 @@ export function TopScoreDetailDialog({
                     </div>
                   </div>
                   <div className="nh3d-top-score-timeline-hint">
-                    {topScoreStrings.timeline.hint}
+                    {ja ? "線は各項目の推移を表します。印を選ぶと出来事の詳細を表示します。" : "Lines show how each active thread of the run climbed over time. Touch a cluster to unpack a busy stretch."}
                   </div>
                   <div className="nh3d-top-score-timeline-viewport">
                     <div
@@ -327,7 +327,7 @@ export function TopScoreDetailDialog({
                             44
                           }
                         >
-                          {topScoreStrings.timeline.axisTurns}
+                          {ja ? "ターン" : "Turns"}
                         </text>
                         {selectedTopScoreTimelineModel.clusters
                           .filter((cluster) => !cluster.isLineAnchored)
@@ -362,7 +362,7 @@ export function TopScoreDetailDialog({
                       <div className="nh3d-top-score-timeline-marker-layer">
                         {selectedTopScoreTimelineModel.clusters.map((cluster) => (
                           <button
-                            aria-label={`${cluster.filterLabel} at ${formatTopScoreTimelineClusterTurnLabel(cluster)}`}
+                            aria-label={ja ? `${translateScoreText(cluster.filterLabel, locale)} ${translateScoreText(formatTopScoreTimelineClusterTurnLabel(cluster), locale)}` : `${cluster.filterLabel} at ${formatTopScoreTimelineClusterTurnLabel(cluster)}`}
                             className={`nh3d-top-score-timeline-marker${activeTopScoreTimelineCluster?.id === cluster.id
                               ? " is-active"
                               : ""
@@ -401,19 +401,17 @@ export function TopScoreDetailDialog({
                       <div className="nh3d-top-score-timeline-focus-header">
                         <div>
                           <div className="nh3d-top-score-timeline-focus-eyebrow">
-                            {activeTopScoreTimelineCluster.filterLabel}
+                            {translateScoreText(activeTopScoreTimelineCluster.filterLabel, locale)}
                           </div>
                           <div className="nh3d-top-score-timeline-focus-turn">
-                            {formatTopScoreTimelineClusterTurnLabel(
+                            {translateScoreText(formatTopScoreTimelineClusterTurnLabel(
                               activeTopScoreTimelineCluster,
-                            )}
+                            ), locale)}
                           </div>
                         </div>
                         {activeTopScoreTimelineCluster.events.length > 1 ? (
                           <div className="nh3d-top-score-timeline-focus-count">
-                            {topScoreStrings.timeline.moments(
-                              formatTopScoreInteger(activeTopScoreTimelineCluster.events.length),
-                            )}
+                            {ja ? `${formatTopScoreInteger(activeTopScoreTimelineCluster.events.length)} 件` : `${formatTopScoreInteger(activeTopScoreTimelineCluster.events.length)} moments`}
                           </div>
                         ) : null}
                       </div>
@@ -438,21 +436,21 @@ export function TopScoreDetailDialog({
                                     } as CSSProperties
                                   }
                                 >
-                                  {formatTopScoreTimelineEventBadge(event)}
+                                  {translateScoreText(formatTopScoreTimelineEventBadge(event), locale)}
                                 </span>
                                 <span className="nh3d-top-score-timeline-focus-card-turn">
-                                  {topScoreStrings.timeline.turn(formatTopScoreInteger(event.turn))}
+                                  {ja ? "ターン" : "Turn"} {formatTopScoreInteger(event.turn)}
                                 </span>
                               </div>
                               <div className="nh3d-top-score-timeline-focus-card-title">
-                                {localizeTopScoreStoredTimelineText(event.label)}
+                                {translateScoreEventLabel(event.label, locale)}
                               </div>
                               <div className="nh3d-top-score-timeline-focus-card-summary">
-                                {localizeTopScoreStoredTimelineText(event.summary)}
+                                {event.summary}
                               </div>
                               {eventMeta ? (
                                 <div className="nh3d-top-score-timeline-focus-card-meta">
-                                  {eventMeta}
+                                  {translateScoreTimelineMeta(translateGameLocation(eventMeta, locale), locale)}
                                 </div>
                               ) : null}
                             </div>
@@ -464,13 +462,13 @@ export function TopScoreDetailDialog({
                 </>
               ) : (
                 <div className="nh3d-top-scores-empty">
-                  {topScoreStrings.timeline.noHistory}
+                  {ja ? "この冒険はターンごとの履歴が記録される前に保存されました。" : "This run was archived before turn-by-turn history was being kept."}
                 </div>
               )}
             </section>
             <div className="nh3d-character-grid nh3d-top-score-detail-grid">
               <section className="nh3d-character-panel nh3d-top-score-summary-panel">
-                <div className="nh3d-character-panel-title">{topScoreStrings.sections.runSummary}</div>
+                <div className="nh3d-character-panel-title">{ja ? "冒険の概要" : "Run Summary"}</div>
                 <div className="nh3d-character-field-list">
                   {selectedTopScoreOverviewRows.map(([label, value]) => (
                     <div
@@ -478,11 +476,11 @@ export function TopScoreDetailDialog({
                       key={`top-score-stat-${label}`}
                     >
                       <div className="nh3d-character-field-label">
-                        {label}
+                        {translateScoreText(label, locale)}
                       </div>
                       <div className="nh3d-character-field-value-group">
                         <span className="nh3d-character-field-value">
-                          {value}
+                          {label === "Path" ? translateScoreCharacterLine(value, locale) : label === "Final location" ? translateGameLocation(value, locale) : label === "Final score" ? translateScoreText(value, locale) : value}
                         </span>
                       </div>
                     </div>
@@ -492,7 +490,7 @@ export function TopScoreDetailDialog({
 
               <section className="nh3d-character-panel nh3d-top-score-final-panel">
                 <div className="nh3d-character-panel-title">
-                  {topScoreStrings.sections.finalSnapshot}
+                  {ja ? "終了時の状態" : "Final Snapshot"}
                 </div>
                 {selectedTopScoreAdventureMetrics.length > 0 ? (
                   <div className="nh3d-character-stat-grid">
@@ -502,16 +500,16 @@ export function TopScoreDetailDialog({
                         key={`top-score-adventure-${metric.label}`}
                       >
                         <div className="nh3d-character-stat-label">
-                          {metric.label}
+                          {translateScoreText(metric.label, locale)}
                         </div>
                         <div className="nh3d-character-stat-value">
                           <span className="nh3d-character-stat-current">
-                            {metric.value}
+                            {metric.label === "Alignment" ? translateScoreText(metric.value, locale) : metric.value}
                           </span>
                         </div>
                         {metric.detail ? (
                           <div className="nh3d-character-stat-description">
-                            {metric.detail}
+                            {translateScoreText(metric.detail, locale)}
                           </div>
                         ) : null}
                       </div>
@@ -519,13 +517,13 @@ export function TopScoreDetailDialog({
                   </div>
                 ) : (
                   <div className="nh3d-top-scores-empty">
-                    {topScoreStrings.sections.onlyScoreLine}
+                    {ja ? "この冒険にはスコア行のみが保存されています。" : "Only the archived score line was available for this run."}
                   </div>
                 )}
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-core-panel">
-                <div className="nh3d-character-panel-title">{topScoreStrings.sections.coreAttributes}</div>
+                <div className="nh3d-character-panel-title">{ja ? "基本能力" : "Core Attributes"}</div>
                 {selectedTopScoreAttributeMetrics.length > 0 ? (
                   <div className="nh3d-character-stat-grid nh3d-top-score-core-stat-grid">
                     {selectedTopScoreAttributeMetrics.map((metric) => (
@@ -534,7 +532,7 @@ export function TopScoreDetailDialog({
                         key={`top-score-attribute-${metric.label}`}
                       >
                         <div className="nh3d-character-stat-label">
-                          {metric.label}
+                          {translateScoreText(metric.label, locale)}
                         </div>
                         <div className="nh3d-character-stat-value">
                           <span className="nh3d-character-stat-current">
@@ -546,14 +544,14 @@ export function TopScoreDetailDialog({
                   </div>
                 ) : (
                   <div className="nh3d-top-scores-empty">
-                    {topScoreStrings.sections.noCoreAttributes}
+                    {ja ? "この冒険の基本能力は記録されていません。" : "No core attribute snapshot was captured for this run."}
                   </div>
                 )}
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-challenge-panel">
                 <div className="nh3d-character-panel-title">
-                  {topScoreStrings.sections.challengeLedger}
+                  {ja ? "挑戦の記録" : "Challenge Ledger"}
                 </div>
                 <div className="nh3d-top-score-chip-groups">
                   {selectedTopScoreChallengeGroups.map((group) => (
@@ -562,7 +560,7 @@ export function TopScoreDetailDialog({
                       key={`top-score-group-${group.label}`}
                     >
                       <div className="nh3d-top-score-chip-group-title">
-                        {group.label}
+                        {translateScoreText(group.label, locale)}
                       </div>
                       {group.values.length > 0 ? (
                         <div className="nh3d-character-chip-list">
@@ -571,13 +569,13 @@ export function TopScoreDetailDialog({
                               className="nh3d-character-chip"
                               key={`top-score-group-${group.label}-${value}`}
                             >
-                              {value}
+                              {translateScoreText(value, locale)}
                             </div>
                           ))}
                         </div>
                       ) : (
                         <div className="nh3d-top-scores-empty">
-                          {group.emptyLabel}
+                          {translateScoreText(group.emptyLabel, locale)}
                         </div>
                       )}
                     </div>
@@ -587,7 +585,7 @@ export function TopScoreDetailDialog({
 
               <section className="nh3d-character-panel nh3d-top-score-panel-wide">
                 <div className="nh3d-character-panel-title">
-                  {topScoreStrings.sections.battleBreakdown}
+                  {ja ? "戦闘の内訳" : "Battle Breakdown"}
                 </div>
                 <div className="nh3d-top-score-breakdown-grid">
                   {selectedTopScoreKillBreakdownGroups.map((group) => (
@@ -596,7 +594,7 @@ export function TopScoreDetailDialog({
                       key={`top-score-breakdown-${group.label}`}
                     >
                       <div className="nh3d-top-score-breakdown-title">
-                        {group.label}
+                        {translateScoreText(group.label, locale)}
                       </div>
                       {group.values.length > 0 ? (
                         <div className="nh3d-character-field-list">
@@ -623,7 +621,7 @@ export function TopScoreDetailDialog({
                         </div>
                       ) : (
                         <div className="nh3d-top-scores-empty">
-                          {group.emptyLabel}
+                          {translateScoreText(group.emptyLabel, locale)}
                         </div>
                       )}
                     </div>
@@ -632,7 +630,7 @@ export function TopScoreDetailDialog({
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-panel-wide">
-                <div className="nh3d-character-panel-title">{topScoreStrings.sections.lootTrail}</div>
+                <div className="nh3d-character-panel-title">{ja ? "戦利品の履歴" : "Loot Trail"}</div>
                 {selectedTopScoreLootTimelineSections.length > 0 ? (
                   <div className="nh3d-top-score-loot-sections">
                     {selectedTopScoreLootTimelineSections.map((section) => (
@@ -641,7 +639,7 @@ export function TopScoreDetailDialog({
                         key={`top-score-loot-${section.title}`}
                       >
                         <div className="nh3d-top-score-loot-section-header">
-                          <span>{section.title}</span>
+                          <span>{translateScoreText(translateInventoryCategory(section.title, locale), locale)}</span>
                           <span>{section.events.length}</span>
                         </div>
                         <div className="nh3d-character-field-list">
@@ -651,16 +649,16 @@ export function TopScoreDetailDialog({
                               key={`top-score-loot-event-${event.id}`}
                             >
                               <div className="nh3d-character-field-label">
-                                {topScoreStrings.timeline.turn(formatTopScoreInteger(event.turn))}
+                                {ja ? "ターン" : "Turn"} {formatTopScoreInteger(event.turn)}
                               </div>
                               <div className="nh3d-character-field-value-group">
                                 <span className="nh3d-character-field-value">
                                   {event.quantity === 1
-                                    ? event.label
-                                    : topScoreStrings.sections.quantityTimes(formatTopScoreInteger(event.quantity), event.label)}
+                                    ? translateInventoryItem(event.label, locale)
+                                    : `${formatTopScoreInteger(event.quantity)} x ${translateInventoryItem(event.label, locale)}`}
                                 </span>
                                 <span className="nh3d-character-field-detail">
-                                  {event.location ? localizeTopScoreStoredLocation(event.location) : event.detail || topScoreStrings.sections.packUpdate}
+                                  {event.location ? translateGameLocation(event.location, locale) : event.detail || translateScoreText("Pack update", locale)}
                                 </span>
                               </div>
                             </div>
@@ -671,13 +669,13 @@ export function TopScoreDetailDialog({
                   </div>
                 ) : (
                   <div className="nh3d-top-scores-empty">
-                    {topScoreStrings.sections.noLoot}
+                    {ja ? "この冒険で拾った品は記録されていません。" : "No loot pickups were archived for this run."}
                   </div>
                 )}
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-panel-wide">
-                <div className="nh3d-character-panel-title">{topScoreStrings.sections.packAtEnd}</div>
+                <div className="nh3d-character-panel-title">{ja ? "終了時の持ち物" : "Pack at the End"}</div>
                 {selectedTopScoreInventorySections.length > 0 &&
                   selectedTopScore.detail ? (
                   <div className="nh3d-top-score-inventory-sections">
@@ -687,7 +685,7 @@ export function TopScoreDetailDialog({
                         key={`top-score-inventory-section-${section.title}`}
                       >
                         <div className="nh3d-top-score-inventory-section-header">
-                          <span>{section.title}</span>
+                          <span>{translateScoreText(translateInventoryCategory(section.title, locale), locale)}</span>
                           <span>{section.items.length}</span>
                         </div>
                         <div className="nh3d-top-score-inventory-grid">
@@ -706,7 +704,7 @@ export function TopScoreDetailDialog({
                                 </span>
                               </div>
                               <div className="nh3d-top-score-inventory-card-text">
-                                {item.text}
+                                {translateInventoryItem(item.text ?? "", locale)}
                               </div>
                             </div>
                           ))}
@@ -716,20 +714,20 @@ export function TopScoreDetailDialog({
                   </div>
                 ) : (
                   <div className="nh3d-top-scores-empty">
-                    {topScoreStrings.sections.noInventory}
+                    {ja ? "この冒険の持ち物は記録されていません。" : "No inventory snapshot was captured for this run."}
                   </div>
                 )}
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-panel-wide">
                 <div className="nh3d-character-panel-title">
-                  {topScoreStrings.sections.postmortemArchives}
+                  {ja ? "冒険終了時の記録" : "Postmortem Archives"}
                 </div>
                 <div className="nh3d-top-score-postmortem-archives">
                   <div className="nh3d-top-score-postmortem-feature-row">
                     <div className="nh3d-top-score-report-block nh3d-top-score-tombstone-block">
                       <div className="nh3d-top-score-breakdown-title">
-                        {topScoreStrings.sections.tombstone}
+                        {ja ? "墓碑" : "Tombstone"}
                       </div>
                       {selectedTopScore.detail?.tombstoneLines.length ? (
                         <pre className="nh3d-top-score-tombstone">
@@ -737,19 +735,19 @@ export function TopScoreDetailDialog({
                         </pre>
                       ) : (
                         <div className="nh3d-top-scores-empty">
-                          {topScoreStrings.sections.noTombstone}
+                          {ja ? "この冒険の墓碑は記録されていません。" : "No tombstone snapshot was archived for this run."}
                         </div>
                       )}
                     </div>
                     {selectedTopScoreFinalAttributesReport
                       ? renderTopScoreRawReportBlock(
-                        selectedTopScoreFinalAttributesReport,
+                        selectedTopScoreFinalAttributesReport, locale,
                       )
                       : null}
                   </div>
                   <div className="nh3d-top-score-postmortem-report-grid">
                     {selectedTopScorePostmortemReportSections.map((section) =>
-                      renderTopScoreRawReportBlock(section),
+                      renderTopScoreRawReportBlock(section, locale),
                     )}
                   </div>
                 </div>

@@ -2,6 +2,8 @@ import {
   type ChangeEvent
 } from "react";
 import AnimatedDialog from "../../modals/AnimatedDialog";
+import { useI18n } from "../../../i18n";
+import { translateInventoryItem } from "../../../i18n/inventory-text";
 import type * as React from "react";
 import type {
   InventoryDropCountDialogState
@@ -34,6 +36,7 @@ export function InventoryDropCountDialog({
   inventoryDropCountValue,
   stepInventoryDropCountValue,
 }: InventoryDropCountDialogProps) {
+  const { locale } = useI18n();
   return (
     <AnimatedDialog
       className="nh3d-dialog nh3d-dialog-question nh3d-dialog-fixed-actions"
@@ -73,7 +76,7 @@ export function InventoryDropCountDialog({
             {t.dialogs.inventoryDropCount.title}
           </div>
           <div className="nh3d-inventory-drop-count-description">
-            {inventoryDropCountDialog.itemText}
+            {translateInventoryItem(inventoryDropCountDialog.itemText, locale)}
           </div>
           <div className="nh3d-inventory-drop-count-hint">
             {t.dialogs.inventoryDropCount.chooseAmount(

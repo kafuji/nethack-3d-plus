@@ -22,6 +22,7 @@ export interface PlayerStatusDependencies {
   readonly audioHapticsPlatform: Pick<
     AudioHapticsPlatform,
     "messageSoundHooks"
+    | "notifyBackgroundMusicPlayerStats"
     | "queueIncomingDamageRumble"
   >;
   readonly combatAttribution: Pick<
@@ -783,5 +784,6 @@ export class PlayerStatus {
       ...this.playerStats,
     };
     this.dependencies.engineState.uiAdapter.setPlayerStats(snapshot);
+    this.dependencies.audioHapticsPlatform.notifyBackgroundMusicPlayerStats(snapshot);
   }
 }

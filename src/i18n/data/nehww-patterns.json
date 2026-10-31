@@ -1,0 +1,5325 @@
+[
+  {
+    "parts": [
+      "Autopickup: ON, for ",
+      " objects."
+    ],
+    "translation": "自動回収：ON（$1のオブジェクト）"
+  },
+  {
+    "parts": [
+      "Autopickup: ON, for ",
+      " objects, with one exception."
+    ],
+    "translation": "自動回収：ON（例外の１つを除く$1のオブジェクト）"
+  },
+  {
+    "parts": [
+      "Autopickup: ON, for ",
+      " objects, with some exceptions."
+    ],
+    "translation": "自動回収：ON（一部の例外を除く$1のオブジェクト）"
+  },
+  {
+    "parts": [
+      "",
+      " plus thrown"
+    ],
+    "translation": "$1と投擲アイテムで有効"
+  },
+  {
+    "parts": [
+      "",
+      " plus thrown, with exceptions"
+    ],
+    "translation": "一部の例外を除き、$1と投擲アイテムで有効"
+  },
+  {
+    "parts": [
+      " You are dead (",
+      ")."
+    ],
+    "translation": "あなたは死んだ（$1）。"
+  },
+  {
+    "parts": [
+      "It is written in the Book of ",
+      ":"
+    ],
+    "translation": "$1の書に記されている："
+  },
+  {
+    "parts": [
+      "You, a newly trained ",
+      ", have been heralded"
+    ],
+    "translation": "新しく訓練された$1であるあなたは、"
+  },
+  {
+    "parts": [
+      "from birth as the instrument of ",
+      ".  You are destined"
+    ],
+    "translation": "生まれながらにして$1の代行者として告げられました。あなたは、"
+  },
+  {
+    "parts": [
+      "of us all:  Go bravely with ",
+      "!"
+    ],
+    "translation": "$1と共に勇敢に進みなさい！"
+  },
+  {
+    "parts": [
+      "You read: \"",
+      "\""
+    ],
+    "translation": "「$1」と読んだ"
+  },
+  {
+    "parts": [
+      "You read: \"",
+      "\"."
+    ],
+    "translation": "「$1」と読んだ。"
+  },
+  {
+    "parts": [
+      "You learn \"",
+      "\"."
+    ],
+    "translation": "「$1」を習得しました。"
+  },
+  {
+    "parts": [
+      "A board beneath you squeaks ",
+      " loudly."
+    ],
+    "translation": "足元の床板が$1と大きな音を立てて鳴った。"
+  },
+  {
+    "parts": [
+      "You avoid stepping into the ",
+      "."
+    ],
+    "translation": "あなたは$1に足を踏み入れないようにした。"
+  },
+  {
+    "parts": [
+      "What do you want to dip into one of ",
+      "? ",
+      ""
+    ],
+    "translation": "何をひとつの$1に浸けますか？ $2"
+  },
+  {
+    "parts": [
+      "What do you want to dip into the ",
+      "? ",
+      ""
+    ],
+    "translation": "何を$1に浸けますか？ $2"
+  },
+  {
+    "parts": [
+      "You see here ",
+      "."
+    ],
+    "translation": "ここに$1がある。"
+  },
+  {
+    "parts": [
+      "You reveal ",
+      " secret doors!"
+    ],
+    "translation": "あなたは $1つの隠し扉を見つけた！"
+  },
+  {
+    "parts": [
+      "This ",
+      " tastes okay."
+    ],
+    "translation": "この$1はまあまあの味がする。"
+  },
+  {
+    "parts": [
+      "This ",
+      " tastes terrible!"
+    ],
+    "translation": "この$1はひどい味がします！"
+  },
+  {
+    "parts": [
+      "You finish eating ",
+      "."
+    ],
+    "translation": "あなたは$1を食べ終えた。"
+  },
+  {
+    "parts": [
+      "You begin eating ",
+      "."
+    ],
+    "translation": "あなたは$1を食べ始めます。"
+  },
+  {
+    "parts": [
+      "This ",
+      " is delicious!"
+    ],
+    "translation": "この$1は美味しい！"
+  },
+  {
+    "parts": [
+      "You learn the \"",
+      "\" spell."
+    ],
+    "translation": "あなたは「$1」の呪文を習得した。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " eats ",
+      "."
+    ],
+    "translation": "$1は$2を食べた。"
+  },
+  {
+    "parts": [
+      "",
+      " blocks your path."
+    ],
+    "translation": "$1が道を塞いでいる。"
+  },
+  {
+    "parts": [
+      "",
+      " shoots out at you!"
+    ],
+    "translation": "$1があなたに向かって放たれた！"
+  },
+  {
+    "parts": [
+      "",
+      " misses you."
+    ],
+    "translation": "$1はあなたに当たらなかった。"
+  },
+  {
+    "parts": [
+      "You destroy ",
+      "!"
+    ],
+    "translation": "あなたは$1を破壊した！"
+  },
+  {
+    "parts": [
+      "",
+      " strikes at your displaced image and misses you!"
+    ],
+    "translation": "$1はあなたの分身を攻撃したが、外れた！"
+  },
+  {
+    "parts": [
+      "You hear ",
+      " squeak in the distance."
+    ],
+    "translation": "遠くで$1の鳴き声が聞こえた。"
+  },
+  {
+    "parts": [
+      "",
+      " suddenly falls asleep!"
+    ],
+    "translation": "$1は突然眠りに落ちた！"
+  },
+  {
+    "parts": [
+      "",
+      " welds itself to your dominant ",
+      "!"
+    ],
+    "translation": "$1が、利き手の$2に溶接された！"
+  },
+  {
+    "parts": [
+      "",
+      " is welded to your hand!"
+    ],
+    "translation": "$1が手に溶接されている！"
+  },
+  {
+    "parts": [
+      "You are almost hit by ",
+      "."
+    ],
+    "translation": "$1が当たりそうになった！"
+  },
+  {
+    "parts": [
+      "You attack ",
+      "."
+    ],
+    "translation": "あなたは$1を攻撃した。"
+  },
+  {
+    "parts": [
+      "It is missed ",
+      "."
+    ],
+    "translation": "それは$1に当たらなかった。"
+  },
+  {
+    "parts": [
+      "a statue of ",
+      ""
+    ],
+    "translation": "$1の像"
+  },
+  {
+    "parts": [
+      "You are frozen by ",
+      "'s gaze!"
+    ],
+    "translation": "$1の視線で凍りついた！"
+  },
+  {
+    "parts": [
+      "You have a little trouble lifting ",
+      "."
+    ],
+    "translation": "$1を持ち上げるのに少し苦労した。"
+  },
+  {
+    "parts": [
+      "You have trouble lifting ",
+      "."
+    ],
+    "translation": "$1を持ち上げるのに苦労した。"
+  },
+  {
+    "parts": [
+      "You have trouble removing ",
+      "."
+    ],
+    "translation": "$1を取り除くのに苦労している。"
+  },
+  {
+    "parts": [
+      "You have much trouble lifting ",
+      "."
+    ],
+    "translation": "$1を持ち上げるのに非常に苦労している。"
+  },
+  {
+    "parts": [
+      "",
+      " down the drain"
+    ],
+    "translation": "排水口に$1"
+  },
+  {
+    "parts": [
+      "You decipher the label on your ",
+      "."
+    ],
+    "translation": "あなたは$1のラベルを解読した。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " glows blue for a moment."
+    ],
+    "translation": "あなたの$1が一瞬青く光った。"
+  },
+  {
+    "parts": [
+      "A gush of water hits ",
+      "!"
+    ],
+    "translation": "勢いよく噴き出した水が$1に当たった！"
+  },
+  {
+    "parts": [
+      "There is a staircase up to level ",
+      " here."
+    ],
+    "translation": "ここにレベル$1へ上がる階段がある。"
+  },
+  {
+    "parts": [
+      "Welcome to experience level ",
+      "."
+    ],
+    "translation": "経験レベル$1へようこそ。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " glows silver for a while."
+    ],
+    "translation": "あなたの$1はしばらくの間銀色に光った。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " turns to dust and falls to the floor!"
+    ],
+    "translation": "あなたの$1は塵となって床に落ちた！"
+  },
+  {
+    "parts": [
+      "",
+      " turns to dust and falls to the floor!"
+    ],
+    "translation": "$1は塵となって床に落ちた！"
+  },
+  {
+    "parts": [
+      "",
+      " suddenly appears close by!"
+    ],
+    "translation": "突然すぐそばに$1が現れた！"
+  },
+  {
+    "parts": [
+      "There is ",
+      " here."
+    ],
+    "translation": "ここに$1がある。"
+  },
+  {
+    "parts": [
+      "",
+      " isn't a suitable secondary weapon."
+    ],
+    "translation": "$1は予備の武器として適していません。"
+  },
+  {
+    "parts": [
+      "You were wearing ",
+      "."
+    ],
+    "translation": "あなたは$1を身に着けていた。"
+  },
+  {
+    "parts": [
+      "",
+      " vanishes and reappears next to you."
+    ],
+    "translation": "$1は消え、あなたの隣に再び現れた。"
+  },
+  {
+    "parts": [
+      "",
+      " shifts location."
+    ],
+    "translation": "$1が場所を移動した。"
+  },
+  {
+    "parts": [
+      "",
+      " opens a door."
+    ],
+    "translation": "$1がドアを開けた。"
+  },
+  {
+    "parts": [
+      "",
+      " bites again!"
+    ],
+    "translation": "$1が再び噛み付いた！"
+  },
+  {
+    "parts": [
+      "",
+      "'s bite was poisoned!"
+    ],
+    "translation": "$1の嚙み付きに毒が含まれている！"
+  },
+  {
+    "parts": [
+      "Wait!  There's ",
+      " hiding under ",
+      "!"
+    ],
+    "translation": "待て！ $2 の下に $1 が隠れている！"
+  },
+  {
+    "parts": [
+      "You hear ",
+      " incant ",
+      "."
+    ],
+    "translation": "$1が$2を唱えるのが聞こえた。"
+  },
+  {
+    "parts": [
+      "You enter ",
+      " hall!"
+    ],
+    "translation": "あなたは$1の広間に入った！"
+  },
+  {
+    "parts": [
+      "The air crackles around ",
+      "."
+    ],
+    "translation": "$1の周囲の空気がパチパチと鳴っている。"
+  },
+  {
+    "parts": [
+      "body rises from the dead as ",
+      "..."
+    ],
+    "translation": "死体が$1として蘇る..."
+  },
+  {
+    "parts": [
+      "",
+      " claws itself out of the ground!"
+    ],
+    "translation": "$1が地面から這い出てきた！"
+  },
+  {
+    "parts": [
+      "You know \"",
+      "\" quite well already."
+    ],
+    "translation": "あなたは「$1」をすでに習得している。"
+  },
+  {
+    "parts": [
+      "knowledge of \"",
+      "\" is keener."
+    ],
+    "translation": "「$1」の知識はより鋭くなった。"
+  },
+  {
+    "parts": [
+      "Suddenly, ",
+      " falls through a trap door."
+    ],
+    "translation": "突然、$1が落とし戸から落ちた。"
+  },
+  {
+    "parts": [
+      "You are hit by ",
+      "."
+    ],
+    "translation": "$1があなたに当たった。"
+  },
+  {
+    "parts": [
+      "",
+      " changes into a ",
+      "."
+    ],
+    "translation": "$1は$2に姿を変えた。"
+  },
+  {
+    "parts": [
+      "",
+      " summons help!"
+    ],
+    "translation": "$1が助けを呼んだ！"
+  },
+  {
+    "parts": [
+      "",
+      " suddenly appears next to you!"
+    ],
+    "translation": "突然、あなたの隣に$1が現れた！"
+  },
+  {
+    "parts": [
+      "",
+      " blocks the way!"
+    ],
+    "translation": "$1が道を塞いでいる！"
+  },
+  {
+    "parts": [
+      "",
+      " appears next to you!"
+    ],
+    "translation": "$1があなたの隣に現れた！"
+  },
+  {
+    "parts": [
+      "",
+      " jumps, nimbly evading your kick."
+    ],
+    "translation": "$1はジャンプし、あなたの蹴りを軽やかにかわした。"
+  },
+  {
+    "parts": [
+      "",
+      " takes all your possessions."
+    ],
+    "translation": "$1はあなたの所持品をすべて奪った。"
+  },
+  {
+    "parts": [
+      "an empty unlocked ",
+      ""
+    ],
+    "translation": "空でロック解除済みの$1"
+  },
+  {
+    "parts": [
+      "You have a little trouble removing ",
+      "."
+    ],
+    "translation": "$1の取り外しに少し手間取っています。"
+  },
+  {
+    "parts": [
+      "You do not owe ",
+      " anything."
+    ],
+    "translation": "あなたは$1に何も借りていない。"
+  },
+  {
+    "parts": [
+      "My, this is a yummy ",
+      "!"
+    ],
+    "translation": "あらまあ、これはおいしい$1ね！"
+  },
+  {
+    "parts": [
+      "the peaceful ",
+      ""
+    ],
+    "translation": "平和的な$1"
+  },
+  {
+    "parts": [
+      "You see ",
+      " slither under ",
+      "."
+    ],
+    "translation": "$1が$2の下にすべり込むのが見える。"
+  },
+  {
+    "parts": [
+      "There is a branch staircase down to ",
+      " here."
+    ],
+    "translation": "ここから分岐する階段を降りると、$1の場所へたどり着きます。"
+  },
+  {
+    "parts": [
+      "",
+      " appears confused."
+    ],
+    "translation": "$1は困惑しているようだ。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " glows ",
+      " for a moment."
+    ],
+    "translation": "あなたの$1が、一瞬$2に輝く"
+  },
+  {
+    "parts": [
+      "You add the \"",
+      "\" spell to your repertoire, as ",
+      "."
+    ],
+    "translation": "あなたは「$1」の呪文を習得した。-$2-"
+  },
+  {
+    "parts": [
+      "Wiped out all ",
+      "."
+    ],
+    "translation": "$1を全滅させた。"
+  },
+  {
+    "parts": [
+      "You have found ",
+      "!"
+    ],
+    "translation": "あなたは$1を見つけた！"
+  },
+  {
+    "parts": [
+      "You are now wearing ",
+      "."
+    ],
+    "translation": "あなたは$1を身に着けています。"
+  },
+  {
+    "parts": [
+      "You cannot wear armor over ",
+      "."
+    ],
+    "translation": "$1の上に防具を着用することはできません。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " crumbles and turns to dust!"
+    ],
+    "translation": "$1が粉々に砕け、塵となりました！"
+  },
+  {
+    "parts": [
+      "",
+      " turns to flee."
+    ],
+    "translation": "$1が逃げ出した。"
+  },
+  {
+    "parts": [
+      "",
+      " smiles at ",
+      " engagingly."
+    ],
+    "translation": "$1は$2に愛嬌たっぷりに微笑む。"
+  },
+  {
+    "parts": [
+      "",
+      " steals a saddle from ",
+      "!"
+    ],
+    "translation": "$1は$2から鞍を盗んだ！"
+  },
+  {
+    "parts": [
+      "",
+      " suddenly disappears!"
+    ],
+    "translation": "$1は突然姿を消した！"
+  },
+  {
+    "parts": [
+      "",
+      " pretends to be friendly."
+    ],
+    "translation": "$1は友好的なふりをする。"
+  },
+  {
+    "parts": [
+      "You finish taking off your ",
+      "."
+    ],
+    "translation": "$1を外し終えた。"
+  },
+  {
+    "parts": [
+      "",
+      " tries to rob you, but isn't interested in gold."
+    ],
+    "translation": "$1はあなたを略奪しようとするが、金には興味がない。"
+  },
+  {
+    "parts": [
+      "You begin bashing monsters with your ",
+      "."
+    ],
+    "translation": "あなたは$1でモンスターを叩き始める。"
+  },
+  {
+    "parts": [
+      "",
+      " on the head."
+    ],
+    "translation": "$1が頭に当たった。"
+  },
+  {
+    "parts": [
+      "A board beneath ",
+      " squeaks ",
+      " loudly."
+    ],
+    "translation": "$1の足元の床板が$2と大きな音を立てて鳴った。"
+  },
+  {
+    "parts": [
+      "You hear ",
+      " squeak nearby."
+    ],
+    "translation": "あなたは近くで$1のきしみ音を聞いた。"
+  },
+  {
+    "parts": [
+      "You knock ",
+      " backward with a forceful strike!"
+    ],
+    "translation": "あなたは強力な一撃で$1を後方に叩き落とした！"
+  },
+  {
+    "parts": [
+      "",
+      " wobbles from your powerful strike!"
+    ],
+    "translation": "$1はあなたの強力な一撃で揺れた！"
+  },
+  {
+    "parts": [
+      "",
+      " is caught in ",
+      "'s explosion!"
+    ],
+    "translation": "$1は$2の爆発に巻き込まれた！"
+  },
+  {
+    "parts": [
+      "You are caught in ",
+      "'s explosion!"
+    ],
+    "translation": "あなたは$1の爆発に巻き込まれた！"
+  },
+  {
+    "parts": [
+      "Unlock it with your ",
+      "?"
+    ],
+    "translation": "$1で解錠しますか？"
+  },
+  {
+    "parts": [
+      "You are hit by ",
+      "!"
+    ],
+    "translation": "あなたは$1に攻撃された！"
+  },
+  {
+    "parts": [
+      "You succeed in unlocking ",
+      "."
+    ],
+    "translation": "$1の解錠に成功した。"
+  },
+  {
+    "parts": [
+      "You succeed in locking ",
+      "."
+    ],
+    "translation": "$1の施錠に成功した。"
+  },
+  {
+    "parts": [
+      "Collecting: ",
+      ""
+    ],
+    "translation": "$1を集めた。"
+  },
+  {
+    "parts": [
+      "You cannot wear a shield while wielding ",
+      "."
+    ],
+    "translation": "盾を装備している間は$1を装備できません。"
+  },
+  {
+    "parts": [
+      "",
+      " falls into a pit!"
+    ],
+    "translation": "$1は落とし穴に落ちた！"
+  },
+  {
+    "parts": [
+      "an unlocked ",
+      ""
+    ],
+    "translation": "解錠された$1"
+  },
+  {
+    "parts": [
+      "an unlocked ",
+      " containing ",
+      " item"
+    ],
+    "translation": "中に$2個のアイテムが入った$1（解錠済み）"
+  },
+  {
+    "parts": [
+      "Really step onto that ",
+      "?"
+    ],
+    "translation": "本当にその$1に足を踏み入れるのか？"
+  },
+  {
+    "parts": [
+      "Really step into that ",
+      "?"
+    ],
+    "translation": "本当にその$1に踏み込むのか？"
+  },
+  {
+    "parts": [
+      "Your ",
+      " steps reluctantly onto ",
+      "."
+    ],
+    "translation": "あなたの$1が$2に足を踏み入れた。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " isn't one-handed."
+    ],
+    "translation": "あなたの$1は片手で扱えるものではない。"
+  },
+  {
+    "parts": [
+      "",
+      " grows up into ",
+      "."
+    ],
+    "translation": "$1は$2に成長した。"
+  },
+  {
+    "parts": [
+      "This ",
+      " is bland."
+    ],
+    "translation": "この$1は味がしない。"
+  },
+  {
+    "parts": [
+      "Do what with ",
+      "?"
+    ],
+    "translation": "$1をどうする？"
+  },
+  {
+    "parts": [
+      "Name this specific ",
+      ""
+    ],
+    "translation": "この特定の$1に名前を付ける"
+  },
+  {
+    "parts": [
+      "Name this stack of ",
+      ""
+    ],
+    "translation": "これらの$1に名前を付ける"
+  },
+  {
+    "parts": [
+      "You engrave in ",
+      " with ",
+      "."
+    ],
+    "translation": "あなたは$2で$1に刻む。"
+  },
+  {
+    "parts": [
+      "You cannot dip into ",
+      " gold."
+    ],
+    "translation": "あなたは$1に金を浸けることはできません。"
+  },
+  {
+    "parts": [
+      "Look inside ",
+      ""
+    ],
+    "translation": "$1の中を確認"
+  },
+  {
+    "parts": [
+      "stash one item into ",
+      ""
+    ],
+    "translation": "$1にアイテムを収納する"
+  },
+  {
+    "parts": [
+      "You strike ",
+      " from behind!"
+    ],
+    "translation": "あなたは背後から$1を攻撃した！"
+  },
+  {
+    "parts": [
+      "Contents of ",
+      ":"
+    ],
+    "translation": "$1の収納物:"
+  },
+  {
+    "parts": [
+      "Just picked up: ",
+      " gold pieces"
+    ],
+    "translation": "手持ちの金貨$1枚"
+  },
+  {
+    "parts": [
+      "You put ",
+      " gold pieces into ",
+      "."
+    ],
+    "translation": "あなたは金貨$1枚を$2に収納した。"
+  },
+  {
+    "parts": [
+      "You put ",
+      " into ",
+      "."
+    ],
+    "translation": "あなたは$1を$2に収納した。"
+  },
+  {
+    "parts": [
+      "You feel here ",
+      "."
+    ],
+    "translation": "$1のように感じる。"
+  },
+  {
+    "parts": [
+      "",
+      " takes off your ",
+      "."
+    ],
+    "translation": "$1が$2を外した。"
+  },
+  {
+    "parts": [
+      "",
+      " tries to run away with your ",
+      "."
+    ],
+    "translation": "$1はあなたの$2を持って逃げようとした。"
+  },
+  {
+    "parts": [
+      "You hear ",
+      " howling at the moon."
+    ],
+    "translation": "$1が月に吠え声を上げた。"
+  },
+  {
+    "parts": [
+      "Just picked up: ",
+      ""
+    ],
+    "translation": "ちょうど手に入れた：$1"
+  },
+  {
+    "parts": [
+      "Are you really sure you want to break your ",
+      "?"
+    ],
+    "translation": "本当に$1を壊しますか？"
+  },
+  {
+    "parts": [
+      "Raising your ",
+      " high above your head, you break it in two!"
+    ],
+    "translation": "$1を高く掲げ、真っ二つに折る！"
+  },
+  {
+    "parts": [
+      "In what direction do you want to dig?",
+      ""
+    ],
+    "translation": "どの方向に掘りたいですか？$1"
+  },
+  {
+    "parts": [
+      "What do you want to eat?",
+      ""
+    ],
+    "translation": "何を食べたいですか？$1"
+  },
+  {
+    "parts": [
+      "",
+      " the ",
+      "'s attributes:"
+    ],
+    "translation": "$2の属性：$1"
+  },
+  {
+    "parts": [
+      " You entered the dungeon ",
+      " turns ago."
+    ],
+    "translation": " ダンジョンに侵入してから$1ターンが経過している。"
+  },
+  {
+    "parts": [
+      "current; peak:",
+      ""
+    ],
+    "translation": "最大値:$1"
+  },
+  {
+    "parts": [
+      "current; limit:",
+      ""
+    ],
+    "translation": "限界値:$1"
+  },
+  {
+    "parts": [
+      "current; base",
+      ""
+    ],
+    "translation": "基本値:$1"
+  },
+  {
+    "parts": [
+      "current; base:",
+      ", limit:",
+      ""
+    ],
+    "translation": "基本値:$1, 限界値:$2"
+  },
+  {
+    "parts": [
+      "",
+      " is always the height of fashion."
+    ],
+    "translation": "$1は常に最先端のファッションだ。"
+  },
+  {
+    "parts": [
+      "You carefully open ",
+      "..."
+    ],
+    "translation": "あなたは慎重に$1を開ける..."
+  },
+  {
+    "parts": [
+      "What do you want to ",
+      "? ",
+      ""
+    ],
+    "translation": "何を$1しますか？$2"
+  },
+  {
+    "parts": [
+      "a tin of ",
+      " meat"
+    ],
+    "translation": "$1肉の缶詰"
+  },
+  {
+    "parts": [
+      "You knock ",
+      " backward with a powerful blow!"
+    ],
+    "translation": "強力な一撃で$1を後方へ吹き飛ばした！"
+  },
+  {
+    "parts": [
+      "It smells like ",
+      "."
+    ],
+    "translation": "$1のような匂いがする。"
+  },
+  {
+    "parts": [
+      "You consume homemade ",
+      "."
+    ],
+    "translation": "自家製の$1を消費した。"
+  },
+  {
+    "parts": [
+      "You consume boiled ",
+      "."
+    ],
+    "translation": "あなたは茹でた$1を食べる。"
+  },
+  {
+    "parts": [
+      "There is ",
+      " here; tin it?"
+    ],
+    "translation": "ここに$1がある；缶詰にするか？"
+  },
+  {
+    "parts": [
+      "Using your ",
+      " you try to open the tin."
+    ],
+    "translation": "$1で缶を開けようとする。"
+  },
+  {
+    "parts": [
+      "You have extreme difficulty lifting ",
+      ".  ",
+      ""
+    ],
+    "translation": "$1は持ち上げるのが非常に困難です。$2"
+  },
+  {
+    "parts": [
+      "You have extreme difficulty lifting ",
+      ""
+    ],
+    "translation": "$1は持ち上げるのが非常に困難です"
+  },
+  {
+    "parts": [
+      "Listen through ",
+      ""
+    ],
+    "translation": "$1で聴診する"
+  },
+  {
+    "parts": [
+      "You begin praying to ",
+      "."
+    ],
+    "translation": "あなたは$1に祈りを捧げ始める。"
+  },
+  {
+    "parts": [
+      "You feel that ",
+      " is pleased."
+    ],
+    "translation": "$1が喜んでいると感じる。"
+  },
+  {
+    "parts": [
+      "You feel that ",
+      " is displeased."
+    ],
+    "translation": "$1が不快に思っていると感じる。"
+  },
+  {
+    "parts": [
+      "You start playing your ",
+      "."
+    ],
+    "translation": "$1を叩き始める。"
+  },
+  {
+    "parts": [
+      "You now wield ",
+      "."
+    ],
+    "translation": "$1を手にした。"
+  },
+  {
+    "parts": [
+      "",
+      " looks a little more polished now."
+    ],
+    "translation": "$1は今、少し磨きがかかったように見える。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " softly glows with a light blue aura."
+    ],
+    "translation": "あなたの$1は、淡い青のオーラを柔らかく放っている。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " glows with a light blue aura."
+    ],
+    "translation": "あなたの$1が、淡い青のオーラを放っている。"
+  },
+  {
+    "parts": [
+      "You write in the dust with ",
+      "."
+    ],
+    "translation": "あなたは$1で塵の上に書き記す。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " gets dull."
+    ],
+    "translation": "あなたの$1が鈍る。"
+  },
+  {
+    "parts": [
+      "Something is engraved here on ",
+      "."
+    ],
+    "translation": "$1のここに何かが刻まれている。"
+  },
+  {
+    "parts": [
+      "You are only able to write \"",
+      "\"."
+    ],
+    "translation": "入力できる文字列は「$1」のみです"
+  },
+  {
+    "parts": [
+      "You finish writing in ",
+      "."
+    ],
+    "translation": "$1への書き込みを完了しました。"
+  },
+  {
+    "parts": [
+      "What do you want to write in ",
+      " here?"
+    ],
+    "translation": "この$1の上に、何を書き記したいのか？"
+  },
+  {
+    "parts": [
+      "dip into one of ",
+      ""
+    ],
+    "translation": "$1の一つに浸"
+  },
+  {
+    "parts": [
+      "You scribble on ",
+      " with ",
+      "."
+    ],
+    "translation": "$2で$1に落書きする。"
+  },
+  {
+    "parts": [
+      "What do you want to scribble on ",
+      " here?"
+    ],
+    "translation": "$1に何を落書きしたいの？"
+  },
+  {
+    "parts": [
+      "Drink from ",
+      "?"
+    ],
+    "translation": "$1から飲みますか？"
+  },
+  {
+    "parts": [
+      "You find ",
+      " in ",
+      "!"
+    ],
+    "translation": "$2で$1を見つけた！"
+  },
+  {
+    "parts": [
+      "",
+      " mixes with ",
+      "..."
+    ],
+    "translation": "$1が$2と混ざり合う..."
+  },
+  {
+    "parts": [
+      "The mixture looks ",
+      "."
+    ],
+    "translation": "混ざった液体は$1に輝く。"
+  },
+  {
+    "parts": [
+      "To achieve the next higher rating, you need ",
+      " more points."
+    ],
+    "translation": "次のランクアップには、あと$1ポイント必要だ。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " twangs."
+    ],
+    "translation": "あなたの$1が鳴った。"
+  },
+  {
+    "parts": [
+      "You extract a strange sound from the ",
+      "!"
+    ],
+    "translation": "$1から奇妙な音を奏でた！"
+  },
+  {
+    "parts": [
+      " You are temporarily ",
+      "."
+    ],
+    "translation": " あなたは一時的に$1の状態です。"
+  },
+  {
+    "parts": [
+      "",
+      " minute and ",
+      ""
+    ],
+    "translation": "$1分と$2"
+  },
+  {
+    "parts": [
+      "",
+      " rises from the dead!"
+    ],
+    "translation": "$1が死から蘇る！"
+  },
+  {
+    "parts": [
+      "",
+      " corpse disappears!"
+    ],
+    "translation": "$1の死体が消える！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " disappears!"
+    ],
+    "translation": "$1が消える！"
+  },
+  {
+    "parts": [
+      "",
+      " climbs out of the pit."
+    ],
+    "translation": "$1が穴から這い上がる。"
+  },
+  {
+    "parts": [
+      "",
+      ", trapped in a pit"
+    ],
+    "translation": "穴に閉じ込められた$1"
+  },
+  {
+    "parts": [
+      "",
+      "'s left foreleg"
+    ],
+    "translation": "$1の左前足"
+  },
+  {
+    "parts": [
+      "You are already wearing ",
+      "."
+    ],
+    "translation": "あなたはすでに$1を装備しています。"
+  },
+  {
+    "parts": [
+      "",
+      " welds itself to ",
+      "'s hand!"
+    ],
+    "translation": "$1はそれ自体が$2の手に馴染んでいる！"
+  },
+  {
+    "parts": [
+      "You pull free from ",
+      "."
+    ],
+    "translation": "あなたは$1から抜け出す。"
+  },
+  {
+    "parts": [
+      "You see ",
+      " appear where ",
+      " was!"
+    ],
+    "translation": "$2がいた場所に、$1が現れる！"
+  },
+  {
+    "parts": [
+      "",
+      " hits again!"
+    ],
+    "translation": "$1が再び襲いかかる！。"
+  },
+  {
+    "parts": [
+      "",
+      " mix with ",
+      "..."
+    ],
+    "translation": "$1が$2のポーションと混ざり合う..."
+  },
+  {
+    "parts": [
+      "",
+      " evaporates."
+    ],
+    "translation": "$1は蒸発する。"
+  },
+  {
+    "parts": [
+      "You make golden scratch marks on ",
+      "."
+    ],
+    "translation": "$1に金色の引っかき傷をつける。"
+  },
+  {
+    "parts": [
+      "",
+      " splashes over ",
+      "'s face!"
+    ],
+    "translation": "$1が$2の顔に飛び散る！"
+  },
+  {
+    "parts": [
+      "You see ",
+      " streaks on ",
+      "."
+    ],
+    "translation": "$2が$1の筋が見える。"
+  },
+  {
+    "parts": [
+      "",
+      " look a little more polished now."
+    ],
+    "translation": "$1は今や少し磨かれたように見える"
+  },
+  {
+    "parts": [
+      "",
+      " crumbles to dust!"
+    ],
+    "translation": "$1が塵と化す！"
+  },
+  {
+    "parts": [
+      "You take a sip of ",
+      "."
+    ],
+    "translation": "$1をひと口飲む。"
+  },
+  {
+    "parts": [
+      "Eek!  There's ",
+      " in the sink!"
+    ],
+    "translation": "えっ！流しに$1がいる！"
+  },
+  {
+    "parts": [
+      "You attract ",
+      "!"
+    ],
+    "translation": "$1引き寄せる"
+  },
+  {
+    "parts": [
+      "You unleash ",
+      "!"
+    ],
+    "translation": "$1を解き放つ！"
+  },
+  {
+    "parts": [
+      "",
+      " was poisoned!"
+    ],
+    "translation": "$1に毒が塗られていた！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " dilutes further."
+    ],
+    "translation": "あなたの$1が薄まる。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " dilutes."
+    ],
+    "translation": "あなたの$1がさらに薄まる。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " fades."
+    ],
+    "translation": "あなたの$1が弱まる。"
+  },
+  {
+    "parts": [
+      "You slip while trying to get on ",
+      "."
+    ],
+    "translation": "$1に乗ろうとして滑る。"
+  },
+  {
+    "parts": [
+      "You sold ",
+      " for ",
+      " gold pieces."
+    ],
+    "translation": "$1を$2ゴールドで売った。"
+  },
+  {
+    "parts": [
+      "",
+      " seems uninterested."
+    ],
+    "translation": "$1は興味なさそうだ。"
+  },
+  {
+    "parts": [
+      "",
+      " triggers a trap but nothing happens."
+    ],
+    "translation": "$1が罠を発動させるが何も起こらない。"
+  },
+  {
+    "parts": [
+      "",
+      " knocks ",
+      " backward with a powerful blow!"
+    ],
+    "translation": "$1が$2を強力な一撃で後方へ吹き飛ばす！"
+  },
+  {
+    "parts": [
+      "",
+      " knocks ",
+      " backward with a forceful strike!"
+    ],
+    "translation": "$1が$2を力強い一撃で後方へ吹き飛ばす！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " smoulders!"
+    ],
+    "translation": "あなたの$1がくすぶっている！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " smoulders further!"
+    ],
+    "translation": "あなたの$1がさらにくすぶっています！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " smoulders completely!"
+    ],
+    "translation": "あなたの$1がすっかりくすぶる！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " smoulders away!"
+    ],
+    "translation": "あなたの$1がくすぶりながら消えていく！"
+  },
+  {
+    "parts": [
+      "One of your ",
+      " boils and explodes!"
+    ],
+    "translation": "$1の一つが沸騰して爆発した！"
+  },
+  {
+    "parts": [
+      "Do what with the ",
+      "?"
+    ],
+    "translation": "$1で何をする？"
+  },
+  {
+    "parts": [
+      "",
+      " are solidly affixed."
+    ],
+    "translation": "$1はしっかりと固定されている。"
+  },
+  {
+    "parts": [
+      "You identify this as ",
+      "."
+    ],
+    "translation": "これを$1と識別した。"
+  },
+  {
+    "parts": [
+      "",
+      " staggers from your powerful strike!"
+    ],
+    "translation": "$1があなたの強力な一撃によろめく！"
+  },
+  {
+    "parts": [
+      "Put these ",
+      " on"
+    ],
+    "translation": "$1を身に着ける"
+  },
+  {
+    "parts": [
+      "\"Will you please leave your ",
+      " outside?\""
+    ],
+    "translation": "「$1は外に置いていただけますか？」"
+  },
+  {
+    "parts": [
+      "A tower of flame bursts from ",
+      "!"
+    ],
+    "translation": "$1から炎の塔が噴き上がる！"
+  },
+  {
+    "parts": [
+      "Your ",
+      "'s flame burns brightly!"
+    ],
+    "translation": "あなたの$1の炎は明るく燃えています！"
+  },
+  {
+    "parts": [
+      " You have no skill with ",
+      "."
+    ],
+    "translation": " $1の扱いが未熟だ。"
+  },
+  {
+    "parts": [
+      "You see ",
+      " hide under a corpse."
+    ],
+    "translation": "$1が死体の下に隠れているのが見える。"
+  },
+  {
+    "parts": [
+      "",
+      " was hidden under ",
+      " corpse!"
+    ],
+    "translation": "$2の死体の下に、別の$1が隠れていた！"
+  },
+  {
+    "parts": [
+      "",
+      " appears close by!"
+    ],
+    "translation": "$1が近くに現れた！"
+  },
+  {
+    "parts": [
+      "Your hands begin to glow ",
+      "."
+    ],
+    "translation": "あなたの手が$1に輝き始めた。"
+  },
+  {
+    "parts": [
+      "Your hands no longer glow so ",
+      "."
+    ],
+    "translation": "あなたの手はもはやそれほど$1に輝いていない。"
+  },
+  {
+    "parts": [
+      "",
+      " is not saddled."
+    ],
+    "translation": "$1は鞍を付けていない。"
+  },
+  {
+    "parts": [
+      "You make ",
+      " scratch marks on ",
+      "s."
+    ],
+    "translation": "$2に$1の引っかき傷をつける。"
+  },
+  {
+    "parts": [
+      "",
+      "; you sold it for ",
+      " gold pieces."
+    ],
+    "translation": "$1；$2ゴールドで売却した。"
+  },
+  {
+    "parts": [
+      "for sale, ",
+      " zorkmids"
+    ],
+    "translation": "販売中、$1ゾークミッド"
+  },
+  {
+    "parts": [
+      "",
+      " gratefully inherits all your possessions."
+    ],
+    "translation": "$1は感謝してあなたの全財産を相続する。"
+  },
+  {
+    "parts": [
+      "\"",
+      ", ",
+      ", welcome to Delphi!\""
+    ],
+    "translation": "「$1、$2。神託所へようこそ！」"
+  },
+  {
+    "parts": [
+      "You turn into ",
+      "!"
+    ],
+    "translation": "あなたは$1と化す！"
+  },
+  {
+    "parts": [
+      "You break your ",
+      "!"
+    ],
+    "translation": "$1が壊れる！"
+  },
+  {
+    "parts": [
+      "You find you must drop your ",
+      "!"
+    ],
+    "translation": "$1を落とさざるを得ない！"
+  },
+  {
+    "parts": [
+      "You are splashed by ",
+      "'s acid!"
+    ],
+    "translation": "$1の酸を浴びた！"
+  },
+  {
+    "parts": [
+      "",
+      " looks better."
+    ],
+    "translation": "$1は元気そうに見える。"
+  },
+  {
+    "parts": [
+      "escaped from the dungeon with ",
+      " points,"
+    ],
+    "translation": "ダンジョンから$1ポイントで脱出した"
+  },
+  {
+    "parts": [
+      "You didn't beat your previous score of ",
+      " points."
+    ],
+    "translation": "前回のスコア$1点を超えることはできませんでした。"
+  },
+  {
+    "parts": [
+      "The design features ",
+      " on a ",
+      " background."
+    ],
+    "translation": "$2の背景に$1が描かれている。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " remains wielded."
+    ],
+    "translation": "$1は装備されたままです。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " tries to move ",
+      ", but cannot."
+    ],
+    "translation": "あなたの$1が$2を動かそうとするが、動かせない。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " moves ",
+      "."
+    ],
+    "translation": "あなたの$1が$2を動かす。"
+  },
+  {
+    "parts": [
+      "You fall off of ",
+      "!"
+    ],
+    "translation": "あなたは$1から落ちる！"
+  },
+  {
+    "parts": [
+      "You bought ",
+      " for ",
+      " gold pieces.!"
+    ],
+    "translation": "$1を$2ゴールドで購入しました。"
+  },
+  {
+    "parts": [
+      "\"Thank you for shopping in ",
+      "'s ",
+      "!\""
+    ],
+    "translation": "「$1の$2をご利用いただきありがとうございます！」"
+  },
+  {
+    "parts": [
+      "",
+      " secures the tether on ",
+      "."
+    ],
+    "translation": "$1は$2に繋ぎ縄を固定する。"
+  },
+  {
+    "parts": [
+      "",
+      " turns into ",
+      "!"
+    ],
+    "translation": "$1が$2に変わる！"
+  },
+  {
+    "parts": [
+      "You see",
+      " hide under ",
+      "."
+    ],
+    "translation": "$2の下に隠れる$1が見える。"
+  },
+  {
+    "parts": [
+      "",
+      " breathes frost!"
+    ],
+    "translation": "$1が霜を吐く！"
+  },
+  {
+    "parts": [
+      "",
+      " freezes and"
+    ],
+    "translation": "$1が凍りつき"
+  },
+  {
+    "parts": [
+      "",
+      " aren't able to use two weapons at once."
+    ],
+    "translation": "$1は二つの武器を同時に使用できない。"
+  },
+  {
+    "parts": [
+      "Since your weapon is welded to your hand, you cannot swing that ",
+      "."
+    ],
+    "translation": "武器が手から離れないため、その$1を振るうことはできません。"
+  },
+  {
+    "parts": [
+      "What do you want to engrave in ",
+      " here?"
+    ],
+    "translation": "ここの$1に何と刻みますか？"
+  },
+  {
+    "parts": [
+      "One of your ",
+      "s gets dull."
+    ],
+    "translation": "お前の$1が一つ、切れ味が鈍る。"
+  },
+  {
+    "parts": [
+      "",
+      " doesn't seem to move!"
+    ],
+    "translation": "$1は動かないようだ！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " corrode!"
+    ],
+    "translation": "$1が腐食する！"
+  },
+  {
+    "parts": [
+      "",
+      " slips as you throw it!"
+    ],
+    "translation": "投げた$1が滑った！"
+  },
+  {
+    "parts": [
+      "Rename or un-name this specific ",
+      ""
+    ],
+    "translation": "この特定の$1の名前を変更または名前を解除する"
+  },
+  {
+    "parts": [
+      "You stop eating ",
+      "."
+    ],
+    "translation": "$1を食べるのをやめた。"
+  },
+  {
+    "parts": [
+      "",
+      " fills a pit."
+    ],
+    "translation": "$1が落とし穴を塞いだ。"
+  },
+  {
+    "parts": [
+      "The flask crashes on ",
+      "'s head and breaks into shards."
+    ],
+    "translation": "フラスコが$1の頭に当たって砕け、破片が飛び散った。"
+  },
+  {
+    "parts": [
+      "",
+      " appears in a cloud of vapor!"
+    ],
+    "translation": "$1が水蒸気の雲の中から現れる！"
+  },
+  {
+    "parts": [
+      "",
+      " is suddenly very hot!"
+    ],
+    "translation": "$1が急にすごく熱くなった！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " rusts!"
+    ],
+    "translation": "$1が錆びている！"
+  },
+  {
+    "parts": [
+      "Move cursor to ",
+      ":"
+    ],
+    "translation": "カーソルを$1に合わせる："
+  },
+  {
+    "parts": [
+      "",
+      " crashes on your head and breaks into shards."
+    ],
+    "translation": "$1があなたの頭に当たって砕け、破片が飛び散った。"
+  },
+  {
+    "parts": [
+      "",
+      " crashes on ",
+      "'s head and breaks into shards."
+    ],
+    "translation": "$1が$2の頭に当たって砕け、破片が飛び散った。"
+  },
+  {
+    "parts": [
+      "",
+      " looks sound and hale again."
+    ],
+    "translation": "$1は再び元気で健康そうに見える。"
+  },
+  {
+    "parts": [
+      "You are put to sleep by ",
+      "!"
+    ],
+    "translation": "$1に眠らされる！"
+  },
+  {
+    "parts": [
+      "",
+      " creatures vanquished."
+    ],
+    "translation": "$1体のクリーチャーを倒した。"
+  },
+  {
+    "parts": [
+      "",
+      " is frightened by its reflection."
+    ],
+    "translation": "$1は自分の姿に怯える。"
+  },
+  {
+    "parts": [
+      "The voice of ",
+      " booms:"
+    ],
+    "translation": "$1の声が轟く："
+  },
+  {
+    "parts": [
+      "The voice of ",
+      " rings out:"
+    ],
+    "translation": "$1の声が響き渡る："
+  },
+  {
+    "parts": [
+      "The voice of ",
+      " booms out: \"Thou hast angered me.\""
+    ],
+    "translation": "$1の声が轟く。「お前は私を怒らせた！」"
+  },
+  {
+    "parts": [
+      "",
+      " was angry with you."
+    ],
+    "translation": "$1はあなたに怒っていた。"
+  },
+  {
+    "parts": [
+      "Extinguish this ",
+      ""
+    ],
+    "translation": "この$1の火を消す"
+  },
+  {
+    "parts": [
+      "",
+      "'s flame is extinguished."
+    ],
+    "translation": "$1の火が消えた。"
+  },
+  {
+    "parts": [
+      "You knock ",
+      " backward with a powerful strike!"
+    ],
+    "translation": "強烈な一撃で、$1を後方へ吹き飛ばした！"
+  },
+  {
+    "parts": [
+      " You attained the rank of ",
+      "."
+    ],
+    "translation": " $1の位に就いた。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " glows ",
+      " for a while."
+    ],
+    "translation": "あなたの$1が、しばらくの間、$2に輝いている。"
+  },
+  {
+    "parts": [
+      "Click!  ",
+      " triggers something."
+    ],
+    "translation": "カチッ！ $1が何かを作動させた。"
+  },
+  {
+    "parts": [
+      "Click!  ",
+      " triggers a rolling boulder trap."
+    ],
+    "translation": "カチッ！ $1が転がる岩の罠を作動させた。"
+  },
+  {
+    "parts": [
+      "More info about \"",
+      "\"?"
+    ],
+    "translation": "「$1」についてもっと詳しく？"
+  },
+  {
+    "parts": [
+      "",
+      " quivers upward for a moment."
+    ],
+    "translation": "$1がひととき、上向きに震える。"
+  },
+  {
+    "parts": [
+      "spellbook of ",
+      ""
+    ],
+    "translation": "$1の魔導書"
+  },
+  {
+    "parts": [
+      "tin of ",
+      " meat"
+    ],
+    "translation": "$1肉の缶詰"
+  },
+  {
+    "parts": [
+      "spellbooks of ",
+      ""
+    ],
+    "translation": "$1の魔導書"
+  },
+  {
+    "parts": [
+      "partly eaten ",
+      ""
+    ],
+    "translation": "食べかけの$1"
+  },
+  {
+    "parts": [
+      "partly used ",
+      ""
+    ],
+    "translation": "使いかけの$1"
+  },
+  {
+    "parts": [
+      "tethered to ",
+      ""
+    ],
+    "translation": "$1に繋がれている"
+  },
+  {
+    "parts": [
+      "attached to ",
+      ""
+    ],
+    "translation": "$1に取り付けられている"
+  },
+  {
+    "parts": [
+      "Discovered ",
+      " in order of discovery"
+    ],
+    "translation": "発見された$1を、発見順に表示"
+  },
+  {
+    "parts": [
+      "Discovered ",
+      " in 'sortloot' order"
+    ],
+    "translation": "発見された$1を、ソートルート順に表示"
+  },
+  {
+    "parts": [
+      "Discovered ",
+      " in alphabetical order"
+    ],
+    "translation": "発見された$1を、アルファベット順に表示"
+  },
+  {
+    "parts": [
+      "Leave this place.  You shall never set foot at ",
+      " again."
+    ],
+    "translation": "この場を離れてください。  二度と $1 に足を踏み入れることはできません。"
+  },
+  {
+    "parts": [
+      "Your help is urgently needed at ",
+      "!"
+    ],
+    "translation": "$1 であなたの助けが緊急に必要です。"
+  },
+  {
+    "parts": [
+      "You again sense ",
+      " pleading for help."
+    ],
+    "translation": "あなたは再び $1 が助けを求めているのを感じました。"
+  },
+  {
+    "parts": [
+      "You again sense ",
+      " demanding your attendance."
+    ],
+    "translation": "あなたは再び $1 があなたの出席を要求しているのを感じました。"
+  },
+  {
+    "parts": [
+      "You have returned to ",
+      " lair."
+    ],
+    "translation": "あなたは $1 の隠れ家に戻りました。"
+  },
+  {
+    "parts": [
+      "You realize the feeling must be the presence of ",
+      "."
+    ],
+    "translation": "あなたは、その感情が $1 の存在によるものであることに気づきました。"
+  },
+  {
+    "parts": [
+      "The familiar presence of ",
+      " is in the ether."
+    ],
+    "translation": "$1 のおなじみの存在はエーテルの中にあります。"
+  },
+  {
+    "parts": [
+      "The body of ",
+      " dissipates in a cloud of noxious fumes."
+    ],
+    "translation": "$1 の遺体は有毒な煙の雲の中に消えていきます。"
+  },
+  {
+    "parts": [
+      "Once again, you are near the entrance to ",
+      "."
+    ],
+    "translation": "もう一度、 $1 の入り口付近に来ました。"
+  },
+  {
+    "parts": [
+      "Once again, you are back at ",
+      "."
+    ],
+    "translation": "再び $1 に戻ります。"
+  },
+  {
+    "parts": [
+      "You are back at ",
+      "."
+    ],
+    "translation": "$1 に戻りました。"
+  },
+  {
+    "parts": [
+      "But why, you think, should ",
+      " be there?"
+    ],
+    "translation": "しかし、なぜ $1 がそこにいる必要があると思いますか?"
+  },
+  {
+    "parts": [
+      "will be sacrificed to ",
+      ", there on ",
+      " altar.  Then the child will"
+    ],
+    "translation": "$1に、その$2の祭壇で生贄として捧げられます。そうすれば子供は"
+  },
+  {
+    "parts": [
+      "Yet again you have a chance to infiltrate ",
+      "."
+    ],
+    "translation": "またしても $1 に侵入するチャンスがあります。"
+  },
+  {
+    "parts": [
+      "\"So.  This is what that second rate sorcerer ",
+      " sends to do ",
+      " bidding."
+    ],
+    "translation": "「そうか。これがあの二級魔術師$1が$2の言いつけを果たさせるために寄こした者か。"
+  },
+  {
+    "parts": [
+      "Well done, ",
+      ".  You have saved the world from certain doom."
+    ],
+    "translation": "よくやった、 $1 。  あなたは世界をある運命から救いました。"
+  },
+  {
+    "parts": [
+      "What, now, should be done with ",
+      "?"
+    ],
+    "translation": "さて、 $1 について何をすべきでしょうか?"
+  },
+  {
+    "parts": [
+      "",
+      " from ",
+      ".  She guards it as"
+    ],
+    "translation": "$2からの$1。彼女はそれを次のように守っている："
+  },
+  {
+    "parts": [
+      "Once again, you find yourself in the lair of ",
+      "."
+    ],
+    "translation": "再び、あなたは $1 の隠れ家にいることに気づきます。"
+  },
+  {
+    "parts": [
+      "Once again, you approach ",
+      "."
+    ],
+    "translation": "もう一度、 $1 に近づきます。"
+  },
+  {
+    "parts": [
+      "Once again, you arrive back at ",
+      "."
+    ],
+    "translation": "再び $1 に戻ります。"
+  },
+  {
+    "parts": [
+      "For the first time, you sense a smile on ",
+      " face."
+    ],
+    "translation": "初めて、 $1 の顔に笑顔が浮かんだのを感じました。"
+  },
+  {
+    "parts": [
+      "Once again, you ",
+      " the Isle of ",
+      " in the distance."
+    ],
+    "translation": "もう一度、遠くに $1  $2 の島が見えます。"
+  },
+  {
+    "parts": [
+      "With that ",
+      " dies."
+    ],
+    "translation": "それで $1 は死にます。"
+  },
+  {
+    "parts": [
+      "Feebly, ",
+      " raises ",
+      " head to look at you."
+    ],
+    "translation": "弱々しく、$1は$2の頭を上げてあなたを見つめている。"
+  },
+  {
+    "parts": [
+      "Once again you stand at the entrance to ",
+      "."
+    ],
+    "translation": "あなたは再び $1 の入り口に立ちます。"
+  },
+  {
+    "parts": [
+      "Gently, ",
+      " reaches out and touches ",
+      "."
+    ],
+    "translation": "$1 はそっと手を伸ばして $2 に触れます。"
+  },
+  {
+    "parts": [
+      "",
+      ".  From there, thou must track down ",
+      ".  Destroy the"
+    ],
+    "translation": "$1。そこから、$2を追跡しなければならない。"
+  },
+  {
+    "parts": [
+      "Exploring further, you ",
+      " long gouges in the walls of ",
+      "."
+    ],
+    "translation": "さらに探索すると、 $2 の壁を $1 長くえぐります。"
+  },
+  {
+    "parts": [
+      "Again, you stand at the entrance to ",
+      " lair."
+    ],
+    "translation": "再び、あなたは $1 の隠れ家への入り口に立っています。"
+  },
+  {
+    "parts": [
+      "You stand at the foot of ",
+      ".  Atop, you can ",
+      " a shrine."
+    ],
+    "translation": "あなたは $1 の麓に立っています。  頂上には神社を $2 することができます。"
+  },
+  {
+    "parts": [
+      "Again, you stand at the foot of ",
+      "."
+    ],
+    "translation": "もう一度、あなたは $1 の麓に立っています。"
+  },
+  {
+    "parts": [
+      "Once again you stand in the shadows of ",
+      "."
+    ],
+    "translation": "あなたは再び $1 の影に立っています。"
+  },
+  {
+    "parts": [
+      "As you approach ",
+      ", ",
+      " beams at you and says:"
+    ],
+    "translation": "あなたが$1に近づくと、$2は微笑みかけてこう言った："
+  },
+  {
+    "parts": [
+      "You find yourself standing in sight of ",
+      "."
+    ],
+    "translation": "あなたは $1 の目の前に立っていることに気づきました。"
+  },
+  {
+    "parts": [
+      "You realize that ",
+      " needs your assistance!"
+    ],
+    "translation": "$1 があなたの助けを必要としていることに気づきました。"
+  },
+  {
+    "parts": [
+      "Again, you have invaded ",
+      " domain."
+    ],
+    "translation": "またしても、 $1 ドメインに侵入しました。"
+  },
+  {
+    "parts": [
+      "With that, ",
+      " expires."
+    ],
+    "translation": "これで、 $1 の有効期限が切れます。"
+  },
+  {
+    "parts": [
+      "Again, you stand before ",
+      "."
+    ],
+    "translation": "再び、あなたは $1 の前に立っています。"
+  },
+  {
+    "parts": [
+      "Once again, you stand before ",
+      "."
+    ],
+    "translation": "もう一度、あなたは $1 の前に立っています。"
+  },
+  {
+    "parts": [
+      "a minion of ",
+      ".  ",
+      " commands that you retain"
+    ],
+    "translation": "$1の手下。$2はあなたが保持することを命じている"
+  },
+  {
+    "parts": [
+      "",
+      ".  With ",
+      ", you must recover the Amulet"
+    ],
+    "translation": "$1。$2を用いて、魔除けを取り戻さねばならない"
+  },
+  {
+    "parts": [
+      "You then hear the voice of ",
+      ", screaming in terror..."
+    ],
+    "translation": "すると、恐怖で叫ぶ $1 の声が聞こえます..."
+  },
+  {
+    "parts": [
+      "Once again, you enter the distorted castle of ",
+      "."
+    ],
+    "translation": "再び、 $1 の歪んだ城に入ります。"
+  },
+  {
+    "parts": [
+      "When you reach the temple, sacrifice the Amulet to ",
+      "."
+    ],
+    "translation": "寺院に到着したら、アミュレットを $1 に生け贄に捧げてください。"
+  },
+  {
+    "parts": [
+      "This must be ",
+      "."
+    ],
+    "translation": "これは $1 でなければなりません。"
+  },
+  {
+    "parts": [
+      "Once again, you descend into ",
+      "."
+    ],
+    "translation": "もう一度、 $1 に降ります。"
+  },
+  {
+    "parts": [
+      "has ",
+      ".  You are going to get ",
+      ""
+    ],
+    "translation": "$1を持っている。お前は$2を手に入れるのだ"
+  },
+  {
+    "parts": [
+      "Those damn little hairs tell you that you are nearer to ",
+      "."
+    ],
+    "translation": "あの小さな毛は、あなたが $1 に近づいていることを示しています。"
+  },
+  {
+    "parts": [
+      "Not wanting to face ",
+      " without having stolen ",
+      ", you continue."
+    ],
+    "translation": "あなたは $2 を盗まずに $1 に直面したくないので、続けます。"
+  },
+  {
+    "parts": [
+      "That is a better deal than I offered ",
+      "."
+    ],
+    "translation": "それは私が提案した $1 よりも良い取引です。"
+  },
+  {
+    "parts": [
+      "I require the skills of ",
+      " in order to defeat ",
+      "."
+    ],
+    "translation": "$2 を倒すには $1 のスキルが必要です。"
+  },
+  {
+    "parts": [
+      "As you arrive once again at the home of ",
+      "."
+    ],
+    "translation": "再び $1 の家に到着します。"
+  },
+  {
+    "parts": [
+      "In your mind, you hear the taunts of ",
+      "."
+    ],
+    "translation": "心の中で $1 の嘲笑が聞こえます。"
+  },
+  {
+    "parts": [
+      "As you pick up ",
+      ", you feel the strength of its karma."
+    ],
+    "translation": "$1 を手に取ると、そのカルマの強さを感じます。"
+  },
+  {
+    "parts": [
+      "Your healing skills tell you that ",
+      " wounds are mortal."
+    ],
+    "translation": "あなたの治癒スキルによれば、 $1 個の傷は致命的であることがわかります。"
+  },
+  {
+    "parts": [
+      "You sense the presence of ",
+      "."
+    ],
+    "translation": "あなたは $1 の存在を感じます。"
+  },
+  {
+    "parts": [
+      "You know that this time you must find and destroy ",
+      "."
+    ],
+    "translation": "今回は $1 を見つけて破壊する必要があることはわかっています。"
+  },
+  {
+    "parts": [
+      "Once again, you stand in sight of ",
+      " lair."
+    ],
+    "translation": "再び、あなたは $1 の隠れ家の視界に立っています。"
+  },
+  {
+    "parts": [
+      "Plane.  There you must offer the Amulet to ",
+      "."
+    ],
+    "translation": "飛行機。  そこでアミュレットを $1 に提供する必要があります。"
+  },
+  {
+    "parts": [
+      "A look of surprise and horror appears on ",
+      " face."
+    ],
+    "translation": "$1 の顔には驚きと恐怖の表情が浮かび上がります。"
+  },
+  {
+    "parts": [
+      "Suddenly, ",
+      " grasps his head and screams in agony, then dies."
+    ],
+    "translation": "突然、 $1 さんは頭を掴み、苦しみの叫び声を上げ、その後死亡しました。"
+  },
+  {
+    "parts": [
+      "Once again, you stand before the entrance to ",
+      "."
+    ],
+    "translation": "もう一度、 $1 の入り口の前に立っています。"
+  },
+  {
+    "parts": [
+      "Once again, you are near the abode of ",
+      "."
+    ],
+    "translation": "再び、 $1 の住居の近くに来ました。"
+  },
+  {
+    "parts": [
+      "As you approach, ",
+      " rises and touches ",
+      "."
+    ],
+    "translation": "近づくと、 $1 が立ち上がり、 $2 に接触します。"
+  },
+  {
+    "parts": [
+      "You feel your mentor's presence; perhaps ",
+      " is nearby."
+    ],
+    "translation": "あなたはメンターの存在を感じます。おそらく $1 が近くにいます。"
+  },
+  {
+    "parts": [
+      "The aura of ",
+      " tingles at the edge of your perception."
+    ],
+    "translation": "$1 のオーラがあなたの認識の端でうずきます。"
+  },
+  {
+    "parts": [
+      "Wisps of fog swirl nearby.  You feel that ",
+      " lair is close."
+    ],
+    "translation": "近くで霧が渦巻いている。  あなたは $1 の隠れ家が近いと感じています。"
+  },
+  {
+    "parts": [
+      "You believe that you may once again invade ",
+      "."
+    ],
+    "translation": "あなたは再び $1 に侵入するかもしれないと信じています。"
+  },
+  {
+    "parts": [
+      "I can sense that it has attuned ",
+      " to you already."
+    ],
+    "translation": "すでに $1 があなたに同調しているのがわかります。"
+  },
+  {
+    "parts": [
+      "May the wisdom of ",
+      " be your guide."
+    ],
+    "translation": "$1 の知恵があなたの導きとなりますように。"
+  },
+  {
+    "parts": [
+      "By ",
+      ", there will be blood spilt today."
+    ],
+    "translation": "今日 $1 までに血が流れるでしょう。"
+  },
+  {
+    "parts": [
+      "This is all I know, ",
+      ".  I hope it will help you."
+    ],
+    "translation": "私が知っているのはこれだけです、 $1 。  お役に立てれば幸いです。"
+  },
+  {
+    "parts": [
+      "Prepare to die, ",
+      "."
+    ],
+    "translation": "死ぬ準備をしなさい、 $1 。"
+  },
+  {
+    "parts": [
+      "Please, ",
+      ", recover ",
+      " for us, and return it here."
+    ],
+    "translation": "$1 さん、 $2 を回収して、ここに返してください。"
+  },
+  {
+    "parts": [
+      "Return when you wear ",
+      "'s caduceus."
+    ],
+    "translation": "$1 のカドゥケウスを着用すると戻ってきます。"
+  },
+  {
+    "parts": [
+      "\"Beware, for ",
+      " hath surrounded ",
+      " with hordes of foul creatures.\""
+    ],
+    "translation": "「用心せよ、$1は$2自身を邪悪な怪物の群れで囲んでいる。」"
+  },
+  {
+    "parts": [
+      "Go with ",
+      " as your guide, ",
+      "."
+    ],
+    "translation": "$1 をガイドとして、 $2 に従ってください。"
+  },
+  {
+    "parts": [
+      "Go forth, and let ",
+      " guide your steps."
+    ],
+    "translation": "さあ、 $1 にあなたの歩みを導いてもらいましょう。"
+  },
+  {
+    "parts": [
+      "Return to us when you have learned more, my ",
+      "."
+    ],
+    "translation": "もっと詳しくわかったらまた戻ってきてください、私の $1 。"
+  },
+  {
+    "parts": [
+      "Begone!  We renounce your ",
+      " with us!  You are an outcast now!"
+    ],
+    "translation": "行ってください！  私たちはあなたの $1 を私たちと放棄します!  もうあなたは追放者です！"
+  },
+  {
+    "parts": [
+      "Well, I shall keep that bauble.  It pleases me.  You, ",
+      ", shall die."
+    ],
+    "translation": "そうですね、そのつまらないものは私が保管しておきます。  それは私にとって嬉しいことです。  あなた、 $1 は死ぬでしょう。"
+  },
+  {
+    "parts": [
+      "\"I knew ",
+      ", and you're no ",
+      ", thankfully.\""
+    ],
+    "translation": "「私は$1を知っていたが、幸いなことにお前は$2ではないな。」"
+  },
+  {
+    "parts": [
+      "\"Your presence only compounds the dishonor of ",
+      " in not coming ",
+      ".\""
+    ],
+    "translation": "「お前の存在は、$1が$2来なかった不名誉をさらに重くするだけだ。」"
+  },
+  {
+    "parts": [
+      "Go back now, and may the teachings of ",
+      " serve you well."
+    ],
+    "translation": "今すぐ戻って、 $1 の教えがあなたに役立ちますように。"
+  },
+  {
+    "parts": [
+      "No!!!  ",
+      " has lied to me!  I have been misled!"
+    ],
+    "translation": "いいえ！！！ $1 は私に嘘をつきました!  誤解されてしまいました！"
+  },
+  {
+    "parts": [
+      "\"I will kill you, ",
+      ", and wrest ",
+      " from your mangled hands.\""
+    ],
+    "translation": "「$1、貴様を殺し、そのズタズタの手から$2をもぎ取ってやる。」"
+  },
+  {
+    "parts": [
+      "Go now, with ",
+      ", and complete this quest before it is too late."
+    ],
+    "translation": "$1 と一緒に今すぐ行き、手遅れになる前にこのクエストを完了してください。"
+  },
+  {
+    "parts": [
+      "For this you were born, ",
+      "!  I am very proud of you."
+    ],
+    "translation": "このためにあなたは生まれました、 $1 !  私はあなたをとても誇りに思います。"
+  },
+  {
+    "parts": [
+      "May ",
+      " guide you in your quest, and keep you from harm."
+    ],
+    "translation": "$1 があなたの探求を導き、あなたを危害から守ってくれますように。"
+  },
+  {
+    "parts": [
+      "You return to ",
+      " form!"
+    ],
+    "translation": "$1の姿に戻った！"
+  },
+  {
+    "parts": [
+      "",
+      " is caught in a spider web."
+    ],
+    "translation": "$1がクモの巣に引っかかってしまった。"
+  },
+  {
+    "parts": [
+      "",
+      " pulls free of the web."
+    ],
+    "translation": "$1はクモの巣から抜け出した。"
+  },
+  {
+    "parts": [
+      "",
+      " needs food, badly!"
+    ],
+    "translation": "$1は、どうしても食べ物が欲しい！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " rusts further!"
+    ],
+    "translation": " あなたの$1がさらに錆びていく！"
+  },
+  {
+    "parts": [
+      "",
+      " escapes upstairs!"
+    ],
+    "translation": "$1がが上の階へ逃げ出す！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " corrodes!"
+    ],
+    "translation": "あなたの$1が錆びてしまう！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " falls around you!"
+    ],
+    "translation": "$1があなたの周りで崩れ落ちる！"
+  },
+  {
+    "parts": [
+      "You fell on ",
+      "."
+    ],
+    "translation": "$1の上に倒れ込んだ。"
+  },
+  {
+    "parts": [
+      " You entered ",
+      "."
+    ],
+    "translation": " $1に入った。"
+  },
+  {
+    "parts": [
+      "You feel that ",
+      " is well-pleased."
+    ],
+    "translation": "あなたは、$1が大変満足していると感じている。"
+  },
+  {
+    "parts": [
+      "",
+      ", mimicking something"
+    ],
+    "translation": "$1、何かを模倣している"
+  },
+  {
+    "parts": [
+      "",
+      " is hit by ",
+      "!"
+    ],
+    "translation": "$1が$2に直撃された！"
+  },
+  {
+    "parts": [
+      "Fortunately, ",
+      " is wearing a hard helmet."
+    ],
+    "translation": "幸いなことに、$1は頑丈なヘルメットをかぶっている。"
+  },
+  {
+    "parts": [
+      "Here the High Temple of ",
+      " is located."
+    ],
+    "translation": "ここに $1 の高等神殿があります。"
+  },
+  {
+    "parts": [
+      "Just the facts, ",
+      "."
+    ],
+    "translation": "事実だけ、 $1 。"
+  },
+  {
+    "parts": [
+      "As ",
+      ", you cannot speak."
+    ],
+    "translation": "$1 として、あなたは話すことができません。"
+  },
+  {
+    "parts": [
+      "They won't hear you ",
+      " there."
+    ],
+    "translation": "そこではあなたの $1 の声は聞こえません。"
+  },
+  {
+    "parts": [
+      "There's no one ",
+      " there."
+    ],
+    "translation": "そこには $1 は誰もいません。"
+  },
+  {
+    "parts": [
+      "That ",
+      " is ignoring you!"
+    ],
+    "translation": "あの $1 はあなたを無視しています!"
+  },
+  {
+    "parts": [
+      "Good ",
+      " to you Master",
+      ""
+    ],
+    "translation": "ごきげんよう、$1、マスター$2"
+  },
+  {
+    "parts": [
+      "Good feeding ",
+      "!"
+    ],
+    "translation": "良い食事 $1 !"
+  },
+  {
+    "parts": [
+      "I vant to suck your ",
+      "!"
+    ],
+    "translation": "あなたの $1 をしゃぶりたいです!"
+  },
+  {
+    "parts": [
+      "I vill come after ",
+      " without regret!"
+    ],
+    "translation": "私は後悔せずに $1 を追いかけます!"
+  },
+  {
+    "parts": [
+      "Ah, so you have a copy of /",
+      "/."
+    ],
+    "translation": "ああ、/ $1 / のコピーがあるということですね。"
+  },
+  {
+    "parts": [
+      "innate ",
+      " has ",
+      "."
+    ],
+    "translation": "生得的な$1には$2があります。"
+  },
+  {
+    "parts": [
+      "percentage: bad istat pointer ",
+      ", ",
+      ""
+    ],
+    "translation": "percentage: 不正なistatポインタ $1, $2"
+  },
+  {
+    "parts": [
+      "Field '",
+      "' does not support percentage values."
+    ],
+    "translation": "フィールド ' $1 ' はパーセンテージ値をサポートしていません。"
+  },
+  {
+    "parts": [
+      "change sort order from \"",
+      "\" to \"",
+      "\""
+    ],
+    "translation": "ソート順を「$1」から「$2」に変更します"
+  },
+  {
+    "parts": [
+      "compare_blstat: bad istat pointer ",
+      ", ",
+      ""
+    ],
+    "translation": "compare_blstat: 不正なistatポインタ $1, $2"
+  },
+  {
+    "parts": [
+      "compare_blstat: invalid pointer ",
+      ", ",
+      ""
+    ],
+    "translation": "compare_blstat: 無効なポインタ $1, $2"
+  },
+  {
+    "parts": [
+      "Choose a color for when ",
+      " is '",
+      "':"
+    ],
+    "translation": "$1が「$2」であるときの色を選択してください:"
+  },
+  {
+    "parts": [
+      "Choose attribute for when ",
+      " is '",
+      "':"
+    ],
+    "translation": "$1が「$2」であるときの属性を選択してください:"
+  },
+  {
+    "parts": [
+      "You're back to your ",
+      " self again."
+    ],
+    "translation": "あなたは再び $1 の自分に戻りました。"
+  },
+  {
+    "parts": [
+      "Attempted to start duplicate ",
+      ", aborted."
+    ],
+    "translation": "重複 $1 を開始しようとしましたが、中止されました。"
+  },
+  {
+    "parts": [
+      "You're turning ",
+      "."
+    ],
+    "translation": "あなたは $1 歳になります。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " is becoming constricted."
+    ],
+    "translation": "$1 が狭くなっています。"
+  },
+  {
+    "parts": [
+      "The pressure on your ",
+      " increases."
+    ],
+    "translation": "$1 へのプレッシャーが高まります。"
+  },
+  {
+    "parts": [
+      "You wobble unsteadily ",
+      " the ",
+      "."
+    ],
+    "translation": "あなたは不安定にぐらつきます $1  $2 。"
+  },
+  {
+    "parts": [
+      "You are turning a little ",
+      "."
+    ],
+    "translation": "あなたは少し $1 を向いています。"
+  },
+  {
+    "parts": [
+      "You have become ",
+      "."
+    ],
+    "translation": "あなたは $1 になりました。"
+  },
+  {
+    "parts": [
+      "The ",
+      " haze around you ",
+      "."
+    ],
+    "translation": "あなたの周りの$1の霞が$2。"
+  },
+  {
+    "parts": [
+      "Current time = ",
+      "."
+    ],
+    "translation": "現在時刻 = $1 。"
+  },
+  {
+    "parts": [
+      "Swallow countdown is ",
+      "."
+    ],
+    "translation": "飲み込むカウントダウンは $1 です。"
+  },
+  {
+    "parts": [
+      "Vault counter is ",
+      "."
+    ],
+    "translation": "ボールト カウンタは $1 です。"
+  },
+  {
+    "parts": [
+      "and ",
+      " return gently to the ",
+      "."
+    ],
+    "translation": "そして$1は静かに$2へと戻った。"
+  },
+  {
+    "parts": [
+      "Gazing at the awake ",
+      " is not a very good idea."
+    ],
+    "translation": "起きている $1 を見つめるのはあまり良い考えではありません。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " is not affected by corrosion."
+    ],
+    "translation": "あなたの$1は腐食の影響を受けません。"
+  },
+  {
+    "parts": [
+      "Instead of shattering, ",
+      " suddenly ",
+      "!"
+    ],
+    "translation": "粉々になるのではなく、突然 $1 が $2 !"
+  },
+  {
+    "parts": [
+      "A trap door in ",
+      " opens, but nothing falls out!"
+    ],
+    "translation": "$1 のトラップドアが開きますが、何も落ちません。"
+  },
+  {
+    "parts": [
+      "Unfortunately, you are wearing ",
+      "."
+    ],
+    "translation": "残念ながら、あなたは $1 を着ています。"
+  },
+  {
+    "parts": [
+      "",
+      " bear trap closes on your ",
+      "!"
+    ],
+    "translation": "$1トラバサミがあなたの$2を挟み込んだ！"
+  },
+  {
+    "parts": [
+      "a ",
+      " erupt from the ",
+      "!"
+    ],
+    "translation": "$2から$1が噴出した！"
+  },
+  {
+    "parts": [
+      "A lethargic aura surrounds ",
+      "."
+    ],
+    "translation": "無気力なオーラが $1 を包み込んでいます。"
+  },
+  {
+    "parts": [
+      "KAABLAMM!!!  You triggered ",
+      " land mine!"
+    ],
+    "translation": "カーブラム！！！  あなたは $1 地雷を誘発しました!"
+  },
+  {
+    "parts": [
+      "Kaablamm!  ",
+      " an explosion in the distance!"
+    ],
+    "translation": "カアブラム！ $1 遠くで爆発音がしました！"
+  },
+  {
+    "parts": [
+      "feel lighter, but your ",
+      " is still chained to the ",
+      "."
+    ],
+    "translation": "体が軽くなった気がするが、あなたの$1はまだ$2に繋がれている。"
+  },
+  {
+    "parts": [
+      "Startled, ",
+      " can no longer hold you!"
+    ],
+    "translation": "びっくりして、 $1 はもうあなたを抱き締めることができません!"
+  },
+  {
+    "parts": [
+      "Bummer!  You've ",
+      "."
+    ],
+    "translation": "残念！  あなたは $1 を達成しました。"
+  },
+  {
+    "parts": [
+      "A cascade of steamy bubbles erupts from ",
+      "!"
+    ],
+    "translation": "$1 から蒸気の泡が滝のように噴出します。"
+  },
+  {
+    "parts": [
+      "A shiver runs up and down your ",
+      "!"
+    ],
+    "translation": "あなたの $1 に震えが走ります!"
+  },
+  {
+    "parts": [
+      "Smoke rises from ",
+      "."
+    ],
+    "translation": "$1 から煙が立ち上ります。"
+  },
+  {
+    "parts": [
+      "Some ",
+      " gets into your ",
+      "!"
+    ],
+    "translation": "$1があなたの$2に入り込んだ！"
+  },
+  {
+    "parts": [
+      "",
+      " cannot get into your ",
+      "."
+    ],
+    "translation": "$1はあなたの$2に入ることができない。"
+  },
+  {
+    "parts": [
+      "Steam rises from ",
+      "."
+    ],
+    "translation": "$1 から湯気が立ち上ります。"
+  },
+  {
+    "parts": [
+      "leash",
+      " slip",
+      " loose."
+    ],
+    "translation": "引き紐$1が滑って$2緩んだ。"
+  },
+  {
+    "parts": [
+      "Fortunately, you don't move ",
+      " it."
+    ],
+    "translation": "幸いなことに、それを $1 動かす必要はありません。"
+  },
+  {
+    "parts": [
+      "",
+      " is ",
+      " for you to lift."
+    ],
+    "translation": "$1はあなたにとって持ち上げるには$2だ。"
+  },
+  {
+    "parts": [
+      "grab the trapped ",
+      " using your bare ",
+      "."
+    ],
+    "translation": "素手の$2で、罠にかかった$1を掴んだ。"
+  },
+  {
+    "parts": [
+      "reach out your ",
+      " and grab ",
+      "."
+    ],
+    "translation": "$1を伸ばして$2を掴んだ。"
+  },
+  {
+    "parts": [
+      "That ",
+      " was not trapped."
+    ],
+    "translation": "その $1 は閉じ込められていませんでした。"
+  },
+  {
+    "parts": [
+      "There's a trap on ",
+      "."
+    ],
+    "translation": "$1 には罠があります。"
+  },
+  {
+    "parts": [
+      "cannot deal with ",
+      " while trapped",
+      "!"
+    ],
+    "translation": "罠にかかっている間は$1に対処できない$2！"
+  },
+  {
+    "parts": [
+      "But luckily the ",
+      "!"
+    ],
+    "translation": "しかし幸運なことに、 $1 !"
+  },
+  {
+    "parts": [
+      "A cloud of noxious gas billows from ",
+      "."
+    ],
+    "translation": "$1 から有毒ガスの雲が立ち込めています。"
+  },
+  {
+    "parts": [
+      "A cloud of ",
+      " gas billows from ",
+      "."
+    ],
+    "translation": "$1ガスの雲が$2から立ち上った。"
+  },
+  {
+    "parts": [
+      "",
+      " glows a strange ",
+      ", but remains intact."
+    ],
+    "translation": "$1は奇妙な$2に輝いたが、無傷のままだ。"
+  },
+  {
+    "parts": [
+      "The hole in the ",
+      " above you closes up."
+    ],
+    "translation": "あなたの上の $1 の穴は塞がります。"
+  },
+  {
+    "parts": [
+      "",
+      " flows through ",
+      " spider web."
+    ],
+    "translation": "$1は$2クモの巣をすり抜けた。"
+  },
+  {
+    "parts": [
+      "A trap door above ",
+      " opens, but nothing falls out!"
+    ],
+    "translation": "$1 の上のトラップドアが開きますが、何も落ちません。"
+  },
+  {
+    "parts": [
+      "A trap door opens, but ",
+      " doesn't fall through."
+    ],
+    "translation": "落とし戸が開きますが、 $1 は落ちません。"
+  },
+  {
+    "parts": [
+      "",
+      " is caught in ",
+      " spider web."
+    ],
+    "translation": "$1は$2クモの巣に捕まった。"
+  },
+  {
+    "parts": [
+      "",
+      " tears through ",
+      " spider web!"
+    ],
+    "translation": "$1は$2クモの巣を引き裂いた！"
+  },
+  {
+    "parts": [
+      "",
+      " avoids ",
+      " spider web!"
+    ],
+    "translation": "$1は$2クモの巣を避けた！"
+  },
+  {
+    "parts": [
+      "A trigger appears in a pile of soil below ",
+      "."
+    ],
+    "translation": "$1 の下の土の山にトリガーが表示されます。"
+  },
+  {
+    "parts": [
+      "The hole fills with ",
+      "!"
+    ],
+    "translation": "穴は $1 で埋められます。"
+  },
+  {
+    "parts": [
+      "You'll have to let go of ",
+      " first."
+    ],
+    "translation": "まず $1 を手放す必要があります。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " seem to be too busy for that."
+    ],
+    "translation": "あなたの $1 さんは忙しすぎるようです。"
+  },
+  {
+    "parts": [
+      "You can't reach the ",
+      "."
+    ],
+    "translation": "$1 に到達できません。"
+  },
+  {
+    "parts": [
+      "",
+      " and ",
+      " are already clean."
+    ],
+    "translation": "$1と$2はすでに清潔だ。"
+  },
+  {
+    "parts": [
+      "",
+      " is in ",
+      " health for a statue."
+    ],
+    "translation": "$1は彫像としては$2な状態だ。"
+  },
+  {
+    "parts": [
+      "This ",
+      " is already leashed."
+    ],
+    "translation": "この $1 はすでにリードが付いています。"
+  },
+  {
+    "parts": [
+      "Yow!  The ",
+      " stares back!"
+    ],
+    "translation": "やったー！ $1 が見つめ返します!"
+  },
+  {
+    "parts": [
+      "",
+      " is too tired to look at your ",
+      "."
+    ],
+    "translation": "$1は疲れすぎていてあなたの$2を見ることができない。"
+  },
+  {
+    "parts": [
+      "",
+      " fails to notice your ",
+      "."
+    ],
+    "translation": "$1はあなたの$2に気づかなかった。"
+  },
+  {
+    "parts": [
+      "It steals your ",
+      "!"
+    ],
+    "translation": "それはあなたの $1 を盗みます!"
+  },
+  {
+    "parts": [
+      "",
+      " doesn't seem to notice ",
+      " reflection."
+    ],
+    "translation": "$1は$2自身の姿に気づいていないようだ。"
+  },
+  {
+    "parts": [
+      "This ",
+      " has no ",
+      "."
+    ],
+    "translation": "この $1 には $2 がありません。"
+  },
+  {
+    "parts": [
+      "To attach candles, apply them instead of the ",
+      "."
+    ],
+    "translation": "キャンドルを取り付けるには、 $1 の代わりにキャンドルを取り付けます。"
+  },
+  {
+    "parts": [
+      "This ",
+      " has no oil."
+    ],
+    "translation": "この $1 にはオイルが入っていません。"
+  },
+  {
+    "parts": [
+      "You burn ",
+      ", you bought ",
+      "!"
+    ],
+    "translation": "あなたは $1 を燃やし、 $2 を購入しました!"
+  },
+  {
+    "parts": [
+      "Jumping out of strange trap (",
+      ")?"
+    ],
+    "translation": "奇妙な罠から飛び出す ( $1 )?"
+  },
+  {
+    "parts": [
+      "Tinning ",
+      " without wearing gloves is a fatal mistake..."
+    ],
+    "translation": "手袋を着用せずに $1 を錫メッキするのは致命的な間違いです..."
+  },
+  {
+    "parts": [
+      "Some of the grease gets all over your ",
+      "."
+    ],
+    "translation": "グリースの一部が $1 に付着します。"
+  },
+  {
+    "parts": [
+      "Snatching ",
+      " is a fatal mistake."
+    ],
+    "translation": "$1 をひったくることは致命的な間違いです。"
+  },
+  {
+    "parts": [
+      "Dip ",
+      " into the ",
+      "?"
+    ],
+    "translation": "$1を$2に浸しますか？"
+  },
+  {
+    "parts": [
+      "There's ",
+      " goop all over your ",
+      "."
+    ],
+    "translation": "$2 には $1 の粘着物が付着しています。"
+  },
+  {
+    "parts": [
+      "The pages feel ",
+      "."
+    ],
+    "translation": "ページは $1 と感じます。"
+  },
+  {
+    "parts": [
+      "This spellbook ",
+      "."
+    ],
+    "translation": "この魔法書 $1 。"
+  },
+  {
+    "parts": [
+      "The",
+      " ink in this spellbook is ",
+      "."
+    ],
+    "translation": "この魔法書の $1 インクは $2 です。"
+  },
+  {
+    "parts": [
+      "It slips between your ",
+      "."
+    ],
+    "translation": "それはあなたの $1 の間に滑り込みます。"
+  },
+  {
+    "parts": [
+      "It comes up ",
+      "."
+    ],
+    "translation": "$1 が出てきます。"
+  },
+  {
+    "parts": [
+      "You make, but cannot pick up, ",
+      "."
+    ],
+    "translation": "$1 を作りますが、拾うことはできません。"
+  },
+  {
+    "parts": [
+      "Continue your attempt to set ",
+      "?"
+    ],
+    "translation": "$1 の設定を続行しますか?"
+  },
+  {
+    "parts": [
+      "Thump!  Your blow bounces harmlessly off the ",
+      "."
+    ],
+    "translation": "ドスン！  あなたの打撃は $1 で無害に跳ね返ります。"
+  },
+  {
+    "parts": [
+      "Some holes are quickly filled with ",
+      "!"
+    ],
+    "translation": "いくつかの穴は $1 ですぐに埋まってしまいます。"
+  },
+  {
+    "parts": [
+      "You feel that eating ",
+      " was a bad idea."
+    ],
+    "translation": "$1を食べたのは、よくない考えだったと感じている。"
+  },
+  {
+    "parts": [
+      "It's full of ",
+      "."
+    ],
+    "translation": "$1 がいっぱいです。"
+  },
+  {
+    "parts": [
+      "This makes you feel like ",
+      "!"
+    ],
+    "translation": "これを見ると、 $1 のような気分になります。"
+  },
+  {
+    "parts": [
+      "Using ",
+      " you try to open the tin."
+    ],
+    "translation": "$1 を使用して缶を開けようとします。"
+  },
+  {
+    "parts": [
+      "This satiates your ",
+      "!"
+    ],
+    "translation": "これであなたの $1 は満足できます!"
+  },
+  {
+    "parts": [
+      "Magic spreads through your body as you digest the ",
+      "."
+    ],
+    "translation": "$1 を消化すると、魔法が体中に広がります。"
+  },
+  {
+    "parts": [
+      "You suddenly dread being peeled and mimic ",
+      " again!"
+    ],
+    "translation": "あなたは突然、皮を剥がされるのを恐れて、また $1 の真似をします。"
+  },
+  {
+    "parts": [
+      "You now prefer mimicking ",
+      " again."
+    ],
+    "translation": "あなたは再び $1 の真似をすることを好みます。"
+  },
+  {
+    "parts": [
+      "Intrinsic ",
+      " replacing ",
+      ""
+    ],
+    "translation": "本質 $1 を $2 に置き換えます"
+  },
+  {
+    "parts": [
+      "Eat ",
+      " anyway?"
+    ],
+    "translation": "とにかく $1 を食べますか？"
+  },
+  {
+    "parts": [
+      "There is a bear trap here (",
+      "); eat it?"
+    ],
+    "translation": "ここにはクマの罠があります ( $1 );食べる？"
+  },
+  {
+    "parts": [
+      "You only manage to ",
+      " the bear trap."
+    ],
+    "translation": "クマトラップを $1 することしかできません。"
+  },
+  {
+    "parts": [
+      "There are ",
+      " gold pieces here; eat them?"
+    ],
+    "translation": "ここには $1 個の金貨があります。それらを食べる？"
+  },
+  {
+    "parts": [
+      "As you open the bottle, ",
+      " emerges."
+    ],
+    "translation": "ボトルを開けると $1 が現れます。"
+  },
+  {
+    "parts": [
+      "As you open the bottle, an enormous ",
+      " emerges!"
+    ],
+    "translation": "ボトルを開けると、巨大な $1 が現れます。"
+  },
+  {
+    "parts": [
+      "Wow!  This makes you feel ",
+      "!"
+    ],
+    "translation": "おお！  これを見ると、 $1 という気分になります。"
+  },
+  {
+    "parts": [
+      "This tastes like ",
+      "."
+    ],
+    "translation": "これは $1 のような味です。"
+  },
+  {
+    "parts": [
+      "This burns like ",
+      "!"
+    ],
+    "translation": "これは $1 のように燃えます!"
+  },
+  {
+    "parts": [
+      "Yecch!  This tastes ",
+      "."
+    ],
+    "translation": "イェッ！  これは $1 の味がします。"
+  },
+  {
+    "parts": [
+      "",
+      " are frozen to the ",
+      "!"
+    ],
+    "translation": "$1は$2に凍り付いている！"
+  },
+  {
+    "parts": [
+      "hit your ",
+      " on the ",
+      "."
+    ],
+    "translation": "あなたの$1を$2にぶつけた。"
+  },
+  {
+    "parts": [
+      "This tastes ",
+      "."
+    ],
+    "translation": "これは $1 の味がします。"
+  },
+  {
+    "parts": [
+      "",
+      " crashes on your ",
+      " and breaks into shards."
+    ],
+    "translation": "$1はあなたの$2に衝突して粉々に砕けた。"
+  },
+  {
+    "parts": [
+      "For an instant you ",
+      "!"
+    ],
+    "translation": "一瞬、あなたは $1 !"
+  },
+  {
+    "parts": [
+      "A coating wears off ",
+      "."
+    ],
+    "translation": "コーティングが摩耗します $1 。"
+  },
+  {
+    "parts": [
+      "In a cloud of smoke, ",
+      " emerges!"
+    ],
+    "translation": "煙の雲の中に $1 が出現しました!"
+  },
+  {
+    "parts": [
+      "Everything ",
+      " SO boring now."
+    ],
+    "translation": "もう何もかもが $1 とても退屈です。"
+  },
+  {
+    "parts": [
+      "Oh wow!  Everything ",
+      " so cosmic!"
+    ],
+    "translation": "ああ、すごい！  すべてが $1 とても宇宙的です!"
+  },
+  {
+    "parts": [
+      "What do you want to burn into ",
+      " here?"
+    ],
+    "translation": "ここの$1に何を焼き付けたいんですか？"
+  },
+  {
+    "parts": [
+      "You juggle and drop ",
+      "!"
+    ],
+    "translation": "ジャグリングして $1 をドロップします。"
+  },
+  {
+    "parts": [
+      "This ",
+      " has no label."
+    ],
+    "translation": "この $1 にはラベルがありません。"
+  },
+  {
+    "parts": [
+      "The wrapper reads: \"",
+      "\"."
+    ],
+    "translation": "ラッパーには「 $1 」と書かれています。"
+  },
+  {
+    "parts": [
+      "Being blind, you cannot read the ",
+      "."
+    ],
+    "translation": "目が見えないので、 $1 を読むことはできません。"
+  },
+  {
+    "parts": [
+      "Being confused, you ",
+      " the magic words..."
+    ],
+    "translation": "混乱しているあなたは、魔法の言葉を $1 ..."
+  },
+  {
+    "parts": [
+      "",
+      " tingle ",
+      " sharply."
+    ],
+    "translation": "$1が$2激しくうずいた。"
+  },
+  {
+    "parts": [
+      "Nothing interesting ",
+      "."
+    ],
+    "translation": "何も興味深いものはありません $1 。"
+  },
+  {
+    "parts": [
+      "A little ",
+      " around you vaporizes."
+    ],
+    "translation": "あなたの周りの小さな $1 が蒸発します。"
+  },
+  {
+    "parts": [
+      "Oh, look, what a pretty fire in your ",
+      "."
+    ],
+    "translation": "ああ、見てください、あなたの $1 はなんと素晴らしいことでしょう。"
+  },
+  {
+    "parts": [
+      "",
+      " rumbles ",
+      " you!"
+    ],
+    "translation": "$1があなたの$2で轟いた！"
+  },
+  {
+    "parts": [
+      "",
+      " spins as ",
+      " blocks the spell!"
+    ],
+    "translation": "$2が呪文を遮ると、$1が回転した！"
+  },
+  {
+    "parts": [
+      "This scroll is marked \"",
+      "\"."
+    ],
+    "translation": "この巻物には「 $1 」とマークされています。"
+  },
+  {
+    "parts": [
+      "This seems to be ",
+      "."
+    ],
+    "translation": "これは $1 のようです。"
+  },
+  {
+    "parts": [
+      "A lit field ",
+      " you!"
+    ],
+    "translation": "照らされたフィールド $1 あなた!"
+  },
+  {
+    "parts": [
+      "Eliminated ",
+      " monster",
+      "."
+    ],
+    "translation": "$1 モンスター $2 を排除しました。"
+  },
+  {
+    "parts": [
+      "That ",
+      " does not represent any monster."
+    ],
+    "translation": "その $1 はモンスターを表すものではありません。"
+  },
+  {
+    "parts": [
+      "Such creatures ",
+      " exist in this world."
+    ],
+    "translation": "この世界にはそのような生き物 $1 が存在します。"
+  },
+  {
+    "parts": [
+      "Where do you want to center the ",
+      "?"
+    ],
+    "translation": "$1 をどこの中心に配置しますか?"
+  },
+  {
+    "parts": [
+      "",
+      " on ",
+      " background"
+    ],
+    "translation": "$2背景の$1"
+  },
+  {
+    "parts": [
+      "You ",
+      " the formula on the scroll."
+    ],
+    "translation": "スクロール上の式を $1 します。"
+  },
+  {
+    "parts": [
+      "As you ",
+      " the formula on it, the scroll disappears."
+    ],
+    "translation": "数式を $1 すると、スクロールが消えます。"
+  },
+  {
+    "parts": [
+      "performed ",
+      " first genocide (",
+      ")"
+    ],
+    "translation": "$1回目の最初の全滅を行った ($2)"
+  },
+  {
+    "parts": [
+      "Creating ",
+      " instead; force ",
+      "?"
+    ],
+    "translation": "代わりに$1を作成します。強制的に$2を作成しますか？"
+  },
+  {
+    "parts": [
+      "As you read the book, it ",
+      " in your ",
+      "!"
+    ],
+    "translation": "本を読むと、それはあなたの$2で$1！"
+  },
+  {
+    "parts": [
+      "A chill runs down your ",
+      "."
+    ],
+    "translation": "$1 に悪寒が走ります。"
+  },
+  {
+    "parts": [
+      "knowledge of ",
+      " is ",
+      "."
+    ],
+    "translation": "$1の知識は$2だ。"
+  },
+  {
+    "parts": [
+      "This book is so dull that you can't keep your ",
+      " open."
+    ],
+    "translation": "この本はとてもつまらないので、 $1 を開いたままにしておくことはできません。"
+  },
+  {
+    "parts": [
+      "Unknown spellbook level ",
+      ", book ",
+      ";"
+    ],
+    "translation": "未知の魔法書レベル $1、本 $2;"
+  },
+  {
+    "parts": [
+      "",
+      " around you begins to shimmer with ",
+      " haze."
+    ],
+    "translation": "あなたの周りの$1が$2の霞で揺らめき始めた。"
+  },
+  {
+    "parts": [
+      "Unknown spell ",
+      " attempted."
+    ],
+    "translation": "不明な呪文 $1 を試みました。"
+  },
+  {
+    "parts": [
+      "Spell ",
+      " already known."
+    ],
+    "translation": "呪文 $1 はすでにわかっています。"
+  },
+  {
+    "parts": [
+      "This spellbook is ",
+      " to comprehend.  Continue?"
+    ],
+    "translation": "この魔法書を理解するには $1 が必要です。  続く？"
+  },
+  {
+    "parts": [
+      "Attempting to revive ",
+      "?"
+    ],
+    "translation": "$1 を復活させようとしていますか?"
+  },
+  {
+    "parts": [
+      "Some ",
+      " meld, and ",
+      " arises from the pile!"
+    ],
+    "translation": "いくつかの$1が融合し、その山から$2が現れた！"
+  },
+  {
+    "parts": [
+      "aren't sure whether ",
+      " has ",
+      " or its corpse inside."
+    ],
+    "translation": "$1の中に$2がいるのか、それともその死体があるのか判別できない。"
+  },
+  {
+    "parts": [
+      "A rock is dislodged from the ",
+      " and falls on your ",
+      "."
+    ],
+    "translation": "石が $1 から外れて $2 の上に落ちます。"
+  },
+  {
+    "parts": [
+      "Some ",
+      " swirls beneath you."
+    ],
+    "translation": "$1 があなたの下で渦巻いています。"
+  },
+  {
+    "parts": [
+      "Blood drips on your ",
+      "."
+    ],
+    "translation": "あなたの $1 に血が滴ります。"
+  },
+  {
+    "parts": [
+      "",
+      " body reintegrates before your ",
+      "!"
+    ],
+    "translation": "$1の肉体があなたの$2の前で再構成された！"
+  },
+  {
+    "parts": [
+      "",
+      " absorbs the deadly ",
+      "!"
+    ],
+    "translation": "$1は致死的な$2を吸収した！"
+  },
+  {
+    "parts": [
+      "Some writing vanishes from ",
+      " head!"
+    ],
+    "translation": "$1 の頭から一部の書き込みが消えています。"
+  },
+  {
+    "parts": [
+      "But ",
+      " reflects from your ",
+      "!"
+    ],
+    "translation": "しかし、$1はあなたの$2に跳ね返った！"
+  },
+  {
+    "parts": [
+      "The ",
+      " cools and solidifies."
+    ],
+    "translation": "$1 は冷えて固まります。"
+  },
+  {
+    "parts": [
+      "The ",
+      " is bridged with ice!"
+    ],
+    "translation": "$1 には氷が架かっています。"
+  },
+  {
+    "parts": [
+      "The ",
+      " freezes."
+    ],
+    "translation": "$1 がフリーズします。"
+  },
+  {
+    "parts": [
+      "Oops!  ",
+      " out of your reach!"
+    ],
+    "translation": "おっと！ $1 手の届かないところにあります!"
+  },
+  {
+    "parts": [
+      "Oops!  ",
+      " away from you!"
+    ],
+    "translation": "おっと！ $1 離れてください!"
+  },
+  {
+    "parts": [
+      "Oops!  ",
+      " to the floor!"
+    ],
+    "translation": "おっと！ $1 床に！"
+  },
+  {
+    "parts": [
+      "Careful! ",
+      " on the floor!"
+    ],
+    "translation": "注意深い！  床に $1 がいます！"
+  },
+  {
+    "parts": [
+      "wield ",
+      " in your bare ",
+      "."
+    ],
+    "translation": "素手の$2で$1を構えた。"
+  },
+  {
+    "parts": [
+      "",
+      " from your ",
+      "!"
+    ],
+    "translation": "あなたの$2から$1！"
+  },
+  {
+    "parts": [
+      "",
+      " spasms and drops ",
+      "!"
+    ],
+    "translation": "$1は痙攣して$2を落とした！"
+  },
+  {
+    "parts": [
+      "",
+      " welded to your ",
+      "!"
+    ],
+    "translation": "$1があなたの$2に溶着した！"
+  },
+  {
+    "parts": [
+      "You have ",
+      " readied.  Wield ",
+      " instead?"
+    ],
+    "translation": "$1を準備しています。代わりに$2を構えますか？"
+  },
+  {
+    "parts": [
+      "You are wielding ",
+      ".  Ready ",
+      " instead?"
+    ],
+    "translation": "あなたは$1を構えています。代わりに$2を準備しますか？"
+  },
+  {
+    "parts": [
+      "Your right ",
+      " tingles."
+    ],
+    "translation": "あなたの右 $1 がうずきます。"
+  },
+  {
+    "parts": [
+      "Suddenly you can",
+      " yourself."
+    ],
+    "translation": "突然、自分で $1 できるようになります。"
+  },
+  {
+    "parts": [
+      "",
+      " fits very tightly."
+    ],
+    "translation": "$1は、体にぴったりとフィットします。"
+  },
+  {
+    "parts": [
+      "Suddenly you can ",
+      "."
+    ],
+    "translation": "突然 $1 ができるようになります。"
+  },
+  {
+    "parts": [
+      "Despite your slippery ",
+      ", you can't."
+    ],
+    "translation": "$1 は滑りやすいにもかかわらず、それはできません。"
+  },
+  {
+    "parts": [
+      "Taking off unknown armor (",
+      ": ",
+      "), no delay"
+    ],
+    "translation": "未知の防具を脱ぐ ($1: $2)、遅延なし"
+  },
+  {
+    "parts": [
+      "wear ",
+      " because you're wearing ",
+      " there already."
+    ],
+    "translation": "そこにはすでに$2を身につけているため、$1を身につけることはできない。"
+  },
+  {
+    "parts": [
+      "",
+      " won't fit over your horn",
+      "."
+    ],
+    "translation": "$1はあなたの角$2には合わない。"
+  },
+  {
+    "parts": [
+      "",
+      " are stuck in the ",
+      "!"
+    ],
+    "translation": "$1が$2に挟まって動かない！"
+  },
+  {
+    "parts": [
+      "",
+      " are too slippery to pull on ",
+      "."
+    ],
+    "translation": "$1は滑りやすすぎて$2を引っ張ることができない。"
+  },
+  {
+    "parts": [
+      "The beautiful ",
+      " seduces you and you taking"
+    ],
+    "translation": "美しい$1があなたを誘惑し"
+  },
+  {
+    "parts": [
+      "The beautiful ",
+      " seduces you and you start taking"
+    ],
+    "translation": "美しい$1があなたを誘惑し"
+  },
+  {
+    "parts": [
+      "are stuck in the ",
+      ", and cannot pull your ",
+      " out."
+    ],
+    "translation": "$1に挟まってしまい、あなたの$2を引き抜くことができない。"
+  },
+  {
+    "parts": [
+      "",
+      " while wielding ",
+      ""
+    ],
+    "translation": "$2を構えながら$1"
+  },
+  {
+    "parts": [
+      "Take off your ",
+      " despite carrying a dead ",
+      "?"
+    ],
+    "translation": "死んだ$2を運んでいるにもかかわらず、あなたの$1を脱ぎますか？"
+  },
+  {
+    "parts": [
+      "Your ",
+      " crumbles into tiny threads and falls apart!"
+    ],
+    "translation": "あなたの $1 は小さな糸状になってバラバラになってしまいます。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " turns to dust and is blown away!"
+    ],
+    "translation": "あなたの $1 は塵となって吹き飛ばされます。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " vanish!"
+    ],
+    "translation": "あなたの $1 は消えてしまいます!"
+  },
+  {
+    "parts": [
+      "Your ",
+      " disintegrate!"
+    ],
+    "translation": "あなたの $1 は崩壊します!"
+  },
+  {
+    "parts": [
+      "Your ",
+      " crumbles away!"
+    ],
+    "translation": "あなたの $1 は崩れ去ります!"
+  },
+  {
+    "parts": [
+      "It strikes ",
+      "!"
+    ],
+    "translation": "$1 に当たります!"
+  },
+  {
+    "parts": [
+      "Destroy ",
+      ", my servants!"
+    ],
+    "translation": "$1 を破壊してください、私のしもべたち!"
+  },
+  {
+    "parts": [
+      "Thou durst ",
+      " me?"
+    ],
+    "translation": "あなたは私を $1 したのですか？"
+  },
+  {
+    "parts": [
+      "Thou art chosen to ",
+      " for My Glory!"
+    ],
+    "translation": "あなたは私の栄光のために $1 に選ばれました!"
+  },
+  {
+    "parts": [
+      "Divine knowledge of ",
+      " fills your mind!  Spell '",
+      "'."
+    ],
+    "translation": "$1 に関する神聖な知識があなたの心を満たします!  「 $2 」と綴ります。"
+  },
+  {
+    "parts": [
+      "the power of ",
+      " over ",
+      "."
+    ],
+    "translation": "$2に対する$1の力。"
+  },
+  {
+    "parts": [
+      "the blessing of ",
+      " over ",
+      "."
+    ],
+    "translation": "$2に対する$1の加護。"
+  },
+  {
+    "parts": [
+      "It sounds like:  \"",
+      "\"."
+    ],
+    "translation": "「 $1 」のように聞こえます。"
+  },
+  {
+    "parts": [
+      "Suddenly, you realize that ",
+      " has noticed you..."
+    ],
+    "translation": "突然、 $1 があなたに気づいていることに気づきました..."
+  },
+  {
+    "parts": [
+      "",
+      " shrugs and retains dominion over ",
+      ","
+    ],
+    "translation": "$1は肩をすくめ、$2に対する支配を保った、"
+  },
+  {
+    "parts": [
+      "",
+      " accepts your gift, and gains dominion over ",
+      "..."
+    ],
+    "translation": "$1はあなたの贈り物を受け取り、$2に対する支配を得た…"
+  },
+  {
+    "parts": [
+      "Fortunately, ",
+      " permits you to live..."
+    ],
+    "translation": "幸いなことに、 $1 のおかげであなたは生きていくことができます..."
+  },
+  {
+    "parts": [
+      "Unluckily, you feel the power of ",
+      " decrease."
+    ],
+    "translation": "残念ながら、 $1 の力が低下しているように感じます。"
+  },
+  {
+    "parts": [
+      "The blood floods the altar, which vanishes in ",
+      " cloud!"
+    ],
+    "translation": "血が祭壇に溢れ、 $1 の雲となって消えていきます。"
+  },
+  {
+    "parts": [
+      "Such an action is an insult to ",
+      "!"
+    ],
+    "translation": "そのような行為は $1 に対する侮辱です。"
+  },
+  {
+    "parts": [
+      "You seem to have enjoyed it more than ",
+      "..."
+    ],
+    "translation": "あなたは$1よりもそれを楽しんだようだ..."
+  },
+  {
+    "parts": [
+      "",
+      " seems to have enjoyed it more than you..."
+    ],
+    "translation": "$1 は、あなたよりもそれを楽しんでいた..."
+  },
+  {
+    "parts": [
+      "think ",
+      " brushed your ",
+      "."
+    ],
+    "translation": "$1があなたの$2をかすめたようだ。"
+  },
+  {
+    "parts": [
+      "Since you are in Gehennom, ",
+      " can't help you."
+    ],
+    "translation": "あなたはゲヘノムにいるので、 $1 はあなたを助けることができません。"
+  },
+  {
+    "parts": [
+      "For some reason, ",
+      " seems to ignore you."
+    ],
+    "translation": "何らかの理由で、 $1 はあなたを無視しているようです。"
+  },
+  {
+    "parts": [
+      "Calling upon ",
+      ", you chant an arcane formula."
+    ],
+    "translation": "$1 を呼び出して、あなたは難解な公式を唱えます。"
+  },
+  {
+    "parts": [
+      "",
+      " reflects from your ",
+      "."
+    ],
+    "translation": "$1はあなたの$2に反射した。"
+  },
+  {
+    "parts": [
+      "was chosen to ",
+      " for the Glory of ",
+      ""
+    ],
+    "translation": "$2の栄光のために$1に選ばれた"
+  },
+  {
+    "parts": [
+      "So, mortal!  You dare desecrate my ",
+      "!"
+    ],
+    "translation": "それで、定命の者！  私の $1 を冒涜するなんて！"
+  },
+  {
+    "parts": [
+      "A cloud of ",
+      " smoke surrounds you..."
+    ],
+    "translation": "$1 の煙があなたの周囲を取り囲んでいます..."
+  },
+  {
+    "parts": [
+      "was bestowed with ",
+      " by ",
+      ""
+    ],
+    "translation": "$2から$1を授与された"
+  },
+  {
+    "parts": [
+      "by offering ",
+      " on an altar of ",
+      ""
+    ],
+    "translation": "$2の祭壇に$1を捧げることによって"
+  },
+  {
+    "parts": [
+      "OK, so you don't ",
+      "."
+    ],
+    "translation": "OK、 $1 はしません。"
+  },
+  {
+    "parts": [
+      "Report the following error to \"",
+      "\" or at \"",
+      "\"."
+    ],
+    "translation": "次のエラーを「$1」または「$2」へ報告してください。"
+  },
+  {
+    "parts": [
+      "Do you want to see what you had when you ",
+      "?"
+    ],
+    "translation": "$1 のときに何を持っていたか見てみたいですか?"
+  },
+  {
+    "parts": [
+      "Do you want to see your conduct",
+      "?"
+    ],
+    "translation": "あなたの行動 $1 を見たいですか?"
+  },
+  {
+    "parts": [
+      "Since you were in ",
+      " mode, the score list will not be checked."
+    ],
+    "translation": "$1 モードだったので、スコア リストはチェックされません。"
+  },
+  {
+    "parts": [
+      "No creatures have been genocided",
+      "."
+    ],
+    "translation": "$1 虐殺された生き物はいません。"
+  },
+  {
+    "parts": [
+      "a ",
+      " moon in effect",
+      ""
+    ],
+    "translation": "$1の月が有効$2"
+  },
+  {
+    "parts": [
+      "polymorphed into ",
+      " in ",
+      " form"
+    ],
+    "translation": "$2の姿の$1に変身した"
+  },
+  {
+    "parts": [
+      "Your character was rerolled ",
+      "."
+    ],
+    "translation": "あなたのキャラクターは $1 再ロールされました。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " suddenly vibrates unexpectedly."
+    ],
+    "translation": "あなたの$1が、突然、予期せず振動し始めた。"
+  },
+  {
+    "parts": [
+      "You cannot reach ",
+      ""
+    ],
+    "translation": "$1には手が届かない。"
+  },
+  {
+    "parts": [
+      "That feels like ",
+      ""
+    ],
+    "translation": "それはまるで$1のような感触だ。"
+  },
+  {
+    "parts": [
+      "  You were ",
+      "."
+    ],
+    "translation": "あなたは$1だった。"
+  },
+  {
+    "parts": [
+      "Your ",
+      " slips from your hand."
+    ],
+    "translation": "あなたの手から$1が滑り落ちる"
+  },
+  {
+    "parts": [
+      "",
+      "'s armor falls around it!"
+    ],
+    "translation": "$1の鎧が、その周囲に崩れ落ちた！"
+  },
+  {
+    "parts": [
+      "",
+      " points at you, then curses."
+    ],
+    "translation": "$1があなたを指さし、呪いの言葉を吐いた。"
+  },
+  {
+    "parts": [
+      "",
+      " with all your might"
+    ],
+    "translation": "$1を全力を込めて"
+  },
+  {
+    "parts": [
+      "You feel no ",
+      " there."
+    ],
+    "translation": "そこに$1があるようには感じられない。"
+  },
+  {
+    "parts": [
+      "The ",
+      " returns to the ",
+      "'s hand!"
+    ],
+    "translation": "$1が、$2の手元に戻った！"
+  },
+  {
+    "parts": [
+      "a figurine of ",
+      ""
+    ],
+    "translation": "$1の置物"
+  },
+  {
+    "parts": [
+      "Standard dungeon encounter (",
+      ")."
+    ],
+    "translation": "標準的なダンジョンでの遭遇($1)"
+  },
+  {
+    "parts": [
+      "",
+      " item for dungeon survival."
+    ],
+    "translation": "ダンジョンサバイバル用の$1アイテム"
+  },
+  {
+    "parts": [
+      "",
+      " talks about the problem of shoplifters."
+    ],
+    "translation": "$1は万引きの問題について語っている。"
+  },
+  {
+    "parts": [
+      "",
+      " talks about mining."
+    ],
+    "translation": "$1は採掘について話している。"
+  },
+  {
+    "parts": [
+      "You bought ",
+      " for ",
+      " gold pieces."
+    ],
+    "translation": "あなたは$1を$2ゴールドで購入しました。"
+  },
+  {
+    "parts": [
+      "",
+      " gets zapped!"
+    ],
+    "translation": "$1が感電した！"
+  },
+  {
+    "parts": [
+      "There is ",
+      " here, but you cannot lift any more."
+    ],
+    "translation": "ここには$1がありますが、これ以上持ち上げることはできません。"
+  },
+  {
+    "parts": [
+      "",
+      " blinds you!"
+    ],
+    "translation": "$1があなたの視界を奪う！"
+  },
+  {
+    "parts": [
+      "You are floating high above ",
+      "."
+    ],
+    "translation": "あなたは$1の真上を浮遊している。"
+  },
+  {
+    "parts": [
+      "Some ",
+      " fall from ",
+      "!"
+    ],
+    "translation": "$1が$2から落ちてきた！"
+  },
+  {
+    "parts": [
+      "You burn into ",
+      " with ",
+      "."
+    ],
+    "translation": "あなたは$2で$1を焼き尽くす。"
+  },
+  {
+    "parts": [
+      "Flames fly from ",
+      "."
+    ],
+    "translation": "$1から炎が噴き出します。"
+  },
+  {
+    "parts": [
+      "You pour ",
+      " down the drain."
+    ],
+    "translation": "あなたは$1を排水口に流します。"
+  },
+  {
+    "parts": [
+      "",
+      " transforms into ",
+      "!"
+    ],
+    "translation": "$1が$2に変わります！"
+  },
+  {
+    "parts": [
+      "You sit on ",
+      "."
+    ],
+    "translation": "あなたは$1の上に座る。"
+  },
+  {
+    "parts": [
+      "You break / your ",
+      "!"
+    ],
+    "translation": "あなたは$1を壊します！"
+  },
+  {
+    "parts": [
+      "You continue chewing on ",
+      "."
+    ],
+    "translation": "あなたは$1を噛み続けます。"
+  },
+  {
+    "parts": [
+      "You harmlessly attack ",
+      "."
+    ],
+    "translation": "あなたは無害な$1を攻撃します。"
+  },
+  {
+    "parts": [
+      "",
+      " tries to grab your ",
+      " but gives up."
+    ],
+    "translation": "$1が$2を奪おうとしますが、諦めます。"
+  },
+  {
+    "parts": [
+      "You start chewing a hole in ",
+      "."
+    ],
+    "translation": "$1に穴を開け始めた。"
+  },
+  {
+    "parts": [
+      "",
+      " senses your presence."
+    ],
+    "translation": "$1があなたの存在を察知した。"
+  },
+  {
+    "parts": [
+      "",
+      " rises up, through the ceiling!"
+    ],
+    "translation": "$1が天井を突き破って現れた！"
+  },
+  {
+    "parts": [
+      "",
+      " is blinded by the flash!"
+    ],
+    "translation": "$1は閃光に目をくらまされた！"
+  },
+  {
+    "parts": [
+      "",
+      " tries to snatch your ",
+      " but gives up."
+    ],
+    "translation": "$1はあなたの$2を奪おうとしたが、諦めた。"
+  },
+  {
+    "parts": [
+      "",
+      " unsuccessfully fights your attempt to write!"
+    ],
+    "translation": "$1は、あなたが文字を書こうとするのを阻止しようとしたが、失敗した！"
+  },
+  {
+    "parts": [
+      "Lightning arcs from ",
+      "."
+    ],
+    "translation": "$1から稲妻が放たれる。"
+  },
+  {
+    "parts": [
+      "",
+      " lightning glows, then fades."
+    ],
+    "translation": "$1から稲妻が光り、やがて消えていく。"
+  },
+  {
+    "parts": [
+      "",
+      " was coated with contact poison!"
+    ],
+    "translation": "その$1には接触毒が塗られていた！"
+  },
+  {
+    "parts": [
+      "",
+      " starts to attack you, but pulls back."
+    ],
+    "translation": "その$1はあなたに襲いかかろうとしますが、身を引きます。"
+  },
+  {
+    "parts": [
+      "",
+      " damages your vision!"
+    ],
+    "translation": "$1がは視界を妨げる！"
+  },
+  {
+    "parts": [
+      "",
+      " is too much to comprehend!"
+    ],
+    "translation": "$1は到底理解できない！"
+  },
+  {
+    "parts": [
+      "You feel very attracted to ",
+      "."
+    ],
+    "translation": "あなたは$1に強く惹かれている。"
+  },
+  {
+    "parts": [
+      "",
+      " murmurs sweet nothings into your ear."
+    ],
+    "translation": "$1はあなたの耳元で甘い言葉を囁く。"
+  },
+  {
+    "parts": [
+      "\"Take off your ",
+      "; it's in the way.\""
+    ],
+    "translation": "「$1は外して。邪魔だ。」"
+  },
+  {
+    "parts": [
+      "\"Take off your ",
+      "; let's get a little closer.\""
+    ],
+    "translation": "「$1を脱いで。もう少し近づこうよ。」"
+  },
+  {
+    "parts": [
+      "Time stands still while you and ",
+      " lie in each other's arms..."
+    ],
+    "translation": "あなたと$1が互いの腕の中に抱き合う間、時間は止まったように感じる..."
+  },
+  {
+    "parts": [
+      "",
+      " takes ",
+      " zorkmids for services rendered!"
+    ],
+    "translation": "$1は、そのサービスに対して$2ゾークミッドを請求します！"
+  },
+  {
+    "parts": [
+      "",
+      " demands that you pay him, but you refuse..."
+    ],
+    "translation": "$1はお金を請求するが、あなたはそれを拒む..."
+  },
+  {
+    "parts": [
+      "a branch ",
+      " to ",
+      ""
+    ],
+    "translation": "$2へと続く$1"
+  },
+  {
+    "parts": [
+      "",
+      " engulfs you!"
+    ],
+    "translation": "$1があなたを飲み込む！"
+  },
+  {
+    "parts": [
+      "Your ",
+      " corrodes further!"
+    ],
+    "translation": "あなたの$1はさらに腐食する！"
+  },
+  {
+    "parts": [
+      "You sense a conflict between ",
+      " and ",
+      "."
+    ],
+    "translation": "$1と$2の間に何らかの対立を感じ取る。"
+  },
+  {
+    "parts": [
+      "Engrave on ",
+      " with this item"
+    ],
+    "translation": "このアイテムで$1に刻む"
+  },
+  {
+    "parts": [
+      "Write on ",
+      " with one of these items"
+    ],
+    "translation": "これらのアイテムのいずれかで$1に書き込む"
+  },
+  {
+    "parts": [
+      "a small glob of ",
+      ""
+    ],
+    "translation": "$1の小さな塊"
+  },
+  {
+    "parts": [
+      "Write on ",
+      " with this item"
+    ],
+    "translation": "このアイテムで$1に書き込む"
+  },
+  {
+    "parts": [
+      "Restores ",
+      " HP and cures ",
+      "."
+    ],
+    "translation": "HPを$1回復し、$2状態を解除する。"
+  },
+  {
+    "parts": [
+      "You make a motion towards ",
+      " with ",
+      "."
+    ],
+    "translation": "あなたは$2で$1の方へ合図を送る。"
+  },
+  {
+    "parts": [
+      "You try to feel what is lying here on ",
+      "."
+    ],
+    "translation": "あなたは、この$1の上に何があるか、手探りで確かめようとする。"
+  },
+  {
+    "parts": [
+      "You aren't permitted to genocide ",
+      "."
+    ],
+    "translation": "$1に対するジェノサイドを行うことは許されません。"
+  },
+  {
+    "parts": [
+      "Some ",
+      " liquid flows from the faucet."
+    ],
+    "translation": "蛇口から$1の液体が流れ出ている。"
+  },
+  {
+    "parts": [
+      "",
+      " seems to blend into the floor for a moment."
+    ],
+    "translation": "$1が、一瞬、床に溶け込んでいるように見える。"
+  },
+  {
+    "parts": [
+      "",
+      " is killed by ",
+      "!"
+    ],
+    "translation": "$1が$2で倒された！"
+  },
+  {
+    "parts": [
+      "",
+      " is left unfinished and your writing fades."
+    ],
+    "translation": "$1は未完成のまま残り、あなたの文字は薄れていく。"
+  },
+  {
+    "parts": [
+      "",
+      " warps strangely, then turns ",
+      "."
+    ],
+    "translation": "$1が奇妙に歪み、やがて$2に変わる。"
+  },
+  {
+    "parts": [
+      "You hold ",
+      " under the tap."
+    ],
+    "translation": "$1を、蛇口の下に置きます。"
+  },
+  {
+    "parts": [
+      "",
+      "s weld themselves to ",
+      "'s hand!"
+    ],
+    "translation": "$1が$2の手にくっついてしまった！"
+  },
+  {
+    "parts": [
+      "",
+      " falls down ",
+      "."
+    ],
+    "translation": "$1が$2を転がり落ちる。"
+  },
+  {
+    "parts": [
+      "You can't take that off without taking off your ",
+      " first."
+    ],
+    "translation": "まず$1を脱がないと、それを脱ぐことはできません。"
+  },
+  {
+    "parts": [
+      "You can't wear that over your ",
+      "."
+    ],
+    "translation": "$1の上からそれを着ることはできません。"
+  },
+  {
+    "parts": [
+      " Your items are somewhat protected ",
+      "."
+    ],
+    "translation": "所持品は$1ある程度守られています。"
+  },
+  {
+    "parts": [
+      " You have been killed ",
+      "."
+    ],
+    "translation": "あなたは$1、倒されました。"
+  },
+  {
+    "parts": [
+      "You give ",
+      " all your gold."
+    ],
+    "translation": "あなたは$1に、持っている金貨をすべて差し出します。"
+  },
+  {
+    "parts": [
+      "",
+      " returns to its hand!"
+    ],
+    "translation": "$1が、その手に戻ってくる！"
+  },
+  {
+    "parts": [
+      "You add \"",
+      "\" to your repertoire, as '",
+      "'."
+    ],
+    "translation": "レパートリーに「$1」を「$2」として追加します。"
+  },
+  {
+    "parts": [
+      "The zap doesn't shock the ",
+      "!"
+    ],
+    "translation": "その電撃では$1は驚かない！"
+  },
+  {
+    "parts": [
+      "You lost some of your gold in ",
+      "!"
+    ],
+    "translation": "$1に金貨をいくつか落としてしまいました！"
+  },
+  {
+    "parts": [
+      "",
+      " looks like it is being beamed aboard somewhere."
+    ],
+    "translation": "$1がどこかへ転送されているように見える。"
+  }
+]

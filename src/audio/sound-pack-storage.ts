@@ -1,5 +1,6 @@
 import { strFromU8, strToU8, unzipSync, zipSync } from "fflate";
 import { getTranslationStrings } from "../i18n/core";
+import { nh3dSynthSoundKeys, nh3dSynthSoundPathPrefix } from "./status-effect-synth";
 
 export type Nh3dMessageLogKeyword = string | RegExp;
 
@@ -193,6 +194,34 @@ export const nh3dSoundEffectDefinitions = [
       /\byou feel (?:stronger|faster|more agile|wiser|tougher|powerful)\b/i,
     ],
   },
+  // Status-effect sounds. Most are triggered by status-line transitions
+  // (see Nh3dStatusSoundTracker); poison has no status flag, so it uses
+  // message-log keywords. All default to procedural "synth:" sources.
+  { key: "status-hungry", label: soundEffectStrings["status-hungry"] },
+  { key: "status-weak", label: soundEffectStrings["status-weak"] },
+  { key: "status-fainting", label: soundEffectStrings["status-fainting"] },
+  { key: "status-confused", label: soundEffectStrings["status-confused"] },
+  { key: "status-stunned", label: soundEffectStrings["status-stunned"] },
+  { key: "status-blind", label: soundEffectStrings["status-blind"] },
+  {
+    key: "status-hallucinating",
+    label: soundEffectStrings["status-hallucinating"],
+  },
+  {
+    key: "status-poisoned",
+    label: soundEffectStrings["status-poisoned"],
+    messageLogKeywords: [
+      /\bwas poisoned\b/i,
+      /\bmust have been poisonous\b/i,
+      /\bpoison was deadly\b/i,
+    ],
+  },
+  { key: "status-sick", label: soundEffectStrings["status-sick"] },
+  { key: "status-stoning", label: soundEffectStrings["status-stoning"] },
+  { key: "status-slimed", label: soundEffectStrings["status-slimed"] },
+  { key: "status-strangled", label: soundEffectStrings["status-strangled"] },
+  { key: "status-paralyzed", label: soundEffectStrings["status-paralyzed"] },
+  { key: "status-recovered", label: soundEffectStrings["status-recovered"] },
 ] as const satisfies ReadonlyArray<Nh3dSoundEffectDefinitionShape>;
 
 export type Nh3dSoundEffectDefinition =
@@ -457,9 +486,12 @@ export function resolveNh3dDefaultSoundPath(key: Nh3dSoundEffectKey): string {
 
 // The web build currently ships the default sound pack as a ZIP imported into
 // IndexedDB, not as raw public /soundpacks/default/*.ogg files.
+// Status-effect keys are synthesized at runtime via "synth:<key>" paths.
 const bundledBuiltinSoundPathByKey: Partial<
   Record<Nh3dSoundEffectKey, string>
-> = {};
+> = Object.fromEntries(
+  nh3dSynthSoundKeys.map((key) => [key, `${nh3dSynthSoundPathPrefix}${key}`]),
+);
 
 export function resolveNh3dBundledBuiltinSoundPath(
   key: Nh3dSoundEffectKey,
@@ -619,7 +651,11 @@ function createDefaultSoundAssignment(
     ...createBundledBuiltinSoundEntryBase(key, {
       enabled: true,
       volume: 1,
-      attribution: "No bundled sound assigned.",
+      attribution: resolveNh3dBundledBuiltinSoundPath(key)?.startsWith(
+        nh3dSynthSoundPathPrefix,
+      )
+        ? "Built-in synthesized sound (NetHack 3D Plus)"
+        : "No bundled sound assigned.",
     }),
     variations: [],
   };

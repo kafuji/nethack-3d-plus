@@ -1,4 +1,11 @@
 import type { NethackMenuItem, QuestionDialogState, Nethack3DEngineController } from "../../../game/ui-types";
+import { useI18n } from "../../../i18n";
+import { translateGamePrompt } from "../../../i18n/game-prompts";
+import { GamePromptText } from "./GamePromptText";
+import { GameMessageText } from "../messages/GameMessageText";
+import { translateReportLine } from "../../../i18n/report-text";
+import { translateInventoryCategory, translateInventoryItem } from "../../../i18n/inventory-text";
+import { translateGameMenuItem } from "../../../i18n/game-menu";
 import {
   Nh3dIcon,
   Nh3dIconArrowDown,
@@ -34,8 +41,6 @@ import {
 import {
   renderEnhanceMenuContent
 } from "../menus/enhance-content";
-// nh3d-plus: display-time game text translation.
-import { useGameTextLocalization } from "../../../plus/game-text";
 
 export interface QuestionDialogProps {
   question: QuestionDialogState | null;
@@ -104,14 +109,15 @@ export function QuestionDialog({
   questionMenuPageCount,
   questionMenuPageIndex,
 }: QuestionDialogProps) {
-  const gameText = useGameTextLocalization();
+  const { locale } = useI18n();
   if (shouldRenderQuestionTextInput) {
     return <TextEntryDialog
       open={Boolean(question)}
       id="question-dialog"
       className="nh3d-dialog-question nh3d-dialog-has-mobile-close"
       inputClassName="nh3d-question-text-input"
-      prompt={gameText.text(displayedQuestionText)}
+      prompt={translateGamePrompt(displayedQuestionText, locale)}
+      promptContent={<GamePromptText prompt={displayedQuestionText} />}
       focusKey={question?.text}
       value={questionTextInputValue}
       onChange={setQuestionTextInputValue}
@@ -152,9 +158,9 @@ export function QuestionDialog({
               : ""
               }`}
           >
-            <span className="nh3d-question-title-label">
-              {gameText.text(displayedQuestionText)}
-            </span>
+            <div className="nh3d-question-title-label">
+              <GamePromptText prompt={displayedQuestionText} />
+            </div>
             {showQuestionAmountControls ? (
               <div className="nh3d-question-amount-controls">
                 <button
@@ -213,7 +219,7 @@ export function QuestionDialog({
                         }
                         key={`cat-${index}`}
                       >
-                        {gameText.item(item.text)}
+                        {item.isCategory ? translateReportLine(translateInventoryCategory(item.text ?? "", locale), locale) : <GameMessageText message={translateReportLine(item.text ?? "", locale)} />}
                       </div>
                     );
                   }
@@ -297,7 +303,7 @@ export function QuestionDialog({
                           {item.accelerator})
                         </span>
                       </span>
-                      <span className="nh3d-pickup-text">{gameText.item(item.text)}</span>
+                      <span className="nh3d-pickup-text">{translateInventoryItem(item.text ?? "", locale)}</span>
                       {typeof selectedCount === "number" &&
                         Number.isFinite(selectedCount) &&
                         selectedCount > 0 ? (
@@ -372,6 +378,7 @@ export function QuestionDialog({
             ) : enhanceMenuData ? (
               <>
                 {renderEnhanceMenuContent(enhanceMenuData, {
+                  locale,
                   activeMenuSelectionInput: question.activeMenuSelectionInput,
                   onChooseSelectionInput: (selectionInput) =>
                     controller?.chooseQuestionChoice(selectionInput),
@@ -469,7 +476,7 @@ export function QuestionDialog({
                         >
                           <span className="nh3d-menu-button-key">{"-"}</span>
                           <span className="nh3d-menu-button-label">
-                            {gameText.item(String(item.text || "").trimStart())}
+                            {translateReportLine(translateGameMenuItem(String(item.text || "").trimStart(), question.text, locale), locale)}
                           </span>
                         </button>
                       );
@@ -483,7 +490,7 @@ export function QuestionDialog({
                         }
                         key={`cat-${index}`}
                       >
-                        {gameText.item(item.text)}
+                        {item.isCategory ? translateReportLine(translateInventoryCategory(item.text ?? "", locale), locale) : <GameMessageText message={translateReportLine(item.text ?? "", locale)} />}
                       </div>
                     );
                   }
@@ -537,7 +544,7 @@ export function QuestionDialog({
                         </span>
                       </span>
                       <span className="nh3d-menu-button-label">
-                        {gameText.item(item.text)}
+                        {translateReportLine(translateGameMenuItem(item.text ?? "", question.text, locale), locale)}
                       </span>
                     </button>
                   );
@@ -612,6 +619,17 @@ export function QuestionDialog({
                       choiceSourceItem,
                       normalizedChoice.charAt(0) || "?",
                     );
+                    const rawChoiceLabel = getQuestionChoiceLabel(
+                      question.text,
+                      normalizedChoice,
+                      questionChoiceSourceItems,
+                      activeRuntimeVersion,
+                      useInventoryChoiceLabels,
+                    );
+                    const itemText = choiceSourceItem?.text?.trim();
+                    const choiceLabel = itemText && rawChoiceLabel === `${normalizedChoice}) ${itemText}`
+                      ? `${normalizedChoice}) ${translateInventoryItem(itemText, locale)}`
+                      : rawChoiceLabel;
                     return (
                       <button
                         className={`nh3d-choice-button${choice === question.defaultChoice
@@ -648,13 +666,7 @@ export function QuestionDialog({
                           </span>
                         ) : null}
                         <span className="nh3d-choice-button-item-label">
-                          {getQuestionChoiceLabel(
-                            question.text,
-                            normalizedChoice,
-                            questionChoiceSourceItems,
-                            activeRuntimeVersion,
-                            useInventoryChoiceLabels,
-                          )}
+                          {choiceLabel}
                         </span>
                       </button>
                     );

@@ -4,6 +4,8 @@ import {
 import type { FpsCrosshairContextState, FpsContextAction } from "../../../game/ui-types";
 import AnimatedDialog from "../../modals/AnimatedDialog";
 import type * as React from "react";
+import { useI18n } from "../../../i18n";
+import { translateTileContextAction } from "../../../i18n/tile-context";
 
 export interface TileContextMenuProps {
   isFpsPlayMode: boolean;
@@ -28,6 +30,7 @@ export function TileContextMenu({
   fpsContextTitle,
   runFpsCrosshairContextAction,
 }: TileContextMenuProps) {
+  const { locale } = useI18n();
   return (
     <AnimatedDialog
       className={`nh3d-context-menu ${isFpsPlayMode &&
@@ -84,7 +87,7 @@ export function TileContextMenu({
                 onClick={() => runFpsCrosshairContextAction(action)}
                 type="button"
               >
-                {action.label}
+                {translateTileContextAction(action.id, action.kind, action.label, locale)}
               </button>
             ))}
           </div>

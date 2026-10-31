@@ -343,6 +343,8 @@ export type Nh3dClientOptions = {
   liveMessageLogFontScale: number;
   desktopMessageLogWindowScale: number;
   soundEnabled: boolean;
+  musicEnabled: boolean;
+  musicVolume: number;
   blockAmbientOcclusion: boolean;
   darkCorridorWalls367: boolean;
   overrideNh5DarkCorridorWallTiles: boolean;
@@ -504,6 +506,8 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   liveMessageLogFontScale: 1,
   desktopMessageLogWindowScale: 1,
   soundEnabled: true,
+  musicEnabled: true,
+  musicVolume: 0.5,
   blockAmbientOcclusion: true,
   darkCorridorWalls367: true,
   overrideNh5DarkCorridorWallTiles: true,
@@ -958,6 +962,12 @@ export function normalizeNh3dClientOptions(
   const desktopMessageLogWindowScale = Number(
     Math.max(0.33, Math.min(1.5, rawDesktopMessageLogWindowScale)).toFixed(2),
   );
+  const rawMusicVolume =
+    typeof overrides?.musicVolume === "number" &&
+    Number.isFinite(overrides.musicVolume)
+      ? overrides.musicVolume
+      : defaultNh3dClientOptions.musicVolume;
+  const musicVolume = Number(Math.max(0, Math.min(1, rawMusicVolume)).toFixed(2));
   const requestedTilesetPath =
     typeof overrides?.tilesetPath === "string"
       ? overrides.tilesetPath.trim()
@@ -1304,6 +1314,11 @@ export function normalizeNh3dClientOptions(
       typeof overrides?.soundEnabled === "boolean"
         ? overrides.soundEnabled
         : defaultNh3dClientOptions.soundEnabled,
+    musicEnabled:
+      typeof overrides?.musicEnabled === "boolean"
+        ? overrides.musicEnabled
+        : defaultNh3dClientOptions.musicEnabled,
+    musicVolume,
     blockAmbientOcclusion:
       typeof overrides?.blockAmbientOcclusion === "boolean"
         ? overrides.blockAmbientOcclusion

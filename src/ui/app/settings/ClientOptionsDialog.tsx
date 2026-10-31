@@ -7,8 +7,6 @@ import { isQuestApk } from "../../../quest/webxr/host";
 import { ClientOptionsUpdates } from "./ClientOptionsUpdates";
 import { ClientOptionToggleControl } from "./ClientOptionToggleControl";
 import { ClientOptionSelectControl } from "./ClientOptionSelectControl";
-// nh3d-plus: game text translation toggle.
-import { GameTextTranslationToggle } from "../../../plus/game-text/GameTextTranslationToggle";
 import { ClientOptionSliderControl } from "./ClientOptionSliderControl";
 import { ClientOptionColorControl } from "./ClientOptionColorControl";
 import {
@@ -102,7 +100,7 @@ export interface ClientOptionsDialogProps {
   updateTilesetPathDraft: (rawTilesetPath: string) => void;
   setManualSafeZonePreview: React.Dispatch<React.SetStateAction<ManualSafeZonePreview | null>>;
   showManualSafeZonePreview: (side: "right" | "bottom", rawSizePx: number) => void;
-  updateClientSliderDraft: (key: "brightness" | "contrast" | "gamma" | "minimapScale" | "uiFontScale" | "liveMessageLogFontScale" | "desktopMessageLogWindowScale" | "controllerFpsMoveRepeatMs" | "fpsFov" | "fpsLookSensitivityX" | "fpsLookSensitivityY" | "bloodStrength" | "liveMessageDisplayTimeMs" | "liveMessageFadeOutTimeMs" | "manualMobileBottomSafeZoneVerticalPx" | "manualMobileBottomSafeZoneHorizontalPx" | "manualMobileRightSafeZoneHorizontalPx", rawValue: number) => void;
+  updateClientSliderDraft: (key: "brightness" | "contrast" | "gamma" | "minimapScale" | "uiFontScale" | "liveMessageLogFontScale" | "desktopMessageLogWindowScale" | "controllerFpsMoveRepeatMs" | "fpsFov" | "fpsLookSensitivityX" | "fpsLookSensitivityY" | "bloodStrength" | "liveMessageDisplayTimeMs" | "liveMessageFadeOutTimeMs" | "manualMobileBottomSafeZoneVerticalPx" | "manualMobileBottomSafeZoneHorizontalPx" | "manualMobileRightSafeZoneHorizontalPx" | "musicVolume", rawValue: number) => void;
   soundPackDialogActionsRef: React.MutableRefObject<SoundPackDialogActions | null>;
   requestConfirmation: (request: ConfirmationDialogRequest) => Promise<boolean>;
   requestConfirmClientOptionsDialog: () => void;
@@ -275,7 +273,7 @@ export function ClientOptionsDialog({
                   />);
                 }
                 if (option.type === "select") {
-                  const selectControl = (<ClientOptionSelectControl key={option.key} option={option}
+                  return (<ClientOptionSelectControl key={option.key} option={option}
                     clientOptionsDraft={clientOptionsDraft}
                     updateClientOptionDraft={updateClientOptionDraft}
                     tilesetDropdownOptions={tilesetDropdownOptions}
@@ -284,13 +282,6 @@ export function ClientOptionsDialog({
                     setClientOptionsDraft={setClientOptionsDraft}
                     updateTilesetPathDraft={updateTilesetPathDraft}
                   />);
-                  // nh3d-plus: game text translation toggle follows the language option.
-                  return option.key === "locale" ? (
-                    <Fragment key={option.key}>
-                      {selectControl}
-                      <GameTextTranslationToggle />
-                    </Fragment>
-                  ) : selectControl;
                 }
                 if (option.type === "slider") {
                   return (<ClientOptionSliderControl key={option.key} option={option}

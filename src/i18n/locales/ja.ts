@@ -423,6 +423,20 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
       "magic-cast": "魔法詠唱",
       "magic-heal": "回復魔法",
       "magic-buff": "強化魔法",
+      "status-hungry": "状態：空腹",
+      "status-weak": "状態：衰弱（空腹）",
+      "status-fainting": "状態：卒倒寸前",
+      "status-confused": "状態：混乱",
+      "status-stunned": "状態：朦朧（めまい）",
+      "status-blind": "状態：盲目",
+      "status-hallucinating": "状態：幻覚",
+      "status-poisoned": "状態：毒",
+      "status-sick": "状態：食中毒 / 病気",
+      "status-stoning": "状態：石化",
+      "status-slimed": "状態：スライム化",
+      "status-strangled": "状態：窒息",
+      "status-paralyzed": "状態：麻痺 / 睡眠",
+      "status-recovered": "状態：回復",
     },
   },
   characterSheet: {
@@ -449,7 +463,7 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
         detail: "技能を向上",
       },
       conduct: {
-        label: "Conduct",
+        label: "行動記録",
         detail: "挑戦進行状況を表示",
       },
       overview: {
@@ -674,7 +688,7 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
         charisma: "店でのやり取り、ペット管理、社会的結果に影響します。",
       },
       armorClassDescription:
-        "低いほど有利です。Armor Class は敵の命中率を下げます。",
+        "低いほど有利です。アーマークラスは敵の命中率を下げます。",
     },
     directionHelp: {
       controller:
@@ -982,6 +996,15 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           label: "サウンドを有効化",
           description:
             "FMOD オーディオのオン/オフを切り替えます。無効にすると低性能デバイスでの音声処理負荷を軽減できます。",
+        },
+        musicEnabled: {
+          label: "BGM を有効化",
+          description:
+            "状況（平常・戦闘・ピンチ）に応じて変わる BGM を再生します。サウンドが有効なときのみ鳴ります。",
+        },
+        musicVolume: {
+          label: "BGM 音量",
+          description: "BGM の音量です。",
         },
         groupMobileControls: "モバイル操作",
         invertTouchPanningDirection: {

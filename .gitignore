@@ -26,3 +26,7 @@ quest/keystore.properties
 quest/version-code.local.json
 quest/version-code.local.json.lock
 quest/version-code.local.json.tmp
+
+# Local scratch dirs and Node compile caches
+.*-tmp/
+node-compile-cache/

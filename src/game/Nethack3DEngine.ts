@@ -5,6 +5,7 @@ import { WebHaptics } from "web-haptics";
 import { WorkerRuntimeBridge } from "../runtime";
 import type { RuntimeEvent } from "../runtime";
 import { FmodRuntime } from "../audio";
+import { BackgroundMusic, type MusicMood } from "../audio/music";
 import { isLoggingEnabled, setLoggingEnabled } from "../logging";
 import { TILE_SIZE } from "./constants";
 import { setActiveGlyphCatalog } from "./glyphs/registry";
@@ -71,8 +72,12 @@ class Nethack3DEngine implements Nethack3DEngineController {
       setLoggingEnabled(options.loggingEnabled);
     }
     this.systems.audioHapticsPlatform.fmodRuntime = new FmodRuntime(this.systems.audioHapticsPlatform.resolveFmodRuntimeOptions());
+    this.systems.audioHapticsPlatform.backgroundMusic = new BackgroundMusic();
+    this.systems.audioHapticsPlatform.syncBackgroundMusicWithClientOptions(this.systems.engineState.clientOptions);
+    this.exposeBackgroundMusicDebugHandle();
     this.systems.audioHapticsPlatform.messageSoundHooks = new MessageSoundHooks({
       isSoundEnabled: () => this.systems.engineState.clientOptions.soundEnabled,
+      onCombatActivity: () => this.systems.audioHapticsPlatform.backgroundMusic?.notifyCombatActivity(),
     });
     this.systems.audioHapticsPlatform.messageSoundHooks.setEnabled(this.systems.engineState.clientOptions.soundEnabled);
     this.systems.audioHapticsPlatform.webHaptics = this.systems.audioHapticsPlatform.shouldInitializeWebHaptics()
@@ -157,6 +162,22 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.startupOnly = true;
     setNativeInputModeFps(false);
     this.systems.webXrPresentation.setStartupMenu(true);
+  }
+
+  /**
+   * Devtools helper for auditioning BGM:
+   *   __nh3dMusic.preview("calm" | "combat" | "danger" | null)
+   *   __nh3dMusic.auto()   // back to situation-driven music
+   *   __nh3dMusic.mood()   // mood the director currently wants
+   */
+  private exposeBackgroundMusicDebugHandle(): void {
+    if (typeof window === "undefined") return;
+    const music = this.systems.audioHapticsPlatform.backgroundMusic;
+    (window as unknown as Record<string, unknown>).__nh3dMusic = {
+      preview: (mood: MusicMood | null) => music.setPreviewMood(mood),
+      auto: () => music.setPreviewMood(undefined),
+      mood: () => music.getCurrentMood(),
+    };
   }
 
   private initThreeJS(): void {
@@ -697,6 +718,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
       this.systems.audioHapticsPlatform.webHaptics?.cancel();
     }
     this.systems.audioHapticsPlatform.syncFmodRuntimeWithClientOptions(normalized.soundEnabled);
+    this.systems.audioHapticsPlatform.syncBackgroundMusicWithClientOptions(normalized);
     this.systems.vultureProjectionDebug.syncVultureWallProjectionDebugPanelVisibility();
     this.systems.tilesetAssets.refreshTilesetCompilationLoadingState();
     if (
@@ -746,6 +768,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.engineState.uiAdapter.setInventory(this.systems.promptDialogs.buildInventoryDialogState());
     this.systems.playerStatus.statusConditionMask = 0;
     this.systems.playerStatus.playerStats.conditionMask = 0;
+    this.systems.audioHapticsPlatform.backgroundMusic?.reset();
     this.systems.playerStatus.resetPlayerStatusDeltaTracking();
     this.systems.darkCorridorInference.pendingBoulderPushDarkCorridorInference = null;
     this.systems.playerMovement.fpsLastPlayerMoveFromTile = null;
@@ -1682,6 +1705,10 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.engineState.session?.dispose();
     this.systems.engineState.session = null;
     this.systems.audioHapticsPlatform.messageSoundHooks.dispose();
+    this.systems.audioHapticsPlatform.backgroundMusic?.dispose();
+    if (typeof window !== "undefined") {
+      delete (window as unknown as Record<string, unknown>).__nh3dMusic;
+    }
     this.systems.audioHapticsPlatform.clearPendingIncomingDamageRumble();
     this.systems.audioHapticsPlatform.webHaptics?.destroy();
     this.systems.audioHapticsPlatform.webHaptics = null;

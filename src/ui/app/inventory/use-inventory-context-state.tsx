@@ -6,6 +6,8 @@ import {
   useState
 } from "react";
 import type { FpsCrosshairContextState, Nh3dClientOptions, InventoryDialogState } from "../../../game/ui-types";
+import { useI18n } from "../../../i18n";
+import { translateInventoryItem } from "../../../i18n/inventory-text";
 import type {
   NethackRuntimeVersion
 } from "../../../runtime/types";
@@ -278,6 +280,7 @@ export interface UseInventoryContextStateModelDependencies {
 
 /** Context retention, display categories and available item actions */
 export function useInventoryContextStateModel(dependencies: UseInventoryContextStateModelDependencies) {
+  const { locale } = useI18n();
   const {
     inventoryContextMenuRenderState,
     inventoryContextTitleAnimationInstance,
@@ -290,7 +293,7 @@ export function useInventoryContextStateModel(dependencies: UseInventoryContextS
   } = dependencies;
 
   const inventoryContextTitle = inventoryContextMenuRenderState
-    ? `${inventoryContextMenuRenderState.itemText} (${inventoryContextMenuRenderState.accelerator})`
+    ? `${translateInventoryItem(inventoryContextMenuRenderState.itemText, locale)} (${inventoryContextMenuRenderState.accelerator})`
     : "";
 
   const inventoryContextTitleAnimationKey =

@@ -11,8 +11,10 @@ import type {
 import type {
   PlayerStatusBadge
 } from "./conditions";
-// nh3d-plus: display-time game text translation.
-import { useGameTextLocalization } from "../../../plus/game-text";
+import { useI18n } from "../../../i18n";
+import { translateGameLocation } from "../../../i18n/game-location";
+import { translatePlayerTitle } from "../../../i18n/player-title";
+import { translateStatusBadgeLabel } from "../../../i18n/status-text";
 
 export interface StatusBarProps {
   startup: boolean;
@@ -37,15 +39,15 @@ export function StatusBar({
   playerStatusBadges,
   visibleLocationLabel,
 }: StatusBarProps) {
-  const gameText = useGameTextLocalization();
+  const { locale } = useI18n();
   return (
     !startup && !gameOverDialogShowsTombstone && (
       <div id="stats-bar">
         <div className="nh3d-stats-name">
-          {gameText.status("title", playerStats.name)}
+          {translatePlayerTitle(playerStats.name, locale)}
           <span className="nh3d-stats-name-level">
             {" "}
-            (Lvl {playerStats.level})
+            ({locale === "ja" ? "レベル" : "Lvl"} {playerStats.level})
           </span>
         </div>
         <div className="nh3d-stats-meter">
@@ -65,7 +67,7 @@ export function StatusBar({
         {playerStats.maxPower > 0 ? (
           <div className="nh3d-stats-meter">
             <div className="nh3d-stats-meter-label nh3d-stats-meter-label-pw">
-              Pw: {playerStats.power}/{playerStats.maxPower}
+              {locale === "ja" ? "魔力" : "Pw"}: {playerStats.power}/{playerStats.maxPower}
             </div>
             <div className="nh3d-stats-meter-track">
               <div
@@ -80,40 +82,46 @@ export function StatusBar({
             <div
               className="nh3d-stats-core"
               style={resolveCoreStatStyle("strength")}
+              title={locale === "ja" ? "腕力" : undefined}
             >
-              St:{playerStats.strength}
+              {locale === "ja" ? "腕" : "St"}:{playerStats.strength}
             </div>
             <div
               className="nh3d-stats-core"
               style={resolveCoreStatStyle("dexterity")}
+              title={locale === "ja" ? "器用さ" : undefined}
             >
-              Dx:{playerStats.dexterity}
+              {locale === "ja" ? "器" : "Dx"}:{playerStats.dexterity}
             </div>
             <div
               className="nh3d-stats-core"
               style={resolveCoreStatStyle("constitution")}
+              title={locale === "ja" ? "耐久力" : undefined}
             >
-              Co:{playerStats.constitution}
+              {locale === "ja" ? "耐" : "Co"}:{playerStats.constitution}
             </div>
             <div
               className="nh3d-stats-core"
               style={resolveCoreStatStyle("intelligence")}
+              title={locale === "ja" ? "知性" : undefined}
             >
-              In:{playerStats.intelligence}
+              {locale === "ja" ? "知" : "In"}:{playerStats.intelligence}
             </div>
             <div
               className="nh3d-stats-core"
               style={resolveCoreStatStyle("wisdom")}
+              title={locale === "ja" ? "賢さ" : undefined}
             >
-              Wi:{playerStats.wisdom}
+              {locale === "ja" ? "賢" : "Wi"}:{playerStats.wisdom}
             </div>
           </div>
           <div className="nh3d-stats-core-row nh3d-stats-core-row-secondary">
             <div
               className="nh3d-stats-core"
               style={resolveCoreStatStyle("charisma")}
+              title={locale === "ja" ? "魅力" : undefined}
             >
-              Ch:{playerStats.charisma}
+              {locale === "ja" ? "魅" : "Ch"}:{playerStats.charisma}
             </div>
             <div
               className="nh3d-stats-secondary-ac nh3d-stats-mobile-inline-secondary"
@@ -122,13 +130,13 @@ export function StatusBar({
               AC:{playerStats.armor}
             </div>
             <div className="nh3d-stats-secondary-exp nh3d-stats-mobile-inline-secondary">
-              Exp:{playerStats.experience}
+              {locale === "ja" ? "経験" : "Exp"}:{playerStats.experience}
             </div>
             <div className="nh3d-stats-secondary-time nh3d-stats-mobile-inline-secondary">
-              T:{playerStats.time}
+              {locale === "ja" ? "ターン" : "T"}:{playerStats.time}
             </div>
             <div className="nh3d-stats-secondary-gold nh3d-stats-mobile-inline-secondary">
-              $:{playerStats.gold}
+              {locale === "ja" ? "金" : "$"}:{playerStats.gold}
             </div>
           </div>
         </div>
@@ -140,13 +148,13 @@ export function StatusBar({
             AC:{playerStats.armor}
           </div>
           <div className="nh3d-stats-secondary-exp nh3d-stats-desktop-secondary">
-            Exp:{playerStats.experience}
+            {locale === "ja" ? "経験" : "Exp"}:{playerStats.experience}
           </div>
           <div className="nh3d-stats-secondary-gold nh3d-stats-desktop-secondary">
-            $:{playerStats.gold}
+            {locale === "ja" ? "金" : "$"}:{playerStats.gold}
           </div>
           <div className="nh3d-stats-secondary-time nh3d-stats-desktop-secondary">
-            T:{playerStats.time}
+            {locale === "ja" ? "ターン" : "T"}:{playerStats.time}
           </div>
           <div className="nh3d-stats-hunger nh3d-stats-desktop-secondary">
             <span className="nh3d-stats-status-list">
@@ -155,7 +163,7 @@ export function StatusBar({
                   className={`nh3d-stats-status-badge is-${status.severity}`}
                   key={`desktop-status-${status.label}`}
                 >
-                  {gameText.status("status", status.label)}
+                  {translateStatusBadgeLabel(status.label, locale)}
                 </span>
               ))}
             </span>
@@ -163,7 +171,7 @@ export function StatusBar({
         </div>
         <div className="nh3d-stats-location">
           <div className="nh3d-stats-dungeon">
-            {gameText.status("location", visibleLocationLabel)}
+            {translateGameLocation(visibleLocationLabel, locale)}
             {playerStatusBadges.length > 0 ? (
               <span className="nh3d-stats-mobile-location-status">
                 <span className="nh3d-stats-status-list">
@@ -172,7 +180,7 @@ export function StatusBar({
                       className={`nh3d-stats-status-badge is-${status.severity}`}
                       key={`mobile-status-${status.label}`}
                     >
-                      {gameText.status("status", status.label)}
+                      {translateStatusBadgeLabel(status.label, locale)}
                     </span>
                   ))}
                 </span>
