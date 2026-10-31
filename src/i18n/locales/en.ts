@@ -433,6 +433,20 @@ export const en = {
       "magic-cast": "Magic cast",
       "magic-heal": "Magic heal",
       "magic-buff": "Magic buff",
+      "status-hungry": "Status: Hungry",
+      "status-weak": "Status: Weak (hunger)",
+      "status-fainting": "Status: Fainting",
+      "status-confused": "Status: Confused",
+      "status-stunned": "Status: Stunned",
+      "status-blind": "Status: Blind",
+      "status-hallucinating": "Status: Hallucinating",
+      "status-poisoned": "Status: Poisoned",
+      "status-sick": "Status: Food poisoning / Ill",
+      "status-stoning": "Status: Turning to stone",
+      "status-slimed": "Status: Slimed",
+      "status-strangled": "Status: Strangled",
+      "status-paralyzed": "Status: Paralyzed / Asleep",
+      "status-recovered": "Status: Recovered",
     },
   },
   characterSheet: {
@@ -1030,6 +1044,15 @@ export const en = {
           label: "Enable sound",
           description:
             "Turn FMOD audio on or off. Disabling reduces audio processing overhead on lower-end devices.",
+        },
+        musicEnabled: {
+          label: "Background music",
+          description:
+            "Play background music that changes with the situation (calm, combat, danger). Requires sound to be enabled.",
+        },
+        musicVolume: {
+          label: "Music volume",
+          description: "Volume of the background music.",
         },
         groupMobileControls: "Mobile controls",
         invertTouchPanningDirection: {

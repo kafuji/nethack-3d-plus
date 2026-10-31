@@ -36,10 +36,8 @@ export function resolveInitialClientOptionsFromPersisted(
   if (!persisted) {
     return deviceDefaults;
   }
-  const hydrated = normalizeNh3dClientOptions({
+  return normalizeNh3dClientOptions({
     ...deviceDefaults,
     ...persisted,
   });
-  hydrated.controllerEnabled = false;
-  return hydrated;
 }

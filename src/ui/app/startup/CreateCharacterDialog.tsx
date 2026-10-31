@@ -27,6 +27,8 @@ import {
   startupDefaultCharacterName
 } from "./character-preferences";
 import type { StartupCreateCharacterSelection, StartupCreateCharacterOptionSet } from "../../../game/helpers/startup-character-constraints";
+import { useI18n } from "../../../i18n";
+import { translateStartupCharacterOption } from "../../../i18n/startup-character";
 
 
 export interface CreateCharacterDialogProps {
@@ -86,6 +88,7 @@ export function CreateCharacterDialog({
   setStartupFlowStep,
   openClientOptionsDialog,
 }: CreateCharacterDialogProps) {
+  const { locale } = useI18n();
   return (
     <AnimatedDialog
       className={`nh3d-dialog nh3d-dialog-question nh3d-dialog-fixed-actions startup nh3d-character-setup-dialog${startupInitOptionsExpanded ? " nh3d-startup-init-expanded" : ""
@@ -129,7 +132,7 @@ export function CreateCharacterDialog({
           >
             {startupCreateCharacterOptionSet.roleOptions.map((role) => (
               <option key={role} value={role}>
-                {role}
+                {translateStartupCharacterOption(role, locale)}
               </option>
             ))}
           </select>
@@ -143,7 +146,7 @@ export function CreateCharacterDialog({
           >
             {startupCreateCharacterOptionSet.raceOptions.map((race) => (
               <option key={race} value={race}>
-                {race}
+                {translateStartupCharacterOption(race, locale)}
               </option>
             ))}
           </select>
@@ -157,7 +160,7 @@ export function CreateCharacterDialog({
           >
             {startupCreateCharacterOptionSet.genderOptions.map((gender) => (
               <option key={gender} value={gender}>
-                {gender}
+                {translateStartupCharacterOption(gender, locale)}
               </option>
             ))}
           </select>
@@ -171,7 +174,7 @@ export function CreateCharacterDialog({
           >
             {startupCreateCharacterOptionSet.alignOptions.map((align) => (
               <option key={align} value={align}>
-                {align}
+                {translateStartupCharacterOption(align, locale)}
               </option>
             ))}
           </select>

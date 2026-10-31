@@ -6,6 +6,8 @@ import type {
 } from "../../../game/ui-types";
 import type * as React from "react";
 import type { FloatingMessage } from "../../../state/gameStore";
+import { useI18n } from "../../../i18n";
+import { presentGameMessage } from "../../../i18n/message-presentation";
 
 
 export interface FloatingMessagesProps {
@@ -19,6 +21,7 @@ export function FloatingMessages({
   floatingMessages,
   floatingMessageTextStyle,
 }: FloatingMessagesProps) {
+  const { locale } = useI18n();
   return (
     <div
       className={
@@ -28,22 +31,25 @@ export function FloatingMessages({
       }
       id="floating-log-message-layer"
     >
-      {floatingMessages.map((entry, index) => (
+      {floatingMessages.map((entry) => {
+        const presented = presentGameMessage(entry.text, locale);
+        return (
         <div
           className="floating-message-container"
           key={entry.id}
-          style={{
-            top: `calc(${-index * 30}px * var(--nh3d-live-log-font-scale, 1))`,
-          }}
         >
           <div
             className="floating-message-text"
             style={floatingMessageTextStyle}
           >
-            {entry.text}
+            {presented.text}
+            {presented.isReferenceTranslation ? (
+              <span>（参考訳）</span>
+            ) : null}
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

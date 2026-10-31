@@ -9,9 +9,17 @@ import {
   type Nh3dSoundEffectVariation,
   type Nh3dSoundPackRecord,
 } from "../audio/sound-pack-storage";
+import {
+  isNh3dSynthSoundPath,
+  playNh3dSynthSound,
+  resolveNh3dSynthSoundKeyFromPath,
+  type Nh3dSynthSoundKey,
+} from "../audio/status-effect-synth";
 
 type MessageSoundHooksOptions = {
   isSoundEnabled: () => boolean;
+  /** Called when the player attacks, misses, or kills (drives background music). */
+  onCombatActivity?: () => void;
   debounceMs?: number;
   soundPackCacheTtlMs?: number;
 };
@@ -24,6 +32,7 @@ type WebAudioPlaybackResult =
 
 export class MessageSoundHooks {
   private readonly isSoundEnabled: () => boolean;
+  private readonly onCombatActivity: (() => void) | null;
   private readonly debounceMs: number;
   private readonly soundPackCacheTtlMs: number;
   private readonly audioContextRecoveryIntervalMs: number = 1250;
@@ -60,7 +69,8 @@ export class MessageSoundHooks {
     this.preloadInFlight = (async () => {
       const pack = await this.resolveActiveSoundPack();
       const pending = nh3dSoundEffectDefinitions.flatMap(({key}) =>
-        this.collectSoundVariations(key, pack).filter(v => v.enabled && v.volume > 0)
+        this.collectSoundVariations(key, pack)
+          .filter(v => v.enabled && v.volume > 0 && !isNh3dSynthSoundPath(v.path))
           .map(variation => ({key,variation})));
       let index = 0;
       // Limit parallel fetch/decode work on mobile and standalone headsets.
@@ -77,6 +87,7 @@ export class MessageSoundHooks {
 
   constructor(options: MessageSoundHooksOptions) {
     this.isSoundEnabled = options.isSoundEnabled;
+    this.onCombatActivity = options.onCombatActivity ?? null;
     this.debounceMs = Math.max(1, Math.round(options.debounceMs ?? 120));
     this.soundPackCacheTtlMs = Math.max(
       250,
@@ -85,6 +96,7 @@ export class MessageSoundHooks {
   }
 
   public playDamageEffectSound(variant: "hit" | "defeat"): void {
+    this.onCombatActivity?.();
     if (variant === "defeat") {
       void this.playSoundEffect("monster-killed");
       return;
@@ -112,7 +124,13 @@ export class MessageSoundHooks {
     void this.playSoundEffect("pickup-gold");
   }
 
+  /** Status-effect cue (hunger, confusion, blindness, recovery, ...). */
+  public playStatusEffectSound(soundKey: Nh3dSynthSoundKey): void {
+    void this.playSoundEffect(soundKey);
+  }
+
   public playMissedAttackSound(): void {
+    this.onCombatActivity?.();
     void this.playSoundEffect("missed-attack");
   }
 
@@ -406,6 +424,12 @@ export class MessageSoundHooks {
       return;
     }
 
+    const synthKey = resolveNh3dSynthSoundKeyFromPath(sourceUrl);
+    if (synthKey) {
+      this.tryPlaySynthSound(synthKey, effectiveVolume);
+      return;
+    }
+
     const webAudioResult = await this.tryPlaySoundEffectViaWebAudio(
       sourceUrl,
       effectiveVolume,
@@ -567,6 +591,24 @@ export class MessageSoundHooks {
     } catch {
       return "failed";
     }
+  }
+
+  private tryPlaySynthSound(soundKey: Nh3dSynthSoundKey, volume: number): void {
+    const context = this.ensureAudioContext();
+    if (!context || this.disposed || !this.isSoundEnabled()) return;
+    const play = () => {
+      if (this.disposed || !this.isSoundEnabled() || context.state !== "running") return;
+      try {
+        playNh3dSynthSound(context, soundKey, volume);
+      } catch (error) {
+        console.warn(`Unable to synthesize status sound '${soundKey}'.`, error);
+      }
+    };
+    if (context.state === "running") {
+      play();
+      return;
+    }
+    void this.resumeAudioContextIfNeeded().then(play);
   }
 
   private tryPlaySoundEffectViaHtmlAudio(sourceUrl: string, volume: number): void {

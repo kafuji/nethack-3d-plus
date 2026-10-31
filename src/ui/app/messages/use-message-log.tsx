@@ -7,6 +7,9 @@ import type {
   Nh3dClientOptions
 } from "../../../game/ui-types";
 import type * as React from "react";
+import { useI18n } from "../../../i18n";
+import { translateRuntimeText } from "../../../i18n/runtime-text";
+import { GameMessageText } from "./GameMessageText";
 import {
   t
 } from "../shared/translations";
@@ -88,6 +91,7 @@ export interface UseMessageLogViewDependencies {
 
 /** Floating log text/timing and desktop/mobile log rendering */
 export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
+  const { locale } = useI18n();
   const {
     clientOptions,
     terminalDesktopGutterVisible,
@@ -116,7 +120,7 @@ export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
           )
           : null}
         {gameMessages.map((message, index) => (
-          <div key={`${index}-${message}`}>{message}</div>
+          <div key={`${index}-${message}`}><GameMessageText message={message} /></div>
         ))}
       </div>
     ) : null;
@@ -129,7 +133,7 @@ export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
           : ""
           }`}
       >
-        <div id="game-status">{statusText}</div>
+        <div id="game-status">{translateRuntimeText(statusText, locale)}</div>
         {gameMessageLog ? (
           <div className="nh3d-overflow-glow-frame">{gameMessageLog}</div>
         ) : null}

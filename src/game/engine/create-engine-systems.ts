@@ -274,6 +274,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get runtimeEntityTracking() { return runtimeEntityTracking; },
   });
   const gameOver: GameOver = new GameOver({
+    get audioHapticsPlatform() { return audioHapticsPlatform; },
     get combatAttribution() { return combatAttribution; },
     get directionPrompts() { return directionPrompts; },
     get engineState() { return engineState; },

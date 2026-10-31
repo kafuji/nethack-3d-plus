@@ -121,6 +121,16 @@ Dynamic lighting surrounds the player, while defeated monsters can shatter into 
 2. `npm run dev`
 3. Open `http://localhost:5173/`
 
+On Windows, after installing dependencies, you can also run the local server
+and open the game in your browser from PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start-local.ps1
+```
+
+Keep the terminal open while playing; press `Ctrl+C` to stop the server. The
+script uses `http://127.0.0.1:5173/` and reports an error if the port is busy.
+
 ### Quest Development
 
 The [Quest WebXR build and development guide](docs/quest-webxr-runtime.md) covers prerequisites, controller mappings, signing, and device checks. Run `npm run quest:webxr:wired` to test with Quest Link. For a standalone debug APK, install the documented Android/JDK tools, run `npm ci`, then `npm run quest:webxr:apk -- --debug`. The build downloads and verifies its pinned Meta SDK and patched GeckoView dependencies; no Firefox source build or private signing key is needed.

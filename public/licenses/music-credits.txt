@@ -1,0 +1,31 @@
+NetHack 3D - Background music credits
+=====================================
+
+All bundled background music tracks are dedicated to the public domain under
+Creative Commons CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/).
+Attribution is not required, but we gratefully credit the authors.
+Files were trimmed, loudness-normalised and re-encoded to Ogg Vorbis.
+
+public/music/calm-dungeon.ogg
+  "Dungeon Ambience" by yd
+  https://opengameart.org/content/dungeon-ambience
+
+public/music/calm-unexplored.ogg
+  "Unexplored Expansion" by Bo Jingles (based on "Unexplored - short" by TAD)
+  https://opengameart.org/content/unexplored-expansion
+
+public/music/combat-battle-theme-a.ogg
+  "Battle Theme A" by cynicmusic
+  https://opengameart.org/content/battle-theme-a
+
+public/music/combat-determined-pursuit.ogg
+  "Determined Pursuit (epic orchestra loop)" by Emma_MA
+  https://opengameart.org/content/determined-pursuit-epic-orchestra-loop
+
+public/music/danger-tension-and-distress.ogg
+  "Tension and Distress" by Allen Yatsura
+  https://opengameart.org/content/tension-and-distress
+
+public/music/danger-panic-mode.ogg
+  "Panic Mode" by Breadman
+  https://opengameart.org/node/114093

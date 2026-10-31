@@ -18,6 +18,7 @@ import type {
 } from "../controller/binding-capture";
 import {
   controllerCaptureIgnoreDurationMs,
+  releaseInactiveCaptureBindings,
   sampleActiveControllerBindingCandidates
 } from "../controller/binding-capture";
 
@@ -111,11 +112,14 @@ export function useControllerRemapping(dependencies: UseControllerRemappingDepen
     }
 
     let frameHandle = 0;
+    // Ignore inputs held when capture started until they are released. Once
+    // released, the same button is a valid new assignment.
+    const blockedSet = new Set(controllerRemapListening.blockedBindings);
     const scan = (): void => {
       const elapsedMs =
         performance.now() - controllerRemapListening.startedAtMs;
       const candidates = sampleActiveControllerBindingCandidates();
-      const blockedSet = new Set(controllerRemapListening.blockedBindings);
+      releaseInactiveCaptureBindings(blockedSet, candidates);
       const capturedBinding =
         elapsedMs >= controllerCaptureIgnoreDurationMs
           ? (candidates.find((binding) => !blockedSet.has(binding)) ?? null)

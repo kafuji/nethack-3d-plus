@@ -1,4 +1,8 @@
 import { TextEntryDialog } from "../../modals/TextEntryDialog";
+import { useI18n } from "../../../i18n";
+import { translateGamePrompt } from "../../../i18n/game-prompts";
+import { GamePromptText } from "./GamePromptText";
+import { GameMessageText } from "../messages/GameMessageText";
 import type * as React from "react";
 import {
   commonStrings,
@@ -24,12 +28,14 @@ export function TextInputDialog({
   textInputValue,
   textInputRef,
 }: TextInputDialogProps) {
+  const { locale } = useI18n();
   return (
     <TextEntryDialog
       open={Boolean(textInputRequest)}
       id="text-input-dialog"
       className="nh3d-dialog-text nh3d-dialog-has-mobile-close"
-      prompt={textInputRequest?.text ?? ""}
+      prompt={translateGamePrompt(textInputRequest?.text ?? "", locale)}
+      promptContent={<GamePromptText prompt={textInputRequest?.text ?? ""} />}
       focusKey={textInputRequest}
       value={textInputValue}
       onChange={setTextInputValue}
@@ -45,7 +51,7 @@ export function TextInputDialog({
       )}
       context={textInputRequest?.contextMessage ? (
         <div className="nh3d-text-input-context" role="note">
-          <div className="nh3d-text-input-context-value">{textInputRequest.contextMessage}</div>
+          <div className="nh3d-text-input-context-value"><GameMessageText message={textInputRequest.contextMessage} /></div>
         </div>
       ) : null}
     />

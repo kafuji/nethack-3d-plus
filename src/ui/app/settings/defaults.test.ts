@@ -9,6 +9,11 @@ import { clientOptionsTabs, resolveClientOptionsDefaultTabId } from "./config";
 
 afterEach(() => vi.unstubAllGlobals());
 
+it("restores the saved controller support choice", () => {
+  expect(resolveInitialClientOptionsFromPersisted({ controllerEnabled: true }).controllerEnabled).toBe(true);
+  expect(resolveInitialClientOptionsFromPersisted({ controllerEnabled: false }).controllerEnabled).toBe(false);
+});
+
 it("defaults flattening off while respecting an explicit saved choice", () => {
   expect(resolveInitialClientOptionsFromPersisted(null).fpsFlattenEntityBillboards).toBe(false);
   expect(resolveInitialClientOptionsFromPersisted({fpsFlattenEntityBillboards:true}).fpsFlattenEntityBillboards).toBe(true);

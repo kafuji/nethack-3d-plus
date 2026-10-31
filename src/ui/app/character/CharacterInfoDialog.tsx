@@ -1,4 +1,15 @@
 import type { InfoMenuState, PlayerStatsSnapshot, Nethack3DEngineController } from "../../../game/ui-types";
+import { Fragment } from "react";
+import { useI18n } from "../../../i18n";
+import { translateIntroStory } from "../../../i18n/intro-story";
+import { translateHelpDocument } from "../../../i18n/help-text";
+import { translateEncyclopediaEntry } from "../../../i18n/encyclopedia-text";
+import { translateDiscoveryReport } from "../../../i18n/discovery-text";
+import { GameMessageText } from "../messages/GameMessageText";
+import { translateCharacterLine, translateCharacterSectionTitle } from "../../../i18n/character-text";
+import { translateReportLine } from "../../../i18n/report-text";
+import { translateSkillName } from "../../../i18n/game-skills";
+import { isNetHackMessageInfoMenuTitle } from "../menus/message-history";
 import AnimatedDialog from "../../modals/AnimatedDialog";
 import {
   type EnhanceMenuData
@@ -85,6 +96,7 @@ export function CharacterInfoDialog({
   showNextCachedMessageInfoMenu,
   showLatestCachedMessageInfoMenu,
 }: CharacterInfoDialogProps) {
+  const { locale } = useI18n();
   return (
     <AnimatedDialog
       className={`nh3d-dialog ${isCharacterSheetVisible ? "nh3d-dialog-character" : "nh3d-dialog-info"
@@ -160,30 +172,30 @@ export function CharacterInfoDialog({
                       <div className="nh3d-character-legacy-summary-row">
                         <section className="nh3d-character-panel nh3d-character-panel-legacy-summary">
                           <div className="nh3d-character-panel-title">
-                            Starting
+                            {locale === "ja" ? "初期" : "Starting"}
                           </div>
                           {renderCharacterSheetFieldRows(
                             characterSheet.backgroundLines,
                             "character-legacy-starting",
-                            { showBadges: false },
+                            { showBadges: false, locale },
                           )}
                         </section>
 
                         <section className="nh3d-character-panel nh3d-character-panel-legacy-summary">
                           <div className="nh3d-character-panel-title">
-                            Current
+                            {locale === "ja" ? "現在" : "Current"}
                           </div>
                           {renderCharacterSheetFieldRows(
                             characterSheet.characteristicsLines,
                             "character-legacy-current",
-                            { showBadges: false },
+                            { showBadges: false, locale },
                           )}
                         </section>
 
                         {showLegacySlashEmDeitiesPanel ? (
                           <section className="nh3d-character-panel nh3d-character-panel-legacy-summary nh3d-character-panel-legacy-deities">
                             <div className="nh3d-character-panel-title">
-                              Deities
+                              {locale === "ja" ? "神々" : "Deities"}
                             </div>
                             {renderCharacterSheetFieldRows(
                               characterSheet.deityLines,
@@ -191,6 +203,7 @@ export function CharacterInfoDialog({
                               {
                                 showBadges: false,
                                 highlightCurrent: true,
+                                locale,
                               },
                             )}
                           </section>
@@ -305,13 +318,13 @@ export function CharacterInfoDialog({
                                   className="nh3d-character-line"
                                   key={`character-bg-${index}`}
                                 >
-                                  {line}
+                                  {translateCharacterLine(line, locale)}
                                 </div>
                               ),
                             )
                           ) : characterSheet.identityLine ? (
                             <div className="nh3d-character-line">
-                              {characterSheet.identityLine}
+                              {translateCharacterLine(characterSheet.identityLine, locale)}
                             </div>
                           ) : null}
                         </div>
@@ -324,37 +337,37 @@ export function CharacterInfoDialog({
                         <div className="nh3d-character-line-stack">
                           {characterSheet.hitPointsLine ? (
                             <div className="nh3d-character-line">
-                              {characterSheet.hitPointsLine}
+                              {translateCharacterLine(characterSheet.hitPointsLine, locale)}
                             </div>
                           ) : null}
                           {characterSheet.energyLine ? (
                             <div className="nh3d-character-line">
-                              {characterSheet.energyLine}
+                              {translateCharacterLine(characterSheet.energyLine, locale)}
                             </div>
                           ) : null}
                           {characterSheet.armorClassLine ? (
                             <div className="nh3d-character-line">
-                              {characterSheet.armorClassLine}
+                              {translateCharacterLine(characterSheet.armorClassLine, locale)}
                             </div>
                           ) : null}
                           {characterSheet.experienceLine ? (
                             <div className="nh3d-character-line">
-                              {characterSheet.experienceLine}
+                              {translateCharacterLine(characterSheet.experienceLine, locale)}
                             </div>
                           ) : null}
                           {characterSheet.scoreLine ? (
                             <div className="nh3d-character-line">
-                              {characterSheet.scoreLine}
+                              {translateCharacterLine(characterSheet.scoreLine, locale)}
                             </div>
                           ) : null}
                           {characterSheet.walletLine ? (
                             <div className="nh3d-character-line">
-                              {characterSheet.walletLine}
+                              {translateCharacterLine(characterSheet.walletLine, locale)}
                             </div>
                           ) : null}
                           {characterSheet.autopickupLine ? (
                             <div className="nh3d-character-line">
-                              {characterSheet.autopickupLine}
+                              {translateCharacterLine(characterSheet.autopickupLine, locale)}
                             </div>
                           ) : null}
                         </div>
@@ -485,7 +498,7 @@ export function CharacterInfoDialog({
                             key={`character-extra-${section.title}-${sectionIndex}`}
                           >
                             <div className="nh3d-character-panel-title">
-                              {section.title}
+                              {translateCharacterSectionTitle(section.title, locale)}
                             </div>
                             <div className="nh3d-character-line-stack">
                               {section.lines.map((line, lineIndex) => (
@@ -493,7 +506,7 @@ export function CharacterInfoDialog({
                                   className="nh3d-character-line"
                                   key={`character-extra-line-${sectionIndex}-${lineIndex}`}
                                 >
-                                  {line}
+                                  {translateCharacterLine(line, locale)}
                                 </div>
                               ))}
                             </div>
@@ -574,11 +587,11 @@ export function CharacterInfoDialog({
                 data-nh3d-overflow-glow-host="parent"
               >
                 <div className="nh3d-question-text">
-                  {infoEnhanceMenuData.prompt ||
+                  {translateSkillName(infoEnhanceMenuData.prompt ||
                     displayedInfoMenu.title ||
-                    t.dialogs.info.infoTitleFallback}
+                    t.dialogs.info.infoTitleFallback, locale)}
                 </div>
-                {renderEnhanceMenuContent(infoEnhanceMenuData)}
+                {renderEnhanceMenuContent(infoEnhanceMenuData, { locale })}
               </div>
               <div className="nh3d-menu-actions">
                 {showMessageHistoryNavigation ? (
@@ -646,11 +659,19 @@ export function CharacterInfoDialog({
                 data-nh3d-overflow-glow-host="parent"
               >
                 <div className="nh3d-info-title">
-                  {displayedInfoMenu.title || t.dialogs.info.infoTitleFallback}
+                  {locale === "ja" && isNetHackMessageInfoMenuTitle(displayedInfoMenu.title)
+                    ? "NetHack メッセージ"
+                    : translateReportLine(displayedInfoMenu.title || t.dialogs.info.infoTitleFallback, locale)}
                 </div>
                 <div className="nh3d-info-body">
                   {displayedInfoMenu.lines.length > 0
-                    ? displayedInfoMenu.lines.join("\n")
+                    ? (translateHelpDocument(displayedInfoMenu.lines, locale) ?? translateEncyclopediaEntry(displayedInfoMenu.lines, locale) ?? translateDiscoveryReport(displayedInfoMenu.lines, locale)?.join("\n") ?? (isNetHackMessageInfoMenuTitle(displayedInfoMenu.title)
+                      ? translateIntroStory(displayedInfoMenu.lines, locale)
+                      : null)) ?? displayedInfoMenu.lines.map((line, index) => (
+                        <Fragment key={index}>
+                          {index > 0 ? "\n" : null}<GameMessageText message={translateReportLine(line, locale)} />
+                        </Fragment>
+                      ))
                     : t.dialogs.info.noDetails}
                 </div>
                 <div className="nh3d-info-hint">

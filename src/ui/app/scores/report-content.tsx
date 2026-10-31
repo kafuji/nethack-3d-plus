@@ -1,4 +1,7 @@
 import { resolveArchivedDungeonOverview } from "../../../runtime/dungeon-overview";
+import { translateScoreText } from "./score-i18n";
+import { translateReportLine } from "../../../i18n/report-text";
+import { translateGameMessage } from "../../../i18n/game-messages";
 import type {
   RunTelemetryLootEvent
 } from "../../../game/ui-types";
@@ -165,6 +168,7 @@ export function buildTopScoreRawReportSections(
 
 export function renderTopScoreRawReportBlock(
   section: TopScoreRawReportSection,
+  locale: import("../../../i18n/core").SupportedLocale = "en",
 ): JSX.Element {
   return (
     <details
@@ -173,19 +177,19 @@ export function renderTopScoreRawReportBlock(
       open={Boolean(section.lines?.length)}
     >
       <summary className="nh3d-top-score-report-summary">
-        <span>{section.title}</span>
+        <span>{translateScoreText(section.title, locale)}</span>
         <span>
           {section.lines?.length
-            ? `${formatTopScoreInteger(section.lines.length)} lines`
-            : "Not captured"}
+            ? locale === "ja" ? `${formatTopScoreInteger(section.lines.length)} 行` : `${formatTopScoreInteger(section.lines.length)} lines`
+            : translateScoreText("Not captured", locale)}
         </span>
       </summary>
       {section.lines?.length ? (
         <pre className="nh3d-top-score-report-pre">
-          {section.lines.join("\n")}
+          {section.lines.map((line) => translateGameMessage(translateReportLine(line, locale), locale)).join("\n")}
         </pre>
       ) : (
-        <div className="nh3d-top-scores-empty">{section.emptyLabel}</div>
+        <div className="nh3d-top-scores-empty">{translateScoreText(section.emptyLabel, locale)}</div>
       )}
     </details>
   );

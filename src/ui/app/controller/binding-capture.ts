@@ -26,6 +26,16 @@ export const controllerCaptureIgnoreDurationMs = 150;
 
 export const startupControllerActionThreshold = 0.5;
 
+/** Allow a button held at capture start to be bound after it is released. */
+export function releaseInactiveCaptureBindings(
+  blocked: Set<Nh3dControllerBinding>,
+  candidates: readonly Nh3dControllerBinding[],
+): void {
+  for (const binding of blocked) {
+    if (!candidates.includes(binding)) blocked.delete(binding);
+  }
+}
+
 export const startupControllerScrollSpeedPxPerSec = 1150;
 
 export const startupControllerCursorDeadzone = 0.2;

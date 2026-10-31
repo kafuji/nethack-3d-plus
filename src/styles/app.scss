@@ -761,6 +761,20 @@ canvas {
   line-height: 1.4;
 }
 
+.nh3d-reference-message summary {
+  cursor: pointer;
+}
+
+.nh3d-reference-message-label {
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.nh3d-info-body .nh3d-reference-message,
+.nh3d-info-body .nh3d-reference-message summary {
+  display: inline;
+}
+
 .nh3d-mobile-log {
   position: fixed;
   // Mobile log only: include left safe-area inset to avoid notch/cutout overlap.
@@ -1294,20 +1308,19 @@ canvas {
   position: fixed;
   left: 50%;
   top: 35%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -100%);
   width: min(92vw, 1100px);
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: calc(8px * var(--nh3d-live-log-font-scale, 1));
   pointer-events: none;
   z-index: 1600;
 }
 
 .floating-message-container {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
+  position: relative;
   pointer-events: none;
-  transition: top 140ms ease-out;
-  will-change: top;
 }
 
 .floating-message-text {
@@ -1339,6 +1352,12 @@ canvas {
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
+}
+
+.floating-message-text .nh3d-reference-original {
+  display: block;
+  white-space: normal;
+  font-size: 0.8em;
 }
 
 @keyframes nh3d-floating-message-rise {

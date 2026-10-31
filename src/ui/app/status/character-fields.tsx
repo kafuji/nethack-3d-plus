@@ -7,6 +7,8 @@ import {
 import {
   t
 } from "../shared/translations";
+import { getCurrentLocale, type SupportedLocale } from "../../../i18n/core";
+import { translateCharacterBadge, translateCharacterFieldLabel, translateCharacterFieldValue, translateCharacterLine } from "../../../i18n/character-text";
 
 /** Character sheet descriptions, experience thresholds and field rendering. */
 export const characterStatDescriptionById: Record<CharacterSheetStatKey, string> = {
@@ -55,6 +57,7 @@ export type CharacterSheetFieldRow = {
 export type CharacterSheetFieldRenderOptions = {
   showBadges?: boolean;
   highlightCurrent?: boolean;
+  locale?: SupportedLocale;
 };
 
 export function normalizeCharacterSheetFieldBadges(note: string): string[] {
@@ -114,6 +117,7 @@ export function renderCharacterSheetFieldRows(
 ): JSX.Element {
   const showBadges = options.showBadges === true;
   const highlightCurrent = options.highlightCurrent === true;
+  const locale = options.locale ?? getCurrentLocale();
   return (
     <div className="nh3d-character-field-list">
       {lines.map((line, index) => {
@@ -121,7 +125,7 @@ export function renderCharacterSheetFieldRows(
         if (!parsed) {
           return (
             <div className="nh3d-character-line" key={`${keyPrefix}-${index}`}>
-              {line}
+              {translateCharacterLine(line, locale)}
             </div>
           );
         }
@@ -132,16 +136,16 @@ export function renderCharacterSheetFieldRows(
               }`}
             key={`${keyPrefix}-${index}`}
           >
-            <div className="nh3d-character-field-label">{parsed.label}</div>
+            <div className="nh3d-character-field-label">{translateCharacterFieldLabel(parsed.label, locale)}</div>
             <div className="nh3d-character-field-value-group">
-              <span className="nh3d-character-field-value">{parsed.value}</span>
+              <span className="nh3d-character-field-value">{translateCharacterFieldValue(parsed.label, parsed.value, locale)}</span>
               {showBadges
                 ? parsed.badges.map((badge) => (
                   <span
                     className="nh3d-character-field-badge"
                     key={`${keyPrefix}-${index}-${badge}`}
                   >
-                    {badge}
+                    {translateCharacterBadge(badge, locale)}
                   </span>
                 ))
                 : null}

@@ -2,6 +2,8 @@ import {
   type CSSProperties
 } from "react";
 import type { NethackMenuItem, InventoryDialogState, Nethack3DEngineController, Nh3dInventoryFixedTileSizeMode } from "../../../game/ui-types";
+import { useI18n } from "../../../i18n";
+import { translateInventoryCategory, translateInventoryItem } from "../../../i18n/inventory-text";
 import AnimatedDialog from "../../modals/AnimatedDialog";
 import type * as React from "react";
 import type {
@@ -94,6 +96,7 @@ export function InventoryDialog({
   inventoryKeyboardActivationKeysDownRef,
   inventoryCloseInstructionText,
 }: InventoryDialogProps) {
+  const { locale } = useI18n();
   return (
     <AnimatedDialog
       className={`nh3d-dialog nh3d-dialog-inventory nh3d-dialog-fixed-actions nh3d-dialog-has-mobile-close${inventoryReducedMotionEnabled
@@ -208,7 +211,7 @@ export function InventoryDialog({
                       }`}
                     key={`cat-${index}`}
                   >
-                    {item.text}
+                    {translateInventoryCategory(item.text ?? "", locale)}
                   </div>
                 );
               }
@@ -404,7 +407,7 @@ export function InventoryDialog({
                     </span>
                   </span>
                   <span className={item.className as string}>
-                    {item.text || t.dialogs.inventory.unknownItem}
+                    {item.text ? translateInventoryItem(item.text, locale) : t.dialogs.inventory.unknownItem}
                   </span>
                 </div>
               );

@@ -309,7 +309,12 @@ function normalizeBindingSlot(
   rawValue: unknown,
   fallback: Nh3dControllerBinding | null,
 ): Nh3dControllerBinding | null {
-  if (rawValue === null || rawValue === undefined) {
+  // An explicit null represents a cleared slot. Missing values still inherit
+  // defaults for settings saved before a binding was introduced.
+  if (rawValue === null) {
+    return null;
+  }
+  if (rawValue === undefined) {
     return fallback;
   }
   const parsed = parseNh3dControllerBinding(rawValue);

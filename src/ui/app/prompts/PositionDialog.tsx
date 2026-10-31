@@ -5,6 +5,7 @@ import {
   t
 } from "../shared/translations";
 import type { Nethack3DEngineController } from "../../../game/ui-types";
+import { GamePromptText } from "./GamePromptText";
 
 
 export interface PositionDialogProps {
@@ -51,7 +52,7 @@ export function PositionDialog({
         ) : null}
         {positionRequest ? (
           <div className="nh3d-position-dialog-request">
-            {positionRequest}
+            <GamePromptText prompt={positionRequest} />
           </div>
         ) : null}
         {positionInputInstruction ? (

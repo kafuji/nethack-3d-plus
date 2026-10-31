@@ -9,6 +9,7 @@ import {
   createEmptyRunTelemetrySnapshot
 } from "../../ui-types";
 import type { InventoryDialogOptions } from "../shared/types";
+import type { AudioHapticsPlatform } from "../audio/audio-haptics-platform";
 import type { CombatAttribution } from "../world/combat-attribution";
 import type { DirectionPrompts } from "./direction-prompts";
 import type { EngineState } from "../runtime/engine-state";
@@ -19,6 +20,10 @@ import type { QuestionMenus } from "./question-menus";
 import type { RunTelemetry } from "../world/run-telemetry";
 
 export interface GameOverDependencies {
+  readonly audioHapticsPlatform: Pick<
+    AudioHapticsPlatform,
+    "backgroundMusic"
+  >;
   readonly combatAttribution: Pick<
     CombatAttribution,
     "hasTriggeredPlayerDeathEffect"
@@ -269,6 +274,7 @@ export class GameOver {
     if (!nextActive || nextPromptReady) {
       this.pendingGameOverPromptReady = false;
     }
+    this.dependencies.audioHapticsPlatform.backgroundMusic?.setGameOver(nextActive);
     this.gameOverState = {
       active: nextActive,
       deathMessage: deathMessage && deathMessage.trim() ? deathMessage : null,
