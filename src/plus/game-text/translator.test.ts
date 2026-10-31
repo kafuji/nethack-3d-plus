@@ -72,3 +72,51 @@ describe("status line", () => {
     expect(translator.translateStatusWord("Hungry")).toBe("ぺこぺこ");
   });
 });
+
+describe("quest texts", () => {
+  it("translates the legacy intro window", () => {
+    const lines = [
+      "It is written in the Book of Odin:",
+      "",
+      "    After the Creation, the cruel god Moloch rebelled",
+      "    against the authority of Marduk the Creator.",
+      "    Moloch stole from Marduk the most powerful of all",
+      "    the artifacts of the gods, the Amulet of Yendor,",
+      "    and he hid it in the dark cavities of Gehennom, the",
+      "    Under World, where he now lurks, and bides his time.",
+      "",
+      "Your god Odin seeks to possess the Amulet, and with it",
+      "to gain deserved ascendance over the other gods.",
+      "",
+      "You, a newly trained Stripling, have been heralded",
+      "from birth as the instrument of Odin.  You are destined",
+      "to recover the Amulet for your deity, or die in the",
+      "attempt.  Your hour of destiny has come.  For the sake",
+      "of us all:  Go bravely with Odin!",
+    ];
+    const result = translator.translateWindow(lines).join("\n");
+    expect(result).toContain("これは，オーディンの書に述べられているものである．");
+    expect(result).toContain("見習い");
+  });
+});
+
+describe("end of game disclosure", () => {
+  it("translates attribute and question lines", () => {
+    expect(translator.translate("You were confused.")).toBe("あなたは混乱状態であった．");
+    expect(translator.translate("You are poison resistant.")).toBe("あなたは毒への耐性をもっている．");
+    expect(translator.translate("Do you want your possessions identified?")).toBe("持ち物を識別しますか？");
+  });
+});
+
+describe("frequent runtime messages", () => {
+  it.each([
+    ["What do you want to eat? [fg or ?*]", "どれを食べますか？[fg or ?*]"],
+    ["Hello, Tester!  Welcome to Asidonhopo's general store!", "「こんにちはTester！Asidonhopoの雑貨屋にようこそ！」"],
+    ["You have a little trouble lifting a boulder.", "岩を持ったら少しふらついた．"],
+    ["You finish eating the food ration.", "あなたは食料を食べ終えた．"],
+    ["This door is locked.", "この扉には鍵が掛かっている．"],
+    ["Your kitten eats a fox corpse.", "小猫は狐の死体を食べた．"],
+  ])("translates %s", (english, japanese) => {
+    expect(translator.translate(english)).toBe(japanese);
+  });
+});

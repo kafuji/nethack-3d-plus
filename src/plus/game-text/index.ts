@@ -74,6 +74,12 @@ export function localizeGameItemText(text: string | null | undefined): string {
   return translator.translateItemText(value);
 }
 
+/** Translate a multi-line text window (quest messages, legacy intro). */
+export function localizeGameWindow(lines: readonly string[]): string[] {
+  if (!translator || !isActive()) return [...lines];
+  return translator.translateWindow(lines);
+}
+
 /** Status line pieces: player title, location label, hunger/encumbrance words. */
 export function localizeGameStatus(
   kind: "title" | "location" | "status",
@@ -99,8 +105,9 @@ export function useGameTextLocalization(): {
   text: (value: string | null | undefined) => string;
   item: (value: string | null | undefined) => string;
   status: typeof localizeGameStatus;
+  window: typeof localizeGameWindow;
 } {
   useSyncExternalStore(subscribe, () => version, () => version);
   ensureGameTextTranslatorLoaded();
-  return { text: localizeGameText, item: localizeGameItemText, status: localizeGameStatus };
+  return { text: localizeGameText, item: localizeGameItemText, status: localizeGameStatus, window: localizeGameWindow };
 }

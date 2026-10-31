@@ -655,7 +655,7 @@ export function CharacterInfoDialog({
                 </div>
                 <div className="nh3d-info-body">
                   {displayedInfoMenu.lines.length > 0
-                    ? displayedInfoMenu.lines.map(gameText.text).join("\n")
+                    ? gameText.window(displayedInfoMenu.lines).join("\n")
                     : t.dialogs.info.noDetails}
                 </div>
                 <div className="nh3d-info-hint">

@@ -276,6 +276,30 @@ const roleNames = {};
   }
 }
 
+// Quest and legacy-intro texts from dat/quest.lua, paired by table path.
+function extractQuestTexts(file) {
+  const src = fs.readFileSync(file, "utf8");
+  const result = new Map();
+  const stack = [];
+  const re = /([A-Za-z_][A-Za-z0-9_]*)\s*=\s*\{|\}|(text|synopsis)\s*=\s*(?:\[\[([\s\S]*?)\]\]|"((?:[^"\\]|\\.)*)")|--[^\n]*/g;
+  let m;
+  while ((m = re.exec(src))) {
+    if (m[0].startsWith("--")) continue;
+    if (m[1]) stack.push(m[1]);
+    else if (m[0] === "}") stack.pop();
+    else if (m[2]) result.set(`${stack.join(".")}.${m[2]}`, m[3] ?? decodeCString(m[4] ?? ""));
+  }
+  return result;
+}
+const questTexts = [];
+{
+  const ja = extractQuestTexts(path.join(jnhDir, "dat/quest.lua"));
+  for (const [key, value] of extractQuestTexts(path.join(vanillaDir, "dat/quest.lua"))) {
+    const jaValue = ja.get(key);
+    if (jaValue && jaValue !== value && /[A-Za-z]{3}/.test(value)) questTexts.push([value, jaValue]);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Message templates from JP annotations.
 
@@ -300,8 +324,14 @@ const outputFunctions = {
   verbalize: ['"', "「"],
   Sprintf: ["", ""],
   Snprintf: ["", ""],
+  Strcpy: ["", ""],
+  enlght_out: ["", ""],
+  putstr: ["", ""],
+  yn_function: ["", ""],
 };
-const formatArgIndex = { Sprintf: 1, Snprintf: 2, custompline: 1, pline_mon: 1, pline_dir: 1, pline_xy: 2 };
+const formatArgIndex = {
+  Sprintf: 1, Snprintf: 2, custompline: 1, pline_mon: 1, pline_dir: 1, pline_xy: 2, Strcpy: 1, putstr: 2,
+};
 const suffixes = { verbalize: ['"', "」"] };
 
 function findCall(stmt) {
@@ -345,6 +375,26 @@ function parseFormat(fmt) {
 }
 
 const templates = new Map();
+// Enlightenment / end-of-game attribute lines: "You are fast." etc.
+// key "<english macro>|<english attr>" -> "<japanese macro>|<japanese attr>"
+const enlightenment = {};
+const enlMacros = ["you_are_ing", "you_have_been", "you_have_never", "you_have_X", "you_are", "you_have", "you_can"];
+
+function addEnlightenmentPair(enStmt, jaStmt) {
+  const call = (stmt) => {
+    const m = new RegExp(`\\b(${enlMacros.join("|")})\\s*\\(`).exec(stmt);
+    if (!m) return null;
+    const paren = readParenBody(stmt, m.index + m[0].length - 1);
+    if (!paren) return null;
+    const attr = literalValue(splitArgs(paren.body)[0] ?? "");
+    return attr === null ? null : { macro: m[1], attr };
+  };
+  const en = call(enStmt);
+  const ja = call(jaStmt);
+  if (!en || !ja || !/[A-Za-z]/.test(en.attr)) return;
+  const key = `${en.macro}|${en.attr}`;
+  if (!enlightenment[key]) enlightenment[key] = `${ja.macro}|${ja.attr}`;
+}
 let pairCount = 0;
 
 
@@ -370,6 +420,9 @@ function addPair(enStmt, jaStmt) {
     }
     mapping.push({ index, transform: "translate" });
   }
+  // A Japanese text that ignores the English %s arguments was written for one
+  // specific case (e.g. "You finish %s." -> one fixed verb); skip it.
+  if (enFmt.specs.includes("s") && mapping.length === 0) return;
   const [enPrefix, jaPrefix] = outputFunctions[en.fn];
   const [, jaPrefixForJa] = outputFunctions[ja.fn] ?? ["", ""];
   const enSuffix = suffixes[en.fn]?.[0] ?? "";
@@ -380,8 +433,9 @@ function addPair(enStmt, jaStmt) {
   const literalText = englishParts.filter((p) => typeof p === "string").join("");
   if (literalText.replace(/[^A-Za-z]/g, "").length < 4) return;
   // Formats such as "Your %s %s." are too generic to identify a message.
-  const literalWords = literalText.match(/[A-Za-z]{2,}/g) ?? [];
-  if (enFmt.specs.length >= 2 && literalWords.length < 2) return;
+  const fillerWords = new Set(["you", "your", "the", "an", "of", "is", "are", "and", "to", "in", "on"]);
+  const literalWords = (literalText.match(/[A-Za-z]{2,}/g) ?? []).filter((w) => !fillerWords.has(w.toLowerCase()));
+  if (enFmt.specs.length >= 2 && literalWords.length < 1) return;
 
   const japaneseParts = [...jaFmt.parts];
   japaneseParts[0] = (ja.fn === en.fn ? jaPrefix : jaPrefixForJa) + (japaneseParts[0] ?? "");
@@ -406,7 +460,8 @@ function addPair(enStmt, jaStmt) {
     }
   }
   if (enTemplate.includes("\n") || jaTemplate.includes("\n")) return;
-  if (!/[^\s{}0-9!]/.test(jaTemplate)) return;
+  // Require some actual Japanese text besides placeholders and punctuation.
+  if (!/[\u3040-\u30ff\u4e00-\u9fff]/.test(jaTemplate.replace(/\{\d+!?\}/g, ""))) return;
   if (!templates.has(enTemplate)) templates.set(enTemplate, jaTemplate);
 }
 
@@ -438,7 +493,9 @@ for (const dir of ["src", "japanese"]) {
       const english = m[1];
       if (english.includes("/*")) continue;
       const after = src.slice(m.index + m[0].length);
-      addPair(english, statementAt(after, 0));
+      const japanese = statementAt(after, 0);
+      addPair(english, japanese);
+      addEnlightenmentPair(english, japanese);
     }
     // Pattern B: #if 0 /*JP...*/ <english> #else <japanese> #endif
     for (const m of src.matchAll(/#\s*if 0 \/\*JP[^\n]*\n([\s\S]*?)\n\s*#\s*else[^\n]*\n([\s\S]*?)\n\s*#\s*endif/g)) {
@@ -446,7 +503,10 @@ for (const dir of ["src", "japanese"]) {
       const enStmts = stripComments(m[1]).split(/;\s*\n/);
       const jaStmts = stripComments(m[2]).split(/;\s*\n/);
       if (enStmts.length !== jaStmts.length) continue;
-      enStmts.forEach((stmt, i) => addPair(`${stmt};`, `${jaStmts[i]};`));
+      enStmts.forEach((stmt, i) => {
+        addPair(`${stmt};`, `${jaStmts[i]};`);
+        addEnlightenmentPair(stmt, jaStmts[i]);
+      });
     }
   }
 }
@@ -458,6 +518,8 @@ const output = {
   features,
   dungeons,
   roleNames,
+  questTexts,
+  enlightenment,
   templates: Object.fromEntries(templates),
 };
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
@@ -465,6 +527,7 @@ fs.writeFileSync(outFile, `${JSON.stringify(output, null, 0)}\n`);
 console.log(
   `monsters: ${Object.keys(monsters).length}, objects: ${Object.values(objects).reduce((n, t) => n + Object.keys(t).length, 0)}, ` +
     `features: ${Object.keys(features).length}, dungeons: ${Object.keys(dungeons).length}, ` +
-    `roleNames: ${Object.keys(roleNames).length}, ` +
+    `roleNames: ${Object.keys(roleNames).length}, quest texts: ${questTexts.length}, ` +
+    `enlightenment: ${Object.keys(enlightenment).length}, ` +
     `pairs: ${pairCount}, templates: ${templates.size}`,
 );

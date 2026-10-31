@@ -8,6 +8,10 @@ import { GameNameTranslator, type GameTextNameData } from "./object-names";
 import { coreGameTextRules, type CoreRuleContext } from "./core-rules";
 
 export interface GameTextData extends GameTextNameData {
+  /** Quest/legacy texts (English, Japanese) with %x substitution codes. */
+  readonly questTexts?: ReadonlyArray<readonly [string, string]>;
+  /** "<macro>|<english attr>" -> "<macro>|<japanese attr>" for "You are fast." lines. */
+  readonly enlightenment?: Readonly<Record<string, string>>;
   /** Role, rank-title and god names from JNetHack role.c. */
   readonly roleNames?: Readonly<Record<string, string>>;
   /** English format with "\u0000<spec>" placeholders -> Japanese with {n}. */
@@ -73,6 +77,41 @@ function compileTemplates(templates: Readonly<Record<string, string>>): Compiled
   return compiled;
 }
 
+interface CompiledQuestText {
+  readonly regex: RegExp;
+  readonly needle: string;
+  readonly codes: string[];
+  readonly japanese: string;
+}
+
+// quest.lua substitution codes: %d deity, %r rank, %G "god"/"goddess", ...
+// An optional capital suffix (%dC, %dI) selects a capitalized variant.
+const questCodePattern = /%([A-Za-z])(?:[A-Z](?![a-z]))?/g;
+
+function compileQuestTexts(texts: ReadonlyArray<readonly [string, string]>): CompiledQuestText[] {
+  const compiled: CompiledQuestText[] = [];
+  for (const [english, japanese] of texts) {
+    const normalized = normalizeSpaces(english);
+    const codes: string[] = [];
+    let pattern = "";
+    let needle = "";
+    let last = 0;
+    for (const match of normalized.matchAll(questCodePattern)) {
+      const literal = normalized.slice(last, match.index);
+      pattern += escapeRegExp(literal) + "(.+?)";
+      if (literal.trim().length > needle.length) needle = literal.trim().toLowerCase();
+      codes.push(match[1]!);
+      last = match.index! + match[0].length;
+    }
+    const tail = normalized.slice(last);
+    pattern += escapeRegExp(tail);
+    if (tail.trim().length > needle.length) needle = tail.trim().toLowerCase();
+    if (needle.replace(/[^a-z]/g, "").length < 8) continue;
+    compiled.push({ regex: new RegExp(`^${pattern}$`, "i"), needle, codes, japanese });
+  }
+  return compiled;
+}
+
 function fillJapanese(template: string, values: readonly string[]): string {
   return template.replace(/\{\{|\}\}|\{(\d+)!?\}/g, (token, index: string | undefined) => {
     if (token === "{{") return "{";
@@ -130,9 +169,13 @@ export class GameTextTranslator {
   private readonly cache = new Map<string, string>();
   private readonly context: CoreRuleContext;
   private readonly roleNames: Readonly<Record<string, string>>;
+  private readonly questTexts: CompiledQuestText[];
+  private readonly enlightenment: Readonly<Record<string, string>>;
 
   constructor(data: GameTextData) {
+    this.enlightenment = data.enlightenment ?? {};
     this.roleNames = data.roleNames ?? {};
+    this.questTexts = compileQuestTexts(data.questTexts ?? []);
     this.templates = compileTemplates(data.templates);
     this.names = new GameNameTranslator(data);
     this.context = {
@@ -168,7 +211,79 @@ export class GameTextTranslator {
     return source;
   }
 
+  /**
+   * Translate a whole text window (quest messages, legacy intro). Falls back
+   * to translating each line on its own.
+   */
+  translateWindow(lines: readonly string[]): string[] {
+    const quest = this.translateQuestText(lines.join(" "));
+    if (quest !== null) return quest.split("\n");
+    return lines.map((line) => this.translate(line));
+  }
+
+  private translateQuestText(text: string): string | null {
+    const normalized = normalizeSpaces(text);
+    if (normalized.length < 8) return null;
+    const lower = normalized.toLowerCase();
+    for (const quest of this.questTexts) {
+      if (!lower.includes(quest.needle)) continue;
+      const match = quest.regex.exec(normalized);
+      if (!match) continue;
+      const values = new Map<string, string>();
+      quest.codes.forEach((code, i) => {
+        if (!values.has(code)) values.set(code, this.translateQuestValue(code, match[i + 1]!));
+      });
+      return quest.japanese.replace(questCodePattern, (token, code: string) => values.get(code) ?? token);
+    }
+    return null;
+  }
+
+  private translateQuestValue(code: string, value: string): string {
+    const trimmed = value.trim();
+    if (code === "G") return /goddess/i.test(trimmed) ? "女神" : "神";
+    const bare = trimmed.replace(/^(?:the|a|an) /i, "");
+    return this.roleNames[trimmed] ?? this.roleNames[bare] ?? this.translateNoun(trimmed);
+  }
+
+  /** "You were fast." -> JNetHack insight.c wording (enlght_line). */
+  private translateEnlightenment(sentence: string): string | null {
+    const match =
+      /^You (are|were|have been|have never|never|have|had|can|could) (.+?)(?: because of .+?)?\.$/.exec(sentence);
+    if (!match) return null;
+    const verb = match[1]!;
+    const macro =
+      verb === "are" || verb === "were" ? (["you_are", "you_have_been"] as const)
+      : verb === "have been" ? (["you_have_been"] as const)
+      : verb === "have never" || verb === "never" ? (["you_have_never"] as const)
+      : verb === "have" || verb === "had" ? (["you_have", "you_have_X"] as const)
+      : (["you_can"] as const);
+    const past = ["were", "had", "could", "never"].includes(verb);
+    for (const candidate of macro) {
+      const entry = this.enlightenment[`${candidate}|${match[2]}`];
+      if (!entry) continue;
+      const [jaMacro, attr] = entry.split("|") as [string, string];
+      const endings: Readonly<Record<string, readonly [string, string, string]>> = {
+        // [prefix, present, past] following JNetHack's enl_msg() macros.
+        you_are: ["あなたは", "である", "であった"],
+        you_have_been: ["あなたは", "である", "であった"],
+        you_have: ["あなたは", "をもっている", "をもっていた"],
+        you_can: ["あなたは", "できる", "できた"],
+        you_are_ing: ["あなたは", "いる", "いた"],
+        you_have_never: ["", "ていない", "なかった"],
+        you_have_X: ["", "ている", "た"],
+      };
+      const ending = endings[jaMacro];
+      if (!ending) continue;
+      return `${ending[0]}${attr}${past ? ending[2] : ending[1]}．`;
+    }
+    return null;
+  }
+
   private translateSentence(sentence: string, depth: number): string | null {
+    const quest = depth === 0 ? this.translateQuestText(sentence) : null;
+    if (quest !== null) return quest.replace(/\n+/g, "");
+    const enlightenment = this.translateEnlightenment(sentence);
+    if (enlightenment !== null) return enlightenment;
     for (const rule of coreGameTextRules) {
       const match = rule.pattern.exec(sentence);
       if (match) {
@@ -187,7 +302,7 @@ export class GameTextTranslator {
       // A capture left in English usually means the template matched the
       // wrong message; only proper names (pets, gods, shopkeepers) may stay.
       const unresolved = values.some(
-        (value, i) => template.specs[i] === "s" && value === match[i + 1] && !isProperName(value),
+        (value, i) => template.specs[i] === "s" && /[a-z]{3,}/.test(value) && !isProperName(value),
       );
       if (unresolved) continue;
       return fillJapanese(template.japanese, values);
@@ -196,13 +311,10 @@ export class GameTextTranslator {
   }
 
   private translateArgument(value: string, depth: number): string {
-    const noun = this.translateNoun(value);
-    if (noun !== value) return noun;
-    if (depth < 1) {
-      const nested = this.translateSentence(value, depth + 1);
-      if (nested !== null) return nested.replace(/[．。]$/, "");
-    }
-    return value;
+    // Only noun phrases are substituted: translating verb phrases on their
+    // own produces broken Japanese ("食べる終えた").
+    void depth;
+    return this.translateNoun(value);
   }
 
   /** Translate a noun phrase (monster, object, pronoun); returns input if unknown. */
