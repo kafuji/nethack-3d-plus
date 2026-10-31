@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { BackgroundMusic } from "./background-music";
 import type { BackgroundMusicPlayer } from "./procedural-music-player";
 import type { MusicMood } from "./music-director";
+import type { TrackPreference } from "./music-region";
+import type { MusicStinger } from "./stingers";
 
 class FakePlayer implements BackgroundMusicPlayer {
   moods: (MusicMood | null)[] = [];
@@ -15,6 +17,14 @@ class FakePlayer implements BackgroundMusicPlayer {
   async resume(): Promise<void> {}
   async suspend(): Promise<void> {}
   dispose(): void {}
+  preferences: TrackPreference[] = [];
+  stingers: MusicStinger[] = [];
+  setTrackPreference(preference: TrackPreference): void {
+    this.preferences.push(preference);
+  }
+  playStinger(kind: MusicStinger): void {
+    this.stingers.push(kind);
+  }
 }
 
 const on = { soundEnabled: true, musicEnabled: true, musicVolume: 0.5 };
@@ -50,6 +60,31 @@ describe("BackgroundMusic", () => {
     expect(player.moods).toEqual([null]);
     music.setSettings(on);
     expect(player.moods).toEqual([null, "danger"]);
+    music.dispose();
+  });
+
+  it("prefers regional tracks and plays a cue when entering a new branch", () => {
+    const player = new FakePlayer();
+    const music = new BackgroundMusic(player, () => 0);
+    music.setSettings(on);
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1, dungeon: "The Dungeons of Doom" }, false);
+    expect(music.getCurrentRegion()).toBe("dungeon");
+    expect(player.stingers).toEqual([]);
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 50, dungeon: "The Gnomish Mines" }, false);
+    expect(music.getCurrentRegion()).toBe("mines");
+    expect(player.preferences[player.preferences.length - 1]?.calm?.[0]).toBe("calm-unexplored");
+    expect(player.stingers).toEqual(["region-enter"]);
+    music.dispose();
+  });
+
+  it("plays the game-over cue once", () => {
+    const player = new FakePlayer();
+    const music = new BackgroundMusic(player, () => 0);
+    music.setSettings(on);
+    music.notifyPlayerStats({ hp: 0, maxHp: 10, time: 9 }, false);
+    music.setGameOver(true);
+    music.setGameOver(true);
+    expect(player.stingers).toEqual(["game-over"]);
     music.dispose();
   });
 });

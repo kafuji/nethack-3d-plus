@@ -193,7 +193,7 @@ export class AudioHapticsPlatform {
         (badge) => badge.severity === "danger",
       );
     this.backgroundMusic.notifyPlayerStats(
-      { hp: stats.hp, maxHp: stats.maxHp, time: stats.time },
+      { hp: stats.hp, maxHp: stats.maxHp, time: stats.time, dungeon: stats.dungeon },
       dangerCondition,
     );
   }

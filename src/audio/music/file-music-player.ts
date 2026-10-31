@@ -1,6 +1,8 @@
 import type { MusicMood } from "./music-director";
 import type { MusicLibrary, MusicTrack } from "./music-library";
 import type { BackgroundMusicPlayer } from "./procedural-music-player";
+import type { TrackPreference } from "./music-region";
+import { playMusicStinger, type MusicStinger } from "./stingers";
 
 const moodFadeInSec: Record<MusicMood, number> = { calm: 1.2, combat: 0.3, danger: 0.25 };
 const moodFadeOutSec = 1;
@@ -46,6 +48,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   private monitorTimer: ReturnType<typeof setInterval> | null = null;
   private preloadStarted = false;
   private disposed = false;
+  private preference: TrackPreference = {};
 
   constructor(
     private readonly library: MusicLibrary,
@@ -65,6 +68,43 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
       return;
     }
     void this.enterMood(mood);
+  }
+
+  /**
+   * Reorders each mood's playlist so the preferred tracks come first. If the
+   * active mood is playing a track that is no longer preferred, crossfade.
+   */
+  setTrackPreference(preference: TrackPreference): void {
+    this.preference = { ...preference };
+    for (const channel of this.channels.values()) {
+      const playlist = this.playlist(channel.mood);
+      const deck = channel.deck;
+      if (deck && channel.mood === this.currentMood && playlist[0] && deck.track.id !== playlist[0].id) {
+        channel.trackIndex = 0;
+        channel.resumeOffsets.delete(deck.track.id);
+        void this.crossfadeTo(channel, playlist[0], TRACK_SWITCH_CROSSFADE_SEC);
+      } else if (!deck) {
+        channel.trackIndex = 0;
+      } else {
+        channel.trackIndex = Math.max(0, playlist.findIndex((track) => track.id === deck.track.id));
+      }
+    }
+  }
+
+  playStinger(kind: MusicStinger): void {
+    const context = this.ensureContext();
+    if (!context || !this.master || this.volume <= 0) return;
+    // Duck any music still playing underneath the cue.
+    const now = context.currentTime;
+    const length = playMusicStinger(context, this.master, kind, 1.4);
+    for (const channel of this.channels.values()) {
+      if (channel.mood !== this.currentMood || channel.pauseTimer !== null) continue;
+      channel.bus.gain.cancelScheduledValues(now);
+      channel.bus.gain.setValueAtTime(channel.bus.gain.value, now);
+      channel.bus.gain.linearRampToValueAtTime(0.35, now + 0.15);
+      channel.bus.gain.setValueAtTime(0.35, now + length * 0.7);
+      channel.bus.gain.linearRampToValueAtTime(1, now + length + 0.5);
+    }
   }
 
   setVolume(volume: number): void {
@@ -197,6 +237,16 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
     return pending;
   }
 
+  /** Tracks for a mood: preferred ids (from any mood) first, then the mood's own. */
+  private playlist(mood: MusicMood): MusicTrack[] {
+    const all = [...this.library.calm, ...this.library.combat, ...this.library.danger];
+    const preferred = (this.preference[mood] ?? [])
+      .map((id) => all.find((track) => track.id === id))
+      .filter((track): track is MusicTrack => Boolean(track));
+    const rest = this.library[mood].filter((track) => !preferred.includes(track));
+    return [...preferred, ...rest];
+  }
+
   private getChannel(mood: MusicMood): MoodChannel | null {
     const context = this.ensureContext();
     if (!context || !this.master) return null;
@@ -210,7 +260,10 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
         bus,
         deck: null,
         outgoing: null,
-        trackIndex: 0,
+        // Without a region preference, start each session on a random track.
+        trackIndex: this.preference[mood]?.length
+          ? 0
+          : Math.floor(Math.random() * Math.max(1, this.library[mood].length)),
         resumeOffsets: new Map(),
         pauseTimer: null,
         crossfadeEndsAt: 0,
@@ -262,7 +315,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
 
   /** Tries tracks of the mood starting at trackIndex until one loads. */
   private async acquireStartableDeck(channel: MoodChannel): Promise<Deck | null> {
-    const tracks = this.library[channel.mood];
+    const tracks = this.playlist(channel.mood);
     for (let attempt = 0; attempt < tracks.length; attempt += 1) {
       const index = (channel.trackIndex + attempt) % tracks.length;
       const deck = await this.acquireDeck(tracks[index], channel, null);
@@ -302,7 +355,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   }
 
   private shouldNativeLoop(channel: MoodChannel, track: MusicTrack): boolean {
-    return track.loop === "seamless" && this.library[channel.mood].length <= 1;
+    return track.loop === "seamless" && this.playlist(channel.mood).length <= 1;
   }
 
   private fadeOutChannel(channel: MoodChannel): void {
@@ -347,7 +400,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
     const duration = deck.element.duration;
     if (!Number.isFinite(duration) || duration <= 0 || deck.element.paused) return;
     if (deck.element.loop) return;
-    const tracks = this.library[mood];
+    const tracks = this.playlist(mood);
     const nextIndex = (channel.trackIndex + 1) % tracks.length;
     const nextTrack = tracks[nextIndex];
     const switching = nextTrack.id !== deck.track.id;

@@ -1,4 +1,6 @@
 import type { MusicMood } from "./music-director";
+import type { TrackPreference } from "./music-region";
+import { playMusicStinger, type MusicStinger } from "./stingers";
 
 /**
  * Anything that can play mood-based background music. The procedural player
@@ -11,6 +13,10 @@ export interface BackgroundMusicPlayer {
   resume(): Promise<void>;
   suspend(): Promise<void>;
   dispose(): void;
+  /** Prefer these track ids per mood (players without tracks ignore it). */
+  setTrackPreference?(preference: TrackPreference): void;
+  /** Play a short musical cue over the current music. */
+  playStinger?(kind: MusicStinger): void;
 }
 
 type Chord = readonly number[]; // MIDI notes, lowest = root
@@ -170,6 +176,11 @@ export class ProceduralMusicPlayer implements BackgroundMusicPlayer {
         // ignore
       }
     }
+  }
+
+  playStinger(kind: MusicStinger): void {
+    if (!this.context || !this.master || this.volume <= 0) return;
+    playMusicStinger(this.context, this.master, kind, 1);
   }
 
   dispose(): void {

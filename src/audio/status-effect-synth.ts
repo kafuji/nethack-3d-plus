@@ -20,6 +20,16 @@ export const nh3dSynthSoundKeys = [
   "status-strangled",
   "status-paralyzed",
   "status-recovered",
+  // Event sounds (NetHack 3D Plus) for keys upstream left without assets.
+  "explosion",
+  "zap-ray",
+  "wand-fizzle",
+  "potion-shatter",
+  "scroll-read",
+  "trap-triggered",
+  "teleport",
+  "prayer",
+  "shop-bell",
 ] as const;
 
 export type Nh3dSynthSoundKey = (typeof nh3dSynthSoundKeys)[number];
@@ -355,7 +365,7 @@ function growl(
   lfo(ctx, saw.frequency, 7, 6, t0, duration);
 }
 
-const voices: Record<Nh3dSynthSoundKey, Voice> = {
+const voices = {
   "status-hungry": (ctx, out, t0) => {
     growl(ctx, out, t0, 190, 0.9, 0.5);
     return 1.0;
@@ -604,7 +614,117 @@ const voices: Record<Nh3dSynthSoundKey, Voice> = {
     });
     return 0.8;
   },
+} as Record<Nh3dSynthSoundKey, Voice>;
+
+// ---------------------------------------------------------------------------
+// Event voices
+// ---------------------------------------------------------------------------
+
+/** Short noise burst through a filter: the basic "impact" building block. */
+function burst(
+  ctx: BaseAudioContext,
+  out: AudioNode,
+  t0: number,
+  type: BiquadFilterType,
+  freq: number,
+  freqEnd: number,
+  peak: number,
+  duration: number,
+  q = 1,
+): void {
+  const f = filter(ctx, type, freq, q);
+  f.frequency.setValueAtTime(freq, t0);
+  f.frequency.exponentialRampToValueAtTime(Math.max(20, freqEnd), t0 + duration);
+  noise(ctx, t0, duration).connect(f);
+  f.connect(envelope(ctx, out, t0, peak, 0.005, duration * 0.15, duration * 0.85));
+}
+
+const eventVoices: Record<
+  Exclude<Nh3dSynthSoundKey, `status-${string}`>,
+  Voice
+> = {
+  explosion: (ctx, out, t0) => {
+    // Low boom: noise sweeping down plus a sub thump and crackle tail.
+    burst(ctx, out, t0, "lowpass", 2400, 90, 1.1, 1.4, 0.8);
+    tone(ctx, out, { freq: 70, freqEnd: 28, t0, peak: 0.9, attack: 0.005, hold: 0.08, release: 0.9 });
+    for (let i = 0; i < 6; i += 1) {
+      burst(ctx, out, t0 + 0.25 + i * 0.13 + Math.random() * 0.05, "bandpass", 1800, 900, 0.12, 0.08, 3);
+    }
+    return 1.6;
+  },
+
+  "zap-ray": (ctx, out, t0) => {
+    // Bright rising sweep with a shimmering band of noise.
+    tone(ctx, out, { type: "sawtooth", freq: 220, freqEnd: 1760, t0, peak: 0.3, attack: 0.01, hold: 0.15, release: 0.35 });
+    tone(ctx, out, { type: "square", freq: 330, freqEnd: 2640, t0: t0 + 0.02, peak: 0.13, attack: 0.01, hold: 0.12, release: 0.3, detune: 9 });
+    burst(ctx, out, t0, "bandpass", 3000, 6000, 0.35, 0.45, 4);
+    return 0.6;
+  },
+
+  "wand-fizzle": (ctx, out, t0) => {
+    // A weak spark that dies out.
+    burst(ctx, out, t0, "highpass", 4000, 1500, 0.35, 0.25, 0.7);
+    tone(ctx, out, { type: "triangle", freq: 660, freqEnd: 180, t0: t0 + 0.04, peak: 0.2, attack: 0.01, release: 0.3 });
+    return 0.45;
+  },
+
+  "potion-shatter": (ctx, out, t0) => {
+    // Glass: sharp high noise plus a few short ringing partials.
+    burst(ctx, out, t0, "highpass", 5000, 2500, 0.55, 0.35, 0.9);
+    [2350, 3120, 4410, 5230].forEach((freq, i) => {
+      tone(ctx, out, { type: "sine", freq, t0: t0 + i * 0.015, peak: 0.08, attack: 0.002, release: 0.25 + i * 0.05 });
+    });
+    burst(ctx, out, t0 + 0.12, "bandpass", 1200, 600, 0.12, 0.3, 2);
+    return 0.65;
+  },
+
+  "scroll-read": (ctx, out, t0) => {
+    // Paper rustle followed by a soft magical shimmer.
+    burst(ctx, out, t0, "bandpass", 2600, 1800, 0.35, 0.3, 1.5);
+    burst(ctx, out, t0 + 0.18, "bandpass", 3200, 2200, 0.25, 0.22, 1.5);
+    [880, 1108.73, 1318.51].forEach((freq, i) => {
+      tone(ctx, out, { type: "triangle", freq, t0: t0 + 0.35 + i * 0.06, peak: 0.18, attack: 0.02, release: 0.6 });
+    });
+    return 1.1;
+  },
+
+  "trap-triggered": (ctx, out, t0) => {
+    // Mechanical click, then a low "clunk".
+    burst(ctx, out, t0, "highpass", 6000, 3000, 0.5, 0.04, 1);
+    burst(ctx, out, t0 + 0.07, "bandpass", 900, 500, 0.35, 0.06, 4);
+    tone(ctx, out, { type: "square", freq: 140, freqEnd: 70, t0: t0 + 0.12, peak: 0.18, attack: 0.003, release: 0.18 });
+    return 0.4;
+  },
+
+  teleport: (ctx, out, t0) => {
+    // Warbling upward glide that dissolves into noise.
+    const osc = tone(ctx, out, { type: "sine", freq: 300, freqEnd: 2400, t0, peak: 0.22, attack: 0.05, hold: 0.25, release: 0.45 });
+    lfo(ctx, osc.frequency, 16, 120, t0, 0.75);
+    burst(ctx, out, t0 + 0.3, "highpass", 2000, 8000, 0.15, 0.5, 0.7);
+    return 0.9;
+  },
+
+  prayer: (ctx, out, t0) => {
+    // Slow "choir" chord: detuned triangle pads swelling in and out.
+    for (const freq of [261.63, 329.63, 392.0, 523.25]) {
+      for (const detune of [-6, 6]) {
+        tone(ctx, out, { type: "triangle", freq, t0, peak: 0.06, attack: 0.6, hold: 0.8, release: 1.2, detune });
+      }
+    }
+    return 2.7;
+  },
+
+  "shop-bell": (ctx, out, t0) => {
+    // Small door bell: two inharmonic strikes.
+    for (const [offset, base] of [[0, 1568], [0.16, 1318.5]] as const) {
+      [1, 2.76, 5.4].forEach((ratio, i) => {
+        tone(ctx, out, { type: "sine", freq: base * ratio, t0: t0 + offset, peak: 0.16 / (i + 1), attack: 0.002, release: 0.9 - i * 0.2 });
+      });
+    }
+    return 1.2;
+  },
 };
+Object.assign(voices, eventVoices);
 
 /** Schedule a synthesized status sound on the given context; returns duration (s). */
 export function playNh3dSynthSound(
