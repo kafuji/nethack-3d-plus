@@ -5,69 +5,75 @@ import type {
   TopScoreTimelineFilterConfig,
   TopScoreTimelineFilterId
 } from "./types";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 /** Timeline filter catalog and event-kind classification. */
 export const topScoreTimelineFilterConfigs: readonly TopScoreTimelineFilterConfig[] = [
   {
     id: "kills",
-    label: "Kills",
-    detail: "Defeated enemies",
+    label: topScoreStrings.timeline.filters.kills.label,
+    detail: topScoreStrings.timeline.filters.kills.detail,
     color: "#ff8a8a",
     tint: "rgba(255, 138, 138, 0.18)",
     rowType: "line",
   },
   {
     id: "gold",
-    label: "Gold",
-    detail: "Gold gathered",
+    label: topScoreStrings.timeline.filters.gold.label,
+    detail: topScoreStrings.timeline.filters.gold.detail,
     color: "#f2d06f",
     tint: "rgba(242, 208, 111, 0.18)",
     rowType: "line",
   },
   {
     id: "loot",
-    label: "Loot",
-    detail: "Items picked up",
+    label: topScoreStrings.timeline.filters.loot.label,
+    detail: topScoreStrings.timeline.filters.loot.detail,
     color: "#8fe4c3",
     tint: "rgba(143, 228, 195, 0.18)",
     rowType: "line",
   },
   {
     id: "secrets",
-    label: "Hidden Finds",
-    detail: "Hidden doors, passages, and traps",
+    label: topScoreStrings.timeline.filters.secrets.label,
+    detail: topScoreStrings.timeline.filters.secrets.detail,
     color: "#c7b8ff",
     tint: "rgba(199, 184, 255, 0.18)",
     rowType: "line",
   },
   {
     id: "levels",
-    label: "Level",
-    detail: "Character level",
+    label: topScoreStrings.timeline.filters.levels.label,
+    detail: topScoreStrings.timeline.filters.levels.detail,
     color: "#9bd470",
     tint: "rgba(155, 212, 112, 0.18)",
     rowType: "line",
   },
   {
     id: "hazards",
-    label: "Hazards",
-    detail: "Traps and bad surprises",
+    label: topScoreStrings.timeline.filters.hazards.label,
+    detail: topScoreStrings.timeline.filters.hazards.detail,
     color: "#ffb17a",
     tint: "rgba(255, 177, 122, 0.18)",
     rowType: "line",
   },
   {
     id: "magic",
-    label: "Magic",
-    detail: "Spells learned",
+    label: topScoreStrings.timeline.filters.magic.label,
+    detail: topScoreStrings.timeline.filters.magic.detail,
     color: "#80e2ff",
     tint: "rgba(128, 226, 255, 0.18)",
     rowType: "line",
   },
   {
     id: "milestones",
-    label: "Milestones",
-    detail: "Places and the ending",
+    label: topScoreStrings.timeline.filters.milestones.label,
+    detail: topScoreStrings.timeline.filters.milestones.detail,
     color: "#7ec8ff",
     tint: "rgba(126, 200, 255, 0.18)",
     rowType: "markers",

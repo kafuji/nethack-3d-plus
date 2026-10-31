@@ -9,6 +9,7 @@ import type {
 } from "../status/conditions";
 import {
   commonStrings,
+  plusStrings,
   t,
   translationStrings
 } from "../shared/translations";
@@ -512,7 +513,7 @@ export function CharacterInfoDialog({
                 {showMessageHistoryNavigation ? (
                   <>
                     <button
-                      aria-label="Show earliest NetHack message"
+                      aria-label={plusStrings.messageNav.earliest}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowPreviousCachedMessage}
                       onClick={showEarliestCachedMessageInfoMenu}
@@ -521,7 +522,7 @@ export function CharacterInfoDialog({
                       {"<<"}
                     </button>
                     <button
-                      aria-label="Show previous NetHack message"
+                      aria-label={plusStrings.messageNav.previous}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowPreviousCachedMessage}
                       onClick={showPreviousCachedMessageInfoMenu}
@@ -537,7 +538,7 @@ export function CharacterInfoDialog({
                       {commonStrings.close}
                     </button>
                     <button
-                      aria-label="Show next NetHack message"
+                      aria-label={plusStrings.messageNav.next}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowNextCachedMessage}
                       onClick={showNextCachedMessageInfoMenu}
@@ -546,7 +547,7 @@ export function CharacterInfoDialog({
                       {">"}
                     </button>
                     <button
-                      aria-label="Show latest NetHack message"
+                      aria-label={plusStrings.messageNav.latest}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowNextCachedMessage}
                       onClick={showLatestCachedMessageInfoMenu}
@@ -584,7 +585,7 @@ export function CharacterInfoDialog({
                 {showMessageHistoryNavigation ? (
                   <>
                     <button
-                      aria-label="Show earliest NetHack message"
+                      aria-label={plusStrings.messageNav.earliest}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowPreviousCachedMessage}
                       onClick={showEarliestCachedMessageInfoMenu}
@@ -593,7 +594,7 @@ export function CharacterInfoDialog({
                       {"<<"}
                     </button>
                     <button
-                      aria-label="Show previous NetHack message"
+                      aria-label={plusStrings.messageNav.previous}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowPreviousCachedMessage}
                       onClick={showPreviousCachedMessageInfoMenu}
@@ -609,7 +610,7 @@ export function CharacterInfoDialog({
                       {commonStrings.close}
                     </button>
                     <button
-                      aria-label="Show next NetHack message"
+                      aria-label={plusStrings.messageNav.next}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowNextCachedMessage}
                       onClick={showNextCachedMessageInfoMenu}
@@ -618,7 +619,7 @@ export function CharacterInfoDialog({
                       {">"}
                     </button>
                     <button
-                      aria-label="Show latest NetHack message"
+                      aria-label={plusStrings.messageNav.latest}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowNextCachedMessage}
                       onClick={showLatestCachedMessageInfoMenu}
@@ -661,7 +662,7 @@ export function CharacterInfoDialog({
                 {showMessageHistoryNavigation ? (
                   <>
                     <button
-                      aria-label="Show earliest NetHack message"
+                      aria-label={plusStrings.messageNav.earliest}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowPreviousCachedMessage}
                       onClick={showEarliestCachedMessageInfoMenu}
@@ -670,7 +671,7 @@ export function CharacterInfoDialog({
                       {"<<"}
                     </button>
                     <button
-                      aria-label="Show previous NetHack message"
+                      aria-label={plusStrings.messageNav.previous}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowPreviousCachedMessage}
                       onClick={showPreviousCachedMessageInfoMenu}
@@ -686,7 +687,7 @@ export function CharacterInfoDialog({
                       {commonStrings.close}
                     </button>
                     <button
-                      aria-label="Show next NetHack message"
+                      aria-label={plusStrings.messageNav.next}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowNextCachedMessage}
                       onClick={showNextCachedMessageInfoMenu}
@@ -695,7 +696,7 @@ export function CharacterInfoDialog({
                       {">"}
                     </button>
                     <button
-                      aria-label="Show latest NetHack message"
+                      aria-label={plusStrings.messageNav.latest}
                       className="nh3d-menu-action-button nh3d-message-history-nav-button"
                       disabled={!canShowNextCachedMessage}
                       onClick={showLatestCachedMessageInfoMenu}

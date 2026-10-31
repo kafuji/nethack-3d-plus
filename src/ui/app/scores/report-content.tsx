@@ -21,6 +21,12 @@ import {
 import {
   formatTopScoreInteger
 } from "./format";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 /** Score inventory, kill breakdown, loot grouping and raw report rendering. */
 export function resolveTopScoreInventoryFallbackGlyph(
@@ -54,7 +60,7 @@ export function groupTopScoreInventoryItems(
 
   const sections: TopScoreInventorySection[] = [];
   let currentSection: TopScoreInventorySection = {
-    title: "Pack",
+    title: topScoreStrings.reports.pack,
     items: [],
   };
 
@@ -69,7 +75,7 @@ export function groupTopScoreInventoryItems(
     if (item.isCategory) {
       pushCurrentSection();
       currentSection = {
-        title: item.text || "Pack",
+        title: item.text || topScoreStrings.reports.pack,
         items: [],
       };
       continue;
@@ -87,19 +93,19 @@ export function buildTopScoreKillBreakdownGroups(
   const telemetry = resolveTopScoreTelemetry(score);
   return [
     {
-      label: "Kills by weapon",
+      label: topScoreStrings.reports.killsByWeapon,
       values: telemetry.weaponKills,
-      emptyLabel: "No weapon-attributed kills were tracked for this run.",
+      emptyLabel: topScoreStrings.reports.noWeaponKills,
     },
     {
-      label: "Kills by spell",
+      label: topScoreStrings.reports.killsBySpell,
       values: telemetry.spellKills,
-      emptyLabel: "No spell-attributed kills were tracked for this run.",
+      emptyLabel: topScoreStrings.reports.noSpellKills,
     },
     {
-      label: "Kills by pet",
+      label: topScoreStrings.reports.killsByPet,
       values: telemetry.petKills,
-      emptyLabel: "No pet-attributed kills were tracked for this run.",
+      emptyLabel: topScoreStrings.reports.noPetKills,
     },
   ];
 }
@@ -113,7 +119,7 @@ export function groupTopScoreLootTimelineEvents(
   }
   const sections = new Map<string, RunTelemetryLootEvent[]>();
   for (const event of telemetry.lootEvents) {
-    const title = String(event.category || "Pack").trim() || "Pack";
+    const title = String(event.category || topScoreStrings.reports.pack).trim() || topScoreStrings.reports.pack;
     const existing = sections.get(title) ?? [];
     existing.push(event);
     sections.set(title, existing);
@@ -138,27 +144,27 @@ export function buildTopScoreRawReportSections(
   return [
     {
       id: "attributes",
-      title: "Final attributes",
+      title: topScoreStrings.reports.finalAttributes,
       lines: reports.attributes,
-      emptyLabel: "No final-attributes report was archived for this run.",
+      emptyLabel: topScoreStrings.reports.noFinalAttributes,
     },
     {
       id: "vanquished",
-      title: "Creatures vanquished",
+      title: topScoreStrings.reports.vanquished,
       lines: reports.vanquished,
-      emptyLabel: "No vanquished-creatures report was archived for this run.",
+      emptyLabel: topScoreStrings.reports.noVanquished,
     },
     {
       id: "conduct",
-      title: "Conduct",
+      title: topScoreStrings.reports.conduct,
       lines: reports.conduct,
-      emptyLabel: "No conduct report was archived for this run.",
+      emptyLabel: topScoreStrings.reports.noConduct,
     },
     {
       id: "dungeon-overview",
-      title: "Dungeon overview",
+      title: topScoreStrings.reports.dungeonOverview,
       lines: resolveArchivedDungeonOverview(reports.dungeonOverview, score.detail?.timeline),
-      emptyLabel: "No dungeon-overview report was archived for this run.",
+      emptyLabel: topScoreStrings.reports.noDungeonOverview,
     },
   ];
 }
@@ -176,8 +182,8 @@ export function renderTopScoreRawReportBlock(
         <span>{section.title}</span>
         <span>
           {section.lines?.length
-            ? `${formatTopScoreInteger(section.lines.length)} lines`
-            : "Not captured"}
+            ? topScoreStrings.reports.lineCount(formatTopScoreInteger(section.lines.length))
+            : topScoreStrings.reports.notCaptured}
         </span>
       </summary>
       {section.lines?.length ? (

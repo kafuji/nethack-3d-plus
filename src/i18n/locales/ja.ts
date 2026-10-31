@@ -1,5 +1,7 @@
 import { mergeTranslations, type LocaleOverrides } from "../locale-helpers";
 import { en, type TranslationDictionary } from "./en";
+// nh3d-plus: fork translations live in src/plus to keep upstream merges clean.
+import { jaPlusOverrides } from "../../plus/i18n/ja";
 
 export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
   meta: {
@@ -1546,4 +1548,7 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
   },
 };
 
-export const ja = mergeTranslations(en, jaOverrides);
+export const ja = mergeTranslations(
+  mergeTranslations(en, jaOverrides),
+  jaPlusOverrides,
+);

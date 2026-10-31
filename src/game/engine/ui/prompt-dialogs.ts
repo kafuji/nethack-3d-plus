@@ -1,4 +1,6 @@
 import { silentInventoryRefreshCommand } from "../../../runtime/input/inventory-refresh";
+// nh3d-plus: localized engine-side messages.
+import { getTranslationStrings } from "../../../i18n/core";
 import { useGameStore } from "../../../state/gameStore";
 import type { InventoryDialogState, NethackConnectionState } from "../../ui-types";
 import { getItemTextClassName } from "../../helpers/helpers";
@@ -19,6 +21,8 @@ import type { QuestionMenus } from "./question-menus";
 import type { TileContextActions } from "./tile-context-actions";
 import type { TilesetAssets } from "../rendering/tileset-assets";
 import type { TileUpdates } from "../world/tile-updates";
+
+const plusEngineStrings = getTranslationStrings().plus.engine;
 
 export interface PromptDialogsDependencies {
   readonly directionPrompts: Pick<
@@ -193,7 +197,7 @@ export class PromptDialogs {
     this.updateConnectionStatus("Game ended", "error");
     this.updateStatus("Game ended");
     this.setLoadingVisible(false);
-    this.dependencies.engineMessages.addGameMessage("Game ended.");
+    this.dependencies.engineMessages.addGameMessage(plusEngineStrings.gameEnded);
     this.setNewGamePrompt(true, reason);
   }
 
@@ -309,7 +313,7 @@ export class PromptDialogs {
         },
       );
     } else {
-      this.dependencies.engineMessages.addGameMessage("No recent NetHack message to reopen.");
+      this.dependencies.engineMessages.addGameMessage(plusEngineStrings.noRecentMessage);
     }
   }
 
@@ -437,7 +441,7 @@ export class PromptDialogs {
       text: String(text || ""),
       contextMessage: normalizedContextMessage || undefined,
       maxLength,
-      placeholder: "Enter text",
+      placeholder: plusEngineStrings.enterTextPlaceholder,
     });
   }
 

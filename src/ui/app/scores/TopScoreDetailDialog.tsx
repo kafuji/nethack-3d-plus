@@ -36,14 +36,20 @@ import {
 import {
   formatTopScoreTimelineClusterTurnLabel,
   formatTopScoreTimelineEventBadge,
+  localizeTopScoreStoredLocation,
+  localizeTopScoreStoredTimelineText,
   formatTopScoreTimelineEventMeta
 } from "./timeline-labels";
 import {
   renderTopScoreRawReportBlock
 } from "./report-content";
 import {
-  commonStrings
+  commonStrings,
+  plusStrings
 } from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 export interface TopScoreDetailDialogProps {
   selectedTopScore: TopScoreRecord | null;
@@ -102,7 +108,7 @@ export function TopScoreDetailDialog({
         <>
           {renderMobileDialogCloseButton(
             () => setSelectedTopScore(null),
-            "Close top score details",
+            topScoreStrings.closeDetailLabel,
           )}
           <div
             className="nh3d-character-sheet-scroll"
@@ -116,7 +122,7 @@ export function TopScoreDetailDialog({
             <div className="nh3d-top-score-hero">
               <div className="nh3d-top-score-hero-copy">
                 <div className="nh3d-top-score-hero-score">
-                  {formatTopScoreInteger(selectedTopScore.points)} points
+                  {topScoreStrings.points(formatTopScoreInteger(selectedTopScore.points))}
                 </div>
                 <div className="nh3d-top-score-hero-archetype">
                   {formatTopScoreCharacterLine(selectedTopScore)}
@@ -142,7 +148,7 @@ export function TopScoreDetailDialog({
               ))}
             </div>
             <section className="nh3d-character-panel nh3d-top-score-panel-wide nh3d-top-score-timeline-panel">
-              <div className="nh3d-character-panel-title">Run Timeline</div>
+              <div className="nh3d-character-panel-title">{topScoreStrings.sections.runTimeline}</div>
               {selectedTopScoreTimelineSummaryMetrics.length > 0 ? (
                 <div className="nh3d-top-score-timeline-summary-grid">
                   {selectedTopScoreTimelineSummaryMetrics.map((metric) => (
@@ -169,7 +175,7 @@ export function TopScoreDetailDialog({
                 <>
                   <div className="nh3d-top-score-timeline-toolbar">
                     <div className="nh3d-top-score-timeline-intro">
-                      Filter the run by what mattered most.
+                      {topScoreStrings.timeline.filterIntro}
                     </div>
                     <div className="nh3d-top-score-timeline-filters">
                       {topScoreTimelineFilterConfigs.map((filter) => {
@@ -204,8 +210,7 @@ export function TopScoreDetailDialog({
                     </div>
                   </div>
                   <div className="nh3d-top-score-timeline-hint">
-                    Lines show how each active thread of the run climbed over
-                    time. Touch a cluster to unpack a busy stretch.
+                    {topScoreStrings.timeline.hint}
                   </div>
                   <div className="nh3d-top-score-timeline-viewport">
                     <div
@@ -322,7 +327,7 @@ export function TopScoreDetailDialog({
                             44
                           }
                         >
-                          Turns
+                          {topScoreStrings.timeline.axisTurns}
                         </text>
                         {selectedTopScoreTimelineModel.clusters
                           .filter((cluster) => !cluster.isLineAnchored)
@@ -406,7 +411,9 @@ export function TopScoreDetailDialog({
                         </div>
                         {activeTopScoreTimelineCluster.events.length > 1 ? (
                           <div className="nh3d-top-score-timeline-focus-count">
-                            {`${formatTopScoreInteger(activeTopScoreTimelineCluster.events.length)} moments`}
+                            {topScoreStrings.timeline.moments(
+                              formatTopScoreInteger(activeTopScoreTimelineCluster.events.length),
+                            )}
                           </div>
                         ) : null}
                       </div>
@@ -434,14 +441,14 @@ export function TopScoreDetailDialog({
                                   {formatTopScoreTimelineEventBadge(event)}
                                 </span>
                                 <span className="nh3d-top-score-timeline-focus-card-turn">
-                                  Turn {formatTopScoreInteger(event.turn)}
+                                  {topScoreStrings.timeline.turn(formatTopScoreInteger(event.turn))}
                                 </span>
                               </div>
                               <div className="nh3d-top-score-timeline-focus-card-title">
-                                {event.label}
+                                {localizeTopScoreStoredTimelineText(event.label)}
                               </div>
                               <div className="nh3d-top-score-timeline-focus-card-summary">
-                                {event.summary}
+                                {localizeTopScoreStoredTimelineText(event.summary)}
                               </div>
                               {eventMeta ? (
                                 <div className="nh3d-top-score-timeline-focus-card-meta">
@@ -457,14 +464,13 @@ export function TopScoreDetailDialog({
                 </>
               ) : (
                 <div className="nh3d-top-scores-empty">
-                  This run was archived before turn-by-turn history was being
-                  kept.
+                  {topScoreStrings.timeline.noHistory}
                 </div>
               )}
             </section>
             <div className="nh3d-character-grid nh3d-top-score-detail-grid">
               <section className="nh3d-character-panel nh3d-top-score-summary-panel">
-                <div className="nh3d-character-panel-title">Run Summary</div>
+                <div className="nh3d-character-panel-title">{topScoreStrings.sections.runSummary}</div>
                 <div className="nh3d-character-field-list">
                   {selectedTopScoreOverviewRows.map(([label, value]) => (
                     <div
@@ -486,7 +492,7 @@ export function TopScoreDetailDialog({
 
               <section className="nh3d-character-panel nh3d-top-score-final-panel">
                 <div className="nh3d-character-panel-title">
-                  Final Snapshot
+                  {topScoreStrings.sections.finalSnapshot}
                 </div>
                 {selectedTopScoreAdventureMetrics.length > 0 ? (
                   <div className="nh3d-character-stat-grid">
@@ -513,13 +519,13 @@ export function TopScoreDetailDialog({
                   </div>
                 ) : (
                   <div className="nh3d-top-scores-empty">
-                    Only the archived score line was available for this run.
+                    {topScoreStrings.sections.onlyScoreLine}
                   </div>
                 )}
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-core-panel">
-                <div className="nh3d-character-panel-title">Core Attributes</div>
+                <div className="nh3d-character-panel-title">{topScoreStrings.sections.coreAttributes}</div>
                 {selectedTopScoreAttributeMetrics.length > 0 ? (
                   <div className="nh3d-character-stat-grid nh3d-top-score-core-stat-grid">
                     {selectedTopScoreAttributeMetrics.map((metric) => (
@@ -540,14 +546,14 @@ export function TopScoreDetailDialog({
                   </div>
                 ) : (
                   <div className="nh3d-top-scores-empty">
-                    No core attribute snapshot was captured for this run.
+                    {topScoreStrings.sections.noCoreAttributes}
                   </div>
                 )}
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-challenge-panel">
                 <div className="nh3d-character-panel-title">
-                  Challenge Ledger
+                  {topScoreStrings.sections.challengeLedger}
                 </div>
                 <div className="nh3d-top-score-chip-groups">
                   {selectedTopScoreChallengeGroups.map((group) => (
@@ -581,7 +587,7 @@ export function TopScoreDetailDialog({
 
               <section className="nh3d-character-panel nh3d-top-score-panel-wide">
                 <div className="nh3d-character-panel-title">
-                  Battle Breakdown
+                  {topScoreStrings.sections.battleBreakdown}
                 </div>
                 <div className="nh3d-top-score-breakdown-grid">
                   {selectedTopScoreKillBreakdownGroups.map((group) => (
@@ -626,7 +632,7 @@ export function TopScoreDetailDialog({
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-panel-wide">
-                <div className="nh3d-character-panel-title">Loot Trail</div>
+                <div className="nh3d-character-panel-title">{topScoreStrings.sections.lootTrail}</div>
                 {selectedTopScoreLootTimelineSections.length > 0 ? (
                   <div className="nh3d-top-score-loot-sections">
                     {selectedTopScoreLootTimelineSections.map((section) => (
@@ -645,16 +651,16 @@ export function TopScoreDetailDialog({
                               key={`top-score-loot-event-${event.id}`}
                             >
                               <div className="nh3d-character-field-label">
-                                Turn {formatTopScoreInteger(event.turn)}
+                                {topScoreStrings.timeline.turn(formatTopScoreInteger(event.turn))}
                               </div>
                               <div className="nh3d-character-field-value-group">
                                 <span className="nh3d-character-field-value">
                                   {event.quantity === 1
                                     ? event.label
-                                    : `${formatTopScoreInteger(event.quantity)} x ${event.label}`}
+                                    : topScoreStrings.sections.quantityTimes(formatTopScoreInteger(event.quantity), event.label)}
                                 </span>
                                 <span className="nh3d-character-field-detail">
-                                  {event.location || event.detail || "Pack update"}
+                                  {event.location ? localizeTopScoreStoredLocation(event.location) : event.detail || topScoreStrings.sections.packUpdate}
                                 </span>
                               </div>
                             </div>
@@ -665,13 +671,13 @@ export function TopScoreDetailDialog({
                   </div>
                 ) : (
                   <div className="nh3d-top-scores-empty">
-                    No loot pickups were archived for this run.
+                    {topScoreStrings.sections.noLoot}
                   </div>
                 )}
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-panel-wide">
-                <div className="nh3d-character-panel-title">Pack at the End</div>
+                <div className="nh3d-character-panel-title">{topScoreStrings.sections.packAtEnd}</div>
                 {selectedTopScoreInventorySections.length > 0 &&
                   selectedTopScore.detail ? (
                   <div className="nh3d-top-score-inventory-sections">
@@ -710,20 +716,20 @@ export function TopScoreDetailDialog({
                   </div>
                 ) : (
                   <div className="nh3d-top-scores-empty">
-                    No inventory snapshot was captured for this run.
+                    {topScoreStrings.sections.noInventory}
                   </div>
                 )}
               </section>
 
               <section className="nh3d-character-panel nh3d-top-score-panel-wide">
                 <div className="nh3d-character-panel-title">
-                  Postmortem Archives
+                  {topScoreStrings.sections.postmortemArchives}
                 </div>
                 <div className="nh3d-top-score-postmortem-archives">
                   <div className="nh3d-top-score-postmortem-feature-row">
                     <div className="nh3d-top-score-report-block nh3d-top-score-tombstone-block">
                       <div className="nh3d-top-score-breakdown-title">
-                        Tombstone
+                        {topScoreStrings.sections.tombstone}
                       </div>
                       {selectedTopScore.detail?.tombstoneLines.length ? (
                         <pre className="nh3d-top-score-tombstone">
@@ -731,7 +737,7 @@ export function TopScoreDetailDialog({
                         </pre>
                       ) : (
                         <div className="nh3d-top-scores-empty">
-                          No tombstone snapshot was archived for this run.
+                          {topScoreStrings.sections.noTombstone}
                         </div>
                       )}
                     </div>

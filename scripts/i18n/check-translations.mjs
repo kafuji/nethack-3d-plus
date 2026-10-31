@@ -239,6 +239,11 @@ function compareTrees(baseValue, localeValue, prefix, result) {
   const keyPath = prefix.join(".");
 
   if (localeValue === undefined) {
+    // nh3d-plus: fork-only `plus` strings fall back to English until a locale
+    // translates them, so their absence is not an error.
+    if (prefix[0] === "plus") {
+      return;
+    }
     result.missing.push(...collectLeafPaths(baseValue, prefix));
     return;
   }

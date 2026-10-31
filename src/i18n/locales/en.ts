@@ -1,3 +1,6 @@
+// nh3d-plus: fork-only strings are mounted under `plus`.
+import { plusEn } from "../../plus/i18n/en";
+
 export const en = {
   meta: {
     locale: "en-US",
@@ -1688,6 +1691,8 @@ export const en = {
       },
     },
   },
+  // nh3d-plus: fork-only strings.
+  plus: plusEn,
 } as const;
 
 type WidenTranslationLiterals<T> = T extends (...args: any[]) => any

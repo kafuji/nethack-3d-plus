@@ -1,4 +1,6 @@
 import type { NethackMenuItem } from "../../game/ui-types";
+// nh3d-plus: localized column headers.
+import { plusStrings } from "../app/shared/translations";
 
 export type TechniqueEntry = {
   id: string;
@@ -291,9 +293,9 @@ export function TechniqueMenu({
           data-nh3d-overflow-glow-host="parent"
         >
           <div aria-hidden="true" className="nh3d-technique-list-head">
-            <span>Name</span>
-            <span>Level</span>
-            <span>Status</span>
+            <span>{plusStrings.techniqueMenu.name}</span>
+            <span>{plusStrings.techniqueMenu.level}</span>
+            <span>{plusStrings.techniqueMenu.status}</span>
           </div>
           {menuData.entries.map((entry) => {
             const canChoose =

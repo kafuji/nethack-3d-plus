@@ -1,4 +1,6 @@
 import * as THREE from "three";
+// nh3d-plus: localized context action labels.
+import { getTranslationStrings } from "../../../i18n/core";
 import { TILE_SIZE, WALL_HEIGHT } from "../../constants";
 import { classifyTileBehavior, isDoorwayCmapGlyph } from "../../glyphs/behavior";
 import {
@@ -39,6 +41,10 @@ import type { TileRendering } from "../rendering/tile-rendering";
 import type { TilesetAssets } from "../rendering/tileset-assets";
 import type { TileUpdates } from "../world/tile-updates";
 import type { WorldClassification } from "../world/world-classification";
+
+// nh3d-plus: context action labels keyed by action id.
+const contextActionLabels: Readonly<Record<string, string>> =
+  getTranslationStrings().plus.contextActions;
 
 export interface TileContextActionsDependencies {
   readonly aimHighlights: Pick<
@@ -1013,7 +1019,7 @@ export class TileContextActions {
       }
       actions.push({
         id,
-        label,
+        label: contextActionLabels[id] ?? label,
         kind: "quick",
         value,
       });
@@ -1030,7 +1036,7 @@ export class TileContextActions {
       }
       actions.push({
         id,
-        label,
+        label: contextActionLabels[id] ?? label,
         kind: "extended",
         value,
       });
@@ -1049,7 +1055,7 @@ export class TileContextActions {
       }
       actions.push({
         id,
-        label,
+        label: contextActionLabels[id] ?? label,
         kind: "contextual",
         value,
       });

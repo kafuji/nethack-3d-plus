@@ -30,8 +30,12 @@ import {
   formatTopScoreSnapshotStatus
 } from "./format";
 import {
-  commonStrings
+  commonStrings,
+  plusStrings
 } from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 export interface TopScoresDialogProps {
   startupInitialLoadingVisible: boolean;
@@ -95,14 +99,14 @@ export function TopScoresDialog({
       onKeyDown={handleStartupMainMenuKeyDown}
       onPointerDownCapture={handleStartupMainMenuPointerDownCapture}
     >
-      {renderMobileDialogCloseButton(closeTopScoresDialog, "Close top scores")}
+      {renderMobileDialogCloseButton(closeTopScoresDialog, topScoreStrings.closeLabel)}
       {topScoresDialogRuntime ? (
         <RuntimeVersionBadge
           label={resolveRuntimeVersionDisplayLabel(topScoresDialogRuntime)}
           startup
         />
       ) : null}
-      <div className="nh3d-options-title">Top Scores</div>
+      <div className="nh3d-options-title">{topScoreStrings.title}</div>
       <div className="nh3d-top-scores-summary">
         {topScoresSummaryStats.length > 0 ? (
           <div className="nh3d-top-scores-summary-grid">
@@ -127,7 +131,7 @@ export function TopScoresDialog({
           </div>
         ) : (
           <div className="nh3d-top-scores-summary-empty">
-            {topScoresLoading ? "Loading the ledger..." : "No scores yet."}
+            {topScoresLoading ? topScoreStrings.loadingLedger : topScoreStrings.noScoresYet}
           </div>
         )}
       </div>
@@ -144,7 +148,7 @@ export function TopScoresDialog({
             }
           }}
         >
-          <span>Sort by</span>
+          <span>{topScoreStrings.sortBy}</span>
           <span className="nh3d-top-scores-select-shell">
             <button
               aria-expanded={topScoresSortMenuOpen}
@@ -160,7 +164,7 @@ export function TopScoresDialog({
             </button>
             {topScoresSortMenuOpen ? (
               <div
-                aria-label="Sort top scores by"
+                aria-label={topScoreStrings.sortMenuLabel}
                 className="nh3d-top-scores-sort-menu"
                 role="listbox"
               >
@@ -193,13 +197,12 @@ export function TopScoresDialog({
           data-nh3d-overflow-glow-host="parent"
         >
           {topScoresLoading ? (
-            <div className="nh3d-top-scores-empty">Loading the ledger...</div>
+            <div className="nh3d-top-scores-empty">{topScoreStrings.loadingLedger}</div>
           ) : topScoresError ? (
             <div className="nh3d-top-scores-empty">{topScoresError}</div>
           ) : visibleTopScores.length <= 0 ? (
             <div className="nh3d-top-scores-empty">
-              No adventurers have claimed a place in the ledger yet. Finish a
-              scoring run to write the first entry.
+              {topScoreStrings.emptyLedger}
             </div>
           ) : (
             <div className="nh3d-top-scores-list">
@@ -223,7 +226,7 @@ export function TopScoresDialog({
                             {formatTopScorePlayerName(score)}
                           </div>
                           <div className="nh3d-top-score-card-points">
-                            {formatTopScoreInteger(score.points)} pts
+                            {topScoreStrings.pointsShort(formatTopScoreInteger(score.points))}
                           </div>
                         </div>
                         <div className="nh3d-top-score-card-archetype">
@@ -274,7 +277,7 @@ export function TopScoresDialog({
                         onClick={() => setSelectedTopScore(score)}
                         type="button"
                       >
-                        Open run breakdown
+                        {topScoreStrings.openRunBreakdown}
                       </button>
                     </div>
                   </article>
@@ -285,7 +288,7 @@ export function TopScoresDialog({
         </div>
       </div>
       <div className="nh3d-top-scores-pagination">
-        Page {topScoresCurrentPageIndex + 1} of {topScoresPageCount}
+        {topScoreStrings.pagination(topScoresCurrentPageIndex + 1, topScoresPageCount)}
       </div>
       <div className="nh3d-menu-actions">
         <button
@@ -296,7 +299,7 @@ export function TopScoresDialog({
           }
           type="button"
         >
-          Previous
+          {topScoreStrings.previous}
         </button>
         <button
           className="nh3d-menu-action-button"
@@ -311,7 +314,7 @@ export function TopScoresDialog({
           }
           type="button"
         >
-          Next
+          {topScoreStrings.next}
         </button>
         <button
           className="nh3d-menu-action-button"
@@ -323,7 +326,7 @@ export function TopScoresDialog({
           }}
           type="button"
         >
-          Refresh
+          {topScoreStrings.refresh}
         </button>
         <button
           className="nh3d-menu-action-button nh3d-menu-action-cancel"
