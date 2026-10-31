@@ -1,11 +1,11 @@
-import type { LocaleOverrides } from "../../i18n/locale-helpers";
+import { mergeTranslations, type LocaleOverrides } from "../../i18n/locale-helpers";
 import type { TranslationDictionary } from "../../i18n/locales/en";
 
 // Fork-maintained Japanese translations, merged on top of upstream's ja.ts.
 // Keeping them here avoids merge conflicts when upstream updates ja.ts.
 // Strings intentionally left identical to English (button glyphs, FPS, TAA,
 // NetHack option syntax placeholders, symset names) are not listed.
-export const jaPlusOverrides: LocaleOverrides<TranslationDictionary> = {
+const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
   controller: {
     buttonLabels: {
       9: "スタート / メニュー",
@@ -67,7 +67,7 @@ export const jaPlusOverrides: LocaleOverrides<TranslationDictionary> = {
       ascend: "上る (<)",
       descend: "下りる (>)",
       search: "探す",
-      loot: "中身を調べる",
+      loot: "物色",
       open: "開ける",
       close: "閉める",
       quaff: "飲む",
@@ -289,10 +289,10 @@ export const jaPlusOverrides: LocaleOverrides<TranslationDictionary> = {
         deathsOnFile: "記録上の死亡回数",
       },
       attributes: {
-        strength: "強さ",
-        dexterity: "素早さ",
+        strength: "腕力",
+        dexterity: "器用さ",
         constitution: "耐久力",
-        intelligence: "知力",
+        intelligence: "知性",
         wisdom: "賢さ",
         charisma: "魅力",
       },
@@ -315,7 +315,7 @@ export const jaPlusOverrides: LocaleOverrides<TranslationDictionary> = {
         noPetKills: "このプレイではペットによる撃破の記録がありません。",
         finalAttributes: "最終能力",
         noFinalAttributes: "このプレイの最終能力レポートは保存されていません。",
-        vanquished: "倒した怪物",
+        vanquished: "倒したモンスター",
         noVanquished: "このプレイの撃破レポートは保存されていません。",
         conduct: "縛り",
         noConduct: "このプレイの縛りレポートは保存されていません。",
@@ -516,3 +516,92 @@ export const jaPlusOverrides: LocaleOverrides<TranslationDictionary> = {
     },
   },
 };
+
+// Terminology fixes for upstream ja.ts strings, aligned with JNetHack usage
+// (e.g. 職業 for role, 探す for search, 探検 for explore mode).
+const jaPlusTerminologyFixes: LocaleOverrides<TranslationDictionary> = {
+  controller: {
+    actions: {
+      search: {
+        label: "探す",
+        description: "移動プレビューが無効のとき、現在のマスで隠されたものを探します。",
+      },
+      recenter_camera: {
+        label: "カメラを中央に戻す",
+      },
+    },
+  },
+  startupInitOptions: {
+    options: {
+      playmode: {
+        options: {
+          explore: "探検",
+        },
+      },
+      autoopen: {
+        label: "ドアを自動で開ける",
+      },
+      legacy: {
+        label: "冒頭の物語",
+      },
+      pettype: {
+        description: "初期ペットを選べる職業で、優先する初期ペットです。",
+      },
+    },
+  },
+  characterSheet: {
+    commands: {
+      seespells: {
+        detail: "呪文の一覧を表示",
+      },
+      technique: {
+        detail: "職業 / 種族の能力を使う",
+      },
+    },
+  },
+  app: {
+    saveTransfer: {
+      imported: "インポートしました。「ゲームをロード」を選択してください。",
+    },
+    characterStats: {
+      armorClassDescription: "低いほど有利です。アーマークラス (AC) は敵の命中率を下げます。",
+    },
+    inventoryContextActions: {
+      tip: "中身を出す",
+      quiver: "矢筒に入れる",
+    },
+    update: {
+      preparingDownload: "バージョン確認を準備中...",
+    },
+    clientOptions: {
+      config: {
+        displayStatChangesAbovePlayer: {
+          description: "腕力や AC などの能力値変化を、浮かぶラベルで表示します。",
+        },
+      },
+    },
+    dialogs: {
+      clientOptions: {
+        updates: {
+          idle: "「更新を確認」を押して、このビルドを GitHub リリースと比較してください。",
+        },
+      },
+      tilesetManager: {
+        uploadedDetails: (fileName: string, layout: string) =>
+          `${fileName} | アップロード済み | レイアウト ${layout}`,
+        builtInDetails: (path: string) => `${path} | 組み込み`,
+      },
+      startup: {
+        role: "職業",
+      },
+      mobileActions: {
+        search: "探す",
+      },
+    },
+  },
+};
+
+export const jaPlusOverrides = mergeTranslations(
+  jaPlusTranslations as TranslationDictionary,
+  jaPlusTerminologyFixes,
+) as LocaleOverrides<TranslationDictionary>;
