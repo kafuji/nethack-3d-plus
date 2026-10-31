@@ -9,6 +9,7 @@ import type {
 } from "../status/conditions";
 import {
   commonStrings,
+  localizePlusWindowTitle,
   plusStrings,
   t,
   translationStrings
@@ -161,7 +162,7 @@ export function CharacterInfoDialog({
                       <div className="nh3d-character-legacy-summary-row">
                         <section className="nh3d-character-panel nh3d-character-panel-legacy-summary">
                           <div className="nh3d-character-panel-title">
-                            Starting
+                            {plusStrings.characterSheet.starting}
                           </div>
                           {renderCharacterSheetFieldRows(
                             characterSheet.backgroundLines,
@@ -172,7 +173,7 @@ export function CharacterInfoDialog({
 
                         <section className="nh3d-character-panel nh3d-character-panel-legacy-summary">
                           <div className="nh3d-character-panel-title">
-                            Current
+                            {plusStrings.characterSheet.current}
                           </div>
                           {renderCharacterSheetFieldRows(
                             characterSheet.characteristicsLines,
@@ -184,7 +185,7 @@ export function CharacterInfoDialog({
                         {showLegacySlashEmDeitiesPanel ? (
                           <section className="nh3d-character-panel nh3d-character-panel-legacy-summary nh3d-character-panel-legacy-deities">
                             <div className="nh3d-character-panel-title">
-                              Deities
+                              {plusStrings.characterSheet.deities}
                             </div>
                             {renderCharacterSheetFieldRows(
                               characterSheet.deityLines,
@@ -576,7 +577,7 @@ export function CharacterInfoDialog({
               >
                 <div className="nh3d-question-text">
                   {infoEnhanceMenuData.prompt ||
-                    displayedInfoMenu.title ||
+                    localizePlusWindowTitle(displayedInfoMenu.title) ||
                     t.dialogs.info.infoTitleFallback}
                 </div>
                 {renderEnhanceMenuContent(infoEnhanceMenuData)}
@@ -647,7 +648,7 @@ export function CharacterInfoDialog({
                 data-nh3d-overflow-glow-host="parent"
               >
                 <div className="nh3d-info-title">
-                  {displayedInfoMenu.title || t.dialogs.info.infoTitleFallback}
+                  {localizePlusWindowTitle(displayedInfoMenu.title) || t.dialogs.info.infoTitleFallback}
                 </div>
                 <div className="nh3d-info-body">
                   {displayedInfoMenu.lines.length > 0

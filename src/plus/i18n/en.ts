@@ -1,6 +1,40 @@
 // Fork-only English strings, mounted at `en.plus`. Other locales override
 // these from src/plus/i18n/<locale>.ts and fall back to English otherwise.
 export const plusEn = {
+  startupMenu: {
+    topScores: "Top Scores",
+  },
+  characterSheet: {
+    starting: "Starting",
+    current: "Current",
+    deities: "Deities",
+  },
+  solidColorPicker: {
+    selectedColor: (hex: string) => `Selected color: ${hex}`,
+    hint: "Move over the full atlas and click a pixel to set the solid chroma key color.",
+    done: "Done",
+  },
+  saves: {
+    overwrite: "Overwrite",
+  },
+  statChanges: {
+    experience: (delta: string) => `XP ${delta}`,
+    experienceLevel: (level: number) => `Experience Level ${level}`,
+  },
+  // Window titles created by the client (not by NetHack); keyed by English title.
+  windowTitles: {
+    "Message History": "Message History",
+    "NetHack Message": "NetHack Message",
+    "NetHack Information": "NetHack Information",
+    "Command Help": "Command Help",
+    "NetHack Help": "NetHack Help",
+    "NetHack History": "NetHack History",
+    "Key Help": "Key Help",
+    "NetHack License": "NetHack License",
+    "Option Help": "Option Help",
+    "Wizard Help": "Wizard Help",
+    "Port Help": "Port Help",
+  },
   contextActions: {
     pickup: "Pick Up",
     eat: "Eat",
@@ -31,6 +65,10 @@ export const plusEn = {
     name: "Name",
     level: "Level",
     status: "Status",
+    lvl: (level: number) => `Lvl ${level}`,
+    known: (count: number) => `${count} known`,
+    ready: (count: number) => `${count} ready`,
+    active: (count: number) => `${count} active`,
   },
   tilesetLayouts: {
     slashem: "Slash'EM layout",
@@ -170,6 +208,29 @@ export const plusEn = {
       "Wizard/debug": "Wizard/debug",
       Explore: "Explore",
       "Bones disabled": "Bones disabled",
+    },
+    // Trap and hidden-find labels recorded by run telemetry (stored in English).
+    telemetryLabels: {
+      "Pit trap": "Pit trap",
+      "Trap door": "Trap door",
+      "Bear trap": "Bear trap",
+      "Land mine": "Land mine",
+      "Rolling boulder trap": "Rolling boulder trap",
+      "Dart trap": "Dart trap",
+      "Arrow trap": "Arrow trap",
+      "Teleport trap": "Teleport trap",
+      "Magic trap": "Magic trap",
+      "Anti-magic trap": "Anti-magic trap",
+      "Squeaky board": "Squeaky board",
+      "Web trap": "Web trap",
+      "Polymorph trap": "Polymorph trap",
+      "Sleeping gas trap": "Sleeping gas trap",
+      "Rust trap": "Rust trap",
+      "Fire trap": "Fire trap",
+      "Ice trap": "Ice trap",
+      "Trap triggered": "Trap triggered",
+      "Hidden door": "Hidden door",
+      "Hidden passage": "Hidden passage",
     },
     cardMetrics: {
       turns: "Turns",

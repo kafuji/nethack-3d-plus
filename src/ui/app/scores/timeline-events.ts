@@ -23,6 +23,11 @@ import {
 // nh3d-plus: localized via src/plus/i18n.
 const topScoreStrings = plusStrings.topScores;
 
+function localizeTelemetryLabel(label: string): string {
+  const labels: Readonly<Record<string, string>> = topScoreStrings.telemetryLabels;
+  return labels[label] ?? label;
+}
+
 /** Telemetry timeline events and compatibility fallbacks. */
 export function resolveTopScoreTelemetry(score: TopScoreRecord): RunTelemetrySnapshot {
   return score.detail?.telemetry ?? createEmptyRunTelemetrySnapshot();
@@ -52,8 +57,8 @@ export function buildTopScoreTelemetryTimelineEvents(
     id: `telemetry-trap-${event.id}`,
     turn: normalizeTopScoreTimelineTurn(event.turn),
     kind: "trap",
-    label: event.label,
-    summary: event.detail || topScoreStrings.timeline.events.trapTriggered(event.label),
+    label: localizeTelemetryLabel(event.label),
+    summary: event.detail || topScoreStrings.timeline.events.trapTriggered(localizeTelemetryLabel(event.label)),
     detail: event.detail,
     location: event.location,
   }));
@@ -62,8 +67,8 @@ export function buildTopScoreTelemetryTimelineEvents(
       id: `telemetry-hidden-find-${event.id}`,
       turn: normalizeTopScoreTimelineTurn(event.turn),
       kind: "hidden-find",
-      label: event.label,
-      summary: event.detail || topScoreStrings.timeline.events.foundHidden(event.label),
+      label: localizeTelemetryLabel(event.label),
+      summary: event.detail || topScoreStrings.timeline.events.foundHidden(localizeTelemetryLabel(event.label)),
       detail: event.category,
       amount: 1,
       location: event.location,

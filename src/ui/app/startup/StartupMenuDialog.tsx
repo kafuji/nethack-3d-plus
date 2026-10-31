@@ -14,6 +14,7 @@ import {
 } from "./RuntimeVersionBadge";
 import {
   commonStrings,
+  plusStrings,
   t
 } from "../shared/translations";
 
@@ -99,7 +100,7 @@ export function StartupMenuDialog({
               onClick={openTopScoresDialog}
               type="button"
             >
-              Top Scores
+              {plusStrings.startupMenu.topScores}
             </button>
           ) : null}
           <button

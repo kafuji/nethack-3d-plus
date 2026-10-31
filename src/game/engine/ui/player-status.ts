@@ -1,3 +1,5 @@
+// nh3d-plus: localized stat-change labels.
+import { getTranslationStrings } from "../../../i18n/core";
 import type { PlayerStatsSnapshot } from "../../ui-types";
 import { extractRuntimeNumberPadModeEnabled as extractNumberPadModeFromRuntimeSnapshot } from "../../../runtime/number-pad-mode";
 import type { CorePlayerStatField } from "../shared/types";
@@ -13,6 +15,8 @@ import type { PlayerMovement } from "../world/player-movement";
 import type { TerminalRendering } from "../rendering/terminal-rendering";
 import type { TilesetAssets } from "../rendering/tileset-assets";
 import type { TileUpdates } from "../world/tile-updates";
+
+const plusStatChangeStrings = getTranslationStrings().plus.statChanges;
 
 export interface PlayerStatusDependencies {
   readonly audioHapticsPlatform: Pick<
@@ -740,7 +744,7 @@ export class PlayerStatus {
         this.dependencies.playerMovement.playerPos.y,
         1,
         {
-          label: `XP ${signPrefix}${playerExperienceDelta}`,
+          label: plusStatChangeStrings.experience(`${signPrefix}${playerExperienceDelta}`),
           fillStyle: xpIncreased ? "#7ebfff" : "#ff6b6b",
           scaleMultiplier: 0.68,
         },
@@ -756,7 +760,7 @@ export class PlayerStatus {
         this.dependencies.playerMovement.playerPos.y,
         1,
         {
-          label: `Experience Level ${playerLevelUpTo}`,
+          label: plusStatChangeStrings.experienceLevel(playerLevelUpTo),
           fillStyle: "#f2d06f",
         },
       );
