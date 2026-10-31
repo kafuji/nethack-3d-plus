@@ -15,6 +15,12 @@ import {
 import {
   formatTopScoreInteger
 } from "./format";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 /** Timeline overview metrics and peak level summary. */
 export function buildTopScoreTimelineSummaryMetrics(score: TopScoreRecord): TopScoreMetric[] {
@@ -56,53 +62,53 @@ export function buildTopScoreTimelineSummaryMetrics(score: TopScoreRecord): TopS
 
   return [
     {
-      label: "Foes defeated",
+      label: topScoreStrings.timeline.summary.foesDefeated,
       value: formatTopScoreInteger(killCount),
-      detail: killCount === 1 ? "one recorded kill" : "recorded kills",
+      detail: killCount === 1 ? topScoreStrings.timeline.summary.oneKill : topScoreStrings.timeline.summary.manyKills,
     },
     {
-      label: "Gold gathered",
+      label: topScoreStrings.timeline.summary.goldGathered,
       value: formatTopScoreInteger(goldCollected),
-      detail: goldCollected === 1 ? "piece picked up" : "pieces picked up",
+      detail: goldCollected === 1 ? topScoreStrings.timeline.summary.oneGold : topScoreStrings.timeline.summary.manyGold,
     },
     {
-      label: "Hidden finds",
+      label: topScoreStrings.timeline.summary.hiddenFinds,
       value: formatTopScoreInteger(hiddenFindCount),
       detail:
-        hiddenFindCount === 1 ? "one secret revealed" : "secrets revealed",
+        hiddenFindCount === 1 ? topScoreStrings.timeline.summary.oneHidden : topScoreStrings.timeline.summary.manyHidden,
     },
     {
-      label: "Loot collected",
+      label: topScoreStrings.timeline.summary.lootCollected,
       value: formatTopScoreInteger(lootCount),
-      detail: lootCount === 1 ? "one item tracked" : "items tracked",
+      detail: lootCount === 1 ? topScoreStrings.timeline.summary.oneLoot : topScoreStrings.timeline.summary.manyLoot,
     },
     {
-      label: "Spells learned",
+      label: topScoreStrings.timeline.summary.spellsLearned,
       value: formatTopScoreInteger(spellsLearned),
       detail:
-        spellsLearned === 1 ? "one spell discovered" : "spells discovered",
+        spellsLearned === 1 ? topScoreStrings.timeline.summary.oneSpell : topScoreStrings.timeline.summary.manySpells,
     },
     {
-      label: "Traps sprung",
+      label: topScoreStrings.timeline.summary.trapsSprung,
       value: formatTopScoreInteger(telemetry.trapEvents.length),
       detail:
         telemetry.trapEvents.length === 1
-          ? "one hazard triggered"
-          : "hazards triggered",
+          ? topScoreStrings.timeline.summary.oneTrap
+          : topScoreStrings.timeline.summary.manyTraps,
     },
     {
-      label: "Places reached",
+      label: topScoreStrings.timeline.summary.placesReached,
       value: formatTopScoreInteger(locationsVisited),
       detail:
-        locationsVisited === 1 ? "floor or branch logged" : "floors or branches logged",
+        locationsVisited === 1 ? topScoreStrings.timeline.summary.onePlace : topScoreStrings.timeline.summary.manyPlaces,
     },
     {
-      label: "Max level",
+      label: topScoreStrings.timeline.summary.maxLevel,
       value:
         maxCharacterLevel === null
           ? "--"
           : formatTopScoreInteger(maxCharacterLevel),
-      detail: "peak character level",
+      detail: topScoreStrings.timeline.summary.peakLevel,
     },
   ];
 }

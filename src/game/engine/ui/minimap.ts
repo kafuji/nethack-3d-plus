@@ -1,4 +1,6 @@
 import * as THREE from "three";
+// nh3d-plus: localized minimap label.
+import { getTranslationStrings } from "../../../i18n/core";
 import { TILE_SIZE } from "../../constants";
 import { classifyTileBehavior, getDefaultFloorGlyph } from "../../glyphs/behavior";
 import {
@@ -134,7 +136,7 @@ export class Minimap {
 
     const container = document.createElement("div");
     container.className = "nh3d-minimap";
-    container.setAttribute("aria-label", "Dungeon minimap");
+    container.setAttribute("aria-label", getTranslationStrings().plus.engine.minimapLabel);
 
     const mapCanvas = document.createElement("canvas");
     mapCanvas.className = "nh3d-minimap-canvas";

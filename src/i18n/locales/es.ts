@@ -388,6 +388,20 @@ export const esOverrides = {
     },
     soundEffects: {
         byKey: {
+          "status-hungry": "Estado: Hambriento",
+          "status-weak": "Estado: Débil (hambre)",
+          "status-fainting": "Estado: Desfalleciendo",
+          "status-confused": "Estado: Confundido",
+          "status-stunned": "Estado: Aturdido",
+          "status-blind": "Estado: Ciego",
+          "status-hallucinating": "Estado: Alucinando",
+          "status-poisoned": "Estado: Envenenado",
+          "status-sick": "Estado: Intoxicación / Enfermo",
+          "status-stoning": "Estado: Petrificándose",
+          "status-slimed": "Estado: Cubierto de limo",
+          "status-strangled": "Estado: Estrangulado",
+          "status-paralyzed": "Estado: Paralizado / Dormido",
+          "status-recovered": "Estado: Recuperado",
             "player-walk": "Paseo del jugador",
             hit: "Golpear",
             "thrown-weapon": "Arma arrojadiza",
@@ -956,6 +970,15 @@ export const esOverrides = {
                     },
                 },
                 groupSound: "Sonido",
+                musicEnabled: {
+                  label: "Música de fondo",
+                  description:
+                    "Reproduce música de fondo que cambia según la situación (calma, combate, peligro). Requiere el sonido activado.",
+                },
+                musicVolume: {
+                  label: "Volumen de la música",
+                  description: "Volumen de la música de fondo.",
+                },
                 soundEnabled: {
                     label: "Habilitar sonido",
                     description: "Activa o desactiva el audio FMOD. La desactivaci\u00F3n reduce la sobrecarga de procesamiento de audio en dispositivos de gama baja.",

@@ -7,7 +7,12 @@ message, and a few combat and experience-level templates. Monster and item
 names are translated where explicitly recognized. Unrecognized messages and all
 other languages retain the original text, so information is not silently lost.
 
-When no curated translation matches, the Japanese message display can use an
+When no curated translation matches, the Japanese display next tries
+JNetHack-derived data (`src/plus/game-text`, see its `NOTICE.md`): message
+templates, monster/object/feature names, ranks, dungeon branches and quest
+texts extracted from JNetHack's annotated sources. These are human translations,
+so they are not marked. JNetHack's `，．` punctuation is normalized to `、。`.
+Only if that also fails can the display use an
 unreviewed Nehww exact or bounded-pattern translation marked `参考訳`. In the message log
 and information window, selecting `参考訳・原文` reveals the original English;
 floating reference translations display the reference label, with the original

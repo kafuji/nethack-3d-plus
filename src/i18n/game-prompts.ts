@@ -2,6 +2,7 @@ import type { SupportedLocale } from "./core";
 import { translateInventoryItem } from "./inventory-text";
 import { translateMonsterName } from "./game-monsters";
 import { nethack5ExtraMessages } from "./nethack5-extra-messages";
+import { jnethackMessage } from "../plus/game-text/fallback";
 
 // Prompts are presented separately from their raw values, which determine
 // choices, command routing and submitted input. Keep this list exact.
@@ -198,6 +199,8 @@ export function translateGamePrompt(prompt: string, locale: SupportedLocale): st
       }
     }
   }
+  // Fall back to JNetHack wording for prompts without a curated translation.
+  translated ??= jnethackMessage(text);
   return translated === undefined
     ? prompt
     : `${leading}${translated}${choiceSuffix?.[2] ?? ""}${trailing}`;

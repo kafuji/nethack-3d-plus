@@ -222,6 +222,20 @@ export const zhCnOverrides = {
   },
   soundEffects: {
     byKey: {
+      "status-hungry": "状态：饥饿",
+      "status-weak": "状态：虚弱（饥饿）",
+      "status-fainting": "状态：昏厥",
+      "status-confused": "状态：混乱",
+      "status-stunned": "状态：眩晕",
+      "status-blind": "状态：失明",
+      "status-hallucinating": "状态：幻觉",
+      "status-poisoned": "状态：中毒",
+      "status-sick": "状态：食物中毒 / 患病",
+      "status-stoning": "状态：石化中",
+      "status-slimed": "状态：黏液化",
+      "status-strangled": "状态：窒息",
+      "status-paralyzed": "状态：麻痹 / 睡眠",
+      "status-recovered": "状态：恢复",
       "player-walk": "玩家行走",
       hit: "命中",
       "thrown-weapon": "投掷武器",
@@ -769,6 +783,15 @@ export const zhCnOverrides = {
           },
         },
         groupSound: "声音",
+        musicEnabled: {
+          label: "背景音乐",
+          description:
+            "播放随情境（平静、战斗、危险）变化的背景音乐。需要启用声音。",
+        },
+        musicVolume: {
+          label: "音乐音量",
+          description: "背景音乐的音量。",
+        },
         soundEnabled: {
           label: "启用声音",
           description: "打开或关闭 FMOD 音频。关闭后可减少低端设备的音频处理开销。",

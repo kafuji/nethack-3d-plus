@@ -32,6 +32,12 @@ import {
 import {
   formatTopScoreInteger
 } from "./format";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 /** Timeline chart model assembly. */
 export function buildTopScoreTimelineModel(
@@ -253,8 +259,8 @@ export function buildTopScoreTimelineModel(
     }
     seriesBase.summaryValue =
       rowEvents.length === 1
-        ? "one marked moment"
-        : `${formatTopScoreInteger(rowEvents.length)} marked moments`;
+        ? topScoreStrings.timeline.oneMarkedMoment
+        : topScoreStrings.timeline.markedMoments(formatTopScoreInteger(rowEvents.length));
     return seriesBase;
   });
 

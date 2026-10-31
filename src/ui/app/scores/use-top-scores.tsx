@@ -39,6 +39,12 @@ import {
   groupTopScoreInventoryItems,
   groupTopScoreLootTimelineEvents
 } from "./report-content";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 /** Score archive loading, sorting, pages and selected record */
 export function useTopScoresState() {
@@ -164,20 +170,20 @@ export function useTopScoresView(dependencies: UseTopScoresViewDependencies) {
     const snapshotCount = topScores.filter((score) => Boolean(score.detail)).length;
     return [
       {
-        label: "Recorded runs",
+        label: topScoreStrings.summaryStats.recordedRuns,
         value: formatTopScoreInteger(topScores.length),
         detail:
           topScores.length === 1
-            ? "One name in the ledger"
-            : "Names in the ledger",
+            ? topScoreStrings.summaryStats.oneName
+            : topScoreStrings.summaryStats.manyNames,
       },
       {
-        label: "Best score",
+        label: topScoreStrings.summaryStats.bestScore,
         value: formatTopScoreInteger(topScores[0]?.points),
         detail: formatTopScorePlayerName(topScores[0]),
       },
       {
-        label: "Latest entry",
+        label: topScoreStrings.summaryStats.latestEntry,
         value: formatTopScoreShortDateTime(
           latestScore.endtime ||
           latestScore.deathdate ||
@@ -186,12 +192,12 @@ export function useTopScoresView(dependencies: UseTopScoresViewDependencies) {
         detail: formatTopScorePlayerName(latestScore),
       },
       {
-        label: "Snapshots",
+        label: topScoreStrings.summaryStats.snapshots,
         value: formatTopScoreInteger(snapshotCount),
         detail:
           snapshotCount === 1
-            ? "final build saved"
-            : "final builds saved",
+            ? topScoreStrings.summaryStats.oneSnapshot
+            : topScoreStrings.summaryStats.manySnapshots,
       },
     ] satisfies TopScoreMetric[];
   }, [topScores]);
@@ -316,7 +322,7 @@ export function useTopScoresActions(dependencies: UseTopScoresActionsDependencie
         setTopScoresError(
           error instanceof Error
             ? error.message
-            : "Unable to load top scores.",
+            : topScoreStrings.loadFailed,
         );
       } finally {
         setTopScoresLoading(false);

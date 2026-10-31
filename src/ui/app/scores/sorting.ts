@@ -15,16 +15,22 @@ import {
 import {
   resolveTopScoreTimelineLineIncrement
 } from "./timeline-labels";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 /** Score sorting options and deterministic sort comparison. */
 export const topScoresPageSize = 10;
 
 export const topScoreSortOptions: readonly TopScoreSortOption[] = [
-  { id: "date", label: "Date" },
-  { id: "score", label: "Score" },
-  { id: "depth", label: "Depth" },
-  { id: "turns", label: "Turns" },
-  { id: "kills", label: "Kills" },
+  { id: "date", label: topScoreStrings.sortOptions.date },
+  { id: "score", label: topScoreStrings.sortOptions.score },
+  { id: "depth", label: topScoreStrings.sortOptions.depth },
+  { id: "turns", label: topScoreStrings.sortOptions.turns },
+  { id: "kills", label: topScoreStrings.sortOptions.kills },
 ];
 
 export function resolveTopScoreDateSortValue(score: TopScoreRecord): number {

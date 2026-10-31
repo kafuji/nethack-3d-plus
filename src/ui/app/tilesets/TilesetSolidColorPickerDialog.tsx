@@ -9,6 +9,8 @@ import {
 import {
   createPortal
 } from "react-dom";
+// nh3d-plus: localized picker copy.
+import { plusStrings } from "../shared/translations";
 
 /** Solid chroma key dialog, color conversion and pixel hover state. */
 export type TilesetSolidColorPickerDialogProps = {
@@ -407,11 +409,10 @@ export function TilesetSolidColorPickerDialog({
         />
         <div className="nh3d-dark-wall-picker-selected-copy">
           <div className="nh3d-option-label">
-            Selected color: {formatSolidChromaKeyHex(selectedColorHex)}
+            {plusStrings.solidColorPicker.selectedColor(formatSolidChromaKeyHex(selectedColorHex))}
           </div>
           <div className="nh3d-option-description">
-            Move over the full atlas and click a pixel to set the solid chroma
-            key color.
+            {plusStrings.solidColorPicker.hint}
           </div>
         </div>
       </div>
@@ -443,7 +444,7 @@ export function TilesetSolidColorPickerDialog({
           onClick={onDone}
           type="button"
         >
-          Done
+          {plusStrings.solidColorPicker.done}
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import type { SupportedLocale } from "./core";
 import { translateMonsterName } from "./game-monsters";
+import { jnethackItem } from "../plus/game-text/fallback";
 
 // These are presentation strings only. Never use the result for identifying an
 // item, choosing an action, resolving a glyph, or submitting a menu selection.
@@ -168,6 +169,16 @@ export function translateInventoryCategory(text: string, locale: SupportedLocale
 
 /** Translate only fully recognized item descriptions; otherwise retain the original. */
 export function translateInventoryItem(text: string, locale: SupportedLocale): string {
+  const curated = translateCuratedInventoryItem(text, locale);
+  if (locale !== "ja" || curated !== text || !text.trim()) return curated;
+  // Not recognized by the curated tables: try JNetHack's object names.
+  const leading = text.slice(0, text.length - text.trimStart().length);
+  const trailing = text.slice(text.trimEnd().length);
+  const jnethack = jnethackItem(text.trim());
+  return jnethack === undefined ? text : `${leading}${jnethack}${trailing}`;
+}
+
+function translateCuratedInventoryItem(text: string, locale: SupportedLocale): string {
   if (locale !== "ja" || !text.trim()) return text;
   const whitespace = /^(\s*)(.*?)(\s*)$/s.exec(text);
   if (!whitespace) return text;

@@ -140,5 +140,6 @@ describe("ground blood preservation", () => {
     expect(hash(blood.bloodGroundPixelData!)).toBe(hash(pixels));
     expect(blood.bloodGroundDensity).not.toBe(snapshot.density);
     blood.disposeBloodGroundOverlayResources();
-  });
+    // nh3d-plus: the full rasterizer pass takes ~7s on CI runners, past the 5s default.
+  }, 30000);
 });

@@ -118,6 +118,8 @@ function tilesetManifestPlugin() {
 }
 
 const isGitHubActions = process.env.GITHUB_ACTIONS === "true";
+// GitHub Pages serves project sites under /<repo>/, so follow the repository name.
+const gitHubPagesBase = `/${process.env.GITHUB_REPOSITORY?.split("/")[1] || "nethack-3d-plus"}/`;
 const isElectronBuild = process.env.BUILD_TARGET === "electron";
 const isQuestBuild = process.env.VITE_DEPLOY_TARGET === "quest";
 const enableCrossOriginIsolation =
@@ -442,7 +444,7 @@ export default defineConfig({
     "import.meta.env.VITE_NH3D_WASM_SLASHEM_HAS_CHECKPOINT_RESUME_BRIDGE":
       JSON.stringify(slashemHasCheckpointResumeBridge),
   },
-  base: isQuestBuild ? "/" : isElectronBuild ? "./" : isGitHubActions ? "/nethack-3d/" : "/",
+  base: isQuestBuild ? "/" : isElectronBuild ? "./" : isGitHubActions ? gitHubPagesBase : "/",
   server: {
     allowedHosts: true,
     ...(enableCrossOriginIsolation

@@ -1,12 +1,20 @@
-# NetHack 3D
+# NetHack 3D Plus
+
+> A fork of [NetHack 3D](https://github.com/JamesIV4/nethack-3d) by James Pound, extended and maintained by [kafuji](https://github.com/kafuji). Upstream features are documented below; fork-specific changes are listed in [Fork Changes](#fork-changes).
 
 Classic NetHack, presented as an interactive 3D dungeon. Play from above, step inside in first person, use an authentic terminal view, or explore in virtual reality on Meta Quest. The original NetHack game rules and depth are preserved.
 
-**[Play in your browser](https://jamesiv4.github.io/nethack-3d/) · [Download the app](https://github.com/JamesIV4/nethack-3d/releases/latest)**
+**[Play in your browser](https://kafuji.github.io/nethack-3d-plus/) · [Download the app](https://github.com/kafuji/nethack-3d-plus/releases/latest)**
 
-[Ways to play](#ways-to-play) · [Features](#features) · [Screenshots](#screenshots) · [Run locally](#run-locally)
+[Fork Changes](#fork-changes) · [Ways to play](#ways-to-play) · [Features](#features) · [Screenshots](#screenshots) · [Run locally](#run-locally)
 
-[Privacy Policy](https://jamesiv4.github.io/nethack-3d/privacy.html)
+[Privacy Policy](https://kafuji.github.io/nethack-3d-plus/privacy.html)
+
+## Fork Changes
+
+- Update checks, web build paths, and project links point to this fork.
+- Japanese: fuller interface translation, and in-game messages, prompts, item names and quest texts translated at display time. Curated translations come first, then [JNetHack](https://github.com/jnethack/jnethack-alpha) data (NetHack General Public License), then unreviewed Nehww references marked 参考訳.
+- Upstream: [JamesIV4/nethack-3d](https://github.com/JamesIV4/nethack-3d), synced at 1.6.2 (`3b6fd23`). See [Fork Maintenance](docs/fork-maintenance.md) for the sync workflow.
 
 ## New in 1.6.0: The VR Update
 
@@ -16,7 +24,7 @@ Standalone Quest VR, up to **40% better GPU performance**, customizable hotbars,
 
 ### Windows, macOS, Android and Meta Quest
 
-Choose your platform's package from the [Releases page](https://github.com/JamesIV4/nethack-3d/releases/latest). Windows builds include an x64 installer and portable app; the legacy 32-bit portable package is no longer produced. Android and Quest have separate APKs: choose `NetHack 3D <version> Quest.apk` for standalone VR.
+Choose your platform's package from the [Releases page](https://github.com/kafuji/nethack-3d-plus/releases/latest). Windows builds include an x64 installer and portable app; the legacy 32-bit portable package is no longer produced. Android and Quest have separate APKs: choose `NetHack 3D <version> Quest.apk` for standalone VR.
 
 The Quest APK bundles the game and its VR host for offline play, without a PC, remote game server, or separate browser installation. Sideload it using your usual Quest installation workflow.
 
@@ -30,7 +38,7 @@ Launch it from your Home Screen for a web app fullscreen experience.
 
 ### Steam Deck (SteamOS) / Linux AppImage
 
-1. [Download the latest Linux release](https://github.com/JamesIV4/nethack-3d/releases/latest) from the Releases page in Desktop mode.
+1. [Download the latest Linux release](https://github.com/kafuji/nethack-3d-plus/releases/latest) from the Releases page in Desktop mode.
 2. Add the AppImage directly to Steam using "Add Non-Steam Game to My Library".
 3. Keep Steam compatibility/proton disabled for this native Linux launch path.
 4. Linux launch option notes:

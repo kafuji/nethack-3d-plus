@@ -14,43 +14,96 @@ import {
 import {
   resolveTopScoreTimelineEvents
 } from "./timeline-events";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 /** Timeline event and line labels and level resolution. */
 export function formatTopScoreTimelineClusterTurnLabel(
   cluster: TopScoreTimelineCluster,
 ): string {
   if (cluster.turnStart === cluster.turnEnd) {
-    return `Turn ${formatTopScoreInteger(cluster.turnStart)}`;
+    return topScoreStrings.timeline.turn(formatTopScoreInteger(cluster.turnStart));
   }
-  return `Turns ${formatTopScoreInteger(cluster.turnStart)}-${formatTopScoreInteger(cluster.turnEnd)}`;
+  return topScoreStrings.timeline.turnRange(
+    formatTopScoreInteger(cluster.turnStart),
+    formatTopScoreInteger(cluster.turnEnd),
+  );
+}
+
+// nh3d-plus: timeline labels captured during play are stored in English.
+// Map the known capture formats to the active locale when displaying them.
+const storedTimelineTextPatterns: ReadonlyArray<
+  [RegExp, (match: RegExpExecArray) => string]
+> = [
+  [/^Reached new depth$/, () => topScoreStrings.timeline.events.reachedNewDepth],
+  [
+    /^Reached experience level (\d+)\.$/,
+    (match) => topScoreStrings.timeline.events.reachedExperienceLevel(Number(match[1])),
+  ],
+  [
+    /^Slipped to experience level (\d+)\.$/,
+    (match) => topScoreStrings.timeline.events.slippedExperienceLevel(Number(match[1])),
+  ],
+  [/^Reached (.+)\.$/, (match) =>
+    topScoreStrings.timeline.events.reachedLocation(localizeTopScoreStoredLocation(match[1]!))],
+  [/^\+(\d+) gold$/, (match) => topScoreStrings.timeline.events.goldGained(Number(match[1]))],
+  [/^Picked up 1 gold piece\.$/, () => topScoreStrings.timeline.events.pickedUpGold(1)],
+  [
+    /^Picked up (\d+) gold pieces\.$/,
+    (match) => topScoreStrings.timeline.events.pickedUpGold(Number(match[1])),
+  ],
+  [/^Level (\d+)$/, (match) => topScoreStrings.timeline.events.levelLabel(Number(match[1]))],
+  [/^Escaped$/, () => topScoreStrings.timeline.events.escaped],
+  [/^Enemy defeated$/, () => topScoreStrings.timeline.events.enemyDefeated],
+  [/^Run ended$/, () => topScoreStrings.timeline.events.runEnded],
+  [/^Run ended\.$/, () => topScoreStrings.timeline.events.runEndedSummary],
+];
+
+export function localizeTopScoreStoredLocation(location: string): string {
+  const match = /^Depth (\d+)$/.exec(location);
+  return match ? topScoreStrings.format.depth(match[1]!) : location;
+}
+
+export function localizeTopScoreStoredTimelineText(text: string): string {
+  for (const [pattern, format] of storedTimelineTextPatterns) {
+    const match = pattern.exec(text);
+    if (match) {
+      return format(match);
+    }
+  }
+  return text;
 }
 
 export function formatTopScoreTimelineEventBadge(event: TopScoreTimelineEvent): string {
   switch (event.kind) {
     case "kill":
-      return "Kill";
+      return topScoreStrings.timeline.badges.kill;
     case "gold":
-      return "Gold";
+      return topScoreStrings.timeline.badges.gold;
     case "loot":
-      return "Loot";
+      return topScoreStrings.timeline.badges.loot;
     case "location":
-      return "Location";
+      return topScoreStrings.timeline.badges.location;
     case "experience-level":
-      return "Level";
+      return topScoreStrings.timeline.badges.level;
     case "trap":
-      return "Trap";
+      return topScoreStrings.timeline.badges.trap;
     case "escape":
-      return "Escape";
+      return topScoreStrings.timeline.badges.escape;
     case "hidden-find":
-      return "Hidden";
+      return topScoreStrings.timeline.badges.hidden;
     case "search":
-      return "Search";
+      return topScoreStrings.timeline.badges.search;
     case "spell-learned":
-      return "Spell";
+      return topScoreStrings.timeline.badges.spell;
     case "death":
-      return "Ending";
+      return topScoreStrings.timeline.badges.ending;
     default:
-      return "Moment";
+      return topScoreStrings.timeline.badges.moment;
   }
 }
 
@@ -60,10 +113,10 @@ export function formatTopScoreTimelineEventMeta(event: TopScoreTimelineEvent): s
       const parts: string[] = [];
       if (typeof event.amount === "number" && Number.isFinite(event.amount)) {
         const amount = Math.trunc(event.amount);
-        parts.push(`${amount > 0 ? "+" : ""}${amount} gold`);
+        parts.push(topScoreStrings.timeline.meta.goldAmount(`${amount > 0 ? "+" : ""}${amount}`));
       }
       if (typeof event.total === "number" && Number.isFinite(event.total)) {
-        parts.push(`purse ${Math.trunc(event.total)}`);
+        parts.push(topScoreStrings.timeline.meta.purse(Math.trunc(event.total)));
       }
       return parts.join(" / ");
     }
@@ -71,7 +124,7 @@ export function formatTopScoreTimelineEventMeta(event: TopScoreTimelineEvent): s
       const parts: string[] = [];
       if (typeof event.amount === "number" && Number.isFinite(event.amount)) {
         parts.push(
-          `${formatTopScoreInteger(Math.trunc(event.amount))} collected`,
+          topScoreStrings.timeline.meta.collected(formatTopScoreInteger(Math.trunc(event.amount))),
         );
       }
       if (event.detail) {
@@ -80,22 +133,22 @@ export function formatTopScoreTimelineEventMeta(event: TopScoreTimelineEvent): s
       return parts.join(" / ");
     }
     case "location":
-      return event.location ?? "";
+      return localizeTopScoreStoredLocation(event.location ?? "");
     case "experience-level": {
       const parts: string[] = [];
       if (typeof event.amount === "number" && Number.isFinite(event.amount)) {
         const amount = Math.trunc(event.amount);
         if (amount !== 0) {
           parts.push(
-            `${amount > 0 ? "+" : ""}${amount} ${Math.abs(amount) === 1 ? "level" : "levels"}`,
+            topScoreStrings.timeline.meta.levelDelta(`${amount > 0 ? "+" : ""}${amount}`, amount),
           );
         }
       }
       if (typeof event.total === "number" && Number.isFinite(event.total)) {
-        parts.push(`level ${Math.trunc(event.total)}`);
+        parts.push(topScoreStrings.timeline.meta.level(Math.trunc(event.total)));
       }
       if (event.detail) {
-        parts.push(event.detail);
+        parts.push(localizeTopScoreStoredLocation(event.detail));
       }
       return parts.join(" / ");
     }
@@ -206,20 +259,20 @@ export function formatTopScoreTimelineLineSummary(
 ): string {
   switch (filterId) {
     case "kills":
-      return `${formatTopScoreInteger(value)} defeated`;
+      return topScoreStrings.timeline.lineSummary.kills(formatTopScoreInteger(value));
     case "gold":
-      return `${formatTopScoreInteger(value)} gathered`;
+      return topScoreStrings.timeline.lineSummary.gold(formatTopScoreInteger(value));
     case "loot":
-      return `${formatTopScoreInteger(value)} picked up`;
+      return topScoreStrings.timeline.lineSummary.loot(formatTopScoreInteger(value));
     case "secrets":
-      return `${formatTopScoreInteger(value)} found`;
+      return topScoreStrings.timeline.lineSummary.secrets(formatTopScoreInteger(value));
     case "levels":
-      return `peak level ${formatTopScoreInteger(value)}`;
+      return topScoreStrings.timeline.lineSummary.levels(formatTopScoreInteger(value));
     case "hazards":
-      return `${formatTopScoreInteger(value)} triggered`;
+      return topScoreStrings.timeline.lineSummary.hazards(formatTopScoreInteger(value));
     case "magic":
-      return `${formatTopScoreInteger(value)} learned`;
+      return topScoreStrings.timeline.lineSummary.magic(formatTopScoreInteger(value));
     default:
-      return `${formatTopScoreInteger(value)} logged`;
+      return topScoreStrings.timeline.lineSummary.other(formatTopScoreInteger(value));
   }
 }

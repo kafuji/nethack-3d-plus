@@ -7,6 +7,12 @@ import type {
 import {
   capitalizeFirstLetter
 } from "../shared/text";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
 
 /** Score values, character labels, location and result formatting. */
 export function formatTopScoreInteger(value: number | null | undefined): string {
@@ -44,56 +50,20 @@ export function formatTopScoreDuration(seconds: number | null | undefined): stri
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const remainder = totalSeconds % 60;
-  if (hours > 0) {
-    return `${hours}h ${minutes}m ${remainder}s`;
-  }
-  if (minutes > 0) {
-    return `${minutes}m ${remainder}s`;
-  }
-  return `${remainder}s`;
+  return topScoreStrings.format.duration(hours, minutes, remainder);
 }
 
 export function formatTopScoreList(labels: ReadonlyArray<string>): string {
-  return labels.length > 0 ? labels.join(", ") : "None";
+  return labels.length > 0 ? labels.join(topScoreStrings.format.listSeparator) : topScoreStrings.format.none;
 }
 
-export const topScoreRoleLabels: Record<string, string> = {
-  Arc: "Archeologist",
-  Bar: "Barbarian",
-  Cav: "Caveman",
-  Hea: "Healer",
-  Kni: "Knight",
-  Mon: "Monk",
-  Pri: "Priest",
-  Ran: "Ranger",
-  Rog: "Rogue",
-  Sam: "Samurai",
-  Tou: "Tourist",
-  Val: "Valkyrie",
-  Wiz: "Wizard",
-};
+export const topScoreRoleLabels: Record<string, string> = topScoreStrings.roles;
 
-export const topScoreRaceLabels: Record<string, string> = {
-  Dwa: "Dwarf",
-  Elf: "Elf",
-  Gno: "Gnome",
-  Hum: "Human",
-  Orc: "Orc",
-};
+export const topScoreRaceLabels: Record<string, string> = topScoreStrings.races;
 
-export const topScoreGenderLabels: Record<string, string> = {
-  Fem: "Female",
-  F: "Female",
-  Mal: "Male",
-  M: "Male",
-};
+export const topScoreGenderLabels: Record<string, string> = topScoreStrings.genders;
 
-export const topScoreAlignmentLabels: Record<string, string> = {
-  Cha: "Chaotic",
-  Law: "Lawful",
-  Neu: "Neutral",
-  Unc: "Unaligned",
-};
+export const topScoreAlignmentLabels: Record<string, string> = topScoreStrings.alignments;
 
 export function resolveTopScoreDisplayLabel(
   value: string | null | undefined,
@@ -104,6 +74,19 @@ export function resolveTopScoreDisplayLabel(
     return "";
   }
   return labels[normalized] ?? normalized;
+}
+
+// nh3d-plus: score-file bitmask labels are decoded in English; localize for display.
+export function translateTopScoreConductLabel(label: string): string {
+  return resolveTopScoreDisplayLabel(label, topScoreStrings.conducts) || label;
+}
+
+export function translateTopScoreAchievementLabel(label: string): string {
+  return resolveTopScoreDisplayLabel(label, topScoreStrings.achievements) || label;
+}
+
+export function translateTopScoreFlagLabel(label: string): string {
+  return resolveTopScoreDisplayLabel(label, topScoreStrings.flags) || label;
 }
 
 export function hasTopScoreDisplayValue(value: string | null | undefined): boolean {
@@ -182,7 +165,7 @@ export function formatTopScoreAlignmentLabel(value: string | null | undefined): 
 
 export function formatTopScorePlayerName(score: TopScoreRecord): string {
   const normalized = String(score.name ?? "").trim();
-  return normalized || "Unknown hero";
+  return normalized || topScoreStrings.format.unknownHero;
 }
 
 export function resolveTopScoreAttributeValue(
@@ -199,7 +182,7 @@ export function formatTopScoreCharacterLine(score: TopScoreRecord): string {
     formatTopScoreGenderLabel(score.gender),
     formatTopScoreAlignmentLabel(score.align),
   ].filter(Boolean);
-  return parts.length > 0 ? parts.join(" / ") : "Unclassified adventurer";
+  return parts.length > 0 ? parts.join(" / ") : topScoreStrings.format.unclassifiedAdventurer;
 }
 
 export function formatTopScoreShortDateTime(value: string | null | undefined): string {
@@ -233,7 +216,7 @@ export function resolveTopScoreLocationLabel(score: TopScoreRecord): string {
     return dungeon;
   }
   if (dungeonLevel) {
-    return `Depth ${dungeonLevel}`;
+    return topScoreStrings.format.depth(dungeonLevel);
   }
 
   const deathLevel =
@@ -245,18 +228,18 @@ export function resolveTopScoreLocationLabel(score: TopScoreRecord): string {
       ? String(Math.trunc(score.maxlvl))
       : "";
   if (deathLevel && maxLevel && deathLevel !== maxLevel) {
-    return `Depth ${deathLevel} / deepest ${maxLevel}`;
+    return topScoreStrings.format.depthWithDeepest(deathLevel, maxLevel);
   }
   if (maxLevel) {
-    return `Depth ${maxLevel}`;
+    return topScoreStrings.format.depth(maxLevel);
   }
   if (deathLevel) {
-    return `Depth ${deathLevel}`;
+    return topScoreStrings.format.depth(deathLevel);
   }
   if (typeof score.deathdnum === "number" && Number.isFinite(score.deathdnum)) {
-    return `Dungeon ${Math.trunc(score.deathdnum)}`;
+    return topScoreStrings.format.dungeonNumber(Math.trunc(score.deathdnum));
   }
-  return "Unknown depth";
+  return topScoreStrings.format.unknownDepth;
 }
 
 export function resolveTopScoreDepthMetric(score: TopScoreRecord): string {
@@ -280,20 +263,21 @@ export function resolveTopScoreDepthMetric(score: TopScoreRecord): string {
 }
 
 export function formatTopScoreSnapshotStatus(score: TopScoreRecord): string | null {
-  return score.detail ? null : "Archive only";
+  return score.detail ? null : topScoreStrings.format.archiveOnly;
 }
 
 export function formatTopScoreResultSummary(score: TopScoreRecord): string {
   const cause = String(score.death ?? "").trim();
   const location = resolveTopScoreLocationLabel(score);
-  if (cause && location !== "Unknown depth") {
-    return `${capitalizeFirstLetter(cause)} in ${location}.`;
+  const unknownDepth = topScoreStrings.format.unknownDepth;
+  if (cause && location !== unknownDepth) {
+    return topScoreStrings.format.causeInLocation(capitalizeFirstLetter(cause), location);
   }
   if (cause) {
     return capitalizeFirstLetter(cause);
   }
-  if (location !== "Unknown depth") {
-    return `Recorded in ${location}.`;
+  if (location !== unknownDepth) {
+    return topScoreStrings.format.recordedIn(location);
   }
-  return "A recorded expedition.";
+  return topScoreStrings.format.recordedExpedition;
 }

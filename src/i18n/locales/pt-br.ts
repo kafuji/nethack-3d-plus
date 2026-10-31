@@ -421,6 +421,20 @@ export const ptBrOverrides = {
   },
   soundEffects: {
     byKey: {
+      "status-hungry": "Estado: Com fome",
+      "status-weak": "Estado: Fraco (fome)",
+      "status-fainting": "Estado: Desmaiando",
+      "status-confused": "Estado: Confuso",
+      "status-stunned": "Estado: Atordoado",
+      "status-blind": "Estado: Cego",
+      "status-hallucinating": "Estado: Alucinando",
+      "status-poisoned": "Estado: Envenenado",
+      "status-sick": "Estado: Intoxicação / Doente",
+      "status-stoning": "Estado: Petrificando",
+      "status-slimed": "Estado: Coberto de gosma",
+      "status-strangled": "Estado: Estrangulado",
+      "status-paralyzed": "Estado: Paralisado / Dormindo",
+      "status-recovered": "Estado: Recuperado",
       "player-walk": "Passos do jogador",
       hit: "Golpe",
       "thrown-weapon": "Arma arremessada",
@@ -1034,6 +1048,15 @@ export const ptBrOverrides = {
           },
         },
         groupSound: "Som",
+        musicEnabled: {
+          label: "Música de fundo",
+          description:
+            "Toca música de fundo que muda conforme a situação (calma, combate, perigo). Requer o som ativado.",
+        },
+        musicVolume: {
+          label: "Volume da música",
+          description: "Volume da música de fundo.",
+        },
         soundEnabled: {
           label: "Ativar som",
           description:

@@ -1,4 +1,6 @@
 import type { NethackMenuItem } from "../../game/ui-types";
+// nh3d-plus: localized column headers.
+import { plusStrings } from "../app/shared/translations";
 
 export type TechniqueEntry = {
   id: string;
@@ -251,7 +253,7 @@ function renderTechniqueRowContent(entry: TechniqueEntry): JSX.Element {
       <span className="nh3d-technique-row-name">
         <span className="nh3d-technique-name">{techniqueDisplayName}</span>
       </span>
-      <span className="nh3d-technique-row-level">Lvl {entry.level}</span>
+      <span className="nh3d-technique-row-level">{plusStrings.techniqueMenu.lvl(entry.level)}</span>
       <span className="nh3d-technique-chip-stack">
         <span
           className={`nh3d-technique-chip nh3d-technique-chip-status is-${entry.statusBand}`}
@@ -273,14 +275,14 @@ export function TechniqueMenu({
     <div className="nh3d-technique-menu">
       <div className="nh3d-technique-summary">
         <span className="nh3d-technique-summary-chip is-count">
-          {menuData.knownCount} known
+          {plusStrings.techniqueMenu.known(menuData.knownCount)}
         </span>
         <span className="nh3d-technique-summary-chip is-ready">
-          {menuData.readyCount} ready
+          {plusStrings.techniqueMenu.ready(menuData.readyCount)}
         </span>
         {menuData.activeCount > 0 ? (
           <span className="nh3d-technique-summary-chip is-active">
-            {menuData.activeCount} active
+            {plusStrings.techniqueMenu.active(menuData.activeCount)}
           </span>
         ) : null}
       </div>
@@ -291,9 +293,9 @@ export function TechniqueMenu({
           data-nh3d-overflow-glow-host="parent"
         >
           <div aria-hidden="true" className="nh3d-technique-list-head">
-            <span>Name</span>
-            <span>Level</span>
-            <span>Status</span>
+            <span>{plusStrings.techniqueMenu.name}</span>
+            <span>{plusStrings.techniqueMenu.level}</span>
+            <span>{plusStrings.techniqueMenu.status}</span>
           </div>
           {menuData.entries.map((entry) => {
             const canChoose =

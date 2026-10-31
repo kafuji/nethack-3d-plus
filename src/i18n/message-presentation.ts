@@ -3,6 +3,7 @@ import { translateGameMessage } from "./game-messages";
 import { translateRuntimeText } from "./runtime-text";
 import { lookupImportedJapaneseMessage } from "./imported-messages";
 import { lookupImportedJapanesePattern } from "./imported-patterns";
+import { jnethackMessage } from "../plus/game-text/fallback";
 
 export interface PresentedGameMessage {
   text: string;
@@ -21,6 +22,13 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
     return { text: curated, isReferenceTranslation: false };
   }
   const trimmed = message.trim();
+  // JNetHack's human translation ranks above unreviewed reference matches.
+  const jnethack = jnethackMessage(trimmed);
+  if (jnethack !== undefined) {
+    const leading = message.slice(0, message.length - message.trimStart().length);
+    const trailing = message.slice(message.trimEnd().length);
+    return { text: `${leading}${jnethack}${trailing}`, isReferenceTranslation: false };
+  }
   const suggested = lookupImportedJapaneseMessage(trimmed) ?? lookupImportedJapanesePattern(trimmed);
   if (suggested === undefined) return { text: message, isReferenceTranslation: false };
   const leading = message.slice(0, message.length - message.trimStart().length);

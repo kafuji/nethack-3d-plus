@@ -386,7 +386,7 @@ export function useInventoryContextStateModel(dependencies: UseInventoryContextS
     }
     return visibleActions.map((action) =>
       action.id === "wield"
-        ? { ...action, id: "unwield", label: "Unwield" }
+        ? { ...action, id: "unwield", label: t.inventoryContextActions.unwield }
         : action,
     );
   }, [

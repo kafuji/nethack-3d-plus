@@ -3,6 +3,7 @@ import {
   type Nh3dTilesetTileLayoutVersion
 } from "../../../game/tilesets";
 import {
+  plusStrings,
   t
 } from "../shared/translations";
 
@@ -29,15 +30,15 @@ export function resolveTilesetLayoutDisplayLabel(
 ): string {
   switch (tileLayoutVersion) {
     case "slashem":
-      return "Slash'EM layout";
+      return plusStrings.tilesetLayouts.slashem;
     case "3.4.3":
-      return "NetHack 3.4.3 layout";
+      return plusStrings.tilesetLayouts.nethack343;
     case "5.0":
       return t.dialogs.tilesetManager.layout5;
     case "3.6.7":
       return t.dialogs.tilesetManager.layout367;
     default:
-      return "Unknown layout";
+      return plusStrings.tilesetLayouts.unknown;
   }
 }
 

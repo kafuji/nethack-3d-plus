@@ -1,4 +1,5 @@
 import type { SupportedLocale } from "./core";
+import { jnethackStatus } from "../plus/game-text/fallback";
 
 // These are display names produced by the runtime's branch mapping. Unknown
 // names are left intact so variant-specific locations are never obscured.
@@ -23,7 +24,9 @@ const japaneseBranches: Readonly<Record<string, string>> = {
 export function translateGameLocation(label: string, locale: SupportedLocale): string {
   if (locale !== "ja") return label;
   const match = /^(\s*)(?:The )?(.+?)(?:,\s*level\s+(-?\d+)|\s+(-?\d+))?(\s*)$/.exec(label);
-  if (!match || !Object.prototype.hasOwnProperty.call(japaneseBranches, match[2])) return label;
+  if (!match || !Object.prototype.hasOwnProperty.call(japaneseBranches, match[2])) {
+    return jnethackStatus("location", label) ?? label;
+  }
   const level = match[3] ?? match[4];
   return `${match[1]}${japaneseBranches[match[2]]}${level === undefined ? "" : ` ${level}`}${match[5]}`;
 }

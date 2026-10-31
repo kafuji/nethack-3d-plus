@@ -16,6 +16,17 @@ import {
   formatTopScoreText,
   resolveTopScoreLocationLabel
 } from "./format";
+import {
+  plusStrings
+} from "../shared/translations";
+
+// nh3d-plus: localized via src/plus/i18n.
+const topScoreStrings = plusStrings.topScores;
+
+function localizeTelemetryLabel(label: string): string {
+  const labels: Readonly<Record<string, string>> = topScoreStrings.telemetryLabels;
+  return labels[label] ?? label;
+}
 
 /** Telemetry timeline events and compatibility fallbacks. */
 export function resolveTopScoreTelemetry(score: TopScoreRecord): RunTelemetrySnapshot {
@@ -32,12 +43,12 @@ export function buildTopScoreTelemetryTimelineEvents(
     kind: "loot",
     label:
       event.quantity === 1
-        ? "Loot picked up"
-        : `${formatTopScoreInteger(event.quantity)} items picked up`,
+        ? topScoreStrings.timeline.events.lootPickedUp
+        : topScoreStrings.timeline.events.itemsPickedUp(formatTopScoreInteger(event.quantity)),
     summary:
       event.quantity === 1
-        ? `Picked up ${event.label}.`
-        : `Picked up ${formatTopScoreInteger(event.quantity)} ${event.label}.`,
+        ? topScoreStrings.timeline.events.pickedUpItem(event.label)
+        : topScoreStrings.timeline.events.pickedUpItems(formatTopScoreInteger(event.quantity), event.label),
     detail: event.category || event.detail,
     amount: event.quantity,
     location: event.location,
@@ -46,8 +57,8 @@ export function buildTopScoreTelemetryTimelineEvents(
     id: `telemetry-trap-${event.id}`,
     turn: normalizeTopScoreTimelineTurn(event.turn),
     kind: "trap",
-    label: event.label,
-    summary: event.detail || `${event.label} triggered.`,
+    label: localizeTelemetryLabel(event.label),
+    summary: event.detail || topScoreStrings.timeline.events.trapTriggered(localizeTelemetryLabel(event.label)),
     detail: event.detail,
     location: event.location,
   }));
@@ -56,8 +67,8 @@ export function buildTopScoreTelemetryTimelineEvents(
       id: `telemetry-hidden-find-${event.id}`,
       turn: normalizeTopScoreTimelineTurn(event.turn),
       kind: "hidden-find",
-      label: event.label,
-      summary: event.detail || `Found ${event.label}.`,
+      label: localizeTelemetryLabel(event.label),
+      summary: event.detail || topScoreStrings.timeline.events.foundHidden(localizeTelemetryLabel(event.label)),
       detail: event.category,
       amount: 1,
       location: event.location,
@@ -68,7 +79,7 @@ export function buildTopScoreTelemetryTimelineEvents(
     turn: normalizeTopScoreTimelineTurn(event.turn),
     kind: "spell-learned",
     label: event.spell,
-    summary: `Learned ${event.spell}.`,
+    summary: topScoreStrings.timeline.events.learnedSpell(event.spell),
     detail: event.detail,
     location: event.location,
   }));
@@ -80,12 +91,12 @@ export function buildTopScoreTelemetryTimelineEvents(
         kind: "kill",
         label:
           event.count === 1
-            ? "Pet defeated an enemy"
-            : `Pet defeated ${formatTopScoreInteger(event.count)} enemies`,
+            ? topScoreStrings.timeline.events.petDefeatedOne
+            : topScoreStrings.timeline.events.petDefeatedMany(formatTopScoreInteger(event.count)),
         summary:
           event.count === 1
-            ? `${event.label} defeated an enemy.`
-            : `${event.label} defeated ${formatTopScoreInteger(event.count)} enemies.`,
+            ? topScoreStrings.timeline.events.namedDefeatedOne(event.label)
+            : topScoreStrings.timeline.events.namedDefeatedMany(event.label, formatTopScoreInteger(event.count)),
         detail: event.detail,
         amount: event.count,
         location: event.location,
@@ -96,12 +107,12 @@ export function buildTopScoreTelemetryTimelineEvents(
         kind: "kill",
         label:
           entry.count === 1
-            ? "Pet defeated an enemy"
-            : `Pet defeated ${formatTopScoreInteger(entry.count)} enemies`,
+            ? topScoreStrings.timeline.events.petDefeatedOne
+            : topScoreStrings.timeline.events.petDefeatedMany(formatTopScoreInteger(entry.count)),
         summary:
           entry.count === 1
-            ? `${entry.label} defeated an enemy.`
-            : `${entry.label} defeated ${formatTopScoreInteger(entry.count)} enemies.`,
+            ? topScoreStrings.timeline.events.namedDefeatedOne(entry.label)
+            : topScoreStrings.timeline.events.namedDefeatedMany(entry.label, formatTopScoreInteger(entry.count)),
         detail: entry.detail,
         amount: entry.count,
       }));
@@ -116,13 +127,13 @@ export function buildTopScoreTelemetryTimelineEvents(
 
 export function buildFallbackTopScoreTimeline(score: TopScoreRecord): TopScoreTimelineEvent[] {
   const turn = normalizeTopScoreTimelineTurn(score.turns);
-  const summary = formatTopScoreText(score.death) || "Run ended.";
+  const summary = formatTopScoreText(score.death) || topScoreStrings.timeline.events.runEndedSummary;
   return [
     {
       id: `fallback-death-${score.id}`,
       turn,
       kind: "death",
-      label: "Run ended",
+      label: topScoreStrings.timeline.events.runEnded,
       summary,
       location: resolveTopScoreLocationLabel(score),
     },

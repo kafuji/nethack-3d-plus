@@ -18,6 +18,7 @@ import type {
 } from "./types";
 import {
   commonStrings,
+  plusStrings,
   t
 } from "../shared/translations";
 import {
@@ -204,9 +205,9 @@ export function TilesetManagerDialog({
                     }}
                     value={tilesetManagerTileLayoutVersion}
                   >
-                    <option value="slashem">Slash&apos;EM layout (40 columns)</option>
-                    <option value="slashem-38">Slash&apos;EM layout (38 columns)</option>
-                    <option value="3.4.3">NetHack 3.4.3 layout</option>
+                    <option value="slashem">{plusStrings.tilesetLayouts.slashem40}</option>
+                    <option value="slashem-38">{plusStrings.tilesetLayouts.slashem38}</option>
+                    <option value="3.4.3">{plusStrings.tilesetLayouts.nethack343}</option>
                     <option value="3.6.7">
                       {t.dialogs.tilesetManager.layout367}
                     </option>

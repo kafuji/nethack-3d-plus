@@ -33,6 +33,8 @@ import {
   renderEnhanceMenuContent
 } from "../menus/enhance-content";
 import type { CharacterSheetData, CharacterSheetStat, CharacterCommandAction } from "../../modals/character-sheet";
+// nh3d-plus: JNetHack quest texts after the curated documents.
+import { jnethackQuestDocument } from "../../../plus/game-text/fallback";
 
 
 export interface CharacterInfoDialogProps {
@@ -667,7 +669,7 @@ export function CharacterInfoDialog({
                   {displayedInfoMenu.lines.length > 0
                     ? (translateHelpDocument(displayedInfoMenu.lines, locale) ?? translateEncyclopediaEntry(displayedInfoMenu.lines, locale) ?? translateDiscoveryReport(displayedInfoMenu.lines, locale)?.join("\n") ?? (isNetHackMessageInfoMenuTitle(displayedInfoMenu.title)
                       ? translateIntroStory(displayedInfoMenu.lines, locale)
-                      : null)) ?? displayedInfoMenu.lines.map((line, index) => (
+                      : null) ?? (locale === "ja" ? jnethackQuestDocument(displayedInfoMenu.lines) : undefined)) ?? displayedInfoMenu.lines.map((line, index) => (
                         <Fragment key={index}>
                           {index > 0 ? "\n" : null}<GameMessageText message={translateReportLine(line, locale)} />
                         </Fragment>

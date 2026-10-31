@@ -44,6 +44,7 @@ import {
 } from "./saved-games";
 import {
   commonStrings,
+  plusStrings,
   t
 } from "../shared/translations";
 import {
@@ -132,7 +133,7 @@ export function useCharacterCreation(dependencies: UseCharacterCreationDependenc
           const choice = await dependencies.requestConfirmationChoice({
             title: t.saves.overwriteTitle,
             message: t.saves.overwriteMessage(configName),
-            confirmLabel: "Overwrite",
+            confirmLabel: plusStrings.saves.overwrite,
             cancelLabel: commonStrings.cancel,
             confirmClassName: "nh3d-menu-action-cancel",
             extraLabel: t.saves.loadExisting,
