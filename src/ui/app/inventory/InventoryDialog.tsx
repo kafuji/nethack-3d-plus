@@ -16,6 +16,8 @@ import {
   resolveMenuItemFallbackGlyph,
   resolveMenuItemTileIndex
 } from "../tilesets/menu-glyphs";
+// nh3d-plus: display-time game text translation.
+import { useGameTextLocalization } from "../../../plus/game-text";
 
 export interface InventoryDialogProps {
   inventoryReducedMotionEnabled: boolean;
@@ -94,6 +96,7 @@ export function InventoryDialog({
   inventoryKeyboardActivationKeysDownRef,
   inventoryCloseInstructionText,
 }: InventoryDialogProps) {
+  const gameText = useGameTextLocalization();
   return (
     <AnimatedDialog
       className={`nh3d-dialog nh3d-dialog-inventory nh3d-dialog-fixed-actions nh3d-dialog-has-mobile-close${inventoryReducedMotionEnabled
@@ -208,7 +211,7 @@ export function InventoryDialog({
                       }`}
                     key={`cat-${index}`}
                   >
-                    {item.text}
+                    {gameText.item(item.text)}
                   </div>
                 );
               }
@@ -404,7 +407,7 @@ export function InventoryDialog({
                     </span>
                   </span>
                   <span className={item.className as string}>
-                    {item.text || t.dialogs.inventory.unknownItem}
+                    {gameText.item(item.text) || t.dialogs.inventory.unknownItem}
                   </span>
                 </div>
               );

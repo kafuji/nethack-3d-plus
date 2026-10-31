@@ -13,6 +13,8 @@ import {
 import {
   mobileActions
 } from "../menus/mobile-actions";
+// nh3d-plus: display-time game text translation.
+import { useGameTextLocalization } from "../../../plus/game-text";
 
 export interface UseMessageLogStyleDependencies {
   readonly clientOptions: Nh3dClientOptions;
@@ -100,6 +102,7 @@ export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
     isDesktopGameRunning,
     statusText,
   } = dependencies;
+  const gameText = useGameTextLocalization();
 
   const gameMessageLog =
     clientOptions.liveMessageLog ? (
@@ -116,7 +119,7 @@ export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
           )
           : null}
         {gameMessages.map((message, index) => (
-          <div key={`${index}-${message}`}>{message}</div>
+          <div key={`${index}-${message}`}>{gameText.text(message)}</div>
         ))}
       </div>
     ) : null;

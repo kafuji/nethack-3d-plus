@@ -1,6 +1,11 @@
 // Fork-only English strings, mounted at `en.plus`. Other locales override
 // these from src/plus/i18n/<locale>.ts and fall back to English otherwise.
 export const plusEn = {
+  gameText: {
+    label: "Translate game text",
+    description:
+      "Show NetHack messages, prompts, and item names in the interface language. Uses JNetHack translations; untranslated text stays in English.",
+  },
   startupMenu: {
     topScores: "Top Scores",
   },

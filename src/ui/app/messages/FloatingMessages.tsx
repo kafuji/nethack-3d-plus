@@ -6,6 +6,8 @@ import type {
 } from "../../../game/ui-types";
 import type * as React from "react";
 import type { FloatingMessage } from "../../../state/gameStore";
+// nh3d-plus: display-time game text translation.
+import { useGameTextLocalization } from "../../../plus/game-text";
 
 
 export interface FloatingMessagesProps {
@@ -19,6 +21,7 @@ export function FloatingMessages({
   floatingMessages,
   floatingMessageTextStyle,
 }: FloatingMessagesProps) {
+  const gameText = useGameTextLocalization();
   return (
     <div
       className={
@@ -40,7 +43,7 @@ export function FloatingMessages({
             className="floating-message-text"
             style={floatingMessageTextStyle}
           >
-            {entry.text}
+            {gameText.text(entry.text)}
           </div>
         </div>
       ))}

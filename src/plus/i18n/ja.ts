@@ -28,6 +28,11 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
     },
   },
   plus: {
+    gameText: {
+      label: "ゲーム内テキストを日本語化",
+      description:
+        "NetHack のメッセージ、質問、アイテム名を日本語で表示します。JNetHack の訳を使用し、未対応の文は英語のまま表示されます。",
+    },
     startupMenu: {
       topScores: "ハイスコア",
     },
@@ -168,10 +173,10 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
       roles: {
         Arc: "考古学者",
         Bar: "野蛮人",
-        Cav: "原始人",
-        Hea: "癒し手",
+        Cav: "洞窟人",
+        Hea: "薬師",
         Kni: "騎士",
-        Mon: "修行僧",
+        Mon: "武闘家",
         Pri: "僧侶",
         Ran: "レンジャー",
         Rog: "盗賊",

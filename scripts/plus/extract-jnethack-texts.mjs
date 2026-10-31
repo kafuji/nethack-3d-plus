@@ -1,0 +1,375 @@
+#!/usr/bin/env node
+// Extract English -> Japanese game text data from a JNetHack checkout.
+//
+// Usage:
+//   node scripts/plus/extract-jnethack-texts.mjs <jnethack-dir> <vanilla-nethack-dir> [out-file]
+//
+// - Monster and object names are paired by their enum identifier (last macro
+//   argument) between JNetHack's and vanilla NetHack's monsters.h/objects.h.
+// - Message templates come from JNetHack's `/*JP <english> */ <japanese>` and
+//   `#if 0 /*JP*/ <english> #else <japanese> #endif` source annotations.
+//
+// The Japanese text is from JNetHack (https://github.com/jnethack) and is
+// distributed under the NetHack General Public License.
+import fs from "node:fs";
+import path from "node:path";
+
+const [jnhDir, vanillaDir, outFile = "src/plus/game-text/data/jnethack.generated.json"] =
+  process.argv.slice(2);
+if (!jnhDir || !vanillaDir) {
+  console.error("usage: extract-jnethack-texts.mjs <jnethack-dir> <vanilla-dir> [out-file]");
+  process.exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// Minimal C lexing helpers.
+
+/** Decode a C string literal body (without quotes). */
+function decodeCString(body) {
+  return body.replace(/\\(x[0-9a-fA-F]+|[0-7]{1,3}|.)/g, (_, esc) => {
+    if (esc[0] === "x") return String.fromCharCode(parseInt(esc.slice(1), 16));
+    if (/^[0-7]/.test(esc)) return String.fromCharCode(parseInt(esc, 8));
+    return { n: "\n", t: "\t", r: "\r", "\\": "\\", '"': '"', "'": "'", "0": "\0" }[esc] ?? esc;
+  });
+}
+
+/** Strip comments (keeping strings intact). */
+function stripComments(src) {
+  let out = "";
+  for (let i = 0; i < src.length; i += 1) {
+    const ch = src[i];
+    if (ch === '"' || ch === "'") {
+      const q = ch;
+      let j = i + 1;
+      while (j < src.length && src[j] !== q) j += src[j] === "\\" ? 2 : 1;
+      out += src.slice(i, j + 1);
+      i = j;
+    } else if (ch === "/" && src[i + 1] === "*") {
+      const end = src.indexOf("*/", i + 2);
+      i = end < 0 ? src.length : end + 1;
+      out += " ";
+    } else if (ch === "/" && src[i + 1] === "/") {
+      const end = src.indexOf("\n", i);
+      i = end < 0 ? src.length : end - 1;
+    } else {
+      out += ch;
+    }
+  }
+  return out;
+}
+
+/** Split top-level comma separated args of the text inside parens. */
+function splitArgs(text) {
+  const args = [];
+  let depth = 0;
+  let cur = "";
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if (ch === '"' || ch === "'") {
+      let j = i + 1;
+      while (j < text.length && text[j] !== ch) j += text[j] === "\\" ? 2 : 1;
+      cur += text.slice(i, j + 1);
+      i = j;
+      continue;
+    }
+    if (ch === "(" || ch === "[" || ch === "{") depth += 1;
+    if (ch === ")" || ch === "]" || ch === "}") depth -= 1;
+    if (ch === "," && depth === 0) {
+      args.push(cur.trim());
+      cur = "";
+      continue;
+    }
+    cur += ch;
+  }
+  if (cur.trim()) args.push(cur.trim());
+  return args;
+}
+
+/** Find `name(` at index and return the paren body and end index. */
+function readParenBody(text, openIndex) {
+  let depth = 0;
+  for (let i = openIndex; i < text.length; i += 1) {
+    const ch = text[i];
+    if (ch === '"' || ch === "'") {
+      let j = i + 1;
+      while (j < text.length && text[j] !== ch) j += text[j] === "\\" ? 2 : 1;
+      i = j;
+      continue;
+    }
+    if (ch === "(") depth += 1;
+    if (ch === ")") {
+      depth -= 1;
+      if (depth === 0) return { body: text.slice(openIndex + 1, i), end: i };
+    }
+  }
+  return null;
+}
+
+/** If the expression is only (concatenated) string literals, return the value. */
+function literalValue(expr) {
+  const trimmed = expr.trim();
+  const re = /"((?:[^"\\]|\\.)*)"/g;
+  let rest = trimmed;
+  let value = "";
+  let m;
+  let last = 0;
+  while ((m = re.exec(trimmed))) {
+    if (trimmed.slice(last, m.index).trim()) return null;
+    value += decodeCString(m[1]);
+    last = re.lastIndex;
+  }
+  rest = trimmed.slice(last).trim();
+  if (rest || last === 0) return null;
+  return value;
+}
+
+// ---------------------------------------------------------------------------
+// Monsters and objects: pair string literals by enum identifier.
+
+function extractEntries(file, macroNames) {
+  const src = stripComments(fs.readFileSync(file, "utf8"));
+  const entries = new Map();
+  const re = new RegExp(`\\b(${macroNames.join("|")})\\s*\\(`, "g");
+  let m;
+  while ((m = re.exec(src))) {
+    // skip macro definitions
+    const lineStart = src.lastIndexOf("\n", m.index) + 1;
+    if (/^\s*#\s*define/.test(src.slice(lineStart, m.index))) continue;
+    const paren = readParenBody(src, m.index + m[0].length - 1);
+    if (!paren) continue;
+    const args = splitArgs(paren.body);
+    const id = args[args.length - 1]?.trim();
+    if (!id || !/^[A-Z_][A-Z0-9_]*$/.test(id)) continue;
+    const strings = [];
+    for (const lit of paren.body.matchAll(/"((?:[^"\\]|\\.)*)"/g)) strings.push(decodeCString(lit[1]));
+    if (strings.length === 0) continue;
+    entries.set(`${m[1]}:${id}`, strings);
+    re.lastIndex = paren.end;
+  }
+  return entries;
+}
+
+function pairNames(jaFile, enFile, macros, categoryOf = () => "all") {
+  const ja = extractEntries(jaFile, macros);
+  const en = extractEntries(enFile, macros);
+  const result = {};
+  for (const [key, enStrings] of en) {
+    const jaStrings = ja.get(key);
+    if (!jaStrings || jaStrings.length !== enStrings.length) continue;
+    const [macro, id] = key.split(":");
+    const category = categoryOf(macro, id);
+    const table = (result[category] ??= {});
+    enStrings.forEach((value, index) => {
+      const jaValue = jaStrings[index];
+      if (value && jaValue && value !== jaValue && !table[value]) table[value] = jaValue;
+    });
+  }
+  return result;
+}
+
+const monsters = pairNames(
+  path.join(jnhDir, "include/monsters.h"),
+  path.join(vanillaDir, "include/monsters.h"),
+  ["MON"],
+).all;
+
+// Object categories drive both name parsing ("potion of X") and the
+// Japanese counter word (本, 着, 枚, ...).
+const objectCategoryByMacro = {
+  WEAPON: "weapon", PROJECTILE: "weapon", BOW: "weapon",
+  ARMOR: "armor", HELM: "armor", CLOAK: "armor", SHIELD: "armor", GLOVES: "armor", BOOTS: "armor",
+  RING: "ring", AMULET: "amulet",
+  TOOL: "tool", CONTAINER: "tool", WEPTOOL: "tool",
+  FOOD: "food", POTION: "potion", SCROLL: "scroll", SPELL: "spellbook", WAND: "wand",
+  COIN: "coin", GEM: "gem", ROCK: "rock", OBJECT: "other", EXPLOSIVE_TRAP_OBJ: "other",
+};
+const objects = pairNames(
+  path.join(jnhDir, "include/objects.h"),
+  path.join(vanillaDir, "include/objects.h"),
+  Object.keys(objectCategoryByMacro),
+  (macro) => objectCategoryByMacro[macro],
+);
+
+// ---------------------------------------------------------------------------
+// Message templates from JP annotations.
+
+// English and Japanese prefixes added by the pline-family helpers.
+const outputFunctions = {
+  pline: ["", ""],
+  pline_mon: ["", ""],
+  pline_dir: ["", ""],
+  pline_xy: ["", ""],
+  Norep: ["", ""],
+  urgent_pline: ["", ""],
+  custompline: ["", ""],
+  raw_printf: ["", ""],
+  You: ["You ", "あなたは"],
+  Your: ["Your ", "あなたの"],
+  You_feel: ["You feel ", "あなたは"],
+  You_cant: ["You can't ", "あなたは"],
+  You_hear: ["You hear ", "あなたは"],
+  You_see: ["You see ", "あなたは"],
+  pline_The: ["The ", ""],
+  There: ["There ", ""],
+  verbalize: ['"', "「"],
+  Sprintf: ["", ""],
+  Snprintf: ["", ""],
+};
+const formatArgIndex = { Sprintf: 1, Snprintf: 2, custompline: 1, pline_mon: 1, pline_dir: 1, pline_xy: 2 };
+const suffixes = { verbalize: ['"', "」"] };
+
+function findCall(stmt) {
+  const re = new RegExp(`\\b(${Object.keys(outputFunctions).join("|")})\\s*\\(`);
+  const m = re.exec(stmt);
+  if (!m) return null;
+  const paren = readParenBody(stmt, m.index + m[0].length - 1);
+  if (!paren) return null;
+  const args = splitArgs(paren.body);
+  const fmtIndex = formatArgIndex[m[1]] ?? 0;
+  const fmt = literalValue(args[fmtIndex] ?? "");
+  if (fmt === null) return null;
+  return { fn: m[1], fmt, args: args.slice(fmtIndex + 1).map((a) => a.replace(/\s+/g, " ")) };
+}
+
+const conversionRe = /%(?:\d+\$)?[-+ #0]*(\d+|\*)?(?:\.\d+)?(?:hh|h|ll|l|z)?([sdiuc%])/g;
+
+function parseFormat(fmt) {
+  const specs = [];
+  const parts = [];
+  let last = 0;
+  for (const m of fmt.matchAll(conversionRe)) {
+    parts.push(fmt.slice(last, m.index));
+    last = m.index + m[0].length;
+    if (m[2] === "%") {
+      parts[parts.length - 1] += "%";
+      continue;
+    }
+    if (m[1] === "*") return null;
+    specs.push(m[2]);
+    parts.push(null);
+  }
+  parts.push(fmt.slice(last));
+  // merge literal parts around escaped %%
+  const merged = [];
+  for (const p of parts) {
+    if (p !== null && typeof merged[merged.length - 1] === "string") merged[merged.length - 1] += p;
+    else merged.push(p);
+  }
+  return { specs, parts: merged };
+}
+
+const templates = new Map();
+let pairCount = 0;
+
+
+function addPair(enStmt, jaStmt) {
+  const en = findCall(enStmt);
+  const ja = findCall(jaStmt);
+  if (!en || !ja) return;
+  pairCount += 1;
+  const enFmt = parseFormat(en.fmt);
+  const jaFmt = parseFormat(ja.fmt);
+  if (!enFmt || !jaFmt) return;
+  if (enFmt.specs.length !== en.args.length || jaFmt.specs.length !== ja.args.length) return;
+  // Map each Japanese placeholder to an English placeholder by argument expression.
+  const mapping = [];
+  for (let i = 0; i < ja.args.length; i += 1) {
+    let index = en.args.indexOf(ja.args[i]);
+    if (index < 0) {
+      // JNetHack often wraps arguments (e.g. jpast(x)); fall back to a contained match.
+      index = en.args.findIndex((arg) => arg.length > 2 && ja.args[i].includes(arg));
+      if (index < 0) return;
+      mapping.push({ index, transform: "raw" });
+      continue;
+    }
+    mapping.push({ index, transform: "translate" });
+  }
+  const [enPrefix, jaPrefix] = outputFunctions[en.fn];
+  const [, jaPrefixForJa] = outputFunctions[ja.fn] ?? ["", ""];
+  const enSuffix = suffixes[en.fn]?.[0] ?? "";
+  const jaSuffix = suffixes[ja.fn]?.[1] ?? "";
+  const englishParts = [...enFmt.parts];
+  englishParts[0] = enPrefix + (englishParts[0] ?? "");
+  englishParts[englishParts.length - 1] += enSuffix;
+  const literalText = englishParts.filter((p) => typeof p === "string").join("");
+  if (literalText.replace(/[^A-Za-z]/g, "").length < 4) return;
+
+  const japaneseParts = [...jaFmt.parts];
+  japaneseParts[0] = (ja.fn === en.fn ? jaPrefix : jaPrefixForJa) + (japaneseParts[0] ?? "");
+  japaneseParts[japaneseParts.length - 1] += jaSuffix;
+
+  // Template encoding: english uses "\u0000" + spec letter as placeholder;
+  // japanese uses "{n}" referring to english placeholder n (0-based).
+  let enTemplate = "";
+  let specIndex = 0;
+  for (const p of englishParts) {
+    if (p === null) enTemplate += `\u0000${enFmt.specs[specIndex++]}`;
+    else enTemplate += p;
+  }
+  let jaTemplate = "";
+  let jaIndex = 0;
+  for (const p of japaneseParts) {
+    if (p === null) {
+      const map = mapping[jaIndex++];
+      jaTemplate += map.transform === "raw" ? `{${map.index}!}` : `{${map.index}}`;
+    } else {
+      jaTemplate += p.replace(/[{}]/g, (c) => (c === "{" ? "{{" : "}}"));
+    }
+  }
+  if (enTemplate.includes("\n") || jaTemplate.includes("\n")) return;
+  if (!templates.has(enTemplate)) templates.set(enTemplate, jaTemplate);
+}
+
+function statementAt(text, start) {
+  // read until first top-level ';' (respecting strings/parens)
+  let depth = 0;
+  for (let i = start; i < text.length; i += 1) {
+    const ch = text[i];
+    if (ch === '"' || ch === "'") {
+      let j = i + 1;
+      while (j < text.length && text[j] !== ch) j += text[j] === "\\" ? 2 : 1;
+      i = j;
+      continue;
+    }
+    if (ch === "(") depth += 1;
+    if (ch === ")") depth -= 1;
+    if (ch === ";" && depth <= 0) return text.slice(start, i + 1);
+  }
+  return text.slice(start);
+}
+
+for (const dir of ["src", "japanese"]) {
+  const base = path.join(jnhDir, dir);
+  for (const name of fs.readdirSync(base)) {
+    if (!name.endsWith(".c")) continue;
+    const src = fs.readFileSync(path.join(base, name), "utf8");
+    // Pattern A: /*JP <english> */ <japanese statement>
+    for (const m of src.matchAll(/\/\*JP\s*\n([\s\S]*?)\*\/\s*\n/g)) {
+      const english = m[1];
+      if (english.includes("/*")) continue;
+      const after = src.slice(m.index + m[0].length);
+      addPair(english, statementAt(after, 0));
+    }
+    // Pattern B: #if 0 /*JP...*/ <english> #else <japanese> #endif
+    for (const m of src.matchAll(/#\s*if 0 \/\*JP[^\n]*\n([\s\S]*?)\n\s*#\s*else[^\n]*\n([\s\S]*?)\n\s*#\s*endif/g)) {
+      if (/#\s*if/.test(m[1]) || /#\s*if/.test(m[2])) continue;
+      const enStmts = stripComments(m[1]).split(/;\s*\n/);
+      const jaStmts = stripComments(m[2]).split(/;\s*\n/);
+      if (enStmts.length !== jaStmts.length) continue;
+      enStmts.forEach((stmt, i) => addPair(`${stmt};`, `${jaStmts[i]};`));
+    }
+  }
+}
+
+const output = {
+  source: "JNetHack (https://github.com/jnethack/jnethack-alpha), NetHack General Public License",
+  monsters,
+  objects,
+  templates: Object.fromEntries(templates),
+};
+fs.mkdirSync(path.dirname(outFile), { recursive: true });
+fs.writeFileSync(outFile, `${JSON.stringify(output, null, 0)}\n`);
+console.log(
+  `monsters: ${Object.keys(monsters).length}, objects: ${Object.values(objects).reduce((n, t) => n + Object.keys(t).length, 0)}, ` +
+    `pairs: ${pairCount}, templates: ${templates.size}`,
+);

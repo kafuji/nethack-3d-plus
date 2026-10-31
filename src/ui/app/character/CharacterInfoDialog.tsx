@@ -24,6 +24,8 @@ import {
   renderEnhanceMenuContent
 } from "../menus/enhance-content";
 import type { CharacterSheetData, CharacterSheetStat, CharacterCommandAction } from "../../modals/character-sheet";
+// nh3d-plus: display-time game text translation.
+import { useGameTextLocalization } from "../../../plus/game-text";
 
 
 export interface CharacterInfoDialogProps {
@@ -87,6 +89,7 @@ export function CharacterInfoDialog({
   showNextCachedMessageInfoMenu,
   showLatestCachedMessageInfoMenu,
 }: CharacterInfoDialogProps) {
+  const gameText = useGameTextLocalization();
   return (
     <AnimatedDialog
       className={`nh3d-dialog ${isCharacterSheetVisible ? "nh3d-dialog-character" : "nh3d-dialog-info"
@@ -652,7 +655,7 @@ export function CharacterInfoDialog({
                 </div>
                 <div className="nh3d-info-body">
                   {displayedInfoMenu.lines.length > 0
-                    ? displayedInfoMenu.lines.join("\n")
+                    ? displayedInfoMenu.lines.map(gameText.text).join("\n")
                     : t.dialogs.info.noDetails}
                 </div>
                 <div className="nh3d-info-hint">

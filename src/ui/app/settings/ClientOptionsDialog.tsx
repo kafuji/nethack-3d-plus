@@ -7,6 +7,8 @@ import { isQuestApk } from "../../../quest/webxr/host";
 import { ClientOptionsUpdates } from "./ClientOptionsUpdates";
 import { ClientOptionToggleControl } from "./ClientOptionToggleControl";
 import { ClientOptionSelectControl } from "./ClientOptionSelectControl";
+// nh3d-plus: game text translation toggle.
+import { GameTextTranslationToggle } from "../../../plus/game-text/GameTextTranslationToggle";
 import { ClientOptionSliderControl } from "./ClientOptionSliderControl";
 import { ClientOptionColorControl } from "./ClientOptionColorControl";
 import {
@@ -273,7 +275,7 @@ export function ClientOptionsDialog({
                   />);
                 }
                 if (option.type === "select") {
-                  return (<ClientOptionSelectControl key={option.key} option={option}
+                  const selectControl = (<ClientOptionSelectControl key={option.key} option={option}
                     clientOptionsDraft={clientOptionsDraft}
                     updateClientOptionDraft={updateClientOptionDraft}
                     tilesetDropdownOptions={tilesetDropdownOptions}
@@ -282,6 +284,13 @@ export function ClientOptionsDialog({
                     setClientOptionsDraft={setClientOptionsDraft}
                     updateTilesetPathDraft={updateTilesetPathDraft}
                   />);
+                  // nh3d-plus: game text translation toggle follows the language option.
+                  return option.key === "locale" ? (
+                    <Fragment key={option.key}>
+                      {selectControl}
+                      <GameTextTranslationToggle />
+                    </Fragment>
+                  ) : selectControl;
                 }
                 if (option.type === "slider") {
                   return (<ClientOptionSliderControl key={option.key} option={option}

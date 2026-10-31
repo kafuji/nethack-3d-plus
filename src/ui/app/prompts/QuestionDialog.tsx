@@ -34,6 +34,8 @@ import {
 import {
   renderEnhanceMenuContent
 } from "../menus/enhance-content";
+// nh3d-plus: display-time game text translation.
+import { useGameTextLocalization } from "../../../plus/game-text";
 
 export interface QuestionDialogProps {
   question: QuestionDialogState | null;
@@ -102,13 +104,14 @@ export function QuestionDialog({
   questionMenuPageCount,
   questionMenuPageIndex,
 }: QuestionDialogProps) {
+  const gameText = useGameTextLocalization();
   if (shouldRenderQuestionTextInput) {
     return <TextEntryDialog
       open={Boolean(question)}
       id="question-dialog"
       className="nh3d-dialog-question nh3d-dialog-has-mobile-close"
       inputClassName="nh3d-question-text-input"
-      prompt={displayedQuestionText}
+      prompt={gameText.text(displayedQuestionText)}
       focusKey={question?.text}
       value={questionTextInputValue}
       onChange={setQuestionTextInputValue}
@@ -150,7 +153,7 @@ export function QuestionDialog({
               }`}
           >
             <span className="nh3d-question-title-label">
-              {displayedQuestionText}
+              {gameText.text(displayedQuestionText)}
             </span>
             {showQuestionAmountControls ? (
               <div className="nh3d-question-amount-controls">
@@ -210,7 +213,7 @@ export function QuestionDialog({
                         }
                         key={`cat-${index}`}
                       >
-                        {item.text}
+                        {gameText.item(item.text)}
                       </div>
                     );
                   }
@@ -294,7 +297,7 @@ export function QuestionDialog({
                           {item.accelerator})
                         </span>
                       </span>
-                      <span className="nh3d-pickup-text">{item.text}</span>
+                      <span className="nh3d-pickup-text">{gameText.item(item.text)}</span>
                       {typeof selectedCount === "number" &&
                         Number.isFinite(selectedCount) &&
                         selectedCount > 0 ? (
@@ -466,7 +469,7 @@ export function QuestionDialog({
                         >
                           <span className="nh3d-menu-button-key">{"-"}</span>
                           <span className="nh3d-menu-button-label">
-                            {String(item.text || "").trimStart()}
+                            {gameText.item(String(item.text || "").trimStart())}
                           </span>
                         </button>
                       );
@@ -480,7 +483,7 @@ export function QuestionDialog({
                         }
                         key={`cat-${index}`}
                       >
-                        {item.text}
+                        {gameText.item(item.text)}
                       </div>
                     );
                   }
@@ -534,7 +537,7 @@ export function QuestionDialog({
                         </span>
                       </span>
                       <span className="nh3d-menu-button-label">
-                        {item.text}
+                        {gameText.item(item.text)}
                       </span>
                     </button>
                   );
