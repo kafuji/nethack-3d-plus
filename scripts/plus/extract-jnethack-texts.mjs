@@ -391,12 +391,107 @@ function addEnlightenmentPair(enStmt, jaStmt) {
   };
   const en = call(enStmt);
   const ja = call(jaStmt);
-  if (!en || !ja || !/[A-Za-z]/.test(en.attr)) return;
-  const key = `${en.macro}|${en.attr}`;
-  if (!enlightenment[key]) enlightenment[key] = `${ja.macro}|${ja.attr}`;
+  if (en && ja && /[A-Za-z]/.test(en.attr)) {
+    const key = `${en.macro}|${en.attr}`;
+    if (!enlightenment[key]) enlightenment[key] = `${ja.macro}|${ja.attr}`;
+  }
+  addEnlightenmentSentences(enStmt, jaStmt);
+}
+
+// Generic enl_msg(prefix, present, past, suffix, ps) pairs, expanded into
+// whole sentences for both tenses and stored as plain templates. English
+// enlght_line() prints prefix+verb+suffix+ps, JNetHack prints
+// prefix+ps+suffix+verb; ps (the "because of" detail) is not modeled.
+const enlWords = {
+  en: {
+    You_: "You ", are: "are ", were: "were ", have: "have ", had: "had ", can: "can ", could: "could ",
+    have_been: "have been ", have_never: "have never ", never: "never ",
+  },
+  ja: {
+    You_: "あなたは", are: "である", were: "であった", have: "をもっている", had: "をもっていた",
+    can: "できる", could: "できた", iru: "いる", ita: "いた",
+  },
+};
+const enlMacroExpansion = {
+  en: {
+    you_are: ["You_", "are", "were"], you_have: ["You_", "have", "had"], you_can: ["You_", "can", "could"],
+    you_have_been: ["You_", "have_been", "were"], you_have_never: ["You_", "have_never", "never"],
+    you_have_X: ["You_", "have", '""'],
+  },
+  ja: {
+    you_are: ["You_", "are", "were"], you_have: ["You_", "have", "had"], you_can: ["You_", "can", "could"],
+    you_have_been: ["You_", "are", "were"], you_are_ing: ["You_", "iru", "ita"],
+  },
+};
+const contractions = [
+  [" are not ", " aren't "], [" were not ", " weren't "], [" have not ", " haven't "],
+  [" had not ", " hadn't "], [" can not ", " can't "], [" could not ", " couldn't "],
+];
+
+function enlCall(stmt, side) {
+  const names = ["enl_msg", ...Object.keys(enlMacroExpansion[side]), ...(side === "ja" ? ["you_have_never", "you_have_X"] : [])];
+  const m = new RegExp(`\\b(${names.join("|")})\\s*\\(`).exec(stripComments(stmt));
+  if (!m) return null;
+  const text = stripComments(stmt);
+  const paren = readParenBody(text, m.index + m[0].length - 1);
+  if (!paren) return null;
+  const args = splitArgs(paren.body);
+  let parts;
+  if (m[1] === "enl_msg") parts = args.slice(0, 4);
+  else if (side === "ja" && m[1] === "you_have_never") parts = [args[0], '"ていない"', '"なかった"', '""'];
+  else if (side === "ja" && m[1] === "you_have_X") parts = [args[0], '"ている"', '"た"', '""'];
+  else {
+    const [prefix, present, past] = enlMacroExpansion[side][m[1]];
+    parts = [prefix, present, past, args[0]];
+  }
+  const resolved = parts.map((arg) => {
+    const trimmed = (arg ?? "").trim();
+    if (trimmed in enlWords[side]) return enlWords[side][trimmed];
+    return literalValue(trimmed);
+  });
+  if (resolved.some((v) => v === null)) return null;
+  const [prefix, present, past, suffix] = resolved;
+  return { prefix, present, past, suffix };
+}
+
+function addEnlightenmentSentences(enStmt, jaStmt) {
+  const en = enlCall(enStmt, "en");
+  const ja = enlCall(jaStmt, "ja");
+  if (!en || !ja || !/[A-Za-z]{3}/.test(en.suffix + en.prefix)) return;
+  for (const tense of ["present", "past"]) {
+    let english = ` ${en.prefix}${en[tense]}${en.suffix}.`;
+    for (const [full, short] of contractions) english = english.replace(full, short);
+    english = english.trim().replace(/\s+/g, " ");
+    const japanese = `${ja.prefix}${ja.suffix}${ja[tense]}．`;
+    if (!templates.has(english)) templates.set(english, japanese);
+  }
 }
 let pairCount = 0;
 
+
+/**
+ * Message tables written as plain literal lists inside #if 0 / #else, e.g.
+ * timeout.c's slime and stoning texts. Placeholders keep their order.
+ */
+function addLiteralListPairs(enBlock, jaBlock) {
+  const onlyLiterals = (block) => /^[\s,{}]*$/.test(stripComments(block).replace(/"(?:[^"\\]|\\.)*"/g, ""));
+  if (!onlyLiterals(enBlock) || !onlyLiterals(jaBlock)) return;
+  const lits = (block) => [...stripComments(block).matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((m) => m[1]);
+  const en = lits(enBlock);
+  const ja = lits(jaBlock);
+  if (en.length !== ja.length) return;
+  en.forEach((enLiteral, i) => {
+    // Only sentence-like entries: single words and fragments in these tables
+    // are often building blocks whose translation depends on context.
+    const value = decodeCString(enLiteral).trim();
+    if (!/ /.test(value) || !/[.!?]$/.test(value)) return;
+    const enSpecs = parseFormat(decodeCString(enLiteral));
+    const jaSpecs = parseFormat(decodeCString(ja[i]));
+    if (!enSpecs || !jaSpecs || enSpecs.specs.length !== jaSpecs.specs.length) return;
+    const args = enSpecs.specs.map((_, n) => `, a${n}`).join("");
+    addPair(`pline("${enLiteral}"${args});`, `pline("${ja[i]}"${args});`);
+  });
+}
 
 function addPair(enStmt, jaStmt) {
   const en = findCall(enStmt);
@@ -422,7 +517,10 @@ function addPair(enStmt, jaStmt) {
   }
   // A Japanese text that ignores the English %s arguments was written for one
   // specific case (e.g. "You finish %s." -> one fixed verb); skip it.
-  if (enFmt.specs.includes("s") && mapping.length === 0) return;
+  // Exception: body_part() arguments, which JNetHack often folds into the text.
+  if (enFmt.specs.includes("s") && mapping.length === 0 && !en.args.every((arg) => /^body_part\(/.test(arg))) {
+    return;
+  }
   const [enPrefix, jaPrefix] = outputFunctions[en.fn];
   const [, jaPrefixForJa] = outputFunctions[ja.fn] ?? ["", ""];
   const enSuffix = suffixes[en.fn]?.[0] ?? "";
@@ -498,10 +596,14 @@ for (const dir of ["src", "japanese"]) {
       addEnlightenmentPair(english, japanese);
     }
     // Pattern B: #if 0 /*JP...*/ <english> #else <japanese> #endif
-    for (const m of src.matchAll(/#\s*if 0 \/\*JP[^\n]*\n([\s\S]*?)\n\s*#\s*else[^\n]*\n([\s\S]*?)\n\s*#\s*endif/g)) {
+    // The English part must not cross another preprocessor line, otherwise an
+    // #if 0 without #else would swallow the following block.
+    const blockRe = /#\s*if 0 \/\*JP[^\n]*\n((?:(?!\n\s*#\s*(?:if|else|endif|elif))[\s\S])*?)\n\s*#\s*else[^\n]*\n((?:(?!\n\s*#\s*(?:if|else|endif|elif))[\s\S])*?)\n\s*#\s*endif/g;
+    for (const m of src.matchAll(blockRe)) {
       if (/#\s*if/.test(m[1]) || /#\s*if/.test(m[2])) continue;
       const enStmts = stripComments(m[1]).split(/;\s*\n/);
       const jaStmts = stripComments(m[2]).split(/;\s*\n/);
+      addLiteralListPairs(m[1], m[2]);
       if (enStmts.length !== jaStmts.length) continue;
       enStmts.forEach((stmt, i) => {
         addPair(`${stmt};`, `${jaStmts[i]};`);

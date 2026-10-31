@@ -6,6 +6,7 @@
 // see scripts/plus/extract-jnethack-texts.mjs.
 import { GameNameTranslator, type GameTextNameData } from "./object-names";
 import { coreGameTextRules, type CoreRuleContext } from "./core-rules";
+import { disclosureRules } from "./disclosure-rules";
 
 export interface GameTextData extends GameTextNameData {
   /** Quest/legacy texts (English, Japanese) with %x substitution codes. */
@@ -290,7 +291,7 @@ export class GameTextTranslator {
     if (quest !== null) return quest.replace(/\n+/g, "");
     const enlightenment = this.translateEnlightenment(sentence);
     if (enlightenment !== null) return enlightenment;
-    for (const rule of coreGameTextRules) {
+    for (const rule of [...coreGameTextRules, ...disclosureRules]) {
       const match = rule.pattern.exec(sentence);
       if (match) {
         const result = rule.translate(match, this.context);
