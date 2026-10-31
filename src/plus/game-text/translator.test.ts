@@ -51,3 +51,24 @@ describe("pet and unidentified gems", () => {
     expect(translator.translateItemText("a gem")).toBe("宝石");
   });
 });
+
+describe("features and monster fights", () => {
+  it.each([
+    ["There is a doorway here.", "ここには出入口がある．"],
+    ["There is a staircase up out of the dungeon here.", "ここにはダンジョンの外への上り階段がある．"],
+    ["There is a staircase down to the Gnomish Mines here.", "ここにはノームの鉱山への下り階段がある．"],
+    ["The little dog bites the jackal.", "仔犬はジャッカルに噛みついた．"],
+  ])("translates %s", (english, japanese) => {
+    expect(translator.translate(english)).toBe(japanese);
+  });
+  it("translates status line locations", () => {
+    expect(translator.translateLocation("Dungeons of Doom 3")).toBe("運命の大迷宮 3");
+  });
+});
+
+describe("status line", () => {
+  it("translates the player title and status words", () => {
+    expect(translator.translatePlayerTitle("Tester the Plunderess")).toBe("Tester 盗賊");
+    expect(translator.translateStatusWord("Hungry")).toBe("ぺこぺこ");
+  });
+});

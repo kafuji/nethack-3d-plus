@@ -11,6 +11,8 @@ import type {
 import type {
   PlayerStatusBadge
 } from "./conditions";
+// nh3d-plus: display-time game text translation.
+import { useGameTextLocalization } from "../../../plus/game-text";
 
 export interface StatusBarProps {
   startup: boolean;
@@ -35,11 +37,12 @@ export function StatusBar({
   playerStatusBadges,
   visibleLocationLabel,
 }: StatusBarProps) {
+  const gameText = useGameTextLocalization();
   return (
     !startup && !gameOverDialogShowsTombstone && (
       <div id="stats-bar">
         <div className="nh3d-stats-name">
-          {playerStats.name}
+          {gameText.status("title", playerStats.name)}
           <span className="nh3d-stats-name-level">
             {" "}
             (Lvl {playerStats.level})
@@ -152,7 +155,7 @@ export function StatusBar({
                   className={`nh3d-stats-status-badge is-${status.severity}`}
                   key={`desktop-status-${status.label}`}
                 >
-                  {status.label}
+                  {gameText.status("status", status.label)}
                 </span>
               ))}
             </span>
@@ -160,7 +163,7 @@ export function StatusBar({
         </div>
         <div className="nh3d-stats-location">
           <div className="nh3d-stats-dungeon">
-            {visibleLocationLabel}
+            {gameText.status("location", visibleLocationLabel)}
             {playerStatusBadges.length > 0 ? (
               <span className="nh3d-stats-mobile-location-status">
                 <span className="nh3d-stats-status-list">
@@ -169,7 +172,7 @@ export function StatusBar({
                       className={`nh3d-stats-status-badge is-${status.severity}`}
                       key={`mobile-status-${status.label}`}
                     >
-                      {status.label}
+                      {gameText.status("status", status.label)}
                     </span>
                   ))}
                 </span>

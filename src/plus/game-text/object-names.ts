@@ -21,7 +21,29 @@ export type ObjectCategory =
 export interface GameTextNameData {
   readonly monsters: Readonly<Record<string, string>>;
   readonly objects: Readonly<Partial<Record<ObjectCategory, Readonly<Record<string, string>>>>>;
+  /** Map features and traps ("doorway", "fountain"). */
+  readonly features?: Readonly<Record<string, string>>;
+  /** Dungeon branch names ("The Gnomish Mines"). */
+  readonly dungeons?: Readonly<Record<string, string>>;
 }
+
+// Features look_here() builds itself rather than taking from defsyms.
+const extraFeatures: Readonly<Record<string, string>> = {
+  "broken door": "壊れた扉",
+  "pool of water": "水たまり",
+  "set of iron bars": "鉄の棒",
+  "open drawbridge portcullis": "降りている跳ね橋",
+  "ladder": "はしご",
+  "staircase": "階段",
+  "stairs": "階段",
+};
+
+const alignmentWords: Readonly<Record<string, string>> = {
+  lawful: "秩序",
+  neutral: "中立",
+  chaotic: "混沌",
+  unaligned: "無心",
+};
 
 // Prefix words from doname(), longest first so "very rusty" wins over "rusty".
 const prefixWords: ReadonlyArray<readonly [string, string]> = [
@@ -184,6 +206,43 @@ const categoryNouns: ReadonlyArray<readonly [ObjectCategory, string, string]> = 
 
 export class GameNameTranslator {
   constructor(private readonly data: GameTextNameData) {}
+
+  /** "The Gnomish Mines" / "the Gnomish Mines" -> "ノームの鉱山". */
+  lookupDungeon(name: string): string | null {
+    const dungeons = this.data.dungeons ?? {};
+    const trimmed = name.trim();
+    const capitalized = trimmed.replace(/^the /, "The ");
+    return dungeons[trimmed] ?? dungeons[capitalized] ?? dungeons[`The ${trimmed}`] ?? null;
+  }
+
+  /** Map features, traps, stairs and altars ("a doorway", "staircase down to level 3"). */
+  translateFeature(phrase: string): string | null {
+    const rest = phrase.trim().replace(/^(?:an?|the) /i, "");
+    const features = this.data.features ?? {};
+    const direct = features[rest] ?? extraFeatures[rest];
+    if (direct) return direct;
+    const altar = /^(high )?altar to (.+?) \((\w+)\)$/.exec(rest);
+    if (altar) {
+      const alignment = alignmentWords[altar[3]!] ?? altar[3];
+      return `${altar[1] ? "高位の" : ""}${altar[2]}の祭壇(${alignment})`;
+    }
+    const stairs = /^((?:branch )?(?:staircase|stairs|ladder) (?:up|down))(?: (.+))?$/.exec(rest);
+    if (stairs) {
+      const base = features[stairs[1]!.replace(/^(branch )?stairs/, "$1staircase")];
+      if (!base) return null;
+      const where = stairs[2];
+      if (!where) return base;
+      const level = /^to level (\d+)$/.exec(where);
+      if (level) return `地下${level[1]}階への${base}`;
+      if (where === "out of the dungeon") return `ダンジョンの外への${base}`;
+      if (where === "to the Elemental Planes") return `精霊界への${base}`;
+      if (where === "to the end game") return `最終試練への${base}`;
+      const branch = /^to (.+?)(?: level (\d+))?$/.exec(where);
+      const dungeon = branch ? this.lookupDungeon(branch[1]!) : null;
+      if (dungeon) return `${dungeon}${branch![2] ? `の${branch![2]}階` : ""}への${base}`;
+    }
+    return null;
+  }
 
   lookupMonster(name: string): string | null {
     const lower = name.toLowerCase();

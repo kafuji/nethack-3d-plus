@@ -190,6 +190,92 @@ const objects = pairNames(
   (macro) => objectCategoryByMacro[macro],
 );
 
+// Map features ("doorway", "fountain") from defsym.h, paired by S_ symbol.
+function extractDefsyms(file) {
+  const src = stripComments(fs.readFileSync(file, "utf8"));
+  const entries = new Map();
+  for (const m of src.matchAll(/\bPCHAR2?\s*\(/g)) {
+    const paren = readParenBody(src, m.index + m[0].length - 1);
+    if (!paren) continue;
+    const args = splitArgs(paren.body);
+    const id = args.find((arg) => /^S_\w+$/.test(arg));
+    const strings = args.map(literalValue).filter((v) => v !== null);
+    if (id && strings.length) entries.set(id, strings);
+  }
+  return entries;
+}
+const features = {};
+{
+  const ja = extractDefsyms(path.join(jnhDir, "include/defsym.h"));
+  for (const [id, enStrings] of extractDefsyms(path.join(vanillaDir, "include/defsym.h"))) {
+    const jaStrings = ja.get(id);
+    if (!jaStrings) continue;
+    // Vanilla PCHAR(desc) where desc doubles as the explanation; JNetHack
+    // uses PCHAR2(desc, japanese explanation).
+    const pairs =
+      enStrings.length === 1 && jaStrings.length === 2
+        ? [[enStrings[0], jaStrings[1]]]
+        : enStrings.length === jaStrings.length
+          ? enStrings.map((value, i) => [value, jaStrings[i]])
+          : [];
+    for (const [value, jaValue] of pairs) {
+      if (value && jaValue && value !== jaValue && !features[value]) features[value] = jaValue;
+    }
+  }
+}
+
+// Dungeon branch names from dat/dungeon.lua, paired by position.
+const dungeons = {};
+{
+  const names = (file) => [...fs.readFileSync(file, "utf8").matchAll(/name = "([^"]+)"/g)].map((m) => m[1]);
+  const en = names(path.join(vanillaDir, "dat/dungeon.lua"));
+  const ja = names(path.join(jnhDir, "dat/dungeon.lua"));
+  if (en.length === ja.length) {
+    en.forEach((value, i) => {
+      if (value !== ja[i]) dungeons[value] = ja[i];
+    });
+  }
+}
+
+// Role, rank and god names from role.c: literals inside each
+// `#if 0 /*JP*/ <english> #else <japanese> #endif` block, paired by position.
+const roleNames = {};
+{
+  const src = fs.readFileSync(path.join(jnhDir, "src/role.c"), "utf8");
+  const lits = (text) => [...stripComments(text).matchAll(/"((?:[^"\\]|\\.)*)"/g)].map((m) => decodeCString(m[1]));
+  for (const m of src.matchAll(/#\s*if 0 \/\*JP[^\n]*\n([\s\S]*?)\n\s*#\s*else[^\n]*\n([\s\S]*?)\n\s*#\s*endif/g)) {
+    // Rank titles are { male, female } tuples; gods and quest places are
+    // plain literals after them.
+    const tupleRe = /\{\s*("(?:[^"\\]|\\.)*"|0)\s*,\s*("(?:[^"\\]|\\.)*"|0)\s*\}/g;
+    const parse = (text) => {
+      const clean = stripComments(text);
+      const tuples = [...clean.matchAll(tupleRe)].map((t) =>
+        [t[1], t[2]].map((v) => (v === "0" ? null : decodeCString(v.slice(1, -1)))),
+      );
+      const rest = clean.replace(tupleRe, "");
+      return { tuples, plain: lits(rest).map((v) => v.replace(/^_/, "")) };
+    };
+    const en = parse(m[1]);
+    const ja = parse(m[2]);
+    // The Japanese block of each role starts with the role's own name tuple,
+    // which the English block keeps outside the #if.
+    if (ja.tuples.length === en.tuples.length + 1) ja.tuples.shift();
+    const add = (value, jaValue) => {
+      if (value && jaValue && /[A-Za-z]/.test(value) && value !== jaValue && !roleNames[value]) {
+        roleNames[value] = jaValue;
+      }
+    };
+    if (ja.tuples.length === en.tuples.length) {
+      en.tuples.forEach(([male, female], i) => {
+        const [jaMale, jaFemale] = ja.tuples[i];
+        add(male, jaMale);
+        add(female, jaFemale ?? jaMale);
+      });
+    }
+    if (ja.plain.length === en.plain.length) en.plain.forEach((value, i) => add(value, ja.plain[i]));
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Message templates from JP annotations.
 
@@ -293,6 +379,9 @@ function addPair(enStmt, jaStmt) {
   englishParts[englishParts.length - 1] += enSuffix;
   const literalText = englishParts.filter((p) => typeof p === "string").join("");
   if (literalText.replace(/[^A-Za-z]/g, "").length < 4) return;
+  // Formats such as "Your %s %s." are too generic to identify a message.
+  const literalWords = literalText.match(/[A-Za-z]{2,}/g) ?? [];
+  if (enFmt.specs.length >= 2 && literalWords.length < 2) return;
 
   const japaneseParts = [...jaFmt.parts];
   japaneseParts[0] = (ja.fn === en.fn ? jaPrefix : jaPrefixForJa) + (japaneseParts[0] ?? "");
@@ -317,6 +406,7 @@ function addPair(enStmt, jaStmt) {
     }
   }
   if (enTemplate.includes("\n") || jaTemplate.includes("\n")) return;
+  if (!/[^\s{}0-9!]/.test(jaTemplate)) return;
   if (!templates.has(enTemplate)) templates.set(enTemplate, jaTemplate);
 }
 
@@ -365,11 +455,16 @@ const output = {
   source: "JNetHack (https://github.com/jnethack/jnethack-alpha), NetHack General Public License",
   monsters,
   objects,
+  features,
+  dungeons,
+  roleNames,
   templates: Object.fromEntries(templates),
 };
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
 fs.writeFileSync(outFile, `${JSON.stringify(output, null, 0)}\n`);
 console.log(
   `monsters: ${Object.keys(monsters).length}, objects: ${Object.values(objects).reduce((n, t) => n + Object.keys(t).length, 0)}, ` +
+    `features: ${Object.keys(features).length}, dungeons: ${Object.keys(dungeons).length}, ` +
+    `roleNames: ${Object.keys(roleNames).length}, ` +
     `pairs: ${pairCount}, templates: ${templates.size}`,
 );

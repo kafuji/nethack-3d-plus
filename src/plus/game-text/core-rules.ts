@@ -14,10 +14,13 @@ export interface CoreRule {
   translate(match: RegExpExecArray, context: CoreRuleContext): string | null;
 }
 
-/** Only accept a rule when the noun actually translated. */
+/** Only accept a rule when the noun translated or is a proper name (e.g. a pet). */
 function known(context: CoreRuleContext, text: string): string | null {
   const ja = context.noun(text);
-  return ja !== text ? ja : null;
+  if (ja !== text) return ja;
+  return /^[A-Z][a-z'-]+(?: [A-Z][a-z'-]+)*$/.test(text.trim()) && !/^(?:The|A|An|It|You)\b/.test(text.trim())
+    ? text.trim()
+    : null;
 }
 
 const monsterHitVerbs: Readonly<Record<string, string>> = {
@@ -78,6 +81,26 @@ export const coreGameTextRules: readonly CoreRule[] = [
     translate: (m, c) => {
       const attacker = known(c, m[1]!.replace(/'s$/, ""));
       return attacker ? `${attacker}${monsterHitVerbs[m[2]!]}${c.punct(m[3]!)}` : null;
+    },
+  },
+  {
+    // mhitm.c: "The little dog bites the jackal."
+    pattern: /^(.+?) (bites|stings|butts|touches|squeezes|hits|misses) (.+?)([.!])$/,
+    translate: (m, c) => {
+      if (/^you$/i.test(m[3]!)) return null;
+      const attacker = known(c, m[1]!);
+      const defender = known(c, m[3]!);
+      if (!attacker || !defender) return null;
+      const verbs: Readonly<Record<string, string>> = {
+        bites: `は${defender}に噛みついた`,
+        stings: `は${defender}を突きさした`,
+        butts: `は${defender}に頭突きをくらわした`,
+        touches: `は${defender}に触れた`,
+        squeezes: `は${defender}を絞めた`,
+        hits: `の${defender}への攻撃は命中した`,
+        misses: `の${defender}への攻撃ははずれた`,
+      };
+      return `${attacker}${verbs[m[2]!]}${c.punct(m[4]!)}`;
     },
   },
   {

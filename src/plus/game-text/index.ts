@@ -74,6 +74,18 @@ export function localizeGameItemText(text: string | null | undefined): string {
   return translator.translateItemText(value);
 }
 
+/** Status line pieces: player title, location label, hunger/encumbrance words. */
+export function localizeGameStatus(
+  kind: "title" | "location" | "status",
+  text: string | null | undefined,
+): string {
+  const value = text ?? "";
+  if (!translator || !isActive()) return value;
+  if (kind === "title") return translator.translatePlayerTitle(value);
+  if (kind === "location") return translator.translateLocation(value);
+  return translator.translateStatusWord(value);
+}
+
 function subscribe(listener: () => void): () => void {
   listeners.add(listener);
   return () => listeners.delete(listener);
@@ -86,8 +98,9 @@ function subscribe(listener: () => void): () => void {
 export function useGameTextLocalization(): {
   text: (value: string | null | undefined) => string;
   item: (value: string | null | undefined) => string;
+  status: typeof localizeGameStatus;
 } {
   useSyncExternalStore(subscribe, () => version, () => version);
   ensureGameTextTranslatorLoaded();
-  return { text: localizeGameText, item: localizeGameItemText };
+  return { text: localizeGameText, item: localizeGameItemText, status: localizeGameStatus };
 }

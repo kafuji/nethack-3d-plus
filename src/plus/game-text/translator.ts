@@ -8,6 +8,8 @@ import { GameNameTranslator, type GameTextNameData } from "./object-names";
 import { coreGameTextRules, type CoreRuleContext } from "./core-rules";
 
 export interface GameTextData extends GameTextNameData {
+  /** Role, rank-title and god names from JNetHack role.c. */
+  readonly roleNames?: Readonly<Record<string, string>>;
   /** English format with "\u0000<spec>" placeholders -> Japanese with {n}. */
   readonly templates: Readonly<Record<string, string>>;
 }
@@ -79,6 +81,20 @@ function fillJapanese(template: string, values: readonly string[]): string {
   });
 }
 
+const statusWords: Readonly<Record<string, string>> = {
+  Satiated: "満腹",
+  Hungry: "ぺこぺこ",
+  Weak: "衰弱",
+  Fainting: "ふらふら",
+  Fainted: "卒倒",
+  Starved: "餓死",
+  Burdened: "よろめき",
+  Stressed: "圧迫",
+  Strained: "限界",
+  Overtaxed: "荷重",
+  Overloaded: "超過",
+};
+
 // Inventory class headers (JNetHack invent.c names[]).
 const inventoryCategoryNames: Readonly<Record<string, string>> = {
   "Illegal objects": "妙な物体",
@@ -101,6 +117,11 @@ const inventoryCategoryNames: Readonly<Record<string, string>> = {
   "Bagged/Boxed items": "詰められた道具",
 };
 
+/** Names such as "Hachi" or "Amaterasu Omikami" are not translated. */
+function isProperName(value: string): boolean {
+  return /^[A-Z][a-z'-]+(?: [A-Z][a-z'-]+)*$/.test(value.trim()) || !/[A-Za-z]/.test(value);
+}
+
 const sentenceEnd: Readonly<Record<string, string>> = { ".": "．", "!": "！", "?": "？" };
 
 export class GameTextTranslator {
@@ -108,8 +129,10 @@ export class GameTextTranslator {
   private readonly names: GameNameTranslator;
   private readonly cache = new Map<string, string>();
   private readonly context: CoreRuleContext;
+  private readonly roleNames: Readonly<Record<string, string>>;
 
   constructor(data: GameTextData) {
+    this.roleNames = data.roleNames ?? {};
     this.templates = compileTemplates(data.templates);
     this.names = new GameNameTranslator(data);
     this.context = {
@@ -161,6 +184,12 @@ export class GameTextTranslator {
       const values = match.slice(1).map((value, i) =>
         template.specs[i] === "s" ? this.translateArgument(value, depth) : value,
       );
+      // A capture left in English usually means the template matched the
+      // wrong message; only proper names (pets, gods, shopkeepers) may stay.
+      const unresolved = values.some(
+        (value, i) => template.specs[i] === "s" && value === match[i + 1] && !isProperName(value),
+      );
+      if (unresolved) continue;
       return fillJapanese(template.japanese, values);
     }
     return null;
@@ -198,7 +227,35 @@ export class GameTextTranslator {
       const base = this.translateNoun(possessive[1]!);
       return base !== possessive[1] ? `${base}の` : value;
     }
-    return this.names.translateMonster(value) ?? this.names.translateObject(value) ?? value;
+    return (
+      this.names.translateMonster(value) ??
+      this.names.translateObject(value) ??
+      this.names.translateFeature(value) ??
+      this.names.lookupDungeon(value) ??
+      value
+    );
+  }
+
+  /** Status line title "Tester the Plunderess" -> "Tester 盗賊" (JNetHack botl.c). */
+  translatePlayerTitle(text: string): string {
+    const match = /^(.+?) the (.+)$/.exec(String(text ?? "").trim());
+    if (!match) return text;
+    const rank = this.roleNames[match[2]!] ?? this.names.lookupMonster(match[2]!.toLowerCase());
+    return rank ? `${match[1]} ${rank}` : text;
+  }
+
+  /** Hunger and encumbrance words shown as status badges (JNetHack eat.c/botl.c). */
+  translateStatusWord(text: string): string {
+    return statusWords[String(text ?? "").trim()] ?? text;
+  }
+
+  /** "Dungeons of Doom 3" style location labels from the status line. */
+  translateLocation(text: string): string {
+    const match = /^(.+?)(?:\s+(\d+))?$/.exec(String(text ?? "").trim());
+    if (!match) return text;
+    const dungeon = this.names.lookupDungeon(match[1]!);
+    if (!dungeon) return text;
+    return match[2] ? `${dungeon} ${match[2]}` : dungeon;
   }
 
   /** Translate an object or inventory line such as "a - a +1 long sword (weapon in hand)". */
