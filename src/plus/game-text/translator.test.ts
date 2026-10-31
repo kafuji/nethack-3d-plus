@@ -120,3 +120,16 @@ describe("frequent runtime messages", () => {
     expect(translator.translate(english)).toBe(japanese);
   });
 });
+
+describe("end-of-game disclosure and message tables", () => {
+  it.each([
+    ["You were a Rhizotomist, a level 1 male human Healer.", "あなたはレベル1の男性の人間の治療師の薬草採集者であった．"],
+    ["You had all 13 hit points.", "あなたは13ヒットポイント(最大:13)をもっていた．"],
+    ["You were guarded.", "あなたは護られていた．"],
+    ["You weren't hungry.", "あなたは空腹でない状態であった．"],
+    ["You used no wishes.", "あなたは願い事をしなかった．"],
+    ["Your limbs are getting oozy.", "手足が溶けはじめた．"],
+  ])("translates %s", (english, japanese) => {
+    expect(translator.translate(english)).toBe(japanese);
+  });
+});
