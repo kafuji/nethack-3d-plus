@@ -13,6 +13,8 @@ export interface GameTextData extends GameTextNameData {
   readonly questTexts?: ReadonlyArray<readonly [string, string]>;
   /** "<macro>|<english attr>" -> "<macro>|<japanese attr>" for "You are fast." lines. */
   readonly enlightenment?: Readonly<Record<string, string>>;
+  /** Humanoid body part names ("leg" -> "足"). */
+  readonly bodyParts?: Readonly<Record<string, string>>;
   /** Role, rank-title and god names from JNetHack role.c. */
   readonly roleNames?: Readonly<Record<string, string>>;
   /** English format with "\u0000<spec>" placeholders -> Japanese with {n}. */
@@ -170,12 +172,14 @@ export class GameTextTranslator {
   private readonly cache = new Map<string, string>();
   private readonly context: CoreRuleContext;
   private readonly roleNames: Readonly<Record<string, string>>;
+  private readonly bodyParts: Readonly<Record<string, string>>;
   private readonly questTexts: CompiledQuestText[];
   private readonly enlightenment: Readonly<Record<string, string>>;
 
   constructor(data: GameTextData) {
     this.enlightenment = data.enlightenment ?? {};
     this.roleNames = data.roleNames ?? {};
+    this.bodyParts = data.bodyParts ?? {};
     this.questTexts = compileQuestTexts(data.questTexts ?? []);
     this.templates = compileTemplates(data.templates);
     this.names = new GameNameTranslator(data);
@@ -346,6 +350,8 @@ export class GameTextTranslator {
       const base = this.translateNoun(possessive[1]!);
       return base !== possessive[1] ? `${base}の` : value;
     }
+    const bodyPart = this.translateBodyPart(value);
+    if (bodyPart) return bodyPart;
     return (
       this.names.translateMonster(value) ??
       this.names.translateObject(value) ??
@@ -366,6 +372,18 @@ export class GameTextTranslator {
   /** Hunger and encumbrance words shown as status badges (JNetHack eat.c/botl.c). */
   translateStatusWord(text: string): string {
     return statusWords[String(text ?? "").trim()] ?? text;
+  }
+
+  /** "legs", "your hands" -> JNetHack body part words. */
+  private translateBodyPart(text: string): string | null {
+    const match = /^(?:(your|his|her|its|their) )?([a-z ]+?)$/i.exec(text.trim());
+    if (!match) return null;
+    const parts = this.bodyParts;
+    const word = match[2]!.toLowerCase();
+    const singular = parts[word] ? word : word.replace(/(?:ves)$/, "f").replace(/(?:feet)$/, "foot").replace(/s$/, "");
+    const ja = parts[singular] ?? (word === "feet" ? parts.foot : undefined);
+    if (!ja) return null;
+    return `${match[1]?.toLowerCase() === "your" ? "あなたの" : ""}${ja}`;
   }
 
   /** "Dungeons of Doom 3" style location labels from the status line. */

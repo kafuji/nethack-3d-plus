@@ -371,7 +371,8 @@ export class GameNameTranslator {
     }
     let quantity = 1;
     let quantityPrefix = "";
-    const article = /^(a|an|the|some|your)\s+/i.exec(rest);
+    // JNetHack omits "his/her/its" on objects ("swings his crossbow").
+    const article = /^(a|an|the|some|your|his|her|its|their)\s+/i.exec(rest);
     let possessive = "";
     if (article) {
       rest = rest.slice(article[0].length);
