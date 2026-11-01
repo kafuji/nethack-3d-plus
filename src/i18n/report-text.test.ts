@@ -55,7 +55,7 @@ describe("end of game reports", () => {
       .toBe("死んだときのレベルは4、最大HPは40だった。");
     expect(translateReportLine("You and your little dog", "ja")).toBe("あなたとあなたの子犬は");
     expect(translateReportLine("escaped from the dungeon with 123 points,", "ja")).toBe("ダンジョンから脱出した（123ポイント）、");
-    expect(translateReportLine("       2 rubies (worth 7000 zorkmids),", "ja")).toBe("       2個のルビー（7000ゾークミド相当）、");
+    expect(translateReportLine("       2 rubies (worth 7000 zorkmids),", "ja")).toBe("       ルビー ×2（7000ゾークミド相当）、");
     expect(translateReportLine("Kafujinho, lawful male human Samurai", "ja")).toBe("Kafujinho、秩序の男性の人間の侍");
   });
   it("translates chronicle events and leaves wishes verbatim", () => {

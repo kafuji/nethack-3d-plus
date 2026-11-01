@@ -279,6 +279,7 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   if (name === undefined && item.endsWith("s")) {
     name = own(itemNames, item.slice(0, -1));
   }
+  if (name === undefined && item.endsWith("ies")) name = own(itemNames, `${item.slice(0, -3)}y`);
   if (name === undefined) {
     const pluralOf = /^(potions|scrolls|spellbooks|wands|rings|amulets) of (.+)$/.exec(item);
     if (pluralOf) name = own(itemNames, `${pluralOf[1].slice(0, -1)} of ${pluralOf[2]}`);
