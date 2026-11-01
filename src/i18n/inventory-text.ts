@@ -19,6 +19,7 @@ const categories: Readonly<Record<string, string>> = {
   "(ignored unless some other choices are also picked)": "（ほかの選択肢も選んだときだけ有効）", "(if no other choices are picked, 'a' is implied)": "（ほかに何も選ばなければ 'a' とみなす）",
   "Items known to be Blessed": "祝福されているとわかっている物", "Items known to be Cursed": "呪われているとわかっている物",
   "Items known to be Uncursed": "呪われていないとわかっている物", "Items of unknown Bless/Curse status": "祝福・呪いの状態が不明な物",
+  "Items you just picked up": "直前に拾った物",
 };
 
 // Entries must describe exactly what the runtime revealed. For example, the
@@ -181,6 +182,12 @@ export function translateMenuItemText(text: string, locale: SupportedLocale): st
   if (locale !== "ja" || item !== text || !text.trim() || translatingMenuRow) return item;
   const leading = text.slice(0, text.length - text.trimStart().length);
   const trailing = text.slice(text.trimEnd().length);
+  // pickup.c offers the last picked-up item as its own menu choice.
+  const justPickedUp = /^Just picked up(?:: (.+))?$/.exec(text.trim());
+  if (justPickedUp) {
+    const picked = justPickedUp[1] === undefined ? "" : translateInventoryItem(justPickedUp[1], locale);
+    if (picked !== justPickedUp[1]) return `${leading}直前に拾った物${picked ? `：${picked}` : ""}${trailing}`;
+  }
   // translateGameMessage calls back into the item translator for item phrases.
   translatingMenuRow = true;
   try {

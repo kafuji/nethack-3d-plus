@@ -150,6 +150,8 @@ const characteristicNames: Readonly<Record<string, string>> = {
   wisdom: "賢さ",
   charisma: "魅力",
 };
+// Text such as "constructor" must not find Object.prototype members.
+for (const table of [monsterHitVerbs, characterWords, getobjVerbs, shopTypes, fixedMessages, characteristicNames]) Object.setPrototypeOf(table, null);
 
 export const coreGameTextRules: readonly CoreRule[] = [
   {

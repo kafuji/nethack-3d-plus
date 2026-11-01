@@ -42,6 +42,8 @@ const pietyWords: Readonly<Record<string, string>> = {
   nominally: "形だけの",
   insufficiently: "不十分な",
 };
+// Text such as "constructor" must not find Object.prototype members.
+for (const table of [raceAdjectives, alignmentAdverbs, pietyWords]) Object.setPrototypeOf(table, null);
 
 export const disclosureRules: readonly CoreRule[] = [
   {

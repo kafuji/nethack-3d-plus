@@ -4,6 +4,7 @@ import { translateMonsterName } from "./game-monsters";
 import { nethack5ExtraMessages } from "./nethack5-extra-messages";
 import { lookupNethack5SourceExact, translateNethack5SourceMessage } from "./nethack5-source-messages";
 import { englishLeftover } from "./game-messages";
+import { translateAssembledMessage } from "./nethack5-assembled-messages";
 import { jnethackMessage } from "../plus/game-text/fallback";
 
 // Prompts are presented separately from their raw values, which determine
@@ -176,6 +177,13 @@ const japanesePromptTemplates: readonly [RegExp, (...values: string[]) => string
   [/^Unlock it with ([^?\n]+)\?$/, (item) => `${translatePromptObject(item)}で鍵を開けますか？`],
   [/^How much will you offer \(suggested: (\d+) or (\d+)\)\?$/, (first, second) => `いくら捧げますか？（推奨：${first} または ${second}）`],
   [/^That ([^.!?\n]+) will cost you (\d+) (zorkmids?|gold pieces?)\.$/, (item, price, currency) => `${translatePromptObject(item)}の代金は${currency.startsWith("gold") ? `金貨 ${price} 枚` : ` ${price} ゾークミド`}です。`],
+  [/^What kinds of thing do you want to (pick up|drop|put in|take out|tip|sell|identify)\?$/, (action) => {
+    const actions: Readonly<Record<string, string>> = {
+      "pick up": "拾いますか", drop: "置きますか", "put in": "入れますか", "take out": "取り出しますか",
+      tip: "出しますか", sell: "売りますか", identify: "識別しますか",
+    };
+    return `どの種類の物を${actions[action]}？`;
+  }],
   [/^Will you accept (\d+) (zorkmids?|gold pieces?) in credit for ([^?\n]+)\?$/, (amount, currency, item) => `${translatePromptObject(item)}の代わりに${currency.startsWith("gold") ? `金貨 ${amount} 枚` : ` ${amount} ゾークミド`}の預け金を受け取りますか？`],
   [/^(.+?) offers( only)? (\d+) gold pieces? for (your items in |the contents of )?(?:your |the )?([^?\n]+?)( and its contents| and items? inside)?\.  Sell (?:it|them)\?$/, (shopkeeper, only, amount, partial, item, contents) => {
     const object = translatePromptObject(item);
@@ -184,6 +192,18 @@ const japanesePromptTemplates: readonly [RegExp, (...values: string[]) => string
   }],
   [/^Drop the ([^.!?\n]+) corpse without ([^?\n]+) protection on\?$/, (monster, protection) => `${translateMonsterName(`the ${monster}`, "ja")}の死体を${translatePromptObject(protection)}で防護せずに置きますか？`],
 ];
+
+/**
+ * True when a translation copies ordinary English words from the prompt, e.g.
+ * "どの種類のものをPut in？". Names and scroll labels stay in English: they are
+ * capitalized or upper case and do not start the prompt.
+ */
+function keepsEnglishWords(original: string, translated: string): boolean {
+  const first = /[A-Za-z][A-Za-z'-]*/.exec(original)?.[0];
+  const words = new Set(original.match(/[A-Za-z][A-Za-z'-]*/g) ?? []);
+  return (translated.match(/[A-Za-z][A-Za-z'-]*/g) ?? [])
+    .some((word) => words.has(word) && (word === first || /^[a-z]/.test(word)));
+}
 
 /** Translate only the visible prompt; retain choice letters and defaults. */
 export function translateGamePrompt(prompt: string, locale: SupportedLocale): string {
@@ -207,14 +227,17 @@ export function translateGamePrompt(prompt: string, locale: SupportedLocale): st
       }
     }
   }
-  // Prompts share their wording with the NetHack source message dictionary;
+  // Prompts share their wording with the assembled and source message tables;
   // use it only when the rendering leaves no English from the prompt behind.
   if (translated === undefined) {
-    const source = lookupNethack5SourceExact(text) ?? translateNethack5SourceMessage(text);
+    const source = translateAssembledMessage(text) ?? lookupNethack5SourceExact(text) ?? translateNethack5SourceMessage(text);
     if (source !== undefined && source !== text && englishLeftover(text, source) === 0) translated = source;
   }
   // Fall back to JNetHack wording for prompts without a curated translation.
-  translated ??= jnethackMessage(text);
+  if (translated === undefined) {
+    const jnethack = jnethackMessage(text);
+    if (jnethack !== undefined && !keepsEnglishWords(text, jnethack)) translated = jnethack;
+  }
   return translated === undefined
     ? prompt
     : `${leading}${translated}${choiceSuffix?.[2] ?? ""}${trailing}`;

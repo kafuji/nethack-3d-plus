@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { translateGamePrompt } from "./game-prompts";
+import { translateMenuItemText } from "./inventory-text";
 
 describe("game prompt presentation", () => {
   it("translates known prompts while retaining choice keys and defaults", () => {
@@ -46,5 +47,16 @@ describe("game prompt presentation", () => {
       .toBe("Really attack the goblin? Extra text");
     expect(translateGamePrompt("Really attack the goblin? [yn] (n)", "fr"))
       .toBe("Really attack the goblin? [yn] (n)");
+  });
+
+  it("translates container class menus without leaving English verbs", () => {
+    expect(translateGamePrompt("Put in what type of objects?", "ja")).toBe("どの種類の物を入れますか？");
+    expect(translateGamePrompt("What kinds of thing do you want to put in? [abc or ?*]", "ja"))
+      .toBe("どの種類の物を入れますか？ [abc or ?*]");
+  });
+
+  it("translates the just-picked-up menu choice", () => {
+    expect(translateMenuItemText("Just picked up: a platinum wand", "ja")).toBe("直前に拾った物：白金のワンド");
+    expect(translateMenuItemText("Items you just picked up", "ja")).toBe("直前に拾った物");
   });
 });

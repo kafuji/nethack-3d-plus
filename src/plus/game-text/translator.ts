@@ -37,6 +37,15 @@ const specPatterns: Readonly<Record<string, string>> = {
   c: "(.)",
 };
 
+/** Copy JSON data with null-prototype objects, so lookups only find its own keys. */
+function withoutPrototypes<T>(value: T): T {
+  if (Array.isArray(value)) return value.map(withoutPrototypes) as T;
+  if (value === null || typeof value !== "object") return value;
+  const copy = Object.create(null) as Record<string, unknown>;
+  for (const [key, item] of Object.entries(value)) copy[key] = withoutPrototypes(item);
+  return copy as T;
+}
+
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -168,6 +177,8 @@ function isProperName(value: string): boolean {
 }
 
 const sentenceEnd: Readonly<Record<string, string>> = { ".": "．", "!": "！", "?": "？" };
+// Text such as "constructor" must not find Object.prototype members.
+for (const table of [specPatterns, statusWords, inventoryCategoryNames, sentenceEnd]) Object.setPrototypeOf(table, null);
 
 export class GameTextTranslator {
   private readonly templates: CompiledTemplate[];
@@ -180,6 +191,7 @@ export class GameTextTranslator {
   private readonly enlightenment: Readonly<Record<string, string>>;
 
   constructor(data: GameTextData) {
+    data = withoutPrototypes(data);
     this.enlightenment = data.enlightenment ?? {};
     this.roleNames = data.roleNames ?? {};
     this.bodyParts = data.bodyParts ?? {};
@@ -351,7 +363,7 @@ export class GameTextTranslator {
       more: "もっと",
       less: "少なく",
     };
-    if (lower in adverbs && text !== "") return adverbs[lower]!;
+    if (Object.prototype.hasOwnProperty.call(adverbs, lower) && text !== "") return adverbs[lower]!;
     if (value === "") return "";
     // Temple priests: "the priestess of Amaterasu Omikami" (priest.c priestname).
     const priest = /^(?:the |a |an )?(high )?(priest|priestess) of (.+)$/i.exec(value);
@@ -371,7 +383,7 @@ export class GameTextTranslator {
       their: "それらの",
       them: "それら",
     };
-    if (pronouns[lower]) return pronouns[lower]!;
+    if (Object.prototype.hasOwnProperty.call(pronouns, lower)) return pronouns[lower]!;
     const possessive = /^(.+?)(?:'s|')$/.exec(value);
     if (possessive) {
       const base = this.translateNoun(possessive[1]!);
