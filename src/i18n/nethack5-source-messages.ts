@@ -117,6 +117,13 @@ export function translateMessageArgument(value: string): string {
     const item = translateInventoryItem(text, "ja");
     if (item !== text) return item;
   }
+  // nh3d-plus: An() capitalizes the article ("A dagger falls from the tree!").
+  const capitalized = /^(A|An) (.+)$/.exec(text);
+  if (capitalized) {
+    const lower = `${capitalized[1].toLowerCase()} ${capitalized[2]}`;
+    const item = translateInventoryItem(lower, "ja");
+    if (item !== lower) return item;
+  }
   const ground = translateGroundObject(text, "ja");
   if (ground !== text) return ground;
   return value;
