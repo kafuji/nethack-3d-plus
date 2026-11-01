@@ -5,13 +5,16 @@ import { FmodRuntime } from "../../../audio";
 import type { BackgroundMusic } from "../../../audio/music";
 import {
   resolveConditionStatusBadges,
+  resolveConditionStatusDefinitions,
   resolveHungerStatusBadge,
 } from "../../../ui/app/status/conditions";
+import { t } from "../../../ui/app/shared/translations";
 import type { Nh3dClientOptions, PlayerStatsSnapshot } from "../../ui-types";
 import type { FmodRuntimeOptions, FmodThreadingDiagnostics } from "../../../audio";
 import { logWithOriginal } from "../../../logging";
 import { MessageSoundHooks } from "../../message-sound-hooks";
-import { Nh3dStatusSoundTracker } from "../../../audio/status-effect-synth";
+import { Nh3dStatusSoundTracker, resolveActiveConditionSoundKeys } from "../../../audio/status-effect-synth";
+import type { MusicStatusEffect } from "../../../audio/music/status-effects";
 import type { Nh3dAndroidBridge } from "../shared/types";
 import type { DirectionPrompts } from "../ui/direction-prompts";
 import type { EngineState } from "../runtime/engine-state";
@@ -195,6 +198,7 @@ export class AudioHapticsPlatform {
     this.backgroundMusic.notifyPlayerStats(
       { hp: stats.hp, maxHp: stats.maxHp, time: stats.time, dungeon: stats.dungeon },
       dangerCondition,
+      resolveMusicStatusEffects(stats.conditionMask, runtimeVersion),
     );
   }
 
@@ -698,4 +702,31 @@ export class AudioHapticsPlatform {
     }
     this.messageSoundHooks.playPlayerFootstepSound();
   }
+}
+
+// Status conditions that color the background music (see audio/music/status-effects.ts).
+const musicEffectBySoundKey: Partial<Record<string, MusicStatusEffect>> = {
+  "status-confused": "confused",
+  "status-stunned": "stunned",
+  "status-hallucinating": "hallucinating",
+  "status-blind": "blind",
+  "status-stoning": "stoning",
+};
+
+function resolveMusicStatusEffects(
+  conditionMask: unknown,
+  runtimeVersion: Parameters<typeof resolveConditionStatusDefinitions>[0],
+): MusicStatusEffect[] {
+  const effects = new Set<MusicStatusEffect>();
+  for (const key of resolveActiveConditionSoundKeys(conditionMask, runtimeVersion)) {
+    const effect = musicEffectBySoundKey[key];
+    if (effect) effects.add(effect);
+  }
+  // Deafness has no status sound; read its bit from the condition table.
+  const mask = typeof conditionMask === "number" ? conditionMask >>> 0 : 0;
+  const deaf = resolveConditionStatusDefinitions(runtimeVersion).find(
+    (definition) => definition.label === t.statusEffects.deaf,
+  );
+  if (deaf && (mask & deaf.mask) !== 0) effects.add("deaf");
+  return [...effects];
 }

@@ -3,6 +3,7 @@ import { FileMusicPlayer } from "./file-music-player";
 import { defaultMusicLibrary } from "./music-library";
 import { ProceduralMusicPlayer, type BackgroundMusicPlayer } from "./procedural-music-player";
 import { regionTrackPreferences, resolveMusicRegion, type MusicRegion } from "./music-region";
+import type { MusicStatusEffect } from "./status-effects";
 
 export type BackgroundMusicSettings = {
   soundEnabled: boolean;
@@ -52,6 +53,7 @@ export class BackgroundMusic {
   private gameOver = false;
   private previewMood: MusicMood | null | undefined = undefined;
   private region: MusicRegion | null = null;
+  private statusEffectsKey = "";
   private evaluateTimer: ReturnType<typeof setInterval> | null = null;
   private disposed = false;
 
@@ -72,11 +74,25 @@ export class BackgroundMusic {
     this.evaluate();
   }
 
-  notifyPlayerStats(stats: BackgroundMusicStats, dangerCondition: boolean): void {
+  notifyPlayerStats(
+    stats: BackgroundMusicStats,
+    dangerCondition: boolean,
+    statusEffects: readonly MusicStatusEffect[] = [],
+  ): void {
     this.stats = { ...stats };
     this.dangerCondition = dangerCondition;
+    this.setStatusEffects(statusEffects);
     if (stats.dungeon !== undefined) this.updateRegion(resolveMusicRegion(stats.dungeon));
     this.evaluate();
+  }
+
+  /** Confusion, hallucination, ... color the music (see status-effects.ts). */
+  setStatusEffects(effects: readonly MusicStatusEffect[]): void {
+    const sorted = [...new Set(effects)].sort();
+    const key = sorted.join(",");
+    if (key === this.statusEffectsKey) return;
+    this.statusEffectsKey = key;
+    this.player.setStatusEffects?.(sorted);
   }
 
   getCurrentRegion(): MusicRegion | null {
@@ -118,6 +134,7 @@ export class BackgroundMusic {
     this.dangerCondition = false;
     this.gameOver = false;
     this.region = null;
+    this.setStatusEffects([]);
     this.player.setMood(null);
   }
 

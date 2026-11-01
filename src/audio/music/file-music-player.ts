@@ -3,6 +3,7 @@ import type { MusicLibrary, MusicTrack } from "./music-library";
 import type { BackgroundMusicPlayer } from "./procedural-music-player";
 import type { TrackPreference } from "./music-region";
 import { playMusicStinger, type MusicStinger } from "./stingers";
+import { MusicStatusEffectChain, type MusicStatusEffect } from "./status-effects";
 
 const moodFadeInSec: Record<MusicMood, number> = { calm: 1.2, combat: 0.3, danger: 0.25 };
 const moodFadeOutSec = 1;
@@ -49,6 +50,9 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   private preloadStarted = false;
   private disposed = false;
   private preference: TrackPreference = {};
+  private effects: MusicStatusEffectChain | null = null;
+  private statusEffects: MusicStatusEffect[] = [];
+  private playbackRate = 1;
 
   constructor(
     private readonly library: MusicLibrary,
@@ -88,6 +92,18 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
       } else {
         channel.trackIndex = Math.max(0, playlist.findIndex((track) => track.id === deck.track.id));
       }
+    }
+  }
+
+  setStatusEffects(effects: readonly MusicStatusEffect[]): void {
+    this.statusEffects = [...effects];
+    this.effects?.setEffects(this.statusEffects);
+  }
+
+  private applyPlaybackRate(rate: number): void {
+    this.playbackRate = rate;
+    for (const decks of this.decksByTrack.values()) {
+      for (const deck of decks) setElementRate(deck.element, rate);
     }
   }
 
@@ -163,6 +179,8 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
       }
     }
     this.decksByTrack.clear();
+    this.effects?.dispose();
+    this.effects = null;
     for (const pending of this.blobUrls.values()) {
       void pending.then((url) => url && URL.revokeObjectURL(url));
     }
@@ -192,7 +210,11 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
       const context = new Ctor();
       const master = context.createGain();
       master.gain.value = this.resolveMasterGain();
-      master.connect(context.destination);
+      // Status effects (confusion, hallucination, ...) sit after the mix;
+      // pitch drift is applied through the media elements' playbackRate.
+      this.effects = new MusicStatusEffectChain(context, context.destination, (rate) => this.applyPlaybackRate(rate));
+      this.effects.setEffects(this.statusEffects);
+      master.connect(this.effects.input);
       this.context = context;
       this.master = master;
       return context;
@@ -347,6 +369,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
       source.connect(gain);
       deck = { track, element, gain };
       decks.push(deck);
+      setElementRate(element, this.playbackRate);
     }
     if (!deck) return null;
     deck.gain.disconnect();
@@ -439,4 +462,13 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
     channel.outgoing = old;
     channel.crossfadeEndsAt = now + seconds + 0.05;
   }
+}
+
+/** Change speed and pitch together (no time-stretching). */
+function setElementRate(element: HTMLMediaElement, rate: number): void {
+  const media = element as HTMLMediaElement & { mozPreservesPitch?: boolean; webkitPreservesPitch?: boolean };
+  media.preservesPitch = false;
+  media.mozPreservesPitch = false;
+  media.webkitPreservesPitch = false;
+  if (Math.abs(media.playbackRate - rate) > 0.0005) media.playbackRate = rate;
 }

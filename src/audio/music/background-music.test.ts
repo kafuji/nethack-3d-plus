@@ -4,6 +4,7 @@ import type { BackgroundMusicPlayer } from "./procedural-music-player";
 import type { MusicMood } from "./music-director";
 import type { TrackPreference } from "./music-region";
 import type { MusicStinger } from "./stingers";
+import type { MusicStatusEffect } from "./status-effects";
 
 class FakePlayer implements BackgroundMusicPlayer {
   moods: (MusicMood | null)[] = [];
@@ -19,6 +20,10 @@ class FakePlayer implements BackgroundMusicPlayer {
   dispose(): void {}
   preferences: TrackPreference[] = [];
   stingers: MusicStinger[] = [];
+  effects: (readonly MusicStatusEffect[])[] = [];
+  setStatusEffects(effects: readonly MusicStatusEffect[]): void {
+    this.effects.push(effects);
+  }
   setTrackPreference(preference: TrackPreference): void {
     this.preferences.push(preference);
   }
@@ -85,6 +90,17 @@ describe("BackgroundMusic", () => {
     music.setGameOver(true);
     music.setGameOver(true);
     expect(player.stingers).toEqual(["game-over"]);
+    music.dispose();
+  });
+
+  it("forwards status effects only when they change", () => {
+    const player = new FakePlayer();
+    const music = new BackgroundMusic(player, () => 0);
+    music.setSettings(on);
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1 }, false, ["hallucinating", "confused"]);
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 2 }, false, ["confused", "hallucinating"]);
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 3 }, false, []);
+    expect(player.effects).toEqual([["confused", "hallucinating"], []]);
     music.dispose();
   });
 });

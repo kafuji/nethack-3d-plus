@@ -110,6 +110,19 @@ function resolveConditionSoundMasks(
       : conditionSoundMasks367;
 }
 
+/** Condition sound keys whose status bits are set in `rawMask`. */
+export function resolveActiveConditionSoundKeys(
+  rawMask: unknown,
+  runtimeVersion: NethackRuntimeVersion,
+): Set<Nh3dSynthSoundKey> {
+  const mask = typeof rawMask === "number" && Number.isFinite(rawMask) ? Math.trunc(rawMask) >>> 0 : 0;
+  const active = new Set<Nh3dSynthSoundKey>();
+  for (const [bit, key] of resolveConditionSoundMasks(runtimeVersion)) {
+    if ((mask & bit) !== 0) active.add(key);
+  }
+  return active;
+}
+
 /** Most urgent first; only the top new status is voiced per status update. */
 const statusSoundPriority: readonly Nh3dSynthSoundKey[] = [
   "status-stoning",
