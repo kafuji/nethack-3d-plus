@@ -88,3 +88,19 @@ export const defaultMusicLibrary: MusicLibrary = {
     },
   ],
 };
+
+/**
+ * Title screen music. Reuses the bundled "Unexplored Expansion" piece, which
+ * the default dungeon region does not open with, so the game start still
+ * sounds different from the menu.
+ */
+export const titleMusicTrack: MusicTrack = {
+  id: "title-unexplored",
+  path: "music/calm-unexplored.ogg",
+  loop: "crossfade",
+  crossfadeSec: 3,
+  title: "Unexplored Expansion",
+  author: "TAD / Bo Jingles",
+  license: "CC0 1.0",
+  source: "https://opengameart.org/content/unexplored-expansion",
+};

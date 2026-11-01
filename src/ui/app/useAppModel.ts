@@ -141,6 +141,9 @@ import {
   useEngineLifecycle,
 } from "./session/use-engine-lifecycle";
 import {
+  useTitleMusic,
+} from "./session/use-title-music";
+import {
   useAppliedClientOptionsEffects,
 } from "./settings/use-applied-client-options-effects";
 import {
@@ -1123,6 +1126,11 @@ export function useAppModel() {
     get startupBuildLabelToastTimerRef() { return startupBuildLabelToastTimerRef; },
     get startupUpdateCheck() { return startupUpdateCheck; },
     get setHasShownStartupMenu() { return setHasShownStartupMenu; },
+  });
+
+  useTitleMusic({
+    get startupMenuVisible() { return startupMenuVisible; },
+    get clientOptions() { return clientOptions; },
   });
 
   const {
