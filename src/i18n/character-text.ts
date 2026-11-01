@@ -3,6 +3,8 @@ import { translateInventoryItem } from "./inventory-text";
 import { translatePlayerRank } from "./player-title";
 import { translateGameLocation } from "./game-location";
 import { translateSkillName } from "./game-skills";
+import { translateMonsterName } from "./game-monsters";
+import { translateCurrency } from "./currency-text";
 
 // Presentation-only translations for NetHack's enlightenment and SLASH'EM
 // base-attributes windows. The unmodified input remains authoritative for
@@ -113,8 +115,16 @@ const exactLines: Readonly<Record<string, string>> = {
   "You have extra luck.": "運に追加の恩恵があります。", "You have reduced luck.": "運に不利な影響があります。",
   "Bad luck does not time out for you.": "悪運は時間が経っても戻りません。", "Good luck does not time out for you.": "幸運は時間が経っても失われません。",
 };
+const skillLevels: Readonly<Record<string, string>> = {
+  no: "なし", unskilled: "未熟練", basic: "基本", skilled: "熟練", expert: "専門家", master: "達人", "grand master": "大達人", "grand-master": "大達人",
+};
 const own = (dict: Readonly<Record<string, string>>, key: string): string =>
   Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : key;
+
+/** Alignment, gender, race or role word ("lawful", "human", "Samurai"), or undefined. */
+export function translateIdentityWord(word: string): string | undefined {
+  return Object.prototype.hasOwnProperty.call(values, word) ? values[word] : undefined;
+}
 
 export function translateCharacterFieldLabel(label: string, locale: SupportedLocale): string {
   return locale === "ja" ? own(labels, label) : label;
@@ -206,14 +216,29 @@ function translateCharacterContent(line: string, locale: SupportedLocale): strin
   if (m) return `魔力：${m[1]} / ${m[2]}。`;
   m = /^Your armor class is (-?\d+)\.$/.exec(line);
   if (m) return `アーマークラス（AC）：${m[1]}。`;
-  m = /^Your wallet contains ([\d,]+) (gold pieces?|zorkmids?)\.$/.exec(line);
-  if (m) return `財布：金貨 ${m[1]} 枚。`;
+  // insight.c: the wallet line may continue on the next line with
+  // "you had 40 more stashed away in your pack."
+  m = /^Your wallet (contains|contained) ([\d,]+) (.+?)(\.|, but|, and)$/.exec(line);
+  if (m && translateCurrency(m[3]) !== undefined) {
+    return `財布には${m[2]}${translateCurrency(m[3])}入って${m[1] === "contains" ? "います" : "いました"}${m[4] === ", but" ? "が、" : "。"}`;
+  }
+  m = /^Your wallet (is|was) empty(\.|, but)$/.exec(line);
+  if (m) return `財布は空${m[1] === "is" ? "です" : "でした"}${m[2] === "." ? "。" : "が、"}`;
+  m = /^you (have|had) ([\d,]+) (more|.+?) stashed away in your pack\.$/.exec(line);
+  if (m && (m[3] === "more" || translateCurrency(m[3]) !== undefined)) {
+    const amount = m[3] === "more" ? `にもさらに${m[2]}枚` : `に${m[2]}${translateCurrency(m[3])}`;
+    return `荷物の中${amount}しまって${m[1] === "have" ? "います" : "いました"}。`;
+  }
   m = /^Autopickup is on for (.+?)( plus thrown)?(, with exceptions)?\.$/.exec(line);
   if (m) return `自動拾得：オン（対象 ${m[1]}${m[2] ? "、投げた物も含む" : ""}${m[3] ? "、例外あり" : ""}）。`;
-  m = /^You are wielding (.+)\.$/.exec(line);
-  if (m) return `${translateInventoryItem(m[1], locale)}を手に持っています。`;
-  m = /^You have (no|unskilled|basic|skilled|expert|master|grand master|grand-master) skill with (.+?)( and can enhance that)?\.$/.exec(line);
-  if (m) return `${translateSkillName(m[2], locale)}の技能：${own({ no: "なし", unskilled: "未熟練", basic: "基本", skilled: "熟練", expert: "専門家", master: "達人", "grand master": "大達人", "grand-master": "大達人" }, m[1])}${m[3] ? "（上達可能）" : ""}。`;
+  m = /^You (are|were) wielding (some )?(.+)\.$/.exec(line);
+  if (m) {
+    const some: Readonly<Record<string, string>> = { armor: "鎧", food: "食料", venom: "毒液" };
+    const item = m[2] ? some[m[3]] : translateInventoryItem(m[3], locale);
+    if (item !== undefined && item !== m[3]) return `${item}を手に持って${m[1] === "are" ? "います" : "いました"}。`;
+  }
+  m = /^You (have|had) (no|unskilled|basic|skilled|expert|master|grand master|grand-master) skill with (.+?)( and (?:can enhance|could have enhanced) that)?\.$/.exec(line);
+  if (m) return `${translateSkillName(m[3], locale)}の技能：${own(skillLevels, m[2])}${m[4] ? m[1] === "have" ? "（上達可能）" : "（上達できた）" : ""}。`;
   m = /^Your items (are|were)( somewhat)? protected from (fire|cold|disintegration|electric shocks|acid)( if surroundings permitted)?\.$/.exec(line);
   if (m) {
     const elements: Readonly<Record<string, string>> = { fire: "炎", cold: "冷気", disintegration: "分解", "electric shocks": "電撃", acid: "酸" };
@@ -224,8 +249,112 @@ function translateCharacterContent(line: string, locale: SupportedLocale): strin
     const effect = m[2].startsWith("enhanced") ? "ローブを着ているため呪文が唱えやすくなって" : `金属製の鎧のため呪文が唱えにくくなって${m[3] ? "（ローブで緩和されて）" : ""}`;
     return `${effect}${m[1] === "was" ? "いました" : "います"}。`;
   }
-  m = /^You are (unskilled|skilled) in (.+?)( and can enhance that)?\.$/.exec(line);
-  if (m) return `${translateSkillName(m[2], locale)}の技能：${m[1] === "skilled" ? "熟練" : "未熟練"}${m[3] ? "（上達可能）" : ""}。`;
+  m = /^You (are|were) (unskilled|skilled) in (.+?)( and (?:can enhance|could have enhanced) that)?\.$/.exec(line);
+  if (m) return `${translateSkillName(m[3], locale)}の技能：${own(skillLevels, m[2])}${m[4] ? m[1] === "are" ? "（上達可能）" : "（上達できた）" : ""}。`;
+  return translateFinalDisclosure(line, locale);
+}
+
+const characteristics: Readonly<Record<string, string>> = {
+  strength: "筋力", dexterity: "器用さ", constitution: "耐久力", intelligence: "知力", wisdom: "判断力", charisma: "魅力",
+};
+const counts = (value: string): string =>
+  value === "once" ? "1" : value === "twice" ? "2" : value === "thrice" ? "3" : value.replace(/ times$/, "");
+const trapNames: Readonly<Record<string, string>> = {
+  "bear trap": "トラバサミ", web: "クモの巣", pit: "落とし穴", "spiked pit": "トゲだらけの落とし穴",
+};
+const combatSizes: Readonly<Record<string, string>> = { small: "小さな", moderate: "中程度の", large: "大きな", huge: "非常に大きな" };
+
+// Final disclosure and enlightenment lines that insight.c assembles at run
+// time; present and past tense ("is"/"was", "have"/"had") are both shown.
+function translateFinalDisclosure(line: string, locale: SupportedLocale): string {
+  const ending = (present: boolean, kind: "iru" | "desu" | "masu" = "iru"): string =>
+    kind === "desu" ? (present ? "です" : "でした") : kind === "masu" ? (present ? "ます" : "ました") : present ? "います" : "いました";
+  let m = /^Your (strength|dexterity|constitution|intelligence|wisdom|charisma) (is|was) (\S+?)(?: \((current; )?(.+)\))?\.$/.exec(line);
+  if (m) {
+    const parts = m[5]?.split(", ").map((part) => {
+      const field = /^(base|peak|innate limit|limit):(\S+)$/.exec(part);
+      if (!field) return undefined;
+      const label = { base: "基本値", peak: "最高値", "innate limit": "生来の上限", limit: "上限" }[field[1] as "base"];
+      return `${label}：${field[2]}`;
+    });
+    if (!parts?.includes(undefined)) {
+      const detail = parts ? `（${m[4] ? "現在値。" : ""}${parts.join("、")}）` : "";
+      return `${characteristics[m[1]]}は${m[3]}${detail}${ending(m[2] === "is", "desu")}。`;
+    }
+  }
+  m = /^You are dead(?: \((\d+)(?:st|nd|rd|th) time!\))?\.$/.exec(line);
+  if (m) return `死亡しました${m[1] ? `（${m[1]}回目！）` : ""}。`;
+  m = /^You survived after being killed (once|twice|thrice|\d+ times)\.$/.exec(line);
+  if (m) return `${counts(m[1])}回殺されましたが、生き延びました。`;
+  m = /^You died from (terminal illness|food poisoning)\.$/.exec(line);
+  if (m) return `${m[1] === "food poisoning" ? "食中毒" : "致命的な病気"}で死亡しました。`;
+  m = /^You (have )?disabled loading( and storing)? of bones levels\.$/.exec(line);
+  if (m) return `骨レベルの読み込み${m[2] ? "と保存" : ""}を無効にして${ending(Boolean(m[1]))}。`;
+  m = /^You (have )?encountered (\d+) bones levels?\.$/.exec(line);
+  if (m) return `骨レベルに${m[2]}回遭遇し${m[1] ? "ています" : "ました"}。`;
+  m = /^You (are|were) running in (debug|explore) mode\.$/.exec(line);
+  if (m) return `${m[2] === "debug" ? "デバッグ" : "探検"}モードでプレイして${ending(m[1] === "are")}。`;
+  m = /^You (are|were) actually (lawful|neutral|chaotic)\.$/.exec(line);
+  if (m) return `実際の属性は${own(values, m[2])}${ending(m[1] === "are", "desu")}。`;
+  m = /^You (are|were) on the (.+?) level\.$/.exec(line);
+  if (m) {
+    const where = translateGameLocation(m[2], locale);
+    if (where !== m[2]) return `${where}の階に${ending(m[1] === "are")}。`;
+  }
+  m = /^You (are|were) in (?:the )?(.+), on level (-?\d+), (a primitive area|a very big room)\.$/.exec(line);
+  if (m) return `${translateGameLocation(`${m[2]} ${m[3]}`, locale)}（${m[4] === "a primitive area" ? "原始的な場所" : "とても大きな部屋"}）に${ending(m[1] === "are")}。`;
+  m = /^There (is|was) a (full|new) moon in effect( when your adventure ended)?\.$/.exec(line);
+  if (m) return `${m[3] ? "冒険の終わりには" : ""}${m[2] === "full" ? "満月" : "新月"}の影響があり${ending(m[1] === "is", "masu")}。`;
+  m = /^Bad things (can happen|could have happened|happened) on Friday the 13th\.$/.exec(line);
+  if (m) return `13日の金曜日には悪いことが${m[1] === "can happen" ? "起こりえます" : m[1] === "happened" ? "起こりました" : "起こったかもしれません"}。`;
+  m = /^You (have|had) ([\d,]+) experience points?, (\d+) (?:more )?(?:(?:was|were) )?needed (?:to attain|for) level (\d+)\.$/.exec(line);
+  if (m) return `経験値：${m[2]}（レベル${m[4]}まであと${m[3]}）。`;
+  m = /^You (have|had) (\d+) hit di(?:ce|e)( \(actually 1\/2\))?\.$/.exec(line);
+  if (m) return `ヒットダイスは${m[3] ? "1/2" : m[2]}${ending(m[1] === "have", "desu")}。`;
+  m = /^Your armor class (is|was) (-?\d+), the (best|worst) possible\.$/.exec(line);
+  if (m) return `アーマークラス（AC）：${m[2]}（${m[3] === "best" ? "最良" : "最悪"}）。`;
+  m = /^Autopickup (is|was) on, but temporarily disabled while inside the shop\.$/.exec(line);
+  if (m) return `自動拾得はオンですが、店内では一時的に無効${ending(m[1] === "is", "desu")}。`;
+  m = /^You (are|were) riding (.+)\.$/.exec(line);
+  if (m) return `${translateMonsterName(m[2], locale)}に乗って${ending(m[1] === "are")}。`;
+  m = /^You and (.+?) (are|were) (levitating|flying)\.$/.exec(line);
+  if (m) return `あなたと${translateMonsterName(m[1], locale)}は${m[3] === "flying" ? "飛行" : "浮遊"}して${ending(m[2] === "are")}。`;
+  m = /^You (are|were) (swallowed|engulfed) by (.+?)(?: and (?:(are|were) being digested|(got totally digested)))?\.$/.exec(line);
+  if (m) {
+    const by = translateMonsterName(m[3], locale);
+    const how = m[2] === "swallowed" ? "飲み込まれて" : "包み込まれて";
+    if (m[5]) return `${by}に${how}、完全に消化されてしまいました。`;
+    return `${by}に${how}${m[4] ? "消化されつつあり" : "い"}${ending(m[1] === "are", "masu")}。`;
+  }
+  m = /^You (are|were) (trapped in an? (bear trap|web|pit|spiked pit)|stuck in the (floor|ground)|sinking into lava|tethered to something buried)\.$/.exec(line);
+  if (m) {
+    if (m[2] === "sinking into lava") return `溶岩に沈みつつあり${ending(m[1] === "are", "masu")}。`;
+    const state = m[3] ? `${trapNames[m[3]]}にかかって` : m[4] ? "床にはまって" : "埋まった何かにつながれて";
+    return `${state}${ending(m[1] === "are")}。`;
+  }
+  m = /^You (are|were) (chained to a heavy iron ball|punished|transformed|walking on (water|lava))\.$/.exec(line);
+  if (m) {
+    const state = m[2] === "punished" ? "罰を受けて" : m[2] === "transformed" ? "変身して" : m[3] ? `${m[3] === "lava" ? "溶岩" : "水"}の上を歩いて` : "重い鉄球につながれて";
+    return `${state}${ending(m[1] === "are")}。`;
+  }
+  m = /^You (have|had) (?:a wounded (left|right) (leg|foot)|wounded (legs|feet))\.$/.exec(line);
+  if (m) return `${m[2] ? (m[2] === "left" ? "左" : "右") : "両"}${(m[3] ?? m[4]).startsWith("f") ? "足" : "脚"}を負傷して${ending(m[1] === "have")}。`;
+  m = /^You (have|had) slippery (fingers|gloves)\.$/.exec(line);
+  if (m) return `${m[2] === "gloves" ? "小手" : "指"}が滑りやすくなって${ending(m[1] === "have")}。`;
+  m = /^You (take|took) (half|reduced) (physical|spell) damage\.$/.exec(line);
+  if (m) return `${m[3] === "spell" ? "呪文" : "物理"}ダメージを${m[2] === "half" ? "半減" : "軽減"}して${ending(m[1] === "take")}。`;
+  m = /^You (have|had) an? (small|moderate|large|huge) (?:bonus to hit|penalty to hit|(damage|defense) (bonus|penalty))(?: \(([+-]\d+)\))?(?: due to your (.+))?\.$/.exec(line);
+  if (m) {
+    const target = m[3] === "damage" ? "ダメージ" : m[3] === "defense" ? "防御" : "命中";
+    const bonus = m[4] ? m[4] === "bonus" : / bonus to hit/.test(line);
+    const cause = m[6] ? `（${translateInventoryItem(m[6], locale)}のため）` : "";
+    return `${target}に${combatSizes[m[2]]}${bonus ? "ボーナス" : "ペナルティ"}${m[5] ? `（${m[5]}）` : ""}があり${ending(m[1] === "have", "masu")}${cause}。`;
+  }
+  m = /^You (can enhance|could have enhanced) skills? with (.+)\.$/.exec(line);
+  if (m) {
+    const skills = m[2].split(/, and |, also with | and also | and |, /).map((skill) => skill === "two weapons" ? "二刀流" : translateSkillName(skill, locale));
+    return `${skills.join("、")}の技能を上達でき${ending(m[1] === "can enhance", "masu")}。`;
+  }
   return line;
 }
 

@@ -103,7 +103,8 @@ const itemNames: Readonly<Record<string, string>> = {
   "spellbook of flame sphere": "炎の球の魔法書", "spellbook of freeze sphere": "氷の球の魔法書", "strange object": "奇妙な物体",
   // NetHack 5.0 names. Randomized descriptions remain separate below.
   "silver mace": "銀のメイス", "helm of caution": "警戒の兜", "shield of drain resistance": "生命吸収耐性の盾", "shield of shock resistance": "電撃耐性の盾", "amulet of guarding": "守護のお守り", "amulet of flying": "飛行のお守り", "wand of stasis": "停止のワンド", "spellbook of chain lightning": "連鎖雷撃の魔法書", "enormous meatball": "巨大なミートボール", "ice box": "アイスボックス",
-  "wakizashi": "脇差", "nunchaku": "ヌンチャク", "shito": "刺刀", "yugake": "弓懸", "osaku": "オサク", "gunyoki": "軍用食", "meat ring": "肉の輪",
+  // Samurai names (objnam.c Japanese_items).
+  "wakizashi": "脇差", "ninja-to": "忍者刀", "nunchaku": "ヌンチャク", "naginata": "薙刀", "shito": "刺刀", "yugake": "弓懸", "osaku": "オサク", "gunyoki": "軍用食", "koto": "琴", "magic koto": "魔法の琴", "tanko": "短甲", "kabuto": "兜", "potion of sake": "酒のポーション", "meat ring": "肉の輪",
   "splash of venom": "毒液の飛沫", "splash of blinding venom": "目くらましの毒液の飛沫", "splash of acid venom": "酸性の毒液の飛沫",
   // Proper artifact names are translated only when the name itself is shown;
   // arbitrary user-supplied `named`/`called` labels are kept verbatim.
@@ -278,6 +279,7 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   if (name === undefined && item.endsWith("s")) {
     name = own(itemNames, item.slice(0, -1));
   }
+  if (name === undefined && item.endsWith("ies")) name = own(itemNames, `${item.slice(0, -3)}y`);
   if (name === undefined) {
     const pluralOf = /^(potions|scrolls|spellbooks|wands|rings|amulets) of (.+)$/.exec(item);
     if (pluralOf) name = own(itemNames, `${pluralOf[1].slice(0, -1)} of ${pluralOf[2]}`);

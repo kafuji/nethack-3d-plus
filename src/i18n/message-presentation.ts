@@ -4,6 +4,7 @@ import { translateRuntimeText } from "./runtime-text";
 import { lookupImportedJapaneseMessage } from "./imported-messages";
 import { lookupImportedJapanesePattern } from "./imported-patterns";
 import { jnethackMessage } from "../plus/game-text/fallback";
+import { withHallucinatedCurrency } from "./currency-text";
 
 export interface PresentedGameMessage {
   text: string;
@@ -16,6 +17,15 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
     // Several messages shown together; translate each line independently.
     const lines = message.split("\n").map((line) => presentGameMessage(line, locale));
     return { text: lines.map((line) => line.text).join("\n"), isReferenceTranslation: lines.some((line) => line.isReferenceTranslation) };
+  }
+  if (locale === "ja") {
+    let isReferenceTranslation = false;
+    const currency = withHallucinatedCurrency(message, (text) => {
+      const presented = presentGameMessage(text, locale);
+      isReferenceTranslation = presented.isReferenceTranslation;
+      return presented.text;
+    });
+    if (currency !== undefined) return { text: currency, isReferenceTranslation };
   }
   const curated = translateRuntimeText(translateGameMessage(message, locale), locale);
   const trimmed = message.trim();
