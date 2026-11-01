@@ -90,17 +90,17 @@ export const defaultMusicLibrary: MusicLibrary = {
 };
 
 /**
- * Title screen music. Reuses the bundled "Unexplored Expansion" piece, which
- * the default dungeon region does not open with, so the game start still
- * sounds different from the menu.
+ * Title screen music: an opening theme (CC0, OpenGameArt.org) that builds to
+ * a crescendo, so it loops by crossfading back into the quiet intro. Kept as
+ * the original MP3.
  */
 export const titleMusicTrack: MusicTrack = {
-  id: "title-unexplored",
-  path: "music/calm-unexplored.ogg",
+  id: "title-fantasy-orchestral-theme",
+  path: "music/title-fantasy-orchestral-theme.mp3",
   loop: "crossfade",
-  crossfadeSec: 3,
-  title: "Unexplored Expansion",
-  author: "TAD / Bo Jingles",
+  crossfadeSec: 4,
+  title: "Fantasy Orchestral Theme",
+  author: "Joth",
   license: "CC0 1.0",
-  source: "https://opengameart.org/content/unexplored-expansion",
+  source: "https://opengameart.org/content/fantasy-orchestral-theme",
 };

@@ -4,7 +4,8 @@ NetHack 3D - Background music credits
 All bundled background music tracks are dedicated to the public domain under
 Creative Commons CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/).
 Attribution is not required, but we gratefully credit the authors.
-Files were trimmed, loudness-normalised and re-encoded to Ogg Vorbis.
+Files were trimmed, loudness-normalised and re-encoded to Ogg Vorbis
+(except the title theme, which is the original MP3).
 
 public/music/calm-dungeon.ogg
   "Dungeon Ambience" by yd
@@ -29,3 +30,7 @@ public/music/danger-tension-and-distress.ogg
 public/music/danger-panic-mode.ogg
   "Panic Mode" by Breadman
   https://opengameart.org/node/114093
+
+public/music/title-fantasy-orchestral-theme.mp3
+  "Fantasy Orchestral Theme" by Joth
+  https://opengameart.org/content/fantasy-orchestral-theme
