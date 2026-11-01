@@ -303,6 +303,19 @@ export const coreGameTextRules: readonly CoreRule[] = [
     },
   },
   {
+    // priest.c intemple(): entering a tended temple.
+    pattern: /^You experience (a|an unusual) sense of peace\.$/,
+    translate: (m) => `あなたは${m[1] === "a" ? "" : "いつになく"}満ち足りた気持ちになった．`,
+  },
+  {
+    pattern: /^You have a( strange)? forbidding feeling\.\.\.$/,
+    translate: (m) => `あなたは${m[1] ? "奇妙な" : ""}近づきがたい気持がした．．．`,
+  },
+  {
+    pattern: /^Pilgrim, you enter a (sacred|desecrated) place!$/,
+    translate: (m) => `巡礼者よ，おまえは${m[1] === "sacred" ? "神聖なる" : "不浄の"}地にいる！`,
+  },
+  {
     pattern: /^You miss (.+?)\.$/,
     translate: (m, c) => {
       const target = known(c, m[1]!);
