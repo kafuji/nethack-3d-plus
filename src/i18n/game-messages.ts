@@ -6,6 +6,7 @@ import { nethack5ExtraMessages } from "./nethack5-extra-messages";
 import engravingsSource from "./data/engravings-ja.tsv?raw";
 import { lookupNethack5SourceExact, translateNethack5SourceMessage } from "./nethack5-source-messages";
 import { translateAssembledMessage } from "./nethack5-assembled-messages";
+import { translateRumor } from "./oracle-text";
 
 // NetHack produces prose rather than stable message IDs. Translate only known,
 // complete messages and narrowly defined templates; leave everything else
@@ -892,12 +893,14 @@ export function translateGameMessage(message: string, locale: SupportedLocale): 
   const [, leading, content, trailing] = match;
   const engraving = /^You (read|feel the words): "([\s\S]+)"(\.)?$/.exec(content);
   if (engraving) {
-    const translated = translateTutorialEngraving(engraving[2]);
+    const translated = translateTutorialEngraving(engraving[2]) ?? translateRumor(engraving[2]);
     if (translated !== null) {
       const action = engraving[1] === "read" ? "と読んだ" : "の文字を指で感じた";
-      return `${leading}「${translated}」${action}。${trailing}`;
+      return `${leading}「${translated.replace(/^「(.*)」$/s, "$1")}」${action}。${trailing}`;
     }
   }
+  const rumor = translateRumor(content);
+  if (rumor !== null) return `${leading}${rumor}${trailing}`;
   let translated = Object.prototype.hasOwnProperty.call(japaneseMessages, content)
     ? japaneseMessages[content]
     : Object.prototype.hasOwnProperty.call(nethack5ExtraMessages, content) ? nethack5ExtraMessages[content] : lookupNethack5SourceExact(content);

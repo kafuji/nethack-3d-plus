@@ -86,3 +86,15 @@ The test writes `samples-untranslated.tsv`. Argument values are guessed from
 the C expressions, so some listed samples are nonsense; review it by hand and
 add renderings for real messages to `nethack5-source-ja.json`. A format key may
 spell out a runtime verb (`"%s toots."` for `pline("%s.", Tobjnam(obj, "toot"))`).
+
+## Rumors and oracles
+
+`oracles-rumors-ja.json` pairs the rumors (`dat/rumors.tru`, `dat/rumors.fal`)
+and major oracles (`dat/oracles.txt`) of NetHack 3.6.7 and 5.0 with the
+Japanese text of JNetHack (https://github.com/jnethack/jnethack-alpha, tag
+`v3.6.7-0.2` and branch `develop`), distributed under the NetHack General
+Public License. The files are paired line by line (rumors) and section by
+section (oracles); JNetHack's "，．" punctuation is rewritten as "、。". Rumors
+added after 3.6.7, which JNetHack has not translated, were translated for this
+project with its own item names. `[cookie] ` prefixes of 5.0 rumors are not
+part of the keys, since the game strips them before display.

@@ -34,6 +34,12 @@ describe("GameTextTranslator", () => {
   it("leaves unknown text unchanged", () => {
     expect(translator.translate("Zxqv blorp frobnicates.")).toBe("Zxqv blorp frobnicates.");
   });
+
+  it("does not look up Object.prototype members as translations", () => {
+    for (const word of ["constructor", "toString", "__proto__", "hasOwnProperty"]) {
+      expect(translator.translate(word)).toBe(word);
+    }
+  });
 });
 
 describe("inventory headers", () => {
