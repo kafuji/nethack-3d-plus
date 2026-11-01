@@ -25,6 +25,38 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
     },
   },
   plus: {
+    playerTileInfo: {
+      panelLabel: "足元",
+      option: {
+        label: "足元の情報を表示",
+        description: "立っているマスの地形・アイテム・刻まれた文字を画面右下に表示します。",
+      },
+      pile: (amount: string) =>
+        `${{ "a few": "いくつかの", several: "いくつもの", many: "たくさんの" }[amount] ?? amount}物がある`,
+      unnamedObjects: "何かがある（: で確認）",
+      mayBeStale: "情報が古い可能性あり",
+      engraving: (text: string) => `刻まれた文字:「${text}」`,
+      terrain: {
+        doorway: "戸口", openDoor: "開いたドア", closedDoor: "閉じたドア",
+        ironBars: "鉄格子", tree: "木", room: "部屋の床", darkRoom: "部屋の暗い部分",
+        corridor: "通路", litCorridor: "明るい通路", engravedRoom: "部屋の床（刻まれた文字）",
+        engravedCorridor: "通路（刻まれた文字）", stairsUp: "上り階段", stairsDown: "下り階段",
+        ladderUp: "上りはしご", ladderDown: "下りはしご", branchStairsUp: "支線への上り階段",
+        branchStairsDown: "支線への下り階段", branchLadderUp: "支線への上りはしご",
+        branchLadderDown: "支線への下りはしご", altar: "祭壇", grave: "墓", throne: "豪華な玉座",
+        sink: "流し", fountain: "噴水", water: "水", ice: "氷", lava: "溶岩",
+        lavaWall: "溶岩の壁", loweredDrawbridge: "下りた跳ね橋", raisedDrawbridge: "上がった跳ね橋",
+        air: "空気", cloud: "雲", stone: "岩", wall: "壁",
+        arrowTrap: "矢の罠", dartTrap: "投げ矢の罠", fallingRockTrap: "落石の罠",
+        squeakyBoard: "きしむ床板", bearTrap: "トラバサミ", landMine: "地雷",
+        rollingBoulderTrap: "転がる大岩の罠", sleepingGasTrap: "睡眠ガスの罠", rustTrap: "錆の罠",
+        fireTrap: "火の罠", pit: "落とし穴", spikedPit: "針のある落とし穴", hole: "穴", trapDoor: "落とし戸",
+        teleportationTrap: "テレポートの罠", levelTeleporter: "階移動の罠", magicPortal: "魔法のポータル",
+        web: "蜘蛛の巣", statueTrap: "彫像の罠", magicTrap: "魔法の罠", antiMagicField: "反魔法の場",
+        polymorphTrap: "変身の罠", vibratingSquare: "振動するマス", trappedDoor: "罠の仕掛けられたドア",
+        trappedChest: "罠の仕掛けられた箱",
+      },
+    },
     solidColorPicker: {
       selectedColor: (hex: string) => `選択中の色: ${hex}`,
       hint: "アトラス全体の上でカーソルを動かし、ピクセルをクリックして単色クロマキーの色を設定します。",

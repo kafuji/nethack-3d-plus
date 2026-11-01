@@ -8,6 +8,7 @@ import type {
   ClientOptionsTabId
 } from "./types";
 import {
+  plusStrings,
   supportedLocaleOptions,
   t
 } from "../shared/translations";
@@ -385,6 +386,13 @@ export const clientOptionsConfig: ClientOption[] = [
     min: 0.7,
     max: 2.2,
     step: 0.01,
+  },
+  {
+    // nh3d-plus: lower-right card describing the hero's square.
+    key: "showPlayerTileInfo",
+    label: plusStrings.playerTileInfo.option.label,
+    description: plusStrings.playerTileInfo.option.description,
+    type: "boolean",
   },
   {
     key: "section-display-minimap",

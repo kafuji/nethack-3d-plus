@@ -21,12 +21,19 @@ import { normalizeNh3dClientOptions } from "./ui-types";
 import { MessageSoundHooks } from "./message-sound-hooks";
 import DirectionPromptOverlay from "./DirectionPromptOverlay";
 import { createEngineSystems, type EngineSystems } from "./engine/create-engine-systems";
+// nh3d-plus: lower-right card describing the hero's square.
+import { PlayerTileInfoTracker } from "../plus/tile-info/player-tile-info";
+import { resolvePlayerTileTerrainId } from "../plus/tile-info/terrain-names";
 
 /** Main engine composition, ordered lifecycle, and public UI controller. */
 class Nethack3DEngine implements Nethack3DEngineController {
   private readonly systems: EngineSystems;
   private startupOnly = false;
   private runtimeGeneration = 0;
+  // nh3d-plus: follows look_here() and map memory for the hero's square.
+  private readonly playerTileInfo = new PlayerTileInfoTracker((x, y) =>
+    resolvePlayerTileTerrainId(this.systems.levelTerrainCache.lastKnownTerrain.get(`${x},${y}`)),
+  );
 
   constructor(options: Nethack3DEngineOptions) {
     this.startupOnly = options.startupOnly === true;
@@ -965,10 +972,12 @@ class Nethack3DEngine implements Nethack3DEngineController {
 
       case "under_player_item_glyph":
         this.systems.worldClassification.applyUnderPlayerItemGlyphEvent(data);
+        this.playerTileInfo.setRuntimeObjectPresence(Number(data.x), Number(data.y), true); // nh3d-plus
         break;
 
       case "under_player_item_glyph_cleared":
         this.systems.worldClassification.clearUnderPlayerItemGlyphEvent(data);
+        this.playerTileInfo.setRuntimeObjectPresence(Number(data.x), Number(data.y), false); // nh3d-plus
         break;
 
       case "confirmed_boulder_push":
@@ -996,6 +1005,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
 
       case "map_update_complete":
         this.systems.tileUpdates.flushPendingDarkCorridorInference();
+        this.playerTileInfo.refreshTerrain(); // nh3d-plus
         break;
 
       case "player_position":
@@ -1043,6 +1053,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           this.systems.movementInput.refreshPlayerCliparoundInputCooldownFromMovement();
         }
         this.systems.playerMovement.playerPos = { x: data.x, y: data.y };
+        this.playerTileInfo.setPosition(data.x, data.y); // nh3d-plus
         this.systems.entityMovement.finalizeHeldPlayerMoveTransitionIfConfirmed(data.x, data.y);
         this.systems.fpsDiagnostics.logAsciiPlayerTileDebug(
           "player_position_applied",
@@ -1148,6 +1159,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
         }
         this.systems.combatAttribution.captureDamageFromMessage(data.text);
+        this.playerTileInfo.captureMessage(data.text); // nh3d-plus
         this.systems.engineMessages.addGameMessage(data.text);
         break;
 
@@ -1170,6 +1182,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
         }
         this.systems.combatAttribution.captureDamageFromMessage(data.text);
+        this.playerTileInfo.captureMessage(data.text); // nh3d-plus
         this.systems.engineMessages.addGameMessage(data.text);
         break;
 
@@ -1340,6 +1353,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
             break;
           }
         }
+        this.playerTileInfo.captureInfoMenuLines(normalizedInfoMenu.lines, normalizedInfoMenu.title); // nh3d-plus
         const infoMenuSource =
           typeof data.source === "string" ? data.source : "";
         const shouldRefreshCtrlMCache =
@@ -1410,6 +1424,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
         this.systems.levelTerrainCache.persistActiveLevelTerrainCache();
         this.systems.levelTerrainCache.beginPendingLevelCacheTransition();
         this.clearScene();
+        this.playerTileInfo.reset(); // nh3d-plus
         this.systems.tileUpdates.pendingPlayerTileRefreshOnNextPosition = true;
         if (data.message) {
           this.systems.engineMessages.addGameMessage(data.message);
@@ -1649,6 +1664,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     }
     setNativeInputModeFps(false);
     this.systems.engineState.disposed = true;
+    this.playerTileInfo.reset(); // nh3d-plus
     this.systems.renderPipeline.renderer.setAnimationLoop(null);
     this.systems.webXrPresentation.dispose();
     this.systems.questSceneExport.dispose();

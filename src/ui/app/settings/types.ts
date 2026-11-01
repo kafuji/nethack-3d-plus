@@ -143,6 +143,7 @@ export type ClientOptionToggleKey =
   | "inventoryTileOnlyMotion"
   | "damageNumbers"
   | "displayStatChangesAbovePlayer"
+  | "showPlayerTileInfo"
   | "displayXpGainsAbovePlayer"
   | "tileShakeOnHit"
   | "bloodMist"

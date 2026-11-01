@@ -48,6 +48,8 @@ import { MobileBottomBar } from "./app/actions/MobileBottomBar";
 import { PositionDialog } from "./app/prompts/PositionDialog";
 import { ControllerSupportDialog } from "./app/controller/ControllerSupportDialog";
 import { GlobalConfirmationDialog } from "./app/layout/GlobalConfirmationDialog";
+// nh3d-plus: lower-right card describing the hero's square.
+import { PlayerTileInfoPanel } from "../plus/tile-info/PlayerTileInfoPanel";
 
 /** UI composition; feature hooks own state and behavior under ./app. */
 export default function App(): JSX.Element {
@@ -72,6 +74,11 @@ export default function App(): JSX.Element {
       <DesktopMessageLog {...model.desktopMessageLog} />
       <MobileMessageLog {...model.mobileMessageLog} />
       <FloatingMessages {...model.floatingMessages} />
+      {/* nh3d-plus: lower-right card describing the hero's square. */}
+      <PlayerTileInfoPanel
+        clientOptions={model.floatingMessages.clientOptions}
+        mobileTouchUiVisible={model.mobileMessageLog.mobileTouchUiVisible}
+      />
       <StatusBar {...model.statusBar} />
       <ClientOptionsDialog {...model.clientOptionsDialog} />
       <ResetClientOptionsDialog {...model.resetClientOptionsDialog} />

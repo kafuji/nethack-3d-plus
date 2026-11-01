@@ -317,6 +317,8 @@ export type Nh3dClientOptions = {
   inventoryFixedTileSize: Nh3dInventoryFixedTileSizeMode;
   damageNumbers: boolean;
   displayStatChangesAbovePlayer: boolean;
+  // nh3d-plus: lower-right card describing the hero's square.
+  showPlayerTileInfo: boolean;
   displayXpGainsAbovePlayer: boolean;
   tileShakeOnHit: boolean;
   bloodMist: boolean;
@@ -480,6 +482,7 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   inventoryFixedTileSize: "medium",
   damageNumbers: true,
   displayStatChangesAbovePlayer: true,
+  showPlayerTileInfo: true,
   displayXpGainsAbovePlayer: true,
   tileShakeOnHit: true,
   bloodMist: true,
@@ -1248,6 +1251,10 @@ export function normalizeNh3dClientOptions(
       typeof overrides?.displayStatChangesAbovePlayer === "boolean"
         ? overrides.displayStatChangesAbovePlayer
         : defaultNh3dClientOptions.displayStatChangesAbovePlayer,
+    showPlayerTileInfo:
+      typeof overrides?.showPlayerTileInfo === "boolean"
+        ? overrides.showPlayerTileInfo
+        : defaultNh3dClientOptions.showPlayerTileInfo,
     displayXpGainsAbovePlayer:
       typeof overrides?.displayXpGainsAbovePlayer === "boolean"
         ? overrides.displayXpGainsAbovePlayer

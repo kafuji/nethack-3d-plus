@@ -1,0 +1,85 @@
+// Lower-right card describing the hero's square. Read-only, so it never takes pointer input.
+.nh3d-player-tile-info {
+  position: fixed;
+  right: calc(12px + var(--nh3d-safe-area-right, 0px));
+  bottom: calc(12px + var(--nh3d-safe-area-bottom, 0px));
+  z-index: 1440;
+  box-sizing: border-box;
+  max-width: min(36vw, 340px);
+  max-height: 40vh;
+  overflow: hidden;
+  padding: 8px 12px;
+  border: 1px solid rgba(116, 151, 186, 0.5);
+  border-radius: 8px;
+  background: rgba(5, 13, 24, 0.72);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.42);
+  color: #d5e7ff;
+  font-family: var(--nh3d-ui-font-family, "Courier New", monospace);
+  font-size: 13px;
+  line-height: 1.4;
+  pointer-events: none;
+  user-select: none;
+
+  &.is-mobile {
+    right: calc(8px + var(--nh3d-safe-area-right, 0px));
+    // Clear the hotbar and the repeat-action button stacked above it.
+    bottom: calc(var(--nh3d-mobile-hotbar-height, 50px) + 54px + var(--nh3d-safe-area-bottom, 0px));
+    max-width: min(52vw, 260px);
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  &.is-terminal {
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.82);
+  }
+}
+
+:root.nh3d-terminal-desktop-gutter .nh3d-player-tile-info {
+  right: calc(var(--nh3d-terminal-log-gutter-width) + 12px);
+}
+
+.nh3d-player-tile-info-feature {
+  color: #f3d58a;
+  font-weight: bold;
+}
+
+.nh3d-player-tile-info-engraving {
+  color: #b9c8dc;
+  font-style: italic;
+  overflow-wrap: anywhere;
+}
+
+.nh3d-player-tile-info-items {
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &::before {
+      content: "・";
+      color: #7f9bc0;
+    }
+
+    &.is-more {
+      color: #9fb3cc;
+
+      &::before {
+        content: "";
+      }
+    }
+  }
+}
+
+.nh3d-player-tile-info-note,
+.nh3d-player-tile-info-stale {
+  color: #9fb3cc;
+}
+
+.nh3d-player-tile-info-stale {
+  font-size: 0.85em;
+}
