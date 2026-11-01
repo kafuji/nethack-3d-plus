@@ -4,7 +4,7 @@ import { translateGamePrompt } from "../../../i18n/game-prompts";
 import { GamePromptText } from "./GamePromptText";
 import { GameMessageText } from "../messages/GameMessageText";
 import { translateReportLine } from "../../../i18n/report-text";
-import { translateInventoryCategory, translateInventoryItem } from "../../../i18n/inventory-text";
+import { translateInventoryCategory, translateMenuItemText } from "../../../i18n/inventory-text";
 import { translateGameMenuItem } from "../../../i18n/game-menu";
 import {
   Nh3dIcon,
@@ -303,7 +303,7 @@ export function QuestionDialog({
                           {item.accelerator})
                         </span>
                       </span>
-                      <span className="nh3d-pickup-text">{translateInventoryItem(item.text ?? "", locale)}</span>
+                      <span className="nh3d-pickup-text">{translateMenuItemText(item.text ?? "", locale)}</span>
                       {typeof selectedCount === "number" &&
                         Number.isFinite(selectedCount) &&
                         selectedCount > 0 ? (
@@ -628,7 +628,7 @@ export function QuestionDialog({
                     );
                     const itemText = choiceSourceItem?.text?.trim();
                     const choiceLabel = itemText && rawChoiceLabel === `${normalizedChoice}) ${itemText}`
-                      ? `${normalizedChoice}) ${translateInventoryItem(itemText, locale)}`
+                      ? `${normalizedChoice}) ${translateMenuItemText(itemText, locale)}`
                       : rawChoiceLabel;
                     return (
                       <button

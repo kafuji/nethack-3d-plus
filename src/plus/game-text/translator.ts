@@ -57,7 +57,10 @@ function compileTemplates(templates: Readonly<Record<string, string>>): Compiled
     for (let i = 0; i < pieces.length; i += 1) {
       if (i % 2 === 1) {
         specs.push(pieces[i]!);
-        pattern += specPatterns[pieces[i]!] ?? "(.+?)";
+        // "%sfaster" / "%sless": an optional word glued to the next one
+        // ("much ", "") may be empty.
+        const glued = pieces[i] === "s" && /^[a-z]/.test(pieces[i + 1] ?? "");
+        pattern += glued ? "(.*?)" : specPatterns[pieces[i]!] ?? "(.+?)";
         continue;
       }
       const literal = pieces[i]!.replace(/\s+/g, " ");
@@ -205,6 +208,12 @@ export class GameTextTranslator {
     const normalized = normalizeSpaces(source);
     const whole = this.translateSentence(normalized, 0);
     if (whole !== null) return whole;
+    // Spoken lines (verbalize) arrive wrapped in quotes: translate the inside.
+    const quoted = /^"(.+)"$/.exec(normalized);
+    if (quoted) {
+      const inner = this.translateSentence(quoted[1]!, 0);
+      if (inner !== null) return `「${inner.replace(/^「|」$/g, "")}」`;
+    }
     // NetHack joins several messages with two spaces on one line.
     const sentences = source.split(/(?<=[.!?])\s{2,}/).map(normalizeSpaces).filter(Boolean);
     if (sentences.length > 1) {
@@ -332,6 +341,24 @@ export class GameTextTranslator {
   translateNoun(text: string): string {
     const value = text.trim();
     const lower = value.toLowerCase();
+    // Small intensifiers passed as %s ("moving %sfaster").
+    const adverbs: Readonly<Record<string, string>> = {
+      "": "",
+      much: "ずっと",
+      very: "とても",
+      "a bit": "少し",
+      slightly: "わずかに",
+      more: "もっと",
+      less: "少なく",
+    };
+    if (lower in adverbs && text !== "") return adverbs[lower]!;
+    if (value === "") return "";
+    // Temple priests: "the priestess of Amaterasu Omikami" (priest.c priestname).
+    const priest = /^(?:the |a |an )?(high )?(priest|priestess) of (.+)$/i.exec(value);
+    if (priest) {
+      const deity = this.roleNames[priest[3]!] ?? priest[3]!;
+      return `${deity}の${priest[1] ? "高" : ""}${priest[2]!.toLowerCase() === "priestess" ? "尼僧" : "僧侶"}`;
+    }
     const pronouns: Readonly<Record<string, string>> = {
       it: "何者か",
       you: "あなた",

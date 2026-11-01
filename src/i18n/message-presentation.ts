@@ -18,7 +18,7 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
     return { text: lines.map((line) => line.text).join("\n"), isReferenceTranslation: lines.some((line) => line.isReferenceTranslation) };
   }
   const curated = translateRuntimeText(translateGameMessage(message, locale), locale);
-  if (locale !== "ja" || curated !== message) {
+  if (locale !== "ja" || (curated !== message && !keepsEnglishRun(message, curated))) {
     return { text: curated, isReferenceTranslation: false };
   }
   const trimmed = message.trim();
@@ -30,8 +30,24 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
     return { text: `${leading}${jnethack}${trailing}`, isReferenceTranslation: false };
   }
   const suggested = lookupImportedJapaneseMessage(trimmed) ?? lookupImportedJapanesePattern(trimmed);
-  if (suggested === undefined) return { text: message, isReferenceTranslation: false };
+  if (suggested === undefined || keepsEnglishRun(trimmed, suggested)) {
+    // nh3d-plus: a partial translation that kept an English phrase reads worse
+    // than either language alone; prefer the curated text, then the original.
+    return { text: curated !== message && !keepsEnglishRun(message, curated) ? curated : message, isReferenceTranslation: false };
+  }
   const leading = message.slice(0, message.length - message.trimStart().length);
   const trailing = message.slice(message.trimEnd().length);
   return { text: `${leading}${suggested}${trailing}`, isReferenceTranslation: true };
+}
+
+/**
+ * nh3d-plus: true when a translation still contains three or more consecutive
+ * English words copied from the original, e.g. a pattern that captured
+ * "your displaced image and misses you" as a monster name.
+ */
+export function keepsEnglishRun(original: string, translated: string): boolean {
+  for (const run of translated.match(/[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){2,}/g) ?? []) {
+    if (original.includes(run)) return true;
+  }
+  return false;
 }

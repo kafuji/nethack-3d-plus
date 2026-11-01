@@ -1,6 +1,9 @@
 import type { SupportedLocale } from "./core";
 import { translateMonsterName } from "./game-monsters";
 import { jnethackItem } from "../plus/game-text/fallback";
+// Used only at call time (game-messages imports this module too).
+import { translateGameMessage } from "./game-messages";
+import { keepsEnglishRun } from "./message-presentation";
 
 // These are presentation strings only. Never use the result for identifying an
 // item, choosing an action, resolving a glyph, or submitting a menu selection.
@@ -167,6 +170,27 @@ export function translateInventoryCategory(text: string, locale: SupportedLocale
   return translated === undefined ? text : `${match[1]}${translated}${match[3]}`;
 }
 
+let translatingMenuRow = false;
+
+/**
+ * nh3d-plus: menu rows can be item names or plain options such as "All types"
+ * or "Items of unknown Bless/Curse status"; try both.
+ */
+export function translateMenuItemText(text: string, locale: SupportedLocale): string {
+  const item = translateInventoryItem(text, locale);
+  if (locale !== "ja" || item !== text || !text.trim() || translatingMenuRow) return item;
+  const leading = text.slice(0, text.length - text.trimStart().length);
+  const trailing = text.slice(text.trimEnd().length);
+  // translateGameMessage calls back into the item translator for item phrases.
+  translatingMenuRow = true;
+  try {
+    const message = translateGameMessage(text.trim(), locale);
+    return message !== text.trim() && !keepsEnglishRun(text, message) ? `${leading}${message}${trailing}` : text;
+  } finally {
+    translatingMenuRow = false;
+  }
+}
+
 /** Translate only fully recognized item descriptions; otherwise retain the original. */
 export function translateInventoryItem(text: string, locale: SupportedLocale): string {
   const curated = translateCuratedInventoryItem(text, locale);
@@ -175,7 +199,8 @@ export function translateInventoryItem(text: string, locale: SupportedLocale): s
   const leading = text.slice(0, text.length - text.trimStart().length);
   const trailing = text.slice(text.trimEnd().length);
   const jnethack = jnethackItem(text.trim());
-  return jnethack === undefined ? text : `${leading}${jnethack}${trailing}`;
+  if (jnethack !== undefined) return `${leading}${jnethack}${trailing}`;
+  return text;
 }
 
 function translateCuratedInventoryItem(text: string, locale: SupportedLocale): string {

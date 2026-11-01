@@ -145,3 +145,15 @@ describe("ternary and body-part messages", () => {
     expect(translator.translate(english)).toBe(japanese);
   });
 });
+
+describe("temple, speed and quoted speech", () => {
+  it.each([
+    ["The priestess of Amaterasu Omikami intones:", "天照大神の尼僧が詠唱した："],
+    ['"Pilgrim, you enter a sacred place!"', "「巡礼者よ，おまえは神聖なる地にいる！」"],
+    ["You experience a sense of peace.", "あなたは満ち足りた気持ちになった．"],
+    ["The jackal is suddenly moving faster.", "ジャッカルの動きは突然すばやくなった．"],
+    ["The jackal is suddenly moving much faster.", "ジャッカルの動きは突然ずっとすばやくなった．"],
+  ])("translates %s", (english, japanese) => {
+    expect(translator.translate(english)).toBe(japanese);
+  });
+});
