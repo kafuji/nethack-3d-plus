@@ -38,6 +38,7 @@ describe("GameTextTranslator", () => {
   it("does not look up Object.prototype members as translations", () => {
     for (const word of ["constructor", "toString", "__proto__", "hasOwnProperty"]) {
       expect(translator.translate(word)).toBe(word);
+      expect(translator.translateItemText(word)).toBe(word);
     }
   });
 });

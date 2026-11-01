@@ -142,6 +142,8 @@ const irregularPlurals: Readonly<Record<string, string>> = {
   djinn: "djinni",
   cyclopes: "cyclops",
 };
+// Text such as "constructor" must not find Object.prototype members.
+for (const table of [extraFeatures, alignmentWords, suffixPhrases, irregularPlurals]) Object.setPrototypeOf(table, null);
 
 /** Candidate singular forms for an English noun phrase (plural last word). */
 export function singularCandidates(name: string): string[] {
@@ -306,7 +308,7 @@ export class GameNameTranslator {
       rock: ["石", "rock"],
       boulder: ["岩", "rock"],
     };
-    if (bareNouns[name]) return { ja: bareNouns[name]![0], category: bareNouns[name]![1] };
+    if (Object.prototype.hasOwnProperty.call(bareNouns, name)) return { ja: bareNouns[name]![0], category: bareNouns[name]![1] };
     // Plain lookup in every table (identified names and appearances).
     const order: ObjectCategory[] = [
       "weapon", "armor", "tool", "food", "gem", "rock", "coin", "other",
