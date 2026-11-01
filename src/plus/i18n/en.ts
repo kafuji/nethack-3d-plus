@@ -1,6 +1,17 @@
 // Fork-only English strings, mounted at `en.plus`. Other locales override
 // these from src/plus/i18n/<locale>.ts and fall back to English otherwise.
 export const plusEn = {
+  clientOptions: {
+    desktopMessageLogBackgroundOpacity: {
+      label: "Desktop message log background opacity",
+      description:
+        "Lower this to let more of the dungeon show through the boxed desktop message log.",
+    },
+  },
+  messageLog: {
+    resizeHandle:
+      "Drag to resize the message log. Double-click to reset to the default size.",
+  },
   solidColorPicker: {
     selectedColor: (hex: string) => `Selected color: ${hex}`,
     hint: "Move over the full atlas and click a pixel to set the solid chroma key color.",

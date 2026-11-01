@@ -16,6 +16,8 @@ import {
 import {
   mobileActions
 } from "../menus/mobile-actions";
+// nh3d-plus: drag-resizable desktop message log.
+import { ResizableDesktopLogPanel } from "../../../plus/ui/message-log/ResizableDesktopLogPanel";
 
 export interface UseMessageLogStyleDependencies {
   readonly clientOptions: Nh3dClientOptions;
@@ -127,17 +129,19 @@ export function useMessageLogView(dependencies: UseMessageLogViewDependencies) {
 
   const desktopGameMessageLog =
     !isMobileViewport && isDesktopGameRunning ? (
-      <div
+      // nh3d-plus: drag-resizable boxed log (the terminal gutter stays fixed).
+      <ResizableDesktopLogPanel
         className={`top-left-ui with-stats${terminalDesktopGutterVisible
           ? " nh3d-terminal-log-gutter-panel"
           : ""
           }`}
+        resizable={!terminalDesktopGutterVisible && gameMessageLog !== null}
       >
         <div id="game-status">{translateRuntimeText(statusText, locale)}</div>
         {gameMessageLog ? (
           <div className="nh3d-overflow-glow-frame">{gameMessageLog}</div>
         ) : null}
-      </div>
+      </ResizableDesktopLogPanel>
     ) : null;
   return {
     gameMessageLog,

@@ -25,6 +25,17 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
     },
   },
   plus: {
+    clientOptions: {
+      desktopMessageLogBackgroundOpacity: {
+        label: "デスクトップメッセージログの背景不透明度",
+        description:
+          "値を下げると、枠付きデスクトップメッセージログの背後にあるダンジョンが透けて見えるようになります。",
+      },
+    },
+    messageLog: {
+      resizeHandle:
+        "ドラッグしてメッセージログのサイズを変更します。ダブルクリックで既定のサイズに戻します。",
+    },
     solidColorPicker: {
       selectedColor: (hex: string) => `選択中の色: ${hex}`,
       hint: "アトラス全体の上でカーソルを動かし、ピクセルをクリックして単色クロマキーの色を設定します。",

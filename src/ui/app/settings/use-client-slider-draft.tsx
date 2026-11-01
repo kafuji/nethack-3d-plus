@@ -81,7 +81,11 @@ export function useClientSliderDraft(dependencies: UseClientSliderDraftDependenc
       clamped = Math.max(0.7, Math.min(2.2, rawValue));
     } else if (key === "desktopMessageLogWindowScale") {
       clamped = Math.max(0.33, Math.min(1.5, rawValue));
-    } else if (key === "musicVolume") {
+    } else if (
+      // nh3d-plus: desktop message log background opacity.
+      key === "desktopMessageLogBackgroundOpacity" ||
+      key === "musicVolume"
+    ) {
       clamped = Math.max(0, Math.min(1, rawValue));
     } else if (key === "controllerFpsMoveRepeatMs") {
       clamped = Math.max(80, Math.min(900, rawValue));

@@ -8,6 +8,7 @@ import type {
   ClientOptionsTabId
 } from "./types";
 import {
+  plusStrings,
   supportedLocaleOptions,
   t
 } from "../shared/translations";
@@ -351,6 +352,17 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "slider",
     min: 0.33,
     max: 1.5,
+    step: 0.01,
+  },
+  // nh3d-plus: let more of the dungeon show through the desktop message log.
+  {
+    key: "desktopMessageLogBackgroundOpacity",
+    label: plusStrings.clientOptions.desktopMessageLogBackgroundOpacity.label,
+    description:
+      plusStrings.clientOptions.desktopMessageLogBackgroundOpacity.description,
+    type: "slider",
+    min: 0,
+    max: 1,
     step: 0.01,
   },
   {

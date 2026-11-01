@@ -100,7 +100,7 @@ export interface ClientOptionsDialogProps {
   updateTilesetPathDraft: (rawTilesetPath: string) => void;
   setManualSafeZonePreview: React.Dispatch<React.SetStateAction<ManualSafeZonePreview | null>>;
   showManualSafeZonePreview: (side: "right" | "bottom", rawSizePx: number) => void;
-  updateClientSliderDraft: (key: "brightness" | "contrast" | "gamma" | "minimapScale" | "uiFontScale" | "liveMessageLogFontScale" | "desktopMessageLogWindowScale" | "controllerFpsMoveRepeatMs" | "fpsFov" | "fpsLookSensitivityX" | "fpsLookSensitivityY" | "bloodStrength" | "liveMessageDisplayTimeMs" | "liveMessageFadeOutTimeMs" | "manualMobileBottomSafeZoneVerticalPx" | "manualMobileBottomSafeZoneHorizontalPx" | "manualMobileRightSafeZoneHorizontalPx" | "musicVolume", rawValue: number) => void;
+  updateClientSliderDraft: (key: "brightness" | "contrast" | "gamma" | "minimapScale" | "uiFontScale" | "liveMessageLogFontScale" | "desktopMessageLogWindowScale" | "desktopMessageLogBackgroundOpacity" | "controllerFpsMoveRepeatMs" | "fpsFov" | "fpsLookSensitivityX" | "fpsLookSensitivityY" | "bloodStrength" | "liveMessageDisplayTimeMs" | "liveMessageFadeOutTimeMs" | "manualMobileBottomSafeZoneVerticalPx" | "manualMobileBottomSafeZoneHorizontalPx" | "manualMobileRightSafeZoneHorizontalPx" | "musicVolume", rawValue: number) => void;
   soundPackDialogActionsRef: React.MutableRefObject<SoundPackDialogActions | null>;
   requestConfirmation: (request: ConfirmationDialogRequest) => Promise<boolean>;
   requestConfirmClientOptionsDialog: () => void;
