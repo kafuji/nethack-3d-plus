@@ -194,6 +194,68 @@ export const nh3dSoundEffectDefinitions = [
       /\byou feel (?:stronger|faster|more agile|wiser|tougher|powerful)\b/i,
     ],
   },
+  // Event sounds (NetHack 3D Plus). Upstream listed several of these
+  // without assets; they default to procedural "synth:" sources.
+  {
+    key: "explosion",
+    label: soundEffectStrings.explosion,
+    messageLogKeywords: [/\bexplod(?:e|es|ed)\b/i, /\bKAABLAMM\b/i, /\bKABOOM\b/i],
+  },
+  {
+    key: "zap-ray",
+    label: soundEffectStrings["zap-ray"],
+    messageLogKeywords: [
+      /^(?:The|A) (?:bolt of \w+|death ray|sleep ray|magic missile|blast of [a-z ]+?|spray of \w+)\b.*\b(?:hits|bounces|whizzes|misses)\b/i,
+      /\byou are hit by (?:the|a) (?:bolt|ray|blast|magic missile)\b/i,
+    ],
+  },
+  {
+    key: "wand-fizzle",
+    label: soundEffectStrings["wand-fizzle"],
+    messageLogKeywords: [/^You wrest\b/i, /\bfizzles?\b/i, /^You feel self-knowledgeable/i],
+  },
+  {
+    key: "potion-shatter",
+    label: soundEffectStrings["potion-shatter"],
+    messageLogKeywords: [
+      /\b(?:potion|bottle|flask|vial|jar)s?\b.*\b(?:shatters?|breaks? into shards|crash(?:es)?)\b/i,
+      /\bYou hear something shatter\b/i,
+    ],
+  },
+  {
+    key: "scroll-read",
+    label: soundEffectStrings["scroll-read"],
+    messageLogKeywords: [/^As you read the scroll, it disappears\./i],
+  },
+  {
+    key: "trap-triggered",
+    label: soundEffectStrings["trap-triggered"],
+    messageLogKeywords: [
+      /^(?:Click|CLICK)!/,
+      /\byou (?:fall|tumble) into a pit\b/i,
+      /\bA (?:trap door|hole) opens\b/i,
+      /\bcaught in a bear trap\b/i,
+      /\bAn arrow shoots out at you\b/i,
+      /\bA little dart shoots out at you\b/i,
+      /\bA board beneath you squeaks\b/i,
+      /\bA trap door in the ceiling opens\b/i,
+    ],
+  },
+  {
+    key: "teleport",
+    label: soundEffectStrings.teleport,
+    messageLogKeywords: [/\bwrenching sensation\b/i, /^You feel (?:very )?disoriented\b/i, /^You materialize\b/i],
+  },
+  {
+    key: "prayer",
+    label: soundEffectStrings.prayer,
+    messageLogKeywords: [/^You begin praying to\b/i],
+  },
+  {
+    key: "shop-bell",
+    label: soundEffectStrings["shop-bell"],
+    messageLogKeywords: [/\bWelcome(?: again)? to [^!]+'s? [^!]+!/],
+  },
   // Status-effect sounds. Most are triggered by status-line transitions
   // (see Nh3dStatusSoundTracker); poison has no status flag, so it uses
   // message-log keywords. All default to procedural "synth:" sources.

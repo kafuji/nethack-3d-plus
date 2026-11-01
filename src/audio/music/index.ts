@@ -7,3 +7,8 @@ export { FileMusicPlayer } from "./file-music-player";
 export { defaultMusicLibrary } from "./music-library";
 export type { MusicLibrary, MusicTrack } from "./music-library";
 export type { BackgroundMusicPlayer } from "./procedural-music-player";
+export { resolveMusicRegion, regionTrackPreferences } from "./music-region";
+export type { MusicRegion, TrackPreference } from "./music-region";
+export type { MusicStinger } from "./stingers";
+export { resolveMusicEffectProfile } from "./status-effects";
+export type { MusicStatusEffect, MusicEffectProfile } from "./status-effects";

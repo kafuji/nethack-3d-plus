@@ -224,6 +224,20 @@ const features = {};
   }
 }
 
+// Humanoid body part names (polyself.c humanoid_parts), used for messages
+// such as "Your legs get new energy."
+const bodyParts = {};
+{
+  const src = fs.readFileSync(path.join(jnhDir, "src/polyself.c"), "utf8");
+  const block = /\*humanoid_parts\[\] = \{([^}]*)\},\s*#else\s*\*humanoid_parts\[\] = \{([^}]*)\}/.exec(src);
+  if (block) {
+    const lits = (text) => [...text.matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+    const en = lits(block[1]);
+    const ja = lits(block[2]);
+    if (en.length === ja.length) en.forEach((value, i) => (bodyParts[value] = ja[i]));
+  }
+}
+
 // Dungeon branch names from dat/dungeon.lua, paired by position.
 const dungeons = {};
 {
@@ -493,7 +507,123 @@ function addLiteralListPairs(enBlock, jaBlock) {
   });
 }
 
+/** Split a top-level `cond ? a : b` expression (right-associative). */
+function splitTernary(expr) {
+  const text = expr.trim();
+  let depth = 0;
+  let question = -1;
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if (ch === '"' || ch === "'") {
+      let j = i + 1;
+      while (j < text.length && text[j] !== ch) j += text[j] === "\\" ? 2 : 1;
+      i = j;
+      continue;
+    }
+    if (ch === "(" || ch === "[") depth += 1;
+    else if (ch === ")" || ch === "]") depth -= 1;
+    else if (depth === 0 && ch === "?" && question < 0) question = i;
+    else if (depth === 0 && ch === ":" && question >= 0) {
+      // find the ':' that matches the first '?', skipping nested ternaries
+      let nested = 0;
+      for (let k = question + 1; k < text.length; k += 1) {
+        const c = text[k];
+        if (c === '"' || c === "'") {
+          let j = k + 1;
+          while (j < text.length && text[j] !== c) j += text[j] === "\\" ? 2 : 1;
+          k = j;
+          continue;
+        }
+        if (c === "(" || c === "[") depth += 1;
+        else if (c === ")" || c === "]") depth -= 1;
+        else if (depth === 0 && c === "?") nested += 1;
+        else if (depth === 0 && c === ":") {
+          if (nested === 0) {
+            return {
+              cond: text.slice(0, question).replace(/\s+/g, " ").replace(/^\(|\)$/g, "").trim(),
+              then: text.slice(question + 1, k).trim(),
+              else: text.slice(k + 1).trim(),
+            };
+          }
+          nested -= 1;
+        }
+      }
+      return null;
+    }
+  }
+  return null;
+}
+
+/** Leaves of a (nested) ternary with the branch path that selects each. */
+function ternaryLeaves(expr, path = "") {
+  const t = splitTernary(expr);
+  if (!t) return [{ path, expr: expr.trim() }];
+  return [
+    ...ternaryLeaves(t.then, `${path}[${t.cond}]T`),
+    ...ternaryLeaves(t.else, `${path}[${t.cond}]F`),
+  ];
+}
+
+/**
+ * Expand ternary arguments of the output call into concrete statements, e.g.
+ * You(!incr ? "feel hungry" : "are hungry") -> two calls. Keys describe the
+ * chosen branches so English and Japanese variants can be paired.
+ */
+function callVariants(stmt) {
+  const text = stripComments(stmt);
+  const re = new RegExp(`\\b(${Object.keys(outputFunctions).join("|")})\\s*\\(`);
+  const m = re.exec(text);
+  if (!m) return [{ key: "", stmt }];
+  const paren = readParenBody(text, m.index + m[0].length - 1);
+  if (!paren) return [{ key: "", stmt }];
+  const args = splitArgs(paren.body);
+  let variants = [{ key: "", args: [] }];
+  for (const arg of args) {
+    const leaves = ternaryLeaves(arg);
+    if (leaves.length > 4) return [{ key: "", stmt }];
+    variants = variants.flatMap((v) => leaves.map((leaf) => ({ key: v.key + leaf.path, args: [...v.args, leaf.expr] })));
+    if (variants.length > 16) return [{ key: "", stmt }];
+  }
+  const fmtIndex = formatArgIndex[m[1]] ?? 0;
+  return variants.map((v) => ({ key: v.key, stmt: `${m[1]}(${inlineLiteralArgs(v.args, fmtIndex).join(", ")});` }));
+}
+
+/** Substitute string-literal %s arguments into the format literal. */
+function inlineLiteralArgs(args, fmtIndex) {
+  const fmt = literalValue(args[fmtIndex] ?? "");
+  if (fmt === null) return args;
+  const rest = args.slice(fmtIndex + 1);
+  const kept = [];
+  let argIndex = 0;
+  const inlined = fmt.replace(conversionRe, (token, _width, spec) => {
+    if (spec === "%") return token;
+    const arg = rest[argIndex++];
+    const value = spec === "s" && arg !== undefined ? literalValue(arg) : null;
+    if (value === null) {
+      if (arg !== undefined) kept.push(arg);
+      return token;
+    }
+    return value.replace(/%/g, "%%");
+  });
+  const encoded = `"${inlined.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n")}"`;
+  return [...args.slice(0, fmtIndex), encoded, ...kept, ...rest.slice(argIndex)];
+}
+
 function addPair(enStmt, jaStmt) {
+  const enVariants = callVariants(enStmt);
+  const jaVariants = callVariants(jaStmt);
+  if (enVariants.length === 1 && jaVariants.length === 1) {
+    addSinglePair(enStmt, jaStmt);
+    return;
+  }
+  const jaByKey = new Map(jaVariants.map((v) => [v.key, v.stmt]));
+  for (const variant of enVariants) {
+    const ja = jaByKey.get(variant.key);
+    if (ja) addSinglePair(variant.stmt, ja);
+  }
+}
+
+function addSinglePair(enStmt, jaStmt) {
   const en = findCall(enStmt);
   const ja = findCall(jaStmt);
   if (!en || !ja) return;
@@ -508,7 +638,9 @@ function addPair(enStmt, jaStmt) {
     let index = en.args.indexOf(ja.args[i]);
     if (index < 0) {
       // JNetHack often wraps arguments (e.g. jpast(x)); fall back to a contained match.
-      index = en.args.findIndex((arg) => arg.length > 2 && ja.args[i].includes(arg));
+      index = en.args.findIndex(
+        (arg) => arg.length > 2 && (ja.args[i].includes(arg) || (ja.args[i].length > 2 && arg.includes(ja.args[i]))),
+      );
       if (index < 0) return;
       mapping.push({ index, transform: "raw" });
       continue;
@@ -518,7 +650,11 @@ function addPair(enStmt, jaStmt) {
   // A Japanese text that ignores the English %s arguments was written for one
   // specific case (e.g. "You finish %s." -> one fixed verb); skip it.
   // Exception: body_part() arguments, which JNetHack often folds into the text.
-  if (enFmt.specs.includes("s") && mapping.length === 0 && !en.args.every((arg) => /^body_part\(/.test(arg))) {
+  if (
+    enFmt.specs.includes("s") &&
+    mapping.length === 0 &&
+    !en.args.every((arg) => /^(?:makeplural\()?body_part\(|^[Ss]omething$/.test(arg))
+  ) {
     return;
   }
   const [enPrefix, jaPrefix] = outputFunctions[en.fn];
@@ -620,6 +756,7 @@ const output = {
   features,
   dungeons,
   roleNames,
+  bodyParts,
   questTexts,
   enlightenment,
   templates: Object.fromEntries(templates),

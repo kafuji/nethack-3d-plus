@@ -133,3 +133,15 @@ describe("end-of-game disclosure and message tables", () => {
     expect(translator.translate(english)).toBe(japanese);
   });
 });
+
+describe("ternary and body-part messages", () => {
+  it.each([
+    ["You are beginning to feel hungry.", "あなたは空腹感をおぼえはじめた．"],
+    ["Your legs get new energy.", "足にエネルギーが注ぎこまれるような感じがした．"],
+    ["The gnome lord swings his crossbow.", "ノームの貴族はクロスボゥを振りまわした．"],
+    ["The newt shivers slightly.", "イモリは少し身震いした．"],
+    ["The jackal pulls free of the bear trap.", "ジャッカルは熊の罠から抜け出した．"],
+  ])("translates %s", (english, japanese) => {
+    expect(translator.translate(english)).toBe(japanese);
+  });
+});

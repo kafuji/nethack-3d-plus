@@ -2,6 +2,8 @@ import { MusicDirector, type MusicMood } from "./music-director";
 import { FileMusicPlayer } from "./file-music-player";
 import { defaultMusicLibrary } from "./music-library";
 import { ProceduralMusicPlayer, type BackgroundMusicPlayer } from "./procedural-music-player";
+import { regionTrackPreferences, resolveMusicRegion, type MusicRegion } from "./music-region";
+import type { MusicStatusEffect } from "./status-effects";
 
 export type BackgroundMusicSettings = {
   soundEnabled: boolean;
@@ -13,6 +15,8 @@ export type BackgroundMusicStats = {
   hp: number;
   maxHp: number;
   time: number;
+  /** Dungeon branch name from the status line (selects regional tracks). */
+  dungeon?: string;
 };
 
 const EVALUATE_INTERVAL_MS = 250;
@@ -48,6 +52,8 @@ export class BackgroundMusic {
   private dangerCondition = false;
   private gameOver = false;
   private previewMood: MusicMood | null | undefined = undefined;
+  private region: MusicRegion | null = null;
+  private statusEffectsKey = "";
   private evaluateTimer: ReturnType<typeof setInterval> | null = null;
   private disposed = false;
 
@@ -68,10 +74,40 @@ export class BackgroundMusic {
     this.evaluate();
   }
 
-  notifyPlayerStats(stats: BackgroundMusicStats, dangerCondition: boolean): void {
+  notifyPlayerStats(
+    stats: BackgroundMusicStats,
+    dangerCondition: boolean,
+    statusEffects: readonly MusicStatusEffect[] = [],
+  ): void {
     this.stats = { ...stats };
     this.dangerCondition = dangerCondition;
+    this.setStatusEffects(statusEffects);
+    if (stats.dungeon !== undefined) this.updateRegion(resolveMusicRegion(stats.dungeon));
     this.evaluate();
+  }
+
+  /** Confusion, hallucination, ... color the music (see status-effects.ts). */
+  setStatusEffects(effects: readonly MusicStatusEffect[]): void {
+    const sorted = [...new Set(effects)].sort();
+    const key = sorted.join(",");
+    if (key === this.statusEffectsKey) return;
+    this.statusEffectsKey = key;
+    this.player.setStatusEffects?.(sorted);
+  }
+
+  getCurrentRegion(): MusicRegion | null {
+    return this.region;
+  }
+
+  private updateRegion(region: MusicRegion): void {
+    if (region === this.region) return;
+    const entering = this.region !== null;
+    this.region = region;
+    this.player.setTrackPreference?.(regionTrackPreferences[region]);
+    // A small fanfare when walking into a new branch (not on game start).
+    if (entering && region !== "dungeon" && this.isEnabled() && !this.gameOver) {
+      this.player.playStinger?.("region-enter");
+    }
   }
 
   /** The player attacked, missed, or killed something. */
@@ -81,8 +117,10 @@ export class BackgroundMusic {
   }
 
   setGameOver(active: boolean): void {
+    const ended = active && !this.gameOver;
     this.gameOver = active;
     this.evaluate();
+    if (ended && this.isEnabled()) this.player.playStinger?.("game-over");
   }
 
   resumeFromUserGesture(): void {
@@ -95,6 +133,8 @@ export class BackgroundMusic {
     this.stats = null;
     this.dangerCondition = false;
     this.gameOver = false;
+    this.region = null;
+    this.setStatusEffects([]);
     this.player.setMood(null);
   }
 

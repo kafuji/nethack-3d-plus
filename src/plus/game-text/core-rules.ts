@@ -258,6 +258,51 @@ export const coreGameTextRules: readonly CoreRule[] = [
     },
   },
   {
+    // mhitu.c mswings(): "The gnome lord swings his crossbow."
+    pattern: /^(.+?) (swings|thrusts|lashes|bashes with) (?:one of )?(?:his|her|its|their) (.+?)\.$/,
+    translate: (m, c) => {
+      const attacker = known(c, m[1]!);
+      const weapon = known(c, m[3]!);
+      const verb = { swings: "を振りまわした", thrusts: "を突いた", lashes: "を叩いた", "bashes with": "をなぐりつけた" }[
+        m[2] as "swings"
+      ];
+      return attacker && weapon ? `${attacker}は${weapon}${verb}．` : null;
+    },
+  },
+  {
+    // mon.c mon_givit(): intrinsics a monster gains from eating (untranslated
+    // in JNetHack itself).
+    pattern: /^(.+?) (shivers slightly|looks quite warm|looks wide awake|looks very firm|crackles with static electricity|looks healthy)\.$/,
+    translate: (m, c) => {
+      const monster = known(c, m[1]!);
+      const effects: Readonly<Record<string, string>> = {
+        "shivers slightly": "は少し身震いした",
+        "looks quite warm": "はとても暖かそうだ",
+        "looks wide awake": "はすっかり目が覚めているようだ",
+        "looks very firm": "はとても引き締まって見える",
+        "crackles with static electricity": "は静電気でパチパチしている",
+        "looks healthy": "は健康そうだ",
+      };
+      return monster ? `${monster}${effects[m[2]!]}．` : null;
+    },
+  },
+  {
+    // trap.c: monsters escaping traps (untranslated in JNetHack itself).
+    pattern: /^(.+?) climbs (easily )?out of the pit\.$/,
+    translate: (m, c) => {
+      const monster = known(c, m[1]!);
+      return monster ? `${monster}は${m[2] ? "楽々と" : ""}落し穴から這い出た．` : null;
+    },
+  },
+  {
+    pattern: /^(.+?) pulls free of the (.+?)\.$/,
+    translate: (m, c) => {
+      const monster = known(c, m[1]!);
+      const trap = known(c, m[2]!);
+      return monster && trap ? `${monster}は${trap}から抜け出した．` : null;
+    },
+  },
+  {
     pattern: /^You miss (.+?)\.$/,
     translate: (m, c) => {
       const target = known(c, m[1]!);

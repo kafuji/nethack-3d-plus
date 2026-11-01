@@ -1,4 +1,7 @@
 import type { MusicMood } from "./music-director";
+import type { TrackPreference } from "./music-region";
+import { playMusicStinger, type MusicStinger } from "./stingers";
+import { MusicStatusEffectChain, type MusicStatusEffect } from "./status-effects";
 
 /**
  * Anything that can play mood-based background music. The procedural player
@@ -11,6 +14,12 @@ export interface BackgroundMusicPlayer {
   resume(): Promise<void>;
   suspend(): Promise<void>;
   dispose(): void;
+  /** Prefer these track ids per mood (players without tracks ignore it). */
+  setTrackPreference?(preference: TrackPreference): void;
+  /** Play a short musical cue over the current music. */
+  playStinger?(kind: MusicStinger): void;
+  /** Color the music for status effects such as confusion or hallucination. */
+  setStatusEffects?(effects: readonly MusicStatusEffect[]): void;
 }
 
 type Chord = readonly number[]; // MIDI notes, lowest = root
@@ -73,6 +82,8 @@ export class ProceduralMusicPlayer implements BackgroundMusicPlayer {
   private schedulerTimer: ReturnType<typeof setInterval> | null = null;
   private seed = 1;
   private disposed = false;
+  private effects: MusicStatusEffectChain | null = null;
+  private statusEffects: MusicStatusEffect[] = [];
   private readonly scores: Record<MusicMood, MoodScore>;
 
   constructor() {
@@ -172,6 +183,16 @@ export class ProceduralMusicPlayer implements BackgroundMusicPlayer {
     }
   }
 
+  setStatusEffects(effects: readonly MusicStatusEffect[]): void {
+    this.statusEffects = [...effects];
+    this.effects?.setEffects(this.statusEffects);
+  }
+
+  playStinger(kind: MusicStinger): void {
+    if (!this.context || !this.master || this.volume <= 0) return;
+    playMusicStinger(this.context, this.master, kind, 1);
+  }
+
   dispose(): void {
     this.disposed = true;
     if (this.schedulerTimer !== null) {
@@ -208,7 +229,10 @@ export class ProceduralMusicPlayer implements BackgroundMusicPlayer {
       const compressor = context.createDynamicsCompressor();
       compressor.threshold.value = -18;
       compressor.ratio.value = 3;
-      compressor.connect(context.destination);
+      // Status effects (confusion, hallucination, ...) sit after the mix.
+      this.effects = new MusicStatusEffectChain(context, context.destination);
+      this.effects.setEffects(this.statusEffects);
+      compressor.connect(this.effects.input);
       const master = context.createGain();
       master.gain.value = this.resolveMasterGain();
       master.connect(compressor);
