@@ -1,5 +1,5 @@
 import type { SupportedLocale } from "./core";
-import { translateGameMessage } from "./game-messages";
+import { englishLeftover, translateGameMessage } from "./game-messages";
 import { translateRuntimeText } from "./runtime-text";
 import { lookupImportedJapaneseMessage } from "./imported-messages";
 import { lookupImportedJapanesePattern } from "./imported-patterns";
@@ -18,12 +18,15 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
     return { text: lines.map((line) => line.text).join("\n"), isReferenceTranslation: lines.some((line) => line.isReferenceTranslation) };
   }
   const curated = translateRuntimeText(translateGameMessage(message, locale), locale);
-  if (locale !== "ja" || (curated !== message && !keepsEnglishRun(message, curated))) {
+  const trimmed = message.trim();
+  if (locale !== "ja") return { text: curated, isReferenceTranslation: false };
+  // JNetHack's human translation ranks above unreviewed reference matches,
+  // and above a curated rendering that still kept English words.
+  const jnethack = curated !== message && englishLeftover(message, curated) === 0 ? undefined : jnethackMessage(trimmed);
+  if (curated !== message && !keepsEnglishRun(message, curated)
+    && (jnethack === undefined || englishLeftover(trimmed, jnethack) >= englishLeftover(message, curated))) {
     return { text: curated, isReferenceTranslation: false };
   }
-  const trimmed = message.trim();
-  // JNetHack's human translation ranks above unreviewed reference matches.
-  const jnethack = jnethackMessage(trimmed);
   if (jnethack !== undefined) {
     const leading = message.slice(0, message.length - message.trimStart().length);
     const trailing = message.slice(message.trimEnd().length);

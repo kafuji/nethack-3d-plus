@@ -72,3 +72,17 @@ coverage measurement: the runtime also contains internal strings, while
 generated messages and translations handled by patterns are not counted.
 Add `--all-sentences` to include candidates with any capitalized first word;
 this broader list also contains more internal diagnostics.
+
+To find NetHack messages that are still shown in English, extract sample
+messages from a NetHack source checkout and run them through the display
+translation:
+
+```
+node scripts/i18n/extract-source-messages.mjs path/to/NetHack/src samples.json
+NH_MESSAGE_SAMPLES=samples.json npx vitest run src/i18n/source-message-coverage.test.ts
+```
+
+The test writes `samples-untranslated.tsv`. Argument values are guessed from
+the C expressions, so some listed samples are nonsense; review it by hand and
+add renderings for real messages to `nethack5-source-ja.json`. A format key may
+spell out a runtime verb (`"%s toots."` for `pline("%s.", Tobjnam(obj, "toot"))`).

@@ -861,6 +861,29 @@ const japaneseTemplates: readonly Template[] = [
   [/^Comestibles are eaten with '([^'\n]+)'$/, (key) => `食べ物は '${key}' で食べます。`],
 ];
 
+/** Number of English words from the original still present in a translation. */
+export function englishLeftover(original: string, translated: string): number {
+  const words = new Set(original.match(/[A-Za-z][A-Za-z'-]+/g) ?? []);
+  return (translated.match(/[A-Za-z][A-Za-z'-]+/g) ?? []).filter((word) => words.has(word)).length;
+}
+
+/** First candidate with no English left, else the earliest with the fewest English words. */
+function leastEnglish(original: string, candidates: ReadonlyArray<() => string | undefined>): string | undefined {
+  let best: string | undefined;
+  let bestScore = Infinity;
+  for (const candidate of candidates) {
+    const text = candidate();
+    if (text === undefined) continue;
+    const score = englishLeftover(original, text);
+    if (score === 0) return text;
+    if (score < bestScore) {
+      best = text;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
 /** Translate for presentation only; unsupported text and locales remain English. */
 export function translateGameMessage(message: string, locale: SupportedLocale): string {
   if (locale !== "ja" || !message.trim()) return message;
@@ -879,26 +902,31 @@ export function translateGameMessage(message: string, locale: SupportedLocale): 
     ? japaneseMessages[content]
     : Object.prototype.hasOwnProperty.call(nethack5ExtraMessages, content) ? nethack5ExtraMessages[content] : lookupNethack5SourceExact(content);
   if (translated === undefined) {
-    for (const [action, result] of monsterActionsLongestFirst) {
-      if (content.endsWith(` ${action}`)) {
-        const subject = content.slice(0, -action.length - 1);
-        if (!subject || /[.!?\n]/.test(subject)) continue;
-        translated = `${translateMonsterName(subject, "ja")}${result}`;
-        break;
-      }
-    }
+    // nh3d-plus: the generic layers below can match a sentence whose pieces
+    // they do not understand ("Somehow, the jackal" as a monster), so a later,
+    // more specific layer may still give a rendering without English left.
+    translated = leastEnglish(content, [
+      () => {
+        for (const [action, result] of monsterActionsLongestFirst) {
+          if (content.endsWith(` ${action}`)) {
+            const subject = content.slice(0, -action.length - 1);
+            if (!subject || /[.!?\n]/.test(subject)) continue;
+            return `${translateMonsterName(subject, "ja")}${result}`;
+          }
+        }
+        return undefined;
+      },
+      () => translateAssembledMessage(content),
+      () => {
+        for (const [pattern, render] of japaneseTemplates) {
+          const parts = pattern.exec(content);
+          if (parts) return render(...parts.slice(1));
+        }
+        return undefined;
+      },
+      () => translateNethack5SourceMessage(content),
+    ]);
   }
-  if (translated === undefined) translated = translateAssembledMessage(content);
-  if (translated === undefined) {
-    for (const [pattern, render] of japaneseTemplates) {
-      const parts = pattern.exec(content);
-      if (parts) {
-        translated = render(...parts.slice(1));
-        break;
-      }
-    }
-  }
-  if (translated === undefined) translated = translateNethack5SourceMessage(content);
   if (translated === undefined) {
     // verbalize() wraps speech in double quotes.
     const speech = /^"([^"]+)"$/.exec(content);
