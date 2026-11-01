@@ -46,9 +46,13 @@ const characterWords: Readonly<Record<string, string>> = {
   valkyrie: "ワルキューレ", wizard: "魔法使い",
 };
 
+function own<T>(table: Readonly<Record<string, T>>, key: string): T | undefined {
+  return Object.prototype.hasOwnProperty.call(table, key) ? table[key] : undefined;
+}
+
 function describeCharacter(text: string): string {
   const words = text.trim().split(/\s+/);
-  if (!words.every((word) => characterWords[word.toLowerCase()])) return text;
+  if (!words.every((word) => own(characterWords, word.toLowerCase()))) return text;
   return words.map((word) => characterWords[word.toLowerCase()]).join("");
 }
 
@@ -150,7 +154,7 @@ const characteristicNames: Readonly<Record<string, string>> = {
 export const coreGameTextRules: readonly CoreRule[] = [
   {
     pattern: /^.+$/,
-    translate: (m) => fixedMessages[m[0]] ?? null,
+    translate: (m) => own(fixedMessages, m[0]) ?? null,
   },
   {
     // insight.c characteristics: "Your strength was 11 (limit:18)."

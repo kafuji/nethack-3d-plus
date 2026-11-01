@@ -2,6 +2,7 @@ import type { InfoMenuState, PlayerStatsSnapshot, Nethack3DEngineController } fr
 import { Fragment } from "react";
 import { useI18n } from "../../../i18n";
 import { translateIntroStory } from "../../../i18n/intro-story";
+import { translateOracleDocument } from "../../../i18n/oracle-text";
 import { translateHelpDocument } from "../../../i18n/help-text";
 import { translateEncyclopediaEntry } from "../../../i18n/encyclopedia-text";
 import { translateDiscoveryReport } from "../../../i18n/discovery-text";
@@ -667,7 +668,7 @@ export function CharacterInfoDialog({
                 </div>
                 <div className="nh3d-info-body">
                   {displayedInfoMenu.lines.length > 0
-                    ? (translateHelpDocument(displayedInfoMenu.lines, locale) ?? translateEncyclopediaEntry(displayedInfoMenu.lines, locale) ?? translateDiscoveryReport(displayedInfoMenu.lines, locale)?.join("\n") ?? (isNetHackMessageInfoMenuTitle(displayedInfoMenu.title)
+                    ? (translateHelpDocument(displayedInfoMenu.lines, locale) ?? translateEncyclopediaEntry(displayedInfoMenu.lines, locale) ?? translateDiscoveryReport(displayedInfoMenu.lines, locale)?.join("\n") ?? translateOracleDocument(displayedInfoMenu.lines, locale) ?? (isNetHackMessageInfoMenuTitle(displayedInfoMenu.title)
                       ? translateIntroStory(displayedInfoMenu.lines, locale)
                       : null) ?? (locale === "ja" ? jnethackQuestDocument(displayedInfoMenu.lines) : undefined)) ?? displayedInfoMenu.lines.map((line, index) => (
                         <Fragment key={index}>
