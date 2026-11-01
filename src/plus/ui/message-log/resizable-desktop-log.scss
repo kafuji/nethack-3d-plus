@@ -1,0 +1,52 @@
+// Drag handle and resized sizing for the top-left desktop message log.
+// The base width/max-height rules in styles/app.scss add
+// --nh3d-plus-log-extra-width / --nh3d-plus-log-extra-height on top of the
+// default size, so the default size stays the minimum.
+
+.top-left-ui.nh3d-plus-resizable-log {
+  // Keep text readable when the background opacity is turned down.
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.top-left-ui.nh3d-plus-log-height-resized #game-log {
+  // Once taller than the default, keep the chosen line count even when the
+  // log has few messages, but never run off the bottom of the window.
+  height: min(
+    calc(
+      250px * var(--nh3d-ui-font-scale, 1) *
+        var(--nh3d-desktop-log-window-scale, 1) +
+        var(--nh3d-plus-log-extra-height, 0px)
+    ),
+    calc(100vh - 170px - var(--nh3d-safe-area-top, 0px))
+  );
+  max-height: none;
+}
+
+.nh3d-plus-log-resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  // Sits in the panel's 10px padding corner, so the default size is unchanged.
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+  touch-action: none;
+  opacity: 0.55;
+  background: linear-gradient(
+    135deg,
+    transparent 0 45%,
+    var(--nh3d-ui-border-strong) 45% 52%,
+    transparent 52% 64%,
+    var(--nh3d-ui-border-strong) 64% 71%,
+    transparent 71% 83%,
+    var(--nh3d-ui-border-strong) 83% 90%,
+    transparent 90%
+  );
+  border-bottom-right-radius: 5px;
+  transition: opacity 0.15s ease;
+
+  &:hover,
+  &:active {
+    opacity: 1;
+  }
+}

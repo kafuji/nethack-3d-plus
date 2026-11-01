@@ -342,6 +342,8 @@ export type Nh3dClientOptions = {
   uiFontFamily: string;
   liveMessageLogFontScale: number;
   desktopMessageLogWindowScale: number;
+  // nh3d-plus: background opacity of the boxed desktop message log.
+  desktopMessageLogBackgroundOpacity: number;
   soundEnabled: boolean;
   musicEnabled: boolean;
   musicVolume: number;
@@ -505,6 +507,7 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   uiFontFamily: "",
   liveMessageLogFontScale: 1,
   desktopMessageLogWindowScale: 1,
+  desktopMessageLogBackgroundOpacity: 0.92,
   soundEnabled: true,
   musicEnabled: true,
   musicVolume: 0.5,
@@ -962,6 +965,15 @@ export function normalizeNh3dClientOptions(
   const desktopMessageLogWindowScale = Number(
     Math.max(0.33, Math.min(1.5, rawDesktopMessageLogWindowScale)).toFixed(2),
   );
+  // nh3d-plus: desktop message log background opacity.
+  const rawDesktopMessageLogBackgroundOpacity =
+    typeof overrides?.desktopMessageLogBackgroundOpacity === "number" &&
+    Number.isFinite(overrides.desktopMessageLogBackgroundOpacity)
+      ? overrides.desktopMessageLogBackgroundOpacity
+      : defaultNh3dClientOptions.desktopMessageLogBackgroundOpacity;
+  const desktopMessageLogBackgroundOpacity = Number(
+    Math.max(0, Math.min(1, rawDesktopMessageLogBackgroundOpacity)).toFixed(2),
+  );
   const rawMusicVolume =
     typeof overrides?.musicVolume === "number" &&
     Number.isFinite(overrides.musicVolume)
@@ -1310,6 +1322,7 @@ export function normalizeNh3dClientOptions(
     uiFontFamily: normalizeUiFontFamily(overrides?.uiFontFamily),
     liveMessageLogFontScale,
     desktopMessageLogWindowScale,
+    desktopMessageLogBackgroundOpacity,
     soundEnabled:
       typeof overrides?.soundEnabled === "boolean"
         ? overrides.soundEnabled

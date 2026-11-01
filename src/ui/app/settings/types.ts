@@ -45,6 +45,8 @@ export type ClientOptionSlider = {
   | "uiFontScale"
   | "liveMessageLogFontScale"
   | "desktopMessageLogWindowScale"
+  // nh3d-plus: desktop message log background opacity slider.
+  | "desktopMessageLogBackgroundOpacity"
   | "controllerFpsMoveRepeatMs"
   | "fpsFov"
   | "fpsLookSensitivityX"

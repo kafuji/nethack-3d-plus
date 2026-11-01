@@ -52,16 +52,23 @@ export function useClientOptionsCssEffects(dependencies: UseClientOptionsCssEffe
       "--nh3d-minimap-scale",
       String(clientOptions.minimapScale),
     );
+    // nh3d-plus: desktop message log background opacity.
+    root.style.setProperty(
+      "--nh3d-desktop-log-bg-opacity",
+      String(clientOptions.desktopMessageLogBackgroundOpacity),
+    );
     return () => {
       root.style.removeProperty("--nh3d-ui-font-scale");
       root.style.removeProperty("--nh3d-live-log-font-scale");
       root.style.removeProperty("--nh3d-desktop-log-window-scale");
       root.style.removeProperty("--nh3d-minimap-scale");
+      root.style.removeProperty("--nh3d-desktop-log-bg-opacity");
     };
   }, [
     clientOptions.uiFontScale,
     clientOptions.liveMessageLogFontScale,
     clientOptions.desktopMessageLogWindowScale,
+    clientOptions.desktopMessageLogBackgroundOpacity,
     clientOptions.minimapScale,
   ]);
 

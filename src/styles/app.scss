@@ -516,13 +516,18 @@ canvas {
   position: fixed;
   top: calc(20px + var(--nh3d-safe-area-top));
   left: 10px;
-  background: var(--nh3d-ui-panel-bg);
+  // nh3d-plus: user-adjustable background opacity (same color as --nh3d-ui-panel-bg).
+  background: rgba(6, 16, 30, var(--nh3d-desktop-log-bg-opacity, 0.92));
   color: var(--nh3d-ui-text);
   padding: 10px;
   border: 1px solid var(--nh3d-ui-border);
   border-radius: 5px;
+  // nh3d-plus: add the drag-resized extra width on top of the default.
   max-width: min(
-    calc(400px * var(--nh3d-desktop-log-window-scale, 1)),
+    calc(
+      400px * var(--nh3d-desktop-log-window-scale, 1) +
+        var(--nh3d-plus-log-extra-width, 0px)
+    ),
     calc(100vw - 24px)
   );
   font-size: nh3d-scale-font(14px);
@@ -748,13 +753,18 @@ canvas {
 
 .top-left-ui #game-log {
   @extend %custom-scrollbar;
+  // nh3d-plus: add the drag-resized extra width/height on top of the default.
   width: min(
-    calc(380px * var(--nh3d-desktop-log-window-scale, 1)),
+    calc(
+      380px * var(--nh3d-desktop-log-window-scale, 1) +
+        var(--nh3d-plus-log-extra-width, 0px)
+    ),
     calc(100vw - 44px)
   );
   max-height: calc(
     250px * var(--nh3d-ui-font-scale, 1) *
-      var(--nh3d-desktop-log-window-scale, 1)
+      var(--nh3d-desktop-log-window-scale, 1) +
+      var(--nh3d-plus-log-extra-height, 0px)
   );
   overflow-y: auto;
   font-size: nh3d-scale-font(14px);

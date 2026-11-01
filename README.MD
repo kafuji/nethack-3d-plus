@@ -14,6 +14,7 @@ Classic NetHack, presented as an interactive 3D dungeon. Play from above, step i
 
 - Update checks, web build paths, and project links point to this fork.
 - Japanese: fuller interface translation, and in-game messages, prompts, item names and quest texts translated at display time. Curated translations come first, then [JNetHack](https://github.com/jnethack/jnethack-alpha) data (NetHack General Public License), then unreviewed Nehww references marked 参考訳.
+- Desktop message log: drag its bottom-right corner to make it wider or show more lines (double-click the corner to reset), and lower its background opacity in Options to see more of the dungeon.
 - Upstream: [JamesIV4/nethack-3d](https://github.com/JamesIV4/nethack-3d), synced at 1.6.2 (`3b6fd23`). See [Fork Maintenance](docs/fork-maintenance.md) for the sync workflow.
 
 ## New in 1.6.0: The VR Update
