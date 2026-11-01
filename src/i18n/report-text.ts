@@ -136,7 +136,7 @@ function translateEndSummary(line: string, locale: SupportedLocale): string | un
   if (m) return `${farewells[m[1]]}、${translatePlayerRank(m[3], locale)}の${m[2]}……`;
   m = /^You (.+?) (?:in (.+?)(?: on dungeon level (-?\d+))?|beyond the confines of the dungeon) with (\d+) points?,$/.exec(line);
   if (m && ownValue(endings, m[1])) {
-    const where = m[2] ? `${translateGameLocation(m[2].replace(/^The /, "the "), locale)}${m[3] ? `の地下${m[3]}階` : ""}で` : "ダンジョンの外で";
+    const where = m[2] ? `${translateGameLocation(m[2].replace(/^the /i, ""), locale)}${m[3] ? `の地下${m[3]}階` : ""}で` : "ダンジョンの外で";
     return `あなたは${where}${endings[m[1]]}（${m[4]}ポイント）、`;
   }
   m = /^and (\d+) pieces? of gold, after (\d+) moves?\.$/.exec(line);
