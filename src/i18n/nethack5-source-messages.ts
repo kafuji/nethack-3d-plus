@@ -76,8 +76,11 @@ const own = (map: Readonly<Record<string, string>>, key: string): string | undef
 
 // An unrecognized lowercase phrase of several words is most likely English
 // prose assembled at runtime; prefer the original message to a mixed rendering.
+// nh3d-plus: a single unknown lowercase word (e.g. a hallucinatory colour such
+// as "octarine") is English as well; capitalized names are still kept.
 const isUntranslatedPhrase = (original: string, translated: string): boolean =>
-  original === translated && /^[a-z]/.test(original.trim()) && original.trim().split(/\s+/).length >= 2;
+  original === translated && /^[a-z]/.test(original.trim())
+  && (original.trim().split(/\s+/).length >= 2 || /^[a-z]{3,}$/.test(original.trim()));
 
 /** Translate one captured value only when it is recognized; otherwise keep it. */
 export function translateMessageArgument(value: string): string {
