@@ -60,6 +60,12 @@ const bodyParts: Readonly<Record<string, string>> = {
   blood: "血", fur: "毛皮", scales: "鱗", tentacles: "触手", fin: "ひれ", fins: "ひれ",
   zorkmid: "ゾークミド", zorkmids: "ゾークミド", "gold piece": "金貨", "gold pieces": "金貨",
   floor: "床", ground: "地面", headstone: "墓石", bridge: "橋", altar: "祭壇", stairs: "階段", ladder: "はしご", ceiling: "天井", air: "空中", water: "水", lava: "溶岩", ice: "氷", bottom: "底",
+  // potion.c bottlename(), including the hallucinatory names.
+  bottle: "瓶", phial: "小瓶", flagon: "酒瓶", carafe: "水差し", flask: "フラスコ", jar: "壺", vial: "ガラス瓶",
+  jug: "ジョッキ", pitcher: "ピッチャー", barrel: "樽", tin: "缶", bag: "袋", box: "箱", glass: "グラス", beaker: "ビーカー",
+  tumbler: "タンブラー", vase: "花瓶", flowerpot: "植木鉢", pan: "鍋", thingy: "なんかの容器", mug: "マグカップ", teacup: "ティーカップ",
+  teapot: "ティーポット", keg: "小樽", bucket: "バケツ", thermos: "魔法瓶", amphora: "アンフォラ", wineskin: "革袋", parcel: "小包",
+  bowl: "ボウル", ampoule: "アンプル",
 };
 
 /** Names of rays and breath attacks (zap.c flash_types). */
@@ -126,6 +132,13 @@ export function translateMessageArgument(value: string): string {
   }
   const ground = translateGroundObject(text, "ja");
   if (ground !== text) return ground;
+  // "the jackal's head", "Fido's leg": a known owner and body part.
+  const possessive = /^(.+?)'s? (\S+)$/.exec(text);
+  if (possessive) {
+    const owner = translateMessageArgument(possessive[1]);
+    const part = own(bodyParts, possessive[2]);
+    if (part !== undefined && owner !== possessive[1]) return `${owner}の${part}`;
+  }
   return value;
 }
 

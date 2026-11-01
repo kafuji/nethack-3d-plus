@@ -1,4 +1,5 @@
 import type { SupportedLocale } from "./core";
+import { withHallucinatedCurrency } from "./currency-text";
 import { translateInventoryItem } from "./inventory-text";
 import { translateMonsterName } from "./game-monsters";
 import { nethack5ExtraMessages } from "./nethack5-extra-messages";
@@ -208,6 +209,8 @@ function keepsEnglishWords(original: string, translated: string): boolean {
 /** Translate only the visible prompt; retain choice letters and defaults. */
 export function translateGamePrompt(prompt: string, locale: SupportedLocale): string {
   if (locale !== "ja" || !prompt.trim()) return prompt;
+  const currency = withHallucinatedCurrency(prompt, (text) => translateGamePrompt(text, locale));
+  if (currency !== undefined) return currency;
   const whitespace = /^(\s*)(.*?)(\s*)$/s.exec(prompt);
   if (!whitespace) return prompt;
   const [, leading, content, trailing] = whitespace;

@@ -78,3 +78,27 @@ describe("character information presentation", () => {
     expect(translateCharacterLine("constructor", "ja")).toBe("constructor");
   });
 });
+
+describe("final disclosure lines assembled by insight.c", () => {
+  it.each([
+    ["Your strength was 11 (peak:14, limit:18/100).", "筋力は11（最高値：14、上限：18/100）でした。"],
+    ["Your strength is 11 (current; peak:14).", "筋力は11（現在値。最高値：14）です。"],
+    ["Your intelligence was 19 (innate limit:18).", "知力は19（生来の上限：18）でした。"],
+    ["Your wallet contained 23 kongbucks.", "財布には23コングバック入っていました。"],
+    ["Your wallet contained 23 zorkmids, but", "財布には23ゾークミド入っていましたが、"],
+    ["you had 40 more stashed away in your pack.", "荷物の中にもさらに40枚しまっていました。"],
+    ["You are dead.", "死亡しました。"],
+    ["You are dead (2nd time!).", "死亡しました（2回目！）。"],
+    ["You disabled loading and storing of bones levels.", "骨レベルの読み込みと保存を無効にしていました。"],
+    ["You had basic skill with long sword and could have enhanced that.", "長い剣の技能：基本（上達できた）。"],
+    ["You were unskilled in bow.", "弓の技能：未熟練。"],
+    ["You had 126 experience points, 34 more were needed to attain level 5.", "経験値：126（レベル5まであと34）。"],
+    ["You are riding your pony.", "あなたの子馬に乗っています。"],
+    ["You are running in explore mode.", "探検モードでプレイしています。"],
+    ["There was a full moon in effect when your adventure ended.", "冒険の終わりには満月の影響がありました。"],
+    ["You had a large bonus to hit (+7).", "命中に大きなボーナス（+7）がありました。"],
+    ["You were trapped in a bear trap.", "トラバサミにかかっていました。"],
+  ])("translates %s", (english, japanese) => {
+    expect(translateCharacterLine(english, "ja")).toBe(japanese);
+  });
+});

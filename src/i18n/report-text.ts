@@ -1,8 +1,10 @@
 import type { SupportedLocale } from "./core";
-import { translateCharacterLine } from "./character-text";
+import { translateCharacterLine, translateIdentityWord } from "./character-text";
 import { translateGameLocation } from "./game-location";
 import { translatePlayerRank } from "./player-title";
 import { translateMessageArgument } from "./nethack5-source-messages";
+import { translateMonsterName } from "./game-monsters";
+import { lookupImportedJapaneseEntity } from "./imported-entities";
 
 // NetHack 5's conduct and achievement reports are assembled from fragments
 // in insight.c. Only match complete known lines; preserve names and annotations.
@@ -73,6 +75,152 @@ function translateOverviewFeatures(line: string): string | undefined {
   return translated.length ? `${translated.join("、")}。` : undefined;
 }
 
+// end.c done_in_by(): "a hallucinogen-distorted werejackal",
+// "an invisible chameleon imitating a jackal", "a vampire lord in bat form".
+const killerModifiers: Readonly<Record<string, string>> = { invisible: "透明な", "hallucinogen-distorted": "幻覚で歪んだ" };
+function translateKiller(text: string): string {
+  const m = /^((?:the |an? )?)((?:(?:invisible|hallucinogen-distorted) )*)(.+?)(?: (imitating|disguised as|in) (.+?)( form)?)?$/.exec(text);
+  if (!m || (m[4] === "in") !== Boolean(m[6])) return translateMessageArgument(text);
+  const real = translateMessageArgument(`${m[1] || "a "}${m[3]}`);
+  if (real === `${m[1] || "a "}${m[3]}`) return translateMessageArgument(text);
+  const modifiers = m[2].trim() ? m[2].trim().split(" ").map((word) => killerModifiers[word]).join("") : "";
+  if (!m[4]) return `${modifiers}${real}`;
+  const shape = translateMessageArgument(m[4] === "in" ? `a ${m[5]}` : m[5]);
+  if (shape === m[5] || shape === `a ${m[5]}`) return translateMessageArgument(text);
+  return `${shape}${m[4] === "in" ? "の姿の" : "に化けた"}${modifiers}${real}`;
+}
+
+// insight.c list_vanquished(): "a newt", "  7 gnomes", "the Oracle (twice)".
+function vanquishedMonster(name: string, plural: boolean): string | undefined {
+  const candidates = [name];
+  if (plural) {
+    const forms: readonly [RegExp, string][] = [
+      [/men$/, "man"], [/ves$/, "f"], [/([^aeiou])ies$/, "$1y"], [/(s|x|z|ch|sh)es$/, "$1"], [/s$/, ""],
+      [/mumakil$/, "mumak"], [/erinyes$/, "erinys"], [/vortices$/, "vortex"], [/homunculi$/, "homunculus"], [/cyclopes$/, "cyclops"],
+    ];
+    for (const [re, to] of forms) if (re.test(name)) candidates.push(name.replace(re, to));
+  }
+  for (const candidate of candidates) {
+    const translated = translateMonsterName(`a ${candidate}`, "ja");
+    if (translated !== `a ${candidate}`) return translated;
+  }
+  return undefined;
+}
+function translateVanquished(line: string): string | undefined {
+  let m = /^(a|an|\d+) (.+)$/.exec(line);
+  if (m) {
+    const name = vanquishedMonster(m[2], !/^an?$/.test(m[1]));
+    return name === undefined ? undefined : /^an?$/.test(m[1]) ? name : `${name} ×${m[1]}`;
+  }
+  m = /^(the )?(.+?)(?: \((twice|thrice|\d+ times)\))?$/.exec(line);
+  if (!m || (!m[1] && !m[3] && !/^[A-Z]/.test(m[2]))) return undefined;
+  const name = translateMonsterName(`the ${m[2]}`, "ja");
+  if (name === `the ${m[2]}`) return undefined;
+  return `${name}${m[3] ? ` ×${m[3] === "twice" ? 2 : m[3] === "thrice" ? 3 : m[3].replace(/ times$/, "")}` : ""}`;
+}
+
+// end.c ends[]: "You died in ...", "... when you were crushed."
+const endings: Readonly<Record<string, string>> = {
+  died: "死んだ", choked: "窒息した", "were poisoned": "毒で死んだ", starved: "餓死した", drowned: "溺死した", burned: "焼死した",
+  "dissolved in the lava": "溶岩に溶けた", "were crushed": "押しつぶされた", "turned to stone": "石になった",
+  "turned into slime": "スライムになった", "were genocided": "抹殺された", panicked: "パニックに陥った", "were tricked": "だまされた",
+  quit: "冒険をやめた", escaped: "脱出した", ascended: "昇天した", "passed away": "この世を去った",
+};
+const farewells: Readonly<Record<string, string>> = { Goodbye: "さようなら", Farvel: "さらば", Aloha: "アロハ", Sayonara: "さらば" };
+const ownValue = (table: Readonly<Record<string, string>>, key: string): string | undefined =>
+  Object.prototype.hasOwnProperty.call(table, key) ? table[key] : undefined;
+
+// end.c really_done() summary and insight.c chronicle (livelog) events.
+function translateEndSummary(line: string, locale: SupportedLocale): string | undefined {
+  let m = /^(Goodbye|Farvel|Aloha|Sayonara) (.+) the (.+?)\.\.\.$/.exec(line);
+  if (m) return `${farewells[m[1]]}、${translatePlayerRank(m[3], locale)}の${m[2]}……`;
+  m = /^You (.+?) (?:in (.+?)(?: on dungeon level (-?\d+))?|beyond the confines of the dungeon) with (\d+) points?,$/.exec(line);
+  if (m && ownValue(endings, m[1])) {
+    const where = m[2] ? `${translateGameLocation(m[2].replace(/^The /, "the "), locale)}${m[3] ? `の地下${m[3]}階` : ""}で` : "ダンジョンの外で";
+    return `あなたは${where}${endings[m[1]]}（${m[4]}ポイント）、`;
+  }
+  m = /^and (\d+) pieces? of gold, after (\d+) moves?\.$/.exec(line);
+  if (m) return `${m[1]}枚の金貨を持って、${m[2]}歩動いた。`;
+  m = /^You were level (\d+) with a maximum of (\d+) hit points? when you (.+)\.$/.exec(line);
+  if (m && ownValue(endings, m[3])) return `${endings[m[3]]}ときのレベルは${m[1]}、最大HPは${m[2]}だった。`;
+  // Pets that escaped with the hero are listed on a line of their own.
+  m = /^You((?: and .+?)+)$/.exec(line);
+  if (m && !/ with \d+ points?,$/.test(line)) {
+    const pets = m[1].split(" and ").slice(1).map((pet) => pet === "Schroedinger's cat" ? "シュレディンガーの猫" : translateMonsterName(pet, locale));
+    return `あなたと${pets.join("と")}は`;
+  }
+  m = /^(?:You )?(went to your reward|escaped from the dungeon) with (\d+) points?,$/.exec(line);
+  if (m) return `${line.startsWith("You") ? "あなたは" : ""}${m[1] === "escaped from the dungeon" ? "ダンジョンから脱出した" : "報いを受けに旅立った"}（${m[2]}ポイント）、`;
+  m = /^(\d+) (.+) \(worth (\d+) (.+?)\),$/.exec(line);
+  if (m) {
+    const item = translateMessageArgument(`${m[1]} ${m[2]}`);
+    if (item !== `${m[1]} ${m[2]}`) return `${item}（${m[3]}ゾークミド相当）、`;
+  }
+  m = /^Game began (\S+ \S+), ended (\S+ \S+)\.$/.exec(line);
+  if (m) return `ゲーム開始 ${m[1]}、終了 ${m[2]}。`;
+  m = /^(.+), (lawful|neutral|chaotic|unaligned) (?:(male|female|neuter) )?(\S+) (.+)$/.exec(line);
+  if (m) {
+    const words = [m[2], m[3], m[4], m[5]].filter((word): word is string => word !== undefined).map((word) => translateIdentityWord(word));
+    if (!words.includes(undefined)) return `${m[1]}、${words.join("の")}`;
+  }
+  if (line === "Major events:") return "主な出来事：";
+  if (line === "Logged events:") return "記録された出来事：";
+  if (line === "Turn") return "ターン";
+  m = /^(\d+): (.+)$/.exec(line);
+  if (m) {
+    const event = translateChronicleEvent(m[2], locale);
+    if (event !== undefined) return `${m[1]}：${event}`;
+  }
+  return undefined;
+}
+
+const chronicleAchievements: Readonly<Record<string, string>> = {
+  "acquired the Bell of Opening": "開門の鐘を手に入れた", "entered Gehennom": "ゲヘナに入った",
+  "acquired the Candelabrum of Invocation": "召喚の燭台を手に入れた", "acquired the Book of the Dead": "死者の書を手に入れた",
+  "performed the invocation": "儀式を執り行った", "acquired The Amulet of Yendor": "イェンダーの魔除けを手に入れた",
+  "entered the Elemental Planes": "元素界に入った", "entered the Astral Plane": "アストラル界に入った", ascended: "昇天した",
+  "acquired the Mines' End luckstone": "鉱山の底の幸運の石を手に入れた", "acquired the Sokoban bag of holding": "倉庫番の賞品の魔法の袋を手に入れた",
+  "acquired the Sokoban amulet of reflection": "倉庫番の賞品の反射のお守りを手に入れた", "killed Medusa": "メデューサを倒した",
+  "entered the Gnomish Mines": "ノームの鉱山に入った", "reached Mine Town": "鉱山町に着いた", "entered a shop": "店に入った",
+  "entered a temple": "寺院に入った", "consulted the Oracle": "神託を受けた", "read a Discworld novel": "ディスクワールドの小説を読んだ",
+  "entered Sokoban": "倉庫番に入った", "entered the Bigroom": "大部屋に入った", "killed for the first time": "初めて生き物を殺した",
+  "declined to make a wish": "願いを断った", "declined to perform genocide": "抹殺を断った", "lost all experience": "経験をすべて失った",
+  "rejected atheism with a prayer": "祈りによって無神論を捨てた", "rejected atheism by turning undead": "アンデッド退散によって無神論を捨てた",
+  "ate for the first time (spinach)": "初めて物を食べた（ほうれん草）",
+};
+function translateChronicleEvent(event: string, locale: SupportedLocale): string | undefined {
+  const fixed = ownValue(chronicleAchievements, event);
+  if (fixed !== undefined) return fixed;
+  let m = /^(.+) the (lawful|neutral|chaotic) (?:(male|female|neuter) )?(\S+) (.+) entered the dungeon$/.exec(event);
+  if (m) {
+    const words = [m[2], m[3], m[4], m[5]].filter((word): word is string => word !== undefined).map((word) => translateIdentityWord(word));
+    if (!words.includes(undefined)) return `${words.join("の")}の${m[1]}がダンジョンに入った`;
+  }
+  m = /^attained the rank of (.+) \(level (\d+)\)$/.exec(event);
+  if (m) return `${translatePlayerRank(m[1], locale)}の称号を得た（レベル${m[2]}）`;
+  m = /^(re)?gained experience level (\d+)$/.exec(event);
+  if (m) return `経験レベル${m[2]}に${m[1] ? "戻った" : "上がった"}`;
+  m = /^lost experience level (\d+)$/.exec(event);
+  if (m) return `経験レベル${m[1]}を失った`;
+  m = /^obtained (?:his|her|their) first pet \((.+)\)$/.exec(event);
+  if (m) return `初めてのペット（${translateMessageArgument(m[1])}）を得た`;
+  m = /^(?:ate for the first time - (.+)|ate for the first time \((.+)\)|tasted meat \((.+)\) for the first time)$/.exec(event);
+  if (m) return `${m[3] ? "初めて肉を口にした" : "初めて物を食べた"}（${translateMessageArgument(m[1] ?? m[2] ?? m[3])}）`;
+  m = /^(made (?:his|her|their) first (artifact )?wish - |wished for )(.+)$/.exec(event);
+  if (m) return `${m[1].startsWith("made") ? `初めて${m[2] ? "アーティファクトを" : ""}願った` : "願った"}：${m[3]}`;
+  m = /^genocided (.+)$/.exec(event);
+  if (m) {
+    const name = vanquishedMonster(m[1], true);
+    if (name !== undefined) return `${name}を抹殺した`;
+  }
+  m = /^found (.+)$/.exec(event);
+  if (m) {
+    const item = translateMessageArgument(m[1]);
+    if (item !== m[1]) return `${item}を見つけた`;
+  }
+  return undefined;
+}
+
 function translateContent(line: string, locale: SupportedLocale): string {
   const exact = present(labels, line);
   // Labels already contain their own punctuation (or intentionally none).
@@ -129,7 +277,7 @@ function translateContent(line: string, locale: SupportedLocale): string {
       "crushed to death by": "に押しつぶされた", "burned by": "に焼かれた", "drowned in": "で溺れた", "dissolved in": "に溶かされた",
     };
     const who = m[1] === "you" ? "あなた" : m[1];
-    const cause = translateMessageArgument(m[3]);
+    const cause = translateKiller(m[3]);
     const action = how[m[2]] ?? "で自滅した";
     return `${who}（${cause}${action}）${m[4] === "," ? "、" : "。"}`;
   }
@@ -140,8 +288,25 @@ function translateContent(line: string, locale: SupportedLocale): string {
   }
   m = /^Turn (\d+): (.+)$/.exec(line);
   if (m) return `ターン ${m[1]}：${translateGameLocation(m[2], locale)}`;
+  const summary = translateEndSummary(line, locale);
+  if (summary !== undefined) return summary;
   const featureLine = translateOverviewFeatures(line);
   if (featureLine) return featureLine;
+  const vanquished = translateVanquished(line);
+  if (vanquished) return vanquished;
+  // Genocided list (insight.c list_genocided): "newts", "gnomes (extinct)".
+  m = /^([a-z][a-z' -]*?)( \(extinct\))?$/.exec(line);
+  if (m) {
+    const name = vanquishedMonster(m[1], true);
+    if (name !== undefined && name !== vanquishedMonster(m[1], false)) return `${name}${m[2] ? "（絶滅）" : ""}`;
+  }
+  m = /^(\d+) species genocided\.$/.exec(line);
+  if (m) return `${m[1]}種を抹殺した。`;
+  // Class headers of a sorted vanquished list: "Dog or other canine".
+  if (/^[A-Z][a-z]/.test(line)) {
+    const header = lookupImportedJapaneseEntity(line[0].toLowerCase() + line.slice(1));
+    if (header !== undefined) return header;
+  }
   return translateCharacterLine(line, locale);
 }
 

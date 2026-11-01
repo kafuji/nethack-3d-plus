@@ -27,3 +27,43 @@ describe("NetHack 5 information reports", () => {
     expect(translateReportLine("         you, killed by a fox.", "ja")).toBe("         あなた（キツネに殺された）。");
   });
 });
+
+describe("end of game reports", () => {
+  it("translates the vanquished and genocided lists", () => {
+    expect(translateReportLine("  2 gnome leaders", "ja")).toBe("  ノームの指導者 ×2");
+    expect(translateReportLine("  a little dog", "ja")).toBe("  子犬");
+    expect(translateReportLine("  2 dwarves", "ja")).toBe("  ドワーフ ×2");
+    expect(translateReportLine("the Oracle (twice)", "ja")).toBe("神託者 ×2");
+    expect(translateReportLine("Medusa", "ja")).toBe("メデューサ");
+    expect(translateReportLine("Dog or other canine", "ja")).toBe("犬またはその他のイヌ科の動物");
+    expect(translateReportLine(" gnomes (extinct)", "ja")).toBe(" ノーム（絶滅）");
+    // A pet's or player's name is not a monster plural.
+    expect(translateReportLine("  Fido", "ja")).toBe("  Fido");
+  });
+  it("translates hallucinated and disguised killers in the overview", () => {
+    expect(translateReportLine("         you, killed by a hallucinogen-distorted werejackal.", "ja"))
+      .toBe("         あなた（幻覚で歪んだウェアジャッカルに殺された）。");
+    expect(translateReportLine("you, killed by a chameleon imitating a jackal.", "ja"))
+      .toBe("あなた（ジャッカルに化けたカメレオンに殺された）。");
+  });
+  it("translates the final summary window", () => {
+    expect(translateReportLine("Sayonara Kafujinho the Ronin...", "ja")).toBe("さらば、浪人のKafujinho……");
+    expect(translateReportLine("You died in The Dungeons of Doom on dungeon level 2 with 1234 points,", "ja"))
+      .toBe("あなたは運命の大迷宮の地下2階で死んだ（1234ポイント）、");
+    expect(translateReportLine("and 1 piece of gold, after 1 move.", "ja")).toBe("1枚の金貨を持って、1歩動いた。");
+    expect(translateReportLine("You were level 4 with a maximum of 40 hit points when you died.", "ja"))
+      .toBe("死んだときのレベルは4、最大HPは40だった。");
+    expect(translateReportLine("You and your little dog", "ja")).toBe("あなたとあなたの子犬は");
+    expect(translateReportLine("escaped from the dungeon with 123 points,", "ja")).toBe("ダンジョンから脱出した（123ポイント）、");
+    expect(translateReportLine("       2 rubies (worth 7000 zorkmids),", "ja")).toBe("       2個のルビー（7000ゾークミド相当）、");
+    expect(translateReportLine("Kafujinho, lawful male human Samurai", "ja")).toBe("Kafujinho、秩序の男性の人間の侍");
+  });
+  it("translates chronicle events and leaves wishes verbatim", () => {
+    expect(translateReportLine("Major events:", "ja")).toBe("主な出来事：");
+    expect(translateReportLine("    1: Kafujinho the lawful human Samurai entered the dungeon", "ja"))
+      .toBe("    1：秩序の人間の侍のKafujinhoがダンジョンに入った");
+    expect(translateReportLine("  250: attained the rank of Ronin (level 3)", "ja")).toBe("  250：浪人の称号を得た（レベル3）");
+    expect(translateReportLine("  320: entered the Gnomish Mines", "ja")).toBe("  320：ノームの鉱山に入った");
+    expect(translateReportLine("  500: wished for 2 blessed scrolls of genocide", "ja")).toBe("  500：願った：2 blessed scrolls of genocide");
+  });
+});
