@@ -1,10 +1,11 @@
 export { BackgroundMusic } from "./background-music";
 export type { BackgroundMusicSettings, BackgroundMusicStats } from "./background-music";
+export { TitleMusic } from "./title-music";
 export { MusicDirector } from "./music-director";
 export type { MusicMood } from "./music-director";
 export { ProceduralMusicPlayer } from "./procedural-music-player";
 export { FileMusicPlayer } from "./file-music-player";
-export { defaultMusicLibrary } from "./music-library";
+export { defaultMusicLibrary, titleMusicTrack } from "./music-library";
 export type { MusicLibrary, MusicTrack } from "./music-library";
 export type { BackgroundMusicPlayer } from "./procedural-music-player";
 export { resolveMusicRegion, regionTrackPreferences } from "./music-region";

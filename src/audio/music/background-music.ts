@@ -1,6 +1,6 @@
 import { MusicDirector, type MusicMood } from "./music-director";
 import { FileMusicPlayer } from "./file-music-player";
-import { defaultMusicLibrary } from "./music-library";
+import { defaultMusicLibrary, type MusicLibrary } from "./music-library";
 import { ProceduralMusicPlayer, type BackgroundMusicPlayer } from "./procedural-music-player";
 import { regionTrackPreferences, resolveMusicRegion, type MusicRegion } from "./music-region";
 import type { MusicStatusEffect } from "./status-effects";
@@ -33,8 +33,10 @@ function resolvePublicAssetUrl(path: string): string {
 }
 
 /** Bundled CC0 music files, falling back to the procedural synth if they fail to load. */
-export function createDefaultBackgroundMusicPlayer(): BackgroundMusicPlayer {
-  return new FileMusicPlayer(defaultMusicLibrary, resolvePublicAssetUrl, new ProceduralMusicPlayer());
+export function createDefaultBackgroundMusicPlayer(
+  library: MusicLibrary = defaultMusicLibrary,
+): BackgroundMusicPlayer {
+  return new FileMusicPlayer(library, resolvePublicAssetUrl, new ProceduralMusicPlayer());
 }
 
 /**
