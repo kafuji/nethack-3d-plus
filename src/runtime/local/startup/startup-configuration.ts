@@ -6,6 +6,7 @@ import {
   sanitizeStartupInitOptionTokens,
 } from "../../startup-init-options";
 import { supportsRuntimeCheckpointRecovery } from "../../runtime-capabilities";
+import { toRuntimePlayModeTokens } from "../../../plus/trial/trial-play-mode";
 import type { RuntimeGameOver } from "../lifecycle/game-over";
 import type { RuntimeCoordinator } from "../runtime-coordinator";
 import type { RuntimeTextInput } from "../input/text-input";
@@ -174,10 +175,11 @@ export class RuntimeStartupConfiguration {
   }
 
   buildStartupInitRuntimeOptions() {
-    const tokens = appendRequiredStartupInitOptionTokens(
+    // nh3d-plus: NetHack runs trial-and-error games as normal ones.
+    const tokens = toRuntimePlayModeTokens(appendRequiredStartupInitOptionTokens(
       this.deps.coordinator.startupOptions?.initOptions,
       this.deps.coordinator.runtimeVersion,
-    );
+    ));
     if (
       this.deps.coordinator.runtimeVersion !== "3.6.7" &&
       !supportsRuntimeCheckpointRecovery(this.deps.coordinator.runtimeVersion)

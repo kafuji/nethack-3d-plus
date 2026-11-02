@@ -140,6 +140,10 @@ import {
 import {
   useEngineLifecycle,
 } from "./session/use-engine-lifecycle";
+// nh3d-plus: trial-and-error mode save slots.
+import {
+  useTrialSlots,
+} from "../../plus/trial/use-trial-slots";
 import {
   useAppliedClientOptionsEffects,
 } from "./settings/use-applied-client-options-effects";
@@ -1832,9 +1836,23 @@ export function useAppModel() {
     get startup() { return startup; },
   });
 
+  // nh3d-plus: trial-and-error mode save slots.
+  const trialSlots = useTrialSlots({
+    get controller() { return controller; },
+    get question() { return question; },
+    get newGamePrompt() { return newGamePrompt; },
+    get setNewGamePrompt() { return setNewGamePrompt; },
+    get characterCreationConfig() { return characterCreationConfig; },
+    get setCharacterCreationConfig() { return setCharacterCreationConfig; },
+    get runtimeVersion() { return activeRuntimeVersion; },
+    get setIsPauseMenuVisible() { return setIsPauseMenuVisible; },
+    get playerStats() { return playerStats; },
+  });
+
   const {
     renderPauseMenu,
   } = usePauseMenu({
+    get trialSlots() { return trialSlots; }, // nh3d-plus
     get isPauseMenuVisible() { return isPauseMenuVisible; },
     get isExitConfirmationVisible() { return isExitConfirmationVisible; },
     get controller() { return controller; },

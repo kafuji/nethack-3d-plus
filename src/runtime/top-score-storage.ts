@@ -75,6 +75,8 @@ export type TopScoreDetailSnapshot = {
   tombstoneLines: string[];
   telemetry: RunTelemetrySnapshot;
   postmortemReports: GameOverPostmortemReports;
+  // nh3d-plus: trial-and-error run; hidden from the score list.
+  trial?: boolean;
 };
 
 export type TopScoreRecord = {
@@ -807,6 +809,7 @@ export async function saveTopScoreDetailSnapshot(input: {
   tombstoneLines?: ReadonlyArray<string> | null;
   telemetry?: RunTelemetrySnapshot | null;
   postmortemReports?: GameOverPostmortemReports | null;
+  trial?: boolean; // nh3d-plus
 }): Promise<string> {
   if (!supportsRuntimeTopScores(input.runtimeVersion)) {
     return "";
@@ -838,6 +841,7 @@ export async function saveTopScoreDetailSnapshot(input: {
       : [],
     telemetry: sanitizeRunTelemetrySnapshot(input.telemetry),
     postmortemReports,
+    ...(input.trial ? { trial: true } : {}), // nh3d-plus
   };
 
   const db = await openScoreDetailsDatabase();
@@ -1531,14 +1535,17 @@ export async function fetchTopScores(
     return b.sourceLine - a.sourceLine;
   });
 
-  const nativeRecords = attachDetailsToScores(deduped, details);
+  const attachedRecords = attachDetailsToScores(deduped, details);
   const matchedDetailIds = new Set(
-    nativeRecords
+    attachedRecords
       .map((record) => record.detail?.id)
       .filter((id): id is string => Boolean(id)),
   );
+  // nh3d-plus: NetHack logs trial-and-error deaths as normal games; drop
+  // native entries matched to a trial snapshot, and the trial snapshots.
+  const nativeRecords = attachedRecords.filter((record) => !record.detail?.trial);
   const snapshotRecords = details
-    .filter((detail) => !matchedDetailIds.has(detail.id))
+    .filter((detail) => !matchedDetailIds.has(detail.id) && !detail.trial)
     .map(createSnapshotTopScoreRecord);
   const mergedRecords = [...nativeRecords, ...snapshotRecords];
 

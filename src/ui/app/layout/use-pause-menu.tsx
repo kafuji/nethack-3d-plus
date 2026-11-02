@@ -12,6 +12,12 @@ import {
   requestGameQuit
 } from "../shared/platform";
 import type { Nethack3DEngineController } from "../../../game/ui-types";
+// nh3d-plus: trial-and-error mode save slots.
+import {
+  TrialSlotMenuItems,
+  TrialSlotProgress,
+  type TrialSlotMenuState,
+} from "../../../plus/trial/TrialSlotMenu";
 
 
 export interface UsePauseMenuDependencies {
@@ -23,6 +29,7 @@ export interface UsePauseMenuDependencies {
   readonly startNewGameFromPrompt: () => void;
   readonly activeRuntimeVersionLabel: string;
   readonly openClientOptionsDialog: () => void;
+  readonly trialSlots: TrialSlotMenuState; // nh3d-plus
 }
 
 /** Renders pause actions and coordinates returning to the game. */
@@ -36,6 +43,7 @@ export function usePauseMenu(dependencies: UsePauseMenuDependencies) {
     startNewGameFromPrompt,
     activeRuntimeVersionLabel,
     openClientOptionsDialog,
+    trialSlots,
   } = dependencies;
 
   const renderPauseMenu = () => {
@@ -45,7 +53,10 @@ export function usePauseMenu(dependencies: UsePauseMenuDependencies) {
         open={isPauseMenuVisible}
         id="pause-menu-dialog"
       >
-        {isExitConfirmationVisible ? (
+        {/* nh3d-plus: show progress while a slot save/load restarts the runtime. */}
+        {trialSlots.trialSlotPhase !== "idle" ? (
+          <TrialSlotProgress state={trialSlots} />
+        ) : isExitConfirmationVisible ? (
           <>
             <div className="nh3d-question-text">
               {t.dialogs.pauseMenu.saveBeforeQuit}
@@ -125,6 +136,7 @@ export function usePauseMenu(dependencies: UsePauseMenuDependencies) {
                 >
                   {t.dialogs.pauseMenu.saveGame}
                 </button>
+                <TrialSlotMenuItems state={trialSlots} />{/* nh3d-plus */}
                 <button
                   className="nh3d-choice-button"
                   onClick={() => setIsExitConfirmationVisible(true)}

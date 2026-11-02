@@ -4,6 +4,7 @@ type StartupInitOptionSupport = {
   supportedRuntimeVersions?: readonly NethackRuntimeVersion[];
 };
 import { getTranslationStrings } from "../i18n/core";
+import { TRIAL_PLAY_MODE } from "../plus/trial/trial-play-mode";
 
 export type StartupInitOptionBooleanDefinition = {
   key: string;
@@ -128,6 +129,11 @@ export const startupInitOptionDefinitions: ReadonlyArray<StartupInitOptionDefini
         {
           value: "debug",
           label: startupStrings.options.playmode.options.debug,
+        },
+        // nh3d-plus: beginner mode with save slots; runs as normal in NetHack.
+        {
+          value: TRIAL_PLAY_MODE,
+          label: getTranslationStrings().plus.trialMode.playModeOption,
         },
       ],
       supportedRuntimeVersions: ["3.6.7", "5.0"],
