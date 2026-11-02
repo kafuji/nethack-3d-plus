@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { plusStrings } from "../../ui/app/shared/translations";
-import type { TrialSlotPhase } from "./use-trial-slots";
+import type { ReactNode } from "react";
+import { commonStrings, plusStrings } from "../../ui/app/shared/translations";
+import type { TrialSlotPhase, TrialSlotPicker } from "./use-trial-slots";
 import {
   TRIAL_SLOT_COUNT,
   type TrialAutoSnapshotInfo,
@@ -12,30 +12,24 @@ const trialStrings = plusStrings.trialMode;
 export interface TrialSlotMenuState {
   readonly trialModeActive: boolean;
   readonly trialSlotPhase: TrialSlotPhase;
+  readonly trialSlotPicker: TrialSlotPicker | null;
   readonly trialSlots: ReadonlyArray<TrialSlotInfo | null>;
   readonly trialSnapshots: ReadonlyArray<TrialAutoSnapshotInfo>;
+  readonly openTrialSlotPicker: (picker: TrialSlotPicker) => void;
+  readonly closeTrialSlotPicker: () => void;
   readonly saveTrialSlot: (slot: number) => void;
   readonly loadTrialSlot: (slot: number) => void;
   readonly loadTrialSnapshot: (id: string) => void;
 }
 
-/** Pause-menu body while a slot save/load is restarting the runtime. */
-export function TrialSlotProgress({ state }: { state: TrialSlotMenuState }) {
-  return (
-    <div className="nh3d-question-text">
-      {state.trialSlotPhase === "saving" ? trialStrings.saving : trialStrings.loading}
-    </div>
-  );
+/** Whether the pause menu should show the trial panel instead of its items. */
+export function isTrialSlotPanelVisible(state: TrialSlotMenuState): boolean {
+  return state.trialSlotPhase !== "idle" || state.trialSlotPicker !== null;
 }
 
-function describeSlot(slot: number, info: TrialSlotInfo | null): string {
-  if (!info) return trialStrings.emptySlot(slot);
-  return trialStrings.filledSlot(slot, describeDetail(info));
-}
-
-function describeDetail(info: TrialSlotInfo): string {
+function describeDetail(info: TrialSlotInfo, depthInTitle = false): string {
   return [
-    info.dlevel !== null ? trialStrings.slotDepth(info.dlevel) : null,
+    info.dlevel !== null && !depthInTitle ? trialStrings.slotDepth(info.dlevel) : null,
     info.turn !== null ? trialStrings.slotTurn(info.turn) : null,
     info.savedAt.toLocaleString(undefined, {
       month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit",
@@ -43,75 +37,166 @@ function describeDetail(info: TrialSlotInfo): string {
   ].filter(Boolean).join(" · ");
 }
 
-/**
- * Slot save/load entries for the pause menu; empty outside trial mode. Each
- * entry expands in place into one button per slot.
- */
-export function TrialSlotMenuItems({ state }: { state: TrialSlotMenuState }) {
-  const [picker, setPicker] = useState<"save" | "load" | null>(null);
-  if (!state.trialModeActive) return null;
-  const hasAnySlot = state.trialSlots.some(Boolean) || state.trialSnapshots.length > 0;
+const sectionLabelStyle = {
+  color: "var(--nh3d-ui-text-muted)",
+  fontWeight: "bold",
+  fontSize: "calc(12px * var(--nh3d-ui-font-scale, 1))",
+  paddingLeft: "2px",
+  textAlign: "left",
+} as const;
 
-  const renderSnapshots = () =>
-    state.trialSnapshots.map(snapshot => (
-      <button
-        className="nh3d-choice-button"
-        key={snapshot.id}
-        onClick={() => {
-          setPicker(null);
-          state.loadTrialSnapshot(snapshot.id);
+/** Two-line entry: what it is, then where and when it was saved. */
+function EntryButton(props: {
+  title: string;
+  detail: string;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className="nh3d-choice-button"
+      disabled={props.disabled}
+      onClick={props.onClick}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        width: "100%",
+        padding: "8px 12px",
+        textAlign: "left",
+        opacity: props.disabled ? 0.45 : 1,
+      }}
+      type="button"
+    >
+      <span style={{ fontWeight: "bold" }}>{props.title}</span>
+      <span
+        style={{
+          color: "var(--nh3d-ui-text-muted)",
+          fontSize: "calc(12px * var(--nh3d-ui-font-scale, 1))",
+          fontWeight: "normal",
+          marginTop: "2px",
         }}
-        style={{ fontSize: "0.9em" }}
-        type="button"
       >
-        {trialStrings.autoSnapshot(describeDetail(snapshot))}
-      </button>
-    ));
+        {props.detail}
+      </span>
+    </button>
+  );
+}
 
-  const renderSlots = (kind: "save" | "load") =>
-    Array.from({ length: TRIAL_SLOT_COUNT }, (_, index) => {
-      const slot = index + 1;
-      const info = state.trialSlots[index] ?? null;
-      return (
-        <button
-          className="nh3d-choice-button"
-          disabled={kind === "load" && !info}
-          key={`${kind}-${slot}`}
-          onClick={() => {
-            setPicker(null);
-            if (kind === "save") state.saveTrialSlot(slot);
-            else state.loadTrialSlot(slot);
-          }}
-          style={{ fontSize: "0.9em" }}
-          type="button"
-        >
-          {describeSlot(slot, info)}
-        </button>
-      );
-    });
+function Section(props: { label?: string; children: ReactNode }) {
+  return (
+    // The pause menu sizes plain choice buttons for one-line labels; slot
+    // entries need room for their details.
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        width: "min(340px, 100%)",
+        alignSelf: "center",
+      }}
+    >
+      {props.label ? <div style={sectionLabelStyle}>{props.label}</div> : null}
+      {props.children}
+    </div>
+  );
+}
+
+/**
+ * Replaces the pause-menu body while choosing a slot, or while a slot
+ * save/load restarts the runtime.
+ */
+export function TrialSlotPanel({ state }: { state: TrialSlotMenuState }) {
+  if (state.trialSlotPhase !== "idle") {
+    return (
+      <div className="nh3d-question-text">
+        {state.trialSlotPhase === "saving" ? trialStrings.saving : trialStrings.loading}
+      </div>
+    );
+  }
+  const picker = state.trialSlotPicker;
+  if (!picker) return null;
+
+  const slotEntries = Array.from({ length: TRIAL_SLOT_COUNT }, (_, index) => {
+    const slot = index + 1;
+    const info = state.trialSlots[index] ?? null;
+    return (
+      <EntryButton
+        detail={info ? describeDetail(info) : trialStrings.emptySlotDetail}
+        disabled={picker === "load" && !info}
+        key={slot}
+        onClick={() => (picker === "save" ? state.saveTrialSlot(slot) : state.loadTrialSlot(slot))}
+        title={trialStrings.slotTitle(slot)}
+      />
+    );
+  });
 
   return (
     <>
+      <div className="nh3d-options-title">
+        {picker === "save" ? trialStrings.saveTitle : trialStrings.loadTitle}
+      </div>
+      <div className="nh3d-overflow-glow-frame">
+        <div
+          className="nh3d-choice-list"
+          data-nh3d-overflow-glow
+          data-nh3d-overflow-glow-host="parent"
+          style={{ gap: "14px" }}
+        >
+          {/* Only loading has a second section that needs telling apart. */}
+          <Section label={picker === "load" ? trialStrings.manualSection : undefined}>
+            {slotEntries}
+          </Section>
+          {picker === "load" && state.trialSnapshots.length > 0 ? (
+            <Section label={trialStrings.autoSection}>
+              {state.trialSnapshots.map(snapshot => (
+                <EntryButton
+                  detail={describeDetail(snapshot, snapshot.dlevel !== null)}
+                  key={snapshot.id}
+                  onClick={() => state.loadTrialSnapshot(snapshot.id)}
+                  title={snapshot.dlevel !== null
+                    ? trialStrings.slotDepth(snapshot.dlevel)
+                    : trialStrings.autoSection}
+                />
+              ))}
+            </Section>
+          ) : null}
+        </div>
+      </div>
+      <div className="nh3d-menu-actions">
+        <button
+          className="nh3d-menu-action-button nh3d-menu-action-cancel"
+          onClick={state.closeTrialSlotPicker}
+          type="button"
+        >
+          {commonStrings.back}
+        </button>
+      </div>
+    </>
+  );
+}
+
+/** Entries that open the slot panel; nothing outside trial mode. */
+export function TrialSlotMenuItems({ state }: { state: TrialSlotMenuState }) {
+  if (!state.trialModeActive) return null;
+  const hasAnySave = state.trialSlots.some(Boolean) || state.trialSnapshots.length > 0;
+  return (
+    <>
       <button
-        aria-expanded={picker === "save"}
         className="nh3d-choice-button"
-        onClick={() => setPicker(picker === "save" ? null : "save")}
+        onClick={() => state.openTrialSlotPicker("save")}
         type="button"
       >
         {trialStrings.saveToSlot}
       </button>
-      {picker === "save" ? renderSlots("save") : null}
       <button
-        aria-expanded={picker === "load"}
         className="nh3d-choice-button"
-        disabled={!hasAnySlot}
-        onClick={() => setPicker(picker === "load" ? null : "load")}
+        disabled={!hasAnySave}
+        onClick={() => state.openTrialSlotPicker("load")}
         type="button"
       >
         {trialStrings.loadFromSlot}
       </button>
-      {picker === "load" ? renderSlots("load") : null}
-      {picker === "load" ? renderSnapshots() : null}
     </>
   );
 }
