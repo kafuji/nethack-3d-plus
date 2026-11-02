@@ -8,6 +8,14 @@ import type { BackgroundMusicPlayer } from "./procedural-music-player";
  * (and loops) the same way as in-game music.
  */
 export class TitleMusic {
+  /** Null when no title track is configured (the title screen stays silent). */
+  static createDefault(): TitleMusic | null {
+    if (!titleMusicTrack) return null;
+    return new TitleMusic(
+      createDefaultBackgroundMusicPlayer({ calm: [titleMusicTrack], combat: [], danger: [] }),
+    );
+  }
+
   private settings: BackgroundMusicSettings = {
     soundEnabled: true,
     musicEnabled: true,
@@ -16,13 +24,7 @@ export class TitleMusic {
   private active = false;
   private disposed = false;
 
-  constructor(
-    private readonly player: BackgroundMusicPlayer = createDefaultBackgroundMusicPlayer({
-      calm: [titleMusicTrack],
-      combat: [],
-      danger: [],
-    }),
-  ) {}
+  constructor(private readonly player: BackgroundMusicPlayer) {}
 
   setSettings(settings: BackgroundMusicSettings): void {
     this.settings = { ...settings };
