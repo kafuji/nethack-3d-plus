@@ -23,3 +23,15 @@ describe("message translation precedence", () => {
       .toEqual({ text: "You finish eating MysteryName.", isReferenceTranslation: false });
   });
 });
+
+describe("startup lock prompt", () => {
+  it.each([
+    ["There is already a game in progress under your name.  Do what?", "同じ名前のゲームが既に進行中です。どうしますか？"],
+    ["  y - Destroy old game", "  y - 古いゲームを消去する"],
+    ["  r - Try to recover it", "  r - 復元を試みる"],
+    ["  n - Cancel", "  n - キャンセル"],
+    ["Restoring save file...", "セーブファイルを復元中……"],
+  ])("translates %s", (english, japanese) => {
+    expect(presentGameMessage(english, "ja")).toEqual({ text: japanese, isReferenceTranslation: false });
+  });
+});
