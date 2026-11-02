@@ -421,6 +421,9 @@ export const plusEn = {
     emptySlotDetail: "Empty",
     slotDepth: (dlevel: number) => `Dlvl ${dlevel}`,
     slotTurn: (turn: number) => `T:${turn}`,
+    titleSection: "Trial and Error Saves",
+    characterSummary: (slots: number, snapshots: number) =>
+      `${slots} ${slots === 1 ? "slot" : "slots"} · ${snapshots} automatic`,
     saving: "Saving to slot...",
     loading: "Loading slot...",
   },

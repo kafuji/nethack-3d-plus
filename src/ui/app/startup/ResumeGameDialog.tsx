@@ -28,6 +28,12 @@ import {
   t
 } from "../shared/translations";
 import { isTrialPlayMode } from "../../../plus/trial/trial-play-mode"; // nh3d-plus
+// nh3d-plus: trial-and-error slots and snapshots on the title screen.
+import {
+  TrialTitleCharacters,
+  TrialTitlePicker,
+  useTrialTitleLoad,
+} from "../../../plus/trial/TrialTitleLoad";
 
 export interface ResumeGameDialogProps {
   startupInitialLoadingVisible: boolean;
@@ -66,6 +72,47 @@ export function ResumeGameDialog({
   handleDeleteSave,
   setStartupFlowStep,
 }: ResumeGameDialogProps) {
+  const resumeSave = (
+    save: Pick<SaveGameRecord, "name" | "initOptions" | "category">,
+  ) => {
+    const currentTilesetPath = String(
+      clientOptions.tilesetPath || "",
+    ).trim();
+    const compatibleTilesetPath =
+      resolveNh3dCompatibleTilesetPathForRuntime(
+        currentTilesetPath,
+        runtimeVersion,
+      );
+    if (
+      compatibleTilesetPath &&
+      compatibleTilesetPath !== currentTilesetPath
+    ) {
+      setClientOptions((previous) =>
+        normalizeNh3dClientOptions({
+          ...previous,
+          tilesetPath: compatibleTilesetPath,
+        }),
+      );
+      setClientOptionsDraft((previous) =>
+        normalizeNh3dClientOptions({
+          ...previous,
+          tilesetPath: compatibleTilesetPath,
+        }),
+      );
+    }
+    setCharacterCreationConfig({
+      mode: "resume",
+      playMode: clientOptions.fpsMode
+        ? "fps"
+        : "normal",
+      runtimeVersion,
+      name: save.name,
+      initOptions: save.initOptions,
+      resumeCategory: save.category,
+    });
+  };
+  const trialTitle = useTrialTitleLoad(runtimeVersion, startupResumeDialogVisible); // nh3d-plus
+
   return (
     <AnimatedDialog
       className="nh3d-dialog nh3d-dialog-question nh3d-dialog-fixed-actions startup nh3d-character-setup-dialog nh3d-character-setup-dialog-resume"
@@ -93,7 +140,10 @@ export function ResumeGameDialog({
           data-nh3d-overflow-glow-host="parent"
           style={{ width: "100%" }}
         >
-          {isLoadingSaves ? (
+          {/* nh3d-plus: a chosen trial character's slots replace the list. */}
+          {trialTitle.selected ? (
+            <TrialTitlePicker onResume={resumeSave} state={trialTitle} />
+          ) : isLoadingSaves ? (
             <div
               style={{
                 padding: "20px",
@@ -102,7 +152,7 @@ export function ResumeGameDialog({
             >
               {t.saves.loading}
             </div>
-          ) : savedGameSections.length > 0 ? (
+          ) : savedGameSections.length > 0 || trialTitle.characters.length > 0 /* nh3d-plus */ ? (
             <div
               style={{
                 display: "flex",
@@ -149,43 +199,7 @@ export function ResumeGameDialog({
                           padding: "12px",
                           width: "auto",
                         }}
-                        onClick={() => {
-                          const currentTilesetPath = String(
-                            clientOptions.tilesetPath || "",
-                          ).trim();
-                          const compatibleTilesetPath =
-                            resolveNh3dCompatibleTilesetPathForRuntime(
-                              currentTilesetPath,
-                              runtimeVersion,
-                            );
-                          if (
-                            compatibleTilesetPath &&
-                            compatibleTilesetPath !== currentTilesetPath
-                          ) {
-                            setClientOptions((previous) =>
-                              normalizeNh3dClientOptions({
-                                ...previous,
-                                tilesetPath: compatibleTilesetPath,
-                              }),
-                            );
-                            setClientOptionsDraft((previous) =>
-                              normalizeNh3dClientOptions({
-                                ...previous,
-                                tilesetPath: compatibleTilesetPath,
-                              }),
-                            );
-                          }
-                          setCharacterCreationConfig({
-                            mode: "resume",
-                            playMode: clientOptions.fpsMode
-                              ? "fps"
-                              : "normal",
-                            runtimeVersion,
-                            name: save.name,
-                            initOptions: save.initOptions,
-                            resumeCategory: save.category,
-                          });
-                        }}
+                        onClick={() => resumeSave(save)}
                         type="button"
                       >
                         <div style={{ width: "100%" }}>
@@ -227,6 +241,7 @@ export function ResumeGameDialog({
                   ))}
                 </div>
               ))}
+              <TrialTitleCharacters state={trialTitle} />{/* nh3d-plus */}
             </div>
           ) : (
             <div
@@ -243,7 +258,11 @@ export function ResumeGameDialog({
       <div className="nh3d-menu-actions">
         <button
           className="nh3d-menu-action-button nh3d-menu-action-cancel"
-          onClick={() => setStartupFlowStep("choose")}
+          onClick={() =>
+            // nh3d-plus: back from a trial character's slots to the list.
+            trialTitle.selected
+              ? trialTitle.clearSelection()
+              : setStartupFlowStep("choose")}
           type="button"
         >
           {commonStrings.back}

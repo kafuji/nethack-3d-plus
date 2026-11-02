@@ -181,6 +181,47 @@ export async function restoreTrialSlot(
  */
 export const AUTO_SNAPSHOT_LIMIT = 5;
 
+export type TrialCharacterSaves = {
+  name: string;
+  displayName: string;
+  slots: Array<TrialSlotInfo | null>;
+  snapshots: TrialAutoSnapshotInfo[];
+};
+
+/**
+ * Every character of this runtime with slots or snapshots, newest save
+ * first. Independent of the runtime's own saves, which a death, a quit or
+ * a lost autosave can remove while the slots remain.
+ */
+export async function listTrialCharacters(
+  runtimeVersion: NethackRuntimeVersion,
+): Promise<TrialCharacterSaves[]> {
+  const prefix = `${runtimeVersion}:`;
+  const keys = await withSlotStore<IDBValidKey[]>(
+    "readonly", store => store.getAllKeys(IDBKeyRange.bound(prefix, `${prefix}￿`)),
+  );
+  // Keys are "<runtime>:<name>:<slot or auto-time>"; names may contain ':'.
+  const names = new Set(
+    keys.map(key => String(key)).map(key => key.slice(prefix.length, key.lastIndexOf(":"))),
+  );
+  const characters: TrialCharacterSaves[] = [];
+  for (const name of names) {
+    if (!name) continue;
+    const [slots, snapshots] = await Promise.all([
+      readTrialSlots(runtimeVersion, name),
+      readAutoSnapshots(runtimeVersion, name),
+    ]);
+    const saves = [...slots.filter((slot): slot is TrialSlotInfo => slot !== null), ...snapshots];
+    if (!saves.length) continue;
+    characters.push({ name, displayName: saves[0].displayName || name, slots, snapshots });
+  }
+  const newest = (character: TrialCharacterSaves) => Math.max(
+    ...character.slots.map(slot => slot?.savedAt.getTime() ?? 0),
+    ...character.snapshots.map(snapshot => snapshot.savedAt.getTime()),
+  );
+  return characters.sort((a, b) => newest(b) - newest(a));
+}
+
 const AUTO_SNAPSHOT_KEY_PART = "auto-";
 
 export type TrialAutoSnapshotInfo = TrialSlotInfo & { id: string };

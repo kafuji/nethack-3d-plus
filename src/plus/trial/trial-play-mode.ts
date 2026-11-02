@@ -16,6 +16,15 @@ export function isTrialPlayMode(initOptions: readonly unknown[] | null | undefin
   return Array.isArray(initOptions) && initOptions.some(isTrialToken);
 }
 
+/** The options with trial as their play mode, for copies that lost it. */
+export function withTrialPlayMode(initOptions: readonly string[]): string[] {
+  if (isTrialPlayMode(initOptions)) return [...initOptions];
+  return [
+    ...initOptions.filter(token => !token.trim().toLowerCase().startsWith("playmode:")),
+    TRIAL_PLAY_MODE_TOKEN,
+  ];
+}
+
 export function toRuntimePlayModeTokens(tokens: string[]): string[] {
   return tokens.map(token => (isTrialToken(token) ? "playmode:normal" : token));
 }

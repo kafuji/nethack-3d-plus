@@ -440,6 +440,9 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
       emptySlotDetail: "空き",
       slotDepth: (dlevel: number) => `地下${dlevel}階`,
       slotTurn: (turn: number) => `${turn}ターン`,
+      titleSection: "試行錯誤のセーブ",
+      characterSummary: (slots: number, snapshots: number) =>
+        `スロット${slots}件 · 自動${snapshots}件`,
       saving: "スロットにセーブ中……",
       loading: "スロットからロード中……",
     },

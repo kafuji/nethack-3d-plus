@@ -27,7 +27,7 @@ export function isTrialSlotPanelVisible(state: TrialSlotMenuState): boolean {
   return state.trialSlotPhase !== "idle" || state.trialSlotPicker !== null;
 }
 
-function describeDetail(info: TrialSlotInfo, depthInTitle = false): string {
+export function describeDetail(info: TrialSlotInfo, depthInTitle = false): string {
   return [
     info.dlevel !== null && !depthInTitle ? trialStrings.slotDepth(info.dlevel) : null,
     info.turn !== null ? trialStrings.slotTurn(info.turn) : null,
@@ -46,7 +46,7 @@ const sectionLabelStyle = {
 } as const;
 
 /** Two-line entry: what it is, then where and when it was saved. */
-function EntryButton(props: {
+export function EntryButton(props: {
   title: string;
   detail: string;
   disabled?: boolean;
@@ -83,22 +83,74 @@ function EntryButton(props: {
   );
 }
 
-function Section(props: { label?: string; children: ReactNode }) {
+export function Section(props: { label?: string; wide?: boolean; children?: ReactNode }) {
   return (
     // The pause menu sizes plain choice buttons for one-line labels; slot
-    // entries need room for their details.
+    // entries need room for their details. The title screen's list is
+    // already wide, so there they take its full width.
     <div
       style={{
         display: "flex",
         flexDirection: "column",
         gap: "8px",
-        width: "min(340px, 100%)",
+        width: props.wide ? "100%" : "min(340px, 100%)",
         alignSelf: "center",
       }}
     >
       {props.label ? <div style={sectionLabelStyle}>{props.label}</div> : null}
       {props.children}
     </div>
+  );
+}
+
+function renderSlotEntries(
+  slots: ReadonlyArray<TrialSlotInfo | null>,
+  onPick: (slot: number) => void,
+  emptyDisabled: boolean,
+) {
+  return Array.from({ length: TRIAL_SLOT_COUNT }, (_, index) => {
+    const slot = index + 1;
+    const info = slots[index] ?? null;
+    return (
+      <EntryButton
+        detail={info ? describeDetail(info) : trialStrings.emptySlotDetail}
+        disabled={emptyDisabled && !info}
+        key={slot}
+        onClick={() => onPick(slot)}
+        title={trialStrings.slotTitle(slot)}
+      />
+    );
+  });
+}
+
+/** Manual slots, then automatic snapshots: what can be loaded. */
+export function TrialLoadEntries(props: {
+  slots: ReadonlyArray<TrialSlotInfo | null>;
+  snapshots: ReadonlyArray<TrialAutoSnapshotInfo>;
+  onLoadSlot: (slot: number) => void;
+  onLoadSnapshot: (id: string) => void;
+  wide?: boolean;
+}) {
+  return (
+    <>
+      <Section label={trialStrings.manualSection} wide={props.wide}>
+        {renderSlotEntries(props.slots, props.onLoadSlot, true)}
+      </Section>
+      {props.snapshots.length > 0 ? (
+        <Section label={trialStrings.autoSection} wide={props.wide}>
+          {props.snapshots.map(snapshot => (
+            <EntryButton
+              detail={describeDetail(snapshot, snapshot.dlevel !== null)}
+              key={snapshot.id}
+              onClick={() => props.onLoadSnapshot(snapshot.id)}
+              title={snapshot.dlevel !== null
+                ? trialStrings.slotDepth(snapshot.dlevel)
+                : trialStrings.autoSection}
+            />
+          ))}
+        </Section>
+      ) : null}
+    </>
   );
 }
 
@@ -117,20 +169,6 @@ export function TrialSlotPanel({ state }: { state: TrialSlotMenuState }) {
   const picker = state.trialSlotPicker;
   if (!picker) return null;
 
-  const slotEntries = Array.from({ length: TRIAL_SLOT_COUNT }, (_, index) => {
-    const slot = index + 1;
-    const info = state.trialSlots[index] ?? null;
-    return (
-      <EntryButton
-        detail={info ? describeDetail(info) : trialStrings.emptySlotDetail}
-        disabled={picker === "load" && !info}
-        key={slot}
-        onClick={() => (picker === "save" ? state.saveTrialSlot(slot) : state.loadTrialSlot(slot))}
-        title={trialStrings.slotTitle(slot)}
-      />
-    );
-  });
-
   return (
     <>
       <div className="nh3d-options-title">
@@ -143,24 +181,18 @@ export function TrialSlotPanel({ state }: { state: TrialSlotMenuState }) {
           data-nh3d-overflow-glow-host="parent"
           style={{ gap: "14px" }}
         >
-          {/* Only loading has a second section that needs telling apart. */}
-          <Section label={picker === "load" ? trialStrings.manualSection : undefined}>
-            {slotEntries}
-          </Section>
-          {picker === "load" && state.trialSnapshots.length > 0 ? (
-            <Section label={trialStrings.autoSection}>
-              {state.trialSnapshots.map(snapshot => (
-                <EntryButton
-                  detail={describeDetail(snapshot, snapshot.dlevel !== null)}
-                  key={snapshot.id}
-                  onClick={() => state.loadTrialSnapshot(snapshot.id)}
-                  title={snapshot.dlevel !== null
-                    ? trialStrings.slotDepth(snapshot.dlevel)
-                    : trialStrings.autoSection}
-                />
-              ))}
+          {picker === "save" ? (
+            <Section>
+              {renderSlotEntries(state.trialSlots, state.saveTrialSlot, false)}
             </Section>
-          ) : null}
+          ) : (
+            <TrialLoadEntries
+              onLoadSlot={state.loadTrialSlot}
+              onLoadSnapshot={state.loadTrialSnapshot}
+              slots={state.trialSlots}
+              snapshots={state.trialSnapshots}
+            />
+          )}
         </div>
       </div>
       <div className="nh3d-menu-actions">
