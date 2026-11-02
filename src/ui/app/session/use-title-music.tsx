@@ -25,7 +25,7 @@ export function useTitleMusic(dependencies: UseTitleMusicDependencies) {
         clearTimeout(releaseTimerRef.current);
         releaseTimerRef.current = null;
       }
-      musicRef.current ??= new TitleMusic();
+      musicRef.current ??= TitleMusic.createDefault();
     }
     const music = musicRef.current;
     if (!music) return;
