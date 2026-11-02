@@ -408,4 +408,17 @@ export const plusEn = {
       noTombstone: "No tombstone snapshot was archived for this run.",
     },
   },
+  trialMode: {
+    playModeOption: "Trial and Error",
+    saveChip: "Trial",
+    saveToSlot: "Save to slot...",
+    loadFromSlot: "Load from slot...",
+    emptySlot: (slot: number) => `Slot ${slot}: empty`,
+    filledSlot: (slot: number, detail: string) => `Slot ${slot}: ${detail}`,
+    slotDepth: (dlevel: number) => `Dlvl ${dlevel}`,
+    slotTurn: (turn: number) => `T:${turn}`,
+    autoSnapshot: (detail: string) => `Auto: ${detail}`,
+    saving: "Saving to slot...",
+    loading: "Loading slot...",
+  },
 } as const;

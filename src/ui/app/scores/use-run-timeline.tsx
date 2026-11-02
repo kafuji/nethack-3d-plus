@@ -27,6 +27,7 @@ import {
 import {
   capitalizeFirstLetter
 } from "../shared/text";
+import { isTrialPlayMode } from "../../../plus/trial/trial-play-mode"; // nh3d-plus
 
 /** Capture gameplay status/message/death telemetry and persist scores */
 export function useRunTimelineState() {
@@ -389,6 +390,8 @@ export function useRunTimelineTracking(dependencies: UseRunTimelineTrackingDepen
       tombstoneLines: gameOver.tombstoneLines,
       telemetry: gameOver.telemetry,
       postmortemReports: gameOver.postmortemReports,
+      // nh3d-plus: trial-and-error runs are kept out of the score list.
+      trial: isTrialPlayMode(characterCreationConfig?.initOptions),
     };
     scoreSaveQueueRef.current = scoreSaveQueueRef.current.then(async () => {
       try {

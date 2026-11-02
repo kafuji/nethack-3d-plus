@@ -427,6 +427,19 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
         noTombstone: "このプレイの墓碑は保存されていません。",
       },
     },
+    trialMode: {
+      playModeOption: "試行錯誤",
+      saveChip: "試行錯誤",
+      saveToSlot: "スロットにセーブ……",
+      loadFromSlot: "スロットからロード……",
+      emptySlot: (slot: number) => `スロット${slot}：空き`,
+      filledSlot: (slot: number, detail: string) => `スロット${slot}：${detail}`,
+      slotDepth: (dlevel: number) => `地下${dlevel}階`,
+      slotTurn: (turn: number) => `${turn}ターン`,
+      autoSnapshot: (detail: string) => `自動：${detail}`,
+      saving: "スロットにセーブ中……",
+      loading: "スロットからロード中……",
+    },
   },
   app: {
     clientOptions: {

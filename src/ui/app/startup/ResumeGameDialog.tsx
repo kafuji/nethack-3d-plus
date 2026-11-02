@@ -24,8 +24,10 @@ import {
 } from "./RuntimeVersionBadge";
 import {
   commonStrings,
+  plusStrings,
   t
 } from "../shared/translations";
+import { isTrialPlayMode } from "../../../plus/trial/trial-play-mode"; // nh3d-plus
 
 export interface ResumeGameDialogProps {
   startupInitialLoadingVisible: boolean;
@@ -206,6 +208,10 @@ export function ResumeGameDialog({
                             }}
                           >
                             {t.saves.savedAt(save.dateFormatted)}
+                            {/* nh3d-plus: mark trial-and-error saves. */}
+                            {isTrialPlayMode(save.initOptions)
+                              ? ` · ${plusStrings.trialMode.saveChip}`
+                              : ""}
                           </div>
                         </div>
                       </button>
