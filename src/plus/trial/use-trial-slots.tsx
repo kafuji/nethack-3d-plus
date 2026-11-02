@@ -43,6 +43,7 @@ function finiteOrNull(value: unknown): number | null {
 }
 
 export type TrialSlotPhase = "idle" | "saving" | "loading";
+export type TrialSlotPicker = "save" | "load";
 
 export interface UseTrialSlotsDependencies {
   readonly controller: Nethack3DEngineController | null;
@@ -52,6 +53,7 @@ export interface UseTrialSlotsDependencies {
   readonly characterCreationConfig: CharacterCreationConfig | null;
   readonly setCharacterCreationConfig: React.Dispatch<React.SetStateAction<CharacterCreationConfig | null>>;
   readonly runtimeVersion: NethackRuntimeVersion;
+  readonly isPauseMenuVisible: boolean;
   readonly setIsPauseMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
   readonly playerStats: PlayerStatsSnapshot;
 }
@@ -69,6 +71,7 @@ export function useTrialSlots(dependencies: UseTrialSlotsDependencies) {
     characterCreationConfig,
     setCharacterCreationConfig,
     runtimeVersion,
+    isPauseMenuVisible,
     setIsPauseMenuVisible,
     playerStats,
   } = dependencies;
@@ -77,6 +80,9 @@ export function useTrialSlots(dependencies: UseTrialSlotsDependencies) {
   // New games carry the effective save name; resumes carry the save's name.
   const characterName = characterCreationConfig?.name ?? "";
   const [phase, setPhase] = useState<TrialSlotPhase>("idle");
+  const [picker, setPicker] = useState<TrialSlotPicker | null>(null);
+  // Reopening the pause menu starts from its main items.
+  useEffect(() => { if (!isPauseMenuVisible) setPicker(null); }, [isPauseMenuVisible]);
   const [slots, setSlots] = useState<Array<TrialSlotInfo | null>>([]);
   const [snapshots, setSnapshots] = useState<TrialAutoSnapshotInfo[]>([]);
   const pending = useRef<{
@@ -184,6 +190,7 @@ export function useTrialSlots(dependencies: UseTrialSlotsDependencies) {
       startedAt: performance.now(),
       answered: false,
     };
+    setPicker(null);
     setPhase(kind === "save" ? "saving" : "loading");
     // Both paths save first: it is the only way to make the runtime flush a
     // coherent state to IndexedDB and exit cleanly before the worker goes away.
@@ -246,6 +253,9 @@ export function useTrialSlots(dependencies: UseTrialSlotsDependencies) {
   return {
     trialModeActive,
     trialSlotPhase: phase,
+    trialSlotPicker: picker,
+    openTrialSlotPicker: setPicker,
+    closeTrialSlotPicker: () => setPicker(null),
     trialSlots: slots,
     trialSnapshots: snapshots,
     saveTrialSlot: (slot: number) => begin("save", slot),

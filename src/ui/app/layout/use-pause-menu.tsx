@@ -15,7 +15,8 @@ import type { Nethack3DEngineController } from "../../../game/ui-types";
 // nh3d-plus: trial-and-error mode save slots.
 import {
   TrialSlotMenuItems,
-  TrialSlotProgress,
+  TrialSlotPanel,
+  isTrialSlotPanelVisible,
   type TrialSlotMenuState,
 } from "../../../plus/trial/TrialSlotMenu";
 
@@ -53,9 +54,9 @@ export function usePauseMenu(dependencies: UsePauseMenuDependencies) {
         open={isPauseMenuVisible}
         id="pause-menu-dialog"
       >
-        {/* nh3d-plus: show progress while a slot save/load restarts the runtime. */}
-        {trialSlots.trialSlotPhase !== "idle" ? (
-          <TrialSlotProgress state={trialSlots} />
+        {/* nh3d-plus: trial-mode slot selection and save/load progress. */}
+        {isTrialSlotPanelVisible(trialSlots) ? (
+          <TrialSlotPanel state={trialSlots} />
         ) : isExitConfirmationVisible ? (
           <>
             <div className="nh3d-question-text">

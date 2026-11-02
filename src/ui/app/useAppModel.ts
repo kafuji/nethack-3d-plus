@@ -1853,6 +1853,7 @@ export function useAppModel() {
     get characterCreationConfig() { return characterCreationConfig; },
     get setCharacterCreationConfig() { return setCharacterCreationConfig; },
     get runtimeVersion() { return activeRuntimeVersion; },
+    get isPauseMenuVisible() { return isPauseMenuVisible; },
     get setIsPauseMenuVisible() { return setIsPauseMenuVisible; },
     get playerStats() { return playerStats; },
   });
