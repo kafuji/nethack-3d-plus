@@ -1,31 +1,18 @@
 NetHack 3D - Background music credits
 =====================================
 
-All bundled background music tracks are dedicated to the public domain under
-Creative Commons CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/).
-Attribution is not required, but we gratefully credit the authors.
-Files were trimmed, loudness-normalised and re-encoded to Ogg Vorbis.
+All background music is original work made for NetHack 3D Plus: each piece
+was composed as a MIDI sketch (scripts/music-sketch) and produced with Suno
+under a Pro plan subscription. It is not covered by CC0.
 
-public/music/calm-dungeon.ogg
-  "Dungeon Ambience" by yd
-  https://opengameart.org/content/dungeon-ambience
-
-public/music/calm-unexplored.ogg
-  "Unexplored Expansion" by Bo Jingles (based on "Unexplored - short" by TAD)
-  https://opengameart.org/content/unexplored-expansion
-
-public/music/combat-battle-theme-a.ogg
-  "Battle Theme A" by cynicmusic
-  https://opengameart.org/content/battle-theme-a
-
-public/music/combat-determined-pursuit.ogg
-  "Determined Pursuit (epic orchestra loop)" by Emma_MA
-  https://opengameart.org/content/determined-pursuit-epic-orchestra-loop
-
-public/music/danger-tension-and-distress.ogg
-  "Tension and Distress" by Allen Yatsura
-  https://opengameart.org/content/tension-and-distress
-
-public/music/danger-panic-mode.ogg
-  "Panic Mode" by Breadman
-  https://opengameart.org/node/114093
+public/music/title-theme.mp3   "The Descent (Title Theme)"  scripts/music-sketch/pieces/title.mjs
+public/music/dungeon.mp3       "Dungeons of Doom"           scripts/music-sketch/pieces/dungeon.mjs
+public/music/mines.mp3         "Gnomish Mines"              scripts/music-sketch/pieces/mines.mjs
+public/music/sokoban.mp3       "Sokoban"                    scripts/music-sketch/pieces/sokoban.mjs
+public/music/quest.mp3         "The Quest"                  scripts/music-sketch/pieces/quest.mjs
+public/music/medusa.mp3        "Medusa's Island"            scripts/music-sketch/pieces/medusa.mjs
+public/music/castle.mp3        "The Castle"                 scripts/music-sketch/pieces/castle.mjs
+public/music/gehennom.mp3      "Gehennom"                   scripts/music-sketch/pieces/gehennom.mjs
+public/music/combat.mp3        "Combat"                     scripts/music-sketch/pieces/combat-heavy.mjs
+public/music/combat-boss.mp3   "Boss Combat"                scripts/music-sketch/pieces/combat.mjs
+public/music/danger.mp3        "Danger"                     scripts/music-sketch/pieces/danger.mjs

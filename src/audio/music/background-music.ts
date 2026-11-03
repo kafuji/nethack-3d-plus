@@ -2,7 +2,12 @@ import { MusicDirector, type MusicMood } from "./music-director";
 import { FileMusicPlayer } from "./file-music-player";
 import { defaultMusicLibrary, type MusicLibrary } from "./music-library";
 import { ProceduralMusicPlayer, type BackgroundMusicPlayer } from "./procedural-music-player";
-import { regionTrackPreferences, resolveMusicRegion, type MusicRegion } from "./music-region";
+import {
+  regionTrackPreferences,
+  resolveMusicRegion,
+  type MusicRegion,
+  type MusicSpecialLevel,
+} from "./music-region";
 import type { MusicStatusEffect } from "./status-effects";
 
 export type BackgroundMusicSettings = {
@@ -17,6 +22,8 @@ export type BackgroundMusicStats = {
   time: number;
   /** Dungeon branch name from the status line (selects regional tracks). */
   dungeon?: string;
+  /** Medusa's level or the Castle, which report the Dungeons of Doom as their branch. */
+  specialLevel?: MusicSpecialLevel | null;
 };
 
 const EVALUATE_INTERVAL_MS = 250;
@@ -84,7 +91,9 @@ export class BackgroundMusic {
     this.stats = { ...stats };
     this.dangerCondition = dangerCondition;
     this.setStatusEffects(statusEffects);
-    if (stats.dungeon !== undefined) this.updateRegion(resolveMusicRegion(stats.dungeon));
+    if (stats.dungeon !== undefined) {
+      this.updateRegion(resolveMusicRegion(stats.dungeon, stats.specialLevel ?? null));
+    }
     this.evaluate();
   }
 
@@ -106,7 +115,8 @@ export class BackgroundMusic {
     const entering = this.region !== null;
     this.region = region;
     this.player.setTrackPreference?.(regionTrackPreferences[region]);
-    // A small fanfare when walking into a new branch (not on game start).
+    // A small fanfare when walking into a new branch or special level (not on
+    // game start).
     if (entering && region !== "dungeon" && this.isEnabled() && !this.gameOver) {
       this.player.playStinger?.("region-enter");
     }

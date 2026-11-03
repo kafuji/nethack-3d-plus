@@ -15,11 +15,18 @@ import { logWithOriginal } from "../../../logging";
 import { MessageSoundHooks } from "../../message-sound-hooks";
 import { Nh3dStatusSoundTracker, resolveActiveConditionSoundKeys } from "../../../audio/status-effect-synth";
 import type { MusicStatusEffect } from "../../../audio/music/status-effects";
+import {
+  couldBeMedusaLevel,
+  resolveMusicSpecialLevel,
+  type MusicSpecialLevel,
+} from "../../../audio/music/music-region";
+import { classifyTileBehavior } from "../../glyphs/behavior";
 import type { Nh3dAndroidBridge } from "../shared/types";
 import type { DirectionPrompts } from "../ui/direction-prompts";
 import type { EngineState } from "../runtime/engine-state";
 import type { MovementInput } from "../input/movement-input";
 import type { PlayerMovement } from "../world/player-movement";
+import type { LevelTerrainCache } from "../world/level-terrain-cache";
 import type { PositionSelection } from "../input/position-selection";
 import type { PromptDialogs } from "../ui/prompt-dialogs";
 import type { QuestionMenus } from "../ui/question-menus";
@@ -33,6 +40,11 @@ export interface AudioHapticsPlatformDependencies {
   readonly engineState: Pick<
     EngineState,
     "clientOptions" | "disposed" | "characterCreationConfig"
+  >;
+  readonly levelTerrainCache: Pick<
+    LevelTerrainCache,
+    "latestRuntimeLevelIdentity"
+    | "lastKnownTerrain"
   >;
   readonly movementInput: Pick<
     MovementInput,
@@ -76,6 +88,12 @@ export class AudioHapticsPlatform {
   backgroundMusic!: BackgroundMusic;
 
   private readonly statusSoundTracker = new Nh3dStatusSoundTracker();
+
+  private knownWaterTileCount: {
+    terrain: ReadonlyMap<unknown, unknown>;
+    size: number;
+    count: number;
+  } | null = null;
 
   readonly deploymentTarget: string = this.resolveDeploymentTarget();
 
@@ -196,10 +214,53 @@ export class AudioHapticsPlatform {
         (badge) => badge.severity === "danger",
       );
     this.backgroundMusic.notifyPlayerStats(
-      { hp: stats.hp, maxHp: stats.maxHp, time: stats.time, dungeon: stats.dungeon },
+      {
+        hp: stats.hp,
+        maxHp: stats.maxHp,
+        time: stats.time,
+        dungeon: stats.dungeon,
+        specialLevel: this.resolveMusicSpecialLevel(),
+      },
       dangerCondition,
       resolveMusicStatusEffects(stats.conditionMask, runtimeVersion),
     );
+  }
+
+  private resolveMusicSpecialLevel(): MusicSpecialLevel | null {
+    const identity = this.dependencies.levelTerrainCache?.latestRuntimeLevelIdentity;
+    if (!identity) return null;
+    const level = {
+      dnum: identity.dnum,
+      dlevel: identity.dlevel,
+      specialLevel: identity.specialLevel,
+      mainDungeonLevelCount: identity.mainDungeonLevelCount,
+    };
+    // Counting water is only worth it where Medusa's level could be.
+    return resolveMusicSpecialLevel(
+      couldBeMedusaLevel(level) ? { ...level, knownWaterTiles: this.countKnownWaterTiles() } : level,
+    );
+  }
+
+  private countKnownWaterTiles(): number {
+    const terrain = this.dependencies.levelTerrainCache.lastKnownTerrain;
+    const cached = this.knownWaterTileCount;
+    if (cached && cached.terrain === terrain && cached.size === terrain.size) {
+      return cached.count;
+    }
+    let count = 0;
+    for (const snapshot of terrain.values()) {
+      const behavior = classifyTileBehavior({
+        glyph: snapshot.glyph,
+        runtimeChar: snapshot.char ?? null,
+        runtimeColor: typeof snapshot.color === "number" ? snapshot.color : null,
+        runtimeTileIndex: typeof snapshot.tileIndex === "number" ? snapshot.tileIndex : null,
+        runtimeSymidx: typeof snapshot.symidx === "number" ? snapshot.symidx : null,
+        priorTerrain: snapshot,
+      });
+      if (behavior.materialKind === "water") count += 1;
+    }
+    this.knownWaterTileCount = { terrain, size: terrain.size, count };
+    return count;
   }
 
   triggerDamageRumble(durationMs: number, intensity: number): void {

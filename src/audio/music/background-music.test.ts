@@ -77,8 +77,28 @@ describe("BackgroundMusic", () => {
     expect(player.stingers).toEqual([]);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 50, dungeon: "The Gnomish Mines" }, false);
     expect(music.getCurrentRegion()).toBe("mines");
-    expect(player.preferences[player.preferences.length - 1]?.calm?.[0]).toBe("calm-unexplored");
+    expect(player.preferences[player.preferences.length - 1]?.calm?.[0]).toBe("mines");
     expect(player.stingers).toEqual(["region-enter"]);
+    music.dispose();
+  });
+
+  it("switches to Medusa's and the Castle's tracks inside the Dungeons of Doom", () => {
+    const player = new FakePlayer();
+    const music = new BackgroundMusic(player, () => 0);
+    music.setSettings(on);
+    const doom = { hp: 10, maxHp: 10, dungeon: "The Dungeons of Doom" };
+    music.notifyPlayerStats({ ...doom, time: 1 }, false);
+    music.notifyPlayerStats({ ...doom, time: 2, specialLevel: "medusa" }, false);
+    expect(music.getCurrentRegion()).toBe("medusa");
+    expect(player.preferences[player.preferences.length - 1]?.calm).toEqual(["medusa"]);
+    music.notifyPlayerStats({ ...doom, time: 3, specialLevel: "castle" }, false);
+    expect(music.getCurrentRegion()).toBe("castle");
+    expect(player.preferences[player.preferences.length - 1]?.combat).toEqual(["combat-boss"]);
+    expect(player.stingers).toEqual(["region-enter", "region-enter"]);
+    // Climbing back to an ordinary level returns to the dungeon without a cue.
+    music.notifyPlayerStats({ ...doom, time: 4, specialLevel: null }, false);
+    expect(music.getCurrentRegion()).toBe("dungeon");
+    expect(player.stingers).toEqual(["region-enter", "region-enter"]);
     music.dispose();
   });
 

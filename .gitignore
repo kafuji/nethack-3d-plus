@@ -30,3 +30,6 @@ quest/version-code.local.json.tmp
 # Local scratch dirs and Node compile caches
 .*-tmp/
 node-compile-cache/
+
+# Generated music sketches (MIDI / preview WAV)
+music-sketches/

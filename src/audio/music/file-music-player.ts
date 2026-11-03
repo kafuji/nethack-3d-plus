@@ -75,8 +75,9 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   }
 
   /**
-   * Reorders each mood's playlist so the preferred tracks come first. If the
-   * active mood is playing a track that is no longer preferred, crossfade.
+   * Restricts each mood's playlist to the preferred tracks (moods without a
+   * preference use the whole library). If the active mood is playing a track
+   * that is no longer preferred, crossfade.
    */
   setTrackPreference(preference: TrackPreference): void {
     this.preference = { ...preference };
@@ -227,15 +228,14 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   private startPreload(): void {
     if (this.preloadStarted) return;
     this.preloadStarted = true;
-    // Load the first track of every mood up front so combat/danger start instantly.
+    // Load the first track of every mood up front so combat/danger start
+    // instantly. Other tracks load when a region or the playlist needs them,
+    // which keeps memory down now that the library has a track per region.
     const order: MusicMood[] = ["calm", "combat", "danger"];
     void (async () => {
       for (const mood of order) {
-        const first = this.library[mood][0];
+        const first = this.playlist(mood)[0];
         if (first) await this.loadTrackUrl(first);
-      }
-      for (const mood of order) {
-        for (const track of this.library[mood].slice(1)) await this.loadTrackUrl(track);
       }
     })();
   }
@@ -265,8 +265,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
     const preferred = (this.preference[mood] ?? [])
       .map((id) => all.find((track) => track.id === id))
       .filter((track): track is MusicTrack => Boolean(track));
-    const rest = this.library[mood].filter((track) => !preferred.includes(track));
-    return [...preferred, ...rest];
+    return preferred.length > 0 ? preferred : [...this.library[mood]];
   }
 
   private getChannel(mood: MusicMood): MoodChannel | null {
@@ -365,8 +364,12 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
       element.preload = "auto";
       element.src = url;
       const source = context.createMediaElementSource(element);
+      // Fixed per-track level trim ahead of the deck's fade gain.
+      const trim = context.createGain();
+      trim.gain.value = Math.pow(10, (track.gainDb ?? 0) / 20);
       const gain = context.createGain();
-      source.connect(gain);
+      source.connect(trim);
+      trim.connect(gain);
       deck = { track, element, gain };
       decks.push(deck);
       setElementRate(element, this.playbackRate);
