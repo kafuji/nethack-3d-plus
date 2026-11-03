@@ -172,6 +172,15 @@ const japanesePromptTemplates: readonly [RegExp, (...values: string[]) => string
     const amounts: Readonly<Record<string, string>> = { "": "", "a little ": "少し", "somewhat ": "やや", "rather ": "かなり", "quite ": "かなり", "very ": "とても", "extremely ": "非常に", "too ": "あまりに" };
     return `この魔法書を理解するのは${amounts[degree ?? ""]}難しいです。続けますか？`;
   }],
+  // wield.c passes only pronouns ("You have that readied.  Wield it instead?").
+  [/^You are wielding (?:that|those)\.  Ready (?:it|them) instead\?$/, () => "それは手に持っています。代わりに準備しますか？"],
+  [/^You have (?:that|those) readied\.  Wield (?:it|them) instead\?$/, () => "それは準備しています。代わりに手に持ちますか？"],
+  [/^(?:That is|Those are) your (second|alternate) weapon\.  Ready (?:it|them) instead\?$/, (slot) => `それは${slot === "second" ? "二刀流の二本目" : "予備"}の武器です。代わりに準備しますか？`],
+  [/^You have (\d+) ([^.!?\n]+) readied\.  Wield one\?$/, (count, item) => `${translatePromptObject(`${count} ${item}`)}を準備しています。一つを手に持ちますか？`],
+  [/^(You are wielding|You are dual wielding|Your alternate weapon is) (\d+) ([^.!?\n]+)\.  Ready (\d+) of them\?$/, (subject, count, item, ready) => {
+    const held = subject === "You are wielding" ? "手に持っています" : subject === "You are dual wielding" ? "二刀流で持っています" : "予備の武器にしています";
+    return `${translatePromptObject(`${count} ${item}`)}を${held}。そのうち${ready}つを準備しますか？`;
+  }],
   [/^You are wielding ([^.!?\n]+)\.  Ready ([^?\n]+) instead\?$/, (current, replacement) => `${translatePromptObject(current)}を手に持っています。代わりに${translatePromptObject(replacement)}を準備しますか？`],
   [/^You have ([^.!?\n]+) readied\.  Wield ([^?\n]+) instead\?$/, (current, replacement) => `${translatePromptObject(current)}を準備しています。代わりに${translatePromptObject(replacement)}を手に持ちますか？`],
   [/^There is a bear trap here \(([^()\n]+)\); eat it\?$/, (state) => `ここにクマ捕り罠があります（${state}）。食べますか？`],
