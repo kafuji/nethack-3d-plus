@@ -228,15 +228,14 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   private startPreload(): void {
     if (this.preloadStarted) return;
     this.preloadStarted = true;
-    // Load the first track of every mood up front so combat/danger start instantly.
+    // Load the first track of every mood up front so combat/danger start
+    // instantly. Other tracks load when a region or the playlist needs them,
+    // which keeps memory down now that the library has a track per region.
     const order: MusicMood[] = ["calm", "combat", "danger"];
     void (async () => {
       for (const mood of order) {
-        const first = this.library[mood][0];
+        const first = this.playlist(mood)[0];
         if (first) await this.loadTrackUrl(first);
-      }
-      for (const mood of order) {
-        for (const track of this.library[mood].slice(1)) await this.loadTrackUrl(track);
       }
     })();
   }

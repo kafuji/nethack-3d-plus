@@ -76,6 +76,18 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/quest.mjs",
     },
+    {
+      // Not picked by any region yet: Medusa's level is part of the Dungeons
+      // of Doom, so it needs special-level detection first.
+      id: "medusa",
+      path: "music/medusa.mp3",
+      loop: "crossfade",
+      crossfadeSec: 4,
+      gainDb: -6.5,
+      title: "Medusa's Island",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/medusa.mjs",
+    },
   ],
   combat: [
     {
