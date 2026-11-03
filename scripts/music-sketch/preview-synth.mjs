@@ -60,6 +60,27 @@ function timpani({ gain }) {
   };
 }
 
+/** Struck metal (pick on rock, anvil): inharmonic partials with a fast decay. */
+function metal({ gain }) {
+  const partials = [
+    [1, 1, 16],
+    [2.76, 0.6, 24],
+    [5.4, 0.35, 32],
+    [8.93, 0.2, 44],
+  ];
+  return (out, sampleRate, freq, dur, vel) => {
+    const length = Math.min(out.length, Math.ceil(0.4 * sampleRate));
+    const amp = gain * (vel / 127);
+    const active = partials.filter(([ratio]) => freq * ratio < sampleRate / 2);
+    for (let i = 0; i < length; i++) {
+      const t = i / sampleRate;
+      let sample = 0;
+      for (const [ratio, level, decay] of active) sample += level * Math.sin(TAU * freq * ratio * t) * Math.exp(-t * decay);
+      out[i] += sample * Math.min(1, i / 10) * amp;
+    }
+  };
+}
+
 /** General MIDI drum notes: 36 kick, 38 snare, 42 closed hat, 46 open hat. */
 function drums({ gain }) {
   return (out, sampleRate, freq, dur, vel, pitch) => {
@@ -97,6 +118,7 @@ const voices = {
   bass: { render: additive({ harmonics: [1, 0.5, 0.25, 0.12], attack: 0.2, release: 0.8, gain: 0.08 }), pan: 0 },
   harp: { render: plucked({ gain: 0.22, decay: 0.997, ring: 1.5 }), pan: 0.3 },
   timpani: { render: timpani({ gain: 0.3 }), pan: 0 },
+  metal: { render: metal({ gain: 0.15 }), pan: 0.35 },
 };
 
 export function renderPreview(piece, { sampleRate = 44100, tailSec = 2, normalize: autoGain = true } = {}) {
