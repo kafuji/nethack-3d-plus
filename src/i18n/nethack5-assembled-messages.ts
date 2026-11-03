@@ -198,7 +198,7 @@ const lookDescription = (text: string): string | undefined => {
   return called ? `${called[3]}という${name}` : name;
 };
 
-// hcolor() results; a hallucinatory color is left untranslated.
+// hcolor() results (see color-text.ts for hallucinatory colors).
 const colors: Readonly<Record<string, string>> = {
   red: "赤", orange: "オレンジ", yellow: "黄", green: "緑", blue: "青", purple: "紫", violet: "すみれ", black: "黒", white: "白",
   brown: "茶", gray: "灰", grey: "灰", silver: "銀", golden: "金", gold: "金", amber: "琥珀", cyan: "シアン", magenta: "赤紫",

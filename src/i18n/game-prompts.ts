@@ -158,6 +158,11 @@ function translatePromptObject(value: string): string {
 // Anchors avoid rewriting unrelated text or the runtime's choice inputs.
 const japanesePromptTemplates: readonly [RegExp, (...values: string[]) => string][] = [
   [/^Really attack ([^?\n]+)\?$/, (value) => `${translateMonsterName(value, "ja")}を本当に攻撃しますか？`],
+  // mhitu.c mayberem(): a seducer offers to remove a piece of armor.
+  [/^"Shall I remove your ([^,"\n]+), (lover|dear|sweetheart)\?"$/, (armor, term) => {
+    const terms: Readonly<Record<string, string>> = { lover: "愛しい人", dear: "あなた", sweetheart: "かわいい人" };
+    return `「${terms[term]}、${translateInventoryItem(armor, "ja")}を脱がせてあげましょうか？」`;
+  }],
   [/^Eat ([^?\n]+) anyway\?$/, (value) => `それでも${translateInventoryItem(value, "ja")}を食べますか？`],
   [/^Pick up ([^?\n]+)\?$/, (value) => `${translateInventoryItem(value, "ja")}を拾いますか？`],
   [/^There is ([^?\n]+) here; eat it\?$/, (value) => `ここに${translateInventoryItem(value, "ja")}があります。食べますか？`],
