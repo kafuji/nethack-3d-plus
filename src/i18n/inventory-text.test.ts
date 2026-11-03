@@ -115,7 +115,7 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("an uncursed bag containing 3 items", "ja"))
       .toBe("呪われていない袋（中身：3枠）");
     expect(translateInventoryItem("a pair of gloves (being doffed)", "ja"))
-      .toBe("a pair of gloves (being doffed)");
+      .toBe("手袋 1組（脱いでいる途中）");
   });
 
   it("falls back intact when an item, inscription, status or language is not supported", () => {

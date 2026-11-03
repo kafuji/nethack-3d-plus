@@ -30,7 +30,7 @@ const values: Readonly<Record<string, string>> = {
   Priest: "司祭", Priestess: "女司祭", Rogue: "盗賊", Ranger: "レンジャー", Samurai: "侍", Tourist: "観光客", Valkyrie: "ワルキューレ", Wizard: "魔法使い",
   "Flame Mage": "炎の魔術師", "Ice Mage": "氷の魔術師", Necromancer: "死霊術師", "Undead Slayer": "アンデッド討伐者", Yeoman: "自作農",
 };
-const deities: Readonly<Record<string, string>> = {
+export const deityNames: Readonly<Record<string, string>> = {
   Thoth: "トート", Ptah: "プタハ", Anhur: "アンフル", "Amaterasu Omikami": "天照大神", Raijin: "雷神", Susanowo: "スサノオ",
   Tyr: "テュール", Odin: "オーディン", Loki: "ロキ", Anu: "アヌ", Ishtar: "イシュタル", Anshar: "アンシャル", Kos: "コス", Mog: "モグ", Issek: "イセク",
 };
@@ -194,10 +194,10 @@ function translateCharacterContent(line: string, locale: SupportedLocale): strin
   m = /^You are (lawful|neutral|chaotic), (currently |now |nominally )?on a mission for (.+)$/.exec(line);
   if (m) {
     const qualifier = m[2] === "currently " || m[2] === "now " ? "現在の" : m[2] === "nominally " ? "名目上の" : "";
-    return `${qualifier}属性は${own(values, m[1])}で、${own(deities, m[3])}の使命を受けています。`;
+    return `${qualifier}属性は${own(values, m[1])}で、${own(deityNames, m[3])}の使命を受けています。`;
   }
   m = /^who is opposed by (.+?) \((lawful|neutral|chaotic)\) and (.+?) \((lawful|neutral|chaotic)\)\.$/.exec(line);
-  if (m) return `敵対する神は${own(deities, m[1])}（${own(values, m[2])}）と${own(deities, m[3])}（${own(values, m[4])}）です。`;
+  if (m) return `敵対する神は${own(deityNames, m[1])}（${own(values, m[2])}）と${own(deityNames, m[3])}（${own(values, m[4])}）です。`;
   m = /^You are in (?:the )?(.+), on level (-?\d+)\.$/.exec(line);
   if (m) return `現在地：${translateGameLocation(`${m[1]} ${m[2]}`, locale)}`;
   m = /^You entered the dungeon ([\d,]+) turns? ago\.$/.exec(line);

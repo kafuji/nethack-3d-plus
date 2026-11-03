@@ -81,7 +81,7 @@ describe("assembled NetHack 5 messages", () => {
     expect(ja("You hear the shrill sound of guards' whistles.")).toBe("警備兵の甲高い笛の音が聞こえた。");
     expect(ja("Gems/Stones")).toBe("宝石・石");
     expect(ja("Auto-select every relevant item")).toBe("該当する物をすべて自動選択");
-    expect(ja("Your katana glows octarine for a moment.")).toBe("Your katana glows octarine for a moment.");
+    expect(ja("Your katana glows octarine for a moment.")).toBe("あなたの刀は一瞬オクタリン色に輝いた。");
   });
 
   it("keeps joined or unknown messages unchanged", () => {

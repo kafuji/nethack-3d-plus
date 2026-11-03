@@ -3,6 +3,8 @@ import { translateGroundObject } from "./game-ground";
 import { translateInventoryItem } from "./inventory-text";
 import { translateMonsterName } from "./game-monsters";
 import { translateSpellName } from "./game-skills";
+import { deityNames } from "./character-text";
+import { colorAdjective, colorAdverb } from "./color-text";
 
 // Reviewed Japanese renderings keyed by the printf format used in the NetHack
 // 5.0 source (pline/You/Your/There/... first arguments, with the implicit
@@ -117,6 +119,14 @@ export function translateMessageArgument(value: string): string {
     if (part !== undefined) return `あなたの${part}`;
     const item = translateInventoryItem(yours[1], "ja");
     if (item !== yours[1]) return `あなたの${item}`;
+    // YMonnam(): "Your pony" for a steed or pet.
+    const pet = translateMonsterName(yours[1], "ja");
+    if (pet !== yours[1]) return `あなたの${pet}`;
+  }
+  // Temple priests: "the priestess of Amaterasu Omikami".
+  const priest = /^(?:[Tt]he )?(high )?(priest|priestess) of (.+)$/.exec(text);
+  if (priest && Object.prototype.hasOwnProperty.call(deityNames, priest[3])) {
+    return `${deityNames[priest[3]]}の${priest[1] ? "高" : ""}${priest[2] === "priest" ? "僧侶" : "尼僧"}`;
   }
   // A bare word may be a player-supplied name; only translate described objects.
   if (/^(?:a|an|the|The|\d+) /.test(text) || /\(.*\)$/.test(text)) {
@@ -138,6 +148,12 @@ export function translateMessageArgument(value: string): string {
     const owner = translateMessageArgument(possessive[1]);
     const part = own(bodyParts, possessive[2]);
     if (part !== undefined && owner !== possessive[1]) return `${owner}の${part}`;
+  }
+  // s_suffix() owner on its own ("The jackal's" before a separate object).
+  const owner = /^(.+?)'s?$/.exec(text);
+  if (owner) {
+    const translated = translateMessageArgument(owner[1]);
+    if (translated !== owner[1]) return translated;
   }
   return value;
 }
@@ -161,8 +177,12 @@ export function translateNethack5SourceMessage(message: string): string | undefi
     const match = pattern.exec(message);
     if (!match) continue;
     let mixed = false;
-    const rendered = translation.replace(/\{(\d+)\}/g, (_, index: string) => {
+    const rendered = translation.replace(/\{(\d+)\}(?=(輝|光|オーラ)?)/g, (_, index: string, glow?: string) => {
       const value = match[Number(index)] ?? "";
+      // hcolor() before a glow verb or aura: "glows blue" -> "青色に輝いた".
+      const color = glow === undefined ? undefined
+        : glow === "オーラ" ? colorAdjective(value.replace(/^an? /, "")) : colorAdverb(value);
+      if (color !== undefined) return color;
       const translated = translateMessageArgument(value);
       if (isUntranslatedPhrase(value, translated)) mixed = true;
       return translated;
