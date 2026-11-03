@@ -32,7 +32,7 @@ This writes the following files to `music-sketches/<id>/`, which is gitignored:
 Pieces that use it:
 
 - `pieces/title.mjs`: title screen, D Phrygian, heavy half-time groove.
-- `pieces/dungeon.mjs`: main dungeon exploration, A Phrygian, slower and sparser, with rests between statements of the theme.
+- `pieces/dungeon.mjs`: main dungeon exploration, dry dark ambient on an A pedal. Only fragments of the theme surface, slowed down, in the low strings and horn.
 
 Other pieces can reuse it. A battle piece could play it twice as fast (`augment: 0.5`), and a danger piece could play it upside down (`invert: true`) or in a low register.
 

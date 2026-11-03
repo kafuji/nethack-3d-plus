@@ -1,146 +1,122 @@
-// Main dungeon (Dungeons of Doom) exploration sketch. The calm counterpart of
-// the title: same "Descent" leitmotif, a fifth higher in A Phrygian, slower
-// and sparser so it can loop for a long time without wearing the player out.
+// Main dungeon (Dungeons of Doom) exploration sketch. Dry, dark ambient: no
+// clear melody, no build-up. An A pedal with semitone and tritone rubs, the
+// Descent ostinato broken into fragments, and pieces of the leitmotif surfacing
+// in the low strings and horn. Layers come and go on overlapping cycles that
+// do not line up with the bar, so it never settles into a groove.
 //
-//   Intro (1-4)   bass drone, guitar ostinato at half speed
-//   A     (5-12)  soft hand percussion; lead guitar: call, rest, answer, rest
-//   B     (13-20) percussion thins to a heartbeat; harp arpeggios; cello plays
-//                 the answer at half speed, low horn the call at half speed
-//   C     (21-28) ostinato at full speed, light groove; lead: call, answer,
-//                 horn call (lead rests), call
-//   Outro (29-32) drone and slow ostinato again, ends on E major to loop
+//   1-4    drone alone, then the open fifth and the first drips
+//   5-28   broken ostinato, irregular thuds and clicks; Bb rubs (9-12,
+//          25-28), tritone Eb (13-16, 29-32); motif fragments at 9, 15,
+//          21 and 27 (the last one stops on the unresolved flat second)
+//   29-32  thins back to the drone, so the loop point is not audible
 
 import { descent, realize } from "../motifs.mjs";
-import { above, tie } from "../helpers.mjs";
+import { tie } from "../helpers.mjs";
 
 const BEATS_PER_BAR = 4;
 const BARS = 32;
+const TOTAL_BEATS = BARS * BEATS_PER_BAR;
 
-const chordTones = {
-  Am: [9, 0, 4],
-  Bb: [10, 2, 5],
-  Gm: [7, 10, 2],
-  F: [5, 9, 0],
-  Dm: [2, 5, 9],
-  E: [4, 8, 11],
-};
-
-const progression = [
-  ...["Am", "Am", "Bb", "Am"],
-  ...["Am", "F", "Am", "Gm", "Dm", "Bb", "Am", "E"],
-  ...["Dm", "Dm", "Am", "Bb", "Am", "Am", "Gm", "E"],
-  ...["Am", "F", "Dm", "Bb", "Am", "F", "Am", "F"],
-  ...["Am", "Bb", "Am", "E"],
-];
-
-function sectionOf(bar) {
-  if (bar < 4) return "intro";
-  if (bar < 12) return "A";
-  if (bar < 20) return "B";
-  if (bar < 28) return "C";
-  return "outro";
+/** Small deterministic PRNG so the sketch renders the same every time. */
+function random(seed) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-const LEAD_TONIC = 69; // A4
-const CELLO_TONIC = 57; // A3
-const HORN_TONIC = 45; // A2, doubled an octave up
-const RIFF_TONIC = 57; // A3
+const inBars = (bar, from, to) => bar >= from && bar < to;
 
 function buildTracks() {
+  const bass = [];
   const pad = [];
   const riff = [];
-  const harp = [];
-  const bass = [];
+  const drips = [];
   const drums = [];
 
-  progression.forEach((name, bar) => {
-    const tones = chordTones[name];
+  for (let bar = 0; bar < BARS; bar++) {
     const start = bar * BEATS_PER_BAR;
-    const section = sectionOf(bar);
-    const root = tones[0];
 
-    // Strings: a quiet bed from A onward.
-    if (section !== "intro") {
-      const vel = { A: 40, B: 52, C: 48, outro: 36 }[section];
-      for (const pc of tones) pad.push({ start, dur: BEATS_PER_BAR, pitch: above(pc, 52), vel });
+    // Bass: A1 pedal throughout; Bb1 creeps in beside it and beats against it.
+    bass.push({ start, dur: BEATS_PER_BAR, pitch: 33, vel: 70 });
+    if (inBars(bar, 8, 12) || inBars(bar, 24, 28)) bass.push({ start, dur: BEATS_PER_BAR, pitch: 34, vel: 48 });
+
+    // Strings: open fifth A2-E3; the fifth sinks to a tritone, a flat ninth hovers above.
+    if (bar >= 2) {
+      const fifth = inBars(bar, 12, 16) || inBars(bar, 28, 32) ? 51 : 52;
+      pad.push({ start, dur: BEATS_PER_BAR, pitch: 45, vel: 44 });
+      pad.push({ start, dur: BEATS_PER_BAR, pitch: fifth, vel: 42 });
+      if (inBars(bar, 16, 20)) pad.push({ start, dur: BEATS_PER_BAR, pitch: 58, vel: 34 });
     }
+  }
 
-    // Guitar: the Descent ostinato, at half speed except in C. Harp in B instead.
-    if (section === "C") {
-      riff.push(...realize(descent.ostinato, { tonic: RIFF_TONIC, startBar: bar, vel: 68, legato: 0.9 }));
-    } else if (section === "B") {
-      const [p0, p1, p2] = tones.map((pc) => above(pc, 57)).sort((a, b) => a - b);
-      [p0, p1, p2, p0 + 12, p2 + 12, p0 + 12, p2, p1].forEach((pitch, i) => {
-        harp.push({ start: start + i * 0.5, dur: 0.5, pitch, vel: i === 0 ? 64 : 52 });
-      });
-    } else if (bar % 2 === 0) {
-      riff.push(...realize(descent.ostinato, { tonic: RIFF_TONIC, startBar: bar, augment: 2, vel: 70, legato: 0.9 }));
+  // Guitar: the Descent ostinato with about half its notes missing.
+  const keep = random(7);
+  for (let bar = 4; bar < 28; bar++) {
+    const density = bar < 6 || bar >= 26 ? 0.3 : 0.55;
+    for (const note of realize(descent.ostinato, { tonic: 57, startBar: bar, legato: 0.6 })) {
+      if (keep() < density) riff.push({ ...note, vel: 48 + Math.round(keep() * 16) });
     }
+  }
 
-    // Bass: A drone in the intro and outro, whole-note roots elsewhere.
-    const drone = section === "intro" || (section === "outro" && bar < BARS - 1);
-    bass.push({ start, dur: BEATS_PER_BAR, pitch: drone ? 33 : above(root, 33), vel: 76 });
+  // Drips: isolated high notes at uneven gaps (3 to 7 half-beats apart).
+  const drip = random(11);
+  const dripPitches = [70, 76, 81, 75, 69, 82];
+  for (let beat = 9.5; beat < TOTAL_BEATS - 10; beat += 1.5 + Math.floor(drip() * 5) * 0.5) {
+    if (drip() < 0.6) drips.push({ start: beat, dur: 0.5, pitch: dripPitches[Math.floor(drip() * dripPitches.length)], vel: 40 + Math.round(drip() * 12) });
+  }
 
-    // Percussion: hand-drum feel in A and C, a heartbeat kick in B.
-    if (section === "A" || section === "C") {
-      drums.push({ start, dur: 0.25, pitch: 36, vel: 76 });
-      drums.push({ start: start + 2.5, dur: 0.25, pitch: 36, vel: 56 });
-      if (section === "C") drums.push({ start: start + 2, dur: 0.25, pitch: 38, vel: 50 });
-      const hats = section === "C" ? [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5] : [1, 3];
-      for (const h of hats) drums.push({ start: start + h, dur: 0.25, pitch: 42, vel: h % 1 ? 22 : 34 });
-    } else if (section === "B" && bar % 2 === 0) {
-      drums.push({ start, dur: 0.25, pitch: 36, vel: 64 });
-      drums.push({ start: start + 0.75, dur: 0.25, pitch: 36, vel: 44 });
-    }
-  });
+  // Percussion: a low thud every 7 beats and dry clicks every 3 half-beats,
+  // cycles that cut across the bar line.
+  for (let beat = 16; beat < 112; beat += 7) drums.push({ start: beat, dur: 0.25, pitch: 36, vel: 58 });
+  for (let beat = 18.5; beat < 110; beat += 1.5) {
+    drums.push({ start: beat, dur: 0.25, pitch: 42, vel: Math.round(beat * 2) % 3 === 0 ? 30 : 20 });
+  }
+  for (const beat of [43.5, 77, 101.5]) drums.push({ start: beat, dur: 0.25, pitch: 46, vel: 26 });
 
-  const lead = [
-    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 4, vel: 88 }),
-    ...realize(descent.answer, { tonic: LEAD_TONIC, startBar: 8, vel: 90 }),
-    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 20, vel: 96 }),
-    ...realize(descent.answer, { tonic: LEAD_TONIC, startBar: 22, vel: 96 }),
-    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 26, vel: 92 }),
+  // Leitmotif fragments: only half-phrases, slowed down, low and quiet.
+  const [callHead, callTail] = descent.call.map((bar) => [bar]);
+  const answerTail = [descent.answer[1]];
+  const cello = [
+    ...realize(callHead, { tonic: 45, startBar: 8, augment: 2, vel: 62 }),
+    ...realize(callHead, { tonic: 45, startBar: 20, augment: 2, vel: 62 }),
+    ...realize(answerTail, { tonic: 45, startBar: 26, augment: 2, vel: 64 }),
   ];
-
-  const cello = realize(descent.answer, { tonic: CELLO_TONIC, startBar: 12, augment: 2, vel: 84 });
-
-  const horn = [
-    ...realize(descent.call, { tonic: HORN_TONIC, startBar: 16, augment: 2, vel: 76, octaves: [12] }),
-    ...realize(descent.call, { tonic: HORN_TONIC, startBar: 24, vel: 84, octaves: [12] }),
-  ];
+  const horn = realize(callTail, { tonic: 45, startBar: 14, augment: 2, vel: 58 });
 
   return [
-    { name: "Guitar Ostinato", voice: "guitar", channel: 0, program: 25, notes: riff, previewGainDb: 3 },
-    { name: "Lead Guitar", voice: "lead", channel: 1, program: 24, notes: lead, previewGainDb: 3 },
-    { name: "Cello", voice: "violin", channel: 2, program: 42, notes: cello },
-    { name: "Horn", voice: "horn", channel: 3, program: 60, notes: horn, previewGainDb: -2 },
-    { name: "Harp", voice: "harp", channel: 4, program: 46, notes: harp, previewGainDb: 8 },
-    { name: "Strings", voice: "strings", channel: 5, program: 48, notes: tie(pad) },
-    { name: "Bass", voice: "bass", channel: 6, program: 33, notes: tie(bass) },
-    { name: "Percussion", voice: "drums", channel: 9, program: 0, notes: drums, previewGainDb: 1 },
+    { name: "Guitar Fragments", voice: "guitar", channel: 0, program: 25, notes: riff, previewGainDb: 5 },
+    { name: "Drips", voice: "harp", channel: 1, program: 46, notes: drips, previewGainDb: 10 },
+    { name: "Cello", voice: "violin", channel: 2, program: 42, notes: cello, previewGainDb: -1 },
+    { name: "Low Horn", voice: "horn", channel: 3, program: 60, notes: horn, previewGainDb: 1 },
+    { name: "Strings", voice: "strings", channel: 4, program: 48, notes: tie(pad) },
+    { name: "Bass Drone", voice: "bass", channel: 5, program: 33, notes: tie(bass) },
+    { name: "Percussion", voice: "drums", channel: 9, program: 0, notes: drums },
   ];
 }
 
 export const piece = {
   id: "dungeon",
   name: "NetHack 3D Dungeon Theme - Dungeons of Doom (sketch)",
-  bpm: 76,
+  bpm: 66,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
-  key: "A Phrygian",
+  key: "A Phrygian (pedal)",
   tracks: buildTracks(),
   suno: {
     // Suno rejects artist names, so the style is described instead.
     style:
-      "dark acoustic dungeon exploration music, sparse frontier folk, ominous but calm, instrumental, A phrygian, " +
-      "76 bpm, fingerpicked acoustic guitar ostinato, twangy lead guitar, solo cello, low horn, harp, " +
-      "soft hand percussion, deep bass drone, lots of space, understated, indie game soundtrack, no vocals, loopable",
+      "dark ambient dungeon soundscape, dry and close, tense, uneasy, restless, minimal, no clear melody, " +
+      "A phrygian drone, 66 bpm, sparse broken acoustic guitar fragments, low sustained strings with dissonant " +
+      "semitone rubs, solo cello fragments, distant low horn, dry percussion clicks and low thuds, irregular, " +
+      "no build-up, steady dynamics, instrumental, no vocals, loopable, indie game exploration music",
     notes: [
-      "Upload the preview WAV and use Cover so Suno keeps the melody and chords.",
-      "Turn on Instrumental. This is background music for long exploration: keep it calm and uncluttered.",
-      "Same leitmotif as the title theme, in A (call: A A C Bb A | G F E A).",
-      "The piece loops: bar 32 (E major) leads back into bar 1 (A minor).",
-      "Structure: drone + slow ostinato (1-4), lead guitar theme with rests (5-12), cello and horn at half speed (13-20), light groove with the full theme (21-28), outro (29-32).",
+      "Upload the preview WAV and use Cover so Suno keeps the drone and dissonances.",
+      "Turn on Instrumental. Background for long exploration: dry, tense and flat in dynamics, never a climax.",
+      "The leitmotif only surfaces as fragments (A A C Bb A, G F E A, E D C Bb) in the low strings and horn.",
+      "The piece loops: it starts and ends on the bare A drone.",
     ],
   },
 };
