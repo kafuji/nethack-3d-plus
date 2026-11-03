@@ -99,7 +99,7 @@ export const titleMusicTrack: MusicTrack | null = {
   path: "music/title-theme.mp3",
   loop: "crossfade",
   crossfadeSec: 4,
-  gainDb: -7.5,
+  gainDb: -6,
   title: "The Descent (Title Theme)",
   ...originalWork,
   source: "scripts/music-sketch/pieces/title.mjs",
