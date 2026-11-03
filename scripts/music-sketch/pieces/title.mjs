@@ -1,141 +1,160 @@
-// Title screen sketch: an uneasy, ominous theme in E minor.
+// Title screen sketch: "The Descent" main theme. Ominous at heart, but heavy
+// and dignified: a half-time groove under a guitar ostinato, with the
+// leitmotif from motifs.mjs passed between lead guitar and brass.
 //
-//   A  (bars 1-8)   low string drone on E; chords slide by half step and
-//                   tritone (Fm, Cm, Bbm) over it; a sparse music-box motif
-//   B  (bars 9-16)  a low horn sings a chromatic lament over a descending bass
-//   A' (bars 17-24) the drone returns with a thin high violin line rubbing in
-//                   minor seconds and a muffled heartbeat on the timpani
-//
-// Bar 24 ends on B7 so the piece loops back into bar 1.
+//   Intro (1-4)   bass drone and guitar ostinato on D, Phrygian Eb shadow
+//   A     (5-12)  drums enter; lead guitar: call, call, answer, call
+//   B     (13-20) brass states the theme at half speed, power ostinato, timpani
+//   C     (21-28) brass and lead guitar together: call, answer, call, call
+//   Outro (29-32) drone returns, a quiet brass call, ends on A to loop
+
+import { descent, realize } from "../motifs.mjs";
+import { above, tie } from "../helpers.mjs";
 
 const BEATS_PER_BAR = 4;
+const BARS = 32;
 
-// Chord tones as pitch classes (0 = C); root first.
 const chordTones = {
-  Em: [4, 7, 11],
-  Fm: [5, 8, 0],
-  Cm: [0, 3, 7],
-  Bbm: [10, 1, 5],
-  B7: [11, 3, 6, 9],
-  Am: [9, 0, 4],
-  Abm: [8, 11, 3],
+  Dm: [2, 5, 9],
+  Eb: [3, 7, 10],
+  Bb: [10, 2, 5],
+  Gm: [7, 10, 2],
+  A: [9, 1, 4],
 };
 
-const sectionA = ["Em", "Em", "Fm", "Em", "Cm", "Cm", "Bbm", "B7"];
-const sectionB = ["Em", "Am", "Fm", "Em", "Cm", "Abm", "Fm", "B7"];
-const progression = [...sectionA, ...sectionB, ...sectionA];
-
-// Bass per bar: E pedal under the first half of A, roots elsewhere.
-const bassA = [40, 40, 40, 40, 36, 36, 34, 35];
-const bassB = [40, 33, 41, 40, 36, 32, 29, 35];
-const bassLine = [...bassA, ...bassB, ...bassA];
-
-// Melodies: one array per bar of [pitch, beats]; null pitch = rest.
-const musicBoxMotif = [
-  [[null, 1], [83, 0.5], [84, 0.5], [83, 1], [77, 1]],
-  [[76, 3], [null, 1]],
+const progression = [
+  ...["Dm", "Eb", "Dm", "Eb"],
+  ...["Dm", "Bb", "Dm", "Bb", "Gm", "Eb", "Dm", "Bb"],
+  ...["Dm", "Dm", "Bb", "Bb", "Gm", "Gm", "Eb", "Eb"],
+  ...["Dm", "Bb", "Gm", "Eb", "Dm", "Bb", "Dm", "Bb"],
+  ...["Dm", "Eb", "Dm", "A"],
 ];
 
-const hornLament = [
-  [[64, 2], [67, 1], [66, 1]],
-  [[64, 3], [null, 1]],
-  [[65, 2], [68, 1], [67, 1]],
-  [[64, 4]],
-  [[63, 2], [67, 1], [70, 1]],
-  [[71, 2], [70, 1], [68, 1]],
-  [[68, 1.5], [67, 0.5], [65, 2]],
-  [[63, 2], [66, 1], [69, 1]],
-];
-
-// Long, quiet high tones a half step apart.
-const violinRub = [
-  [[83, 8]], [], [[84, 8]], [],
-  [[82, 8]], [], [[83, 4]], [[87, 4]],
-];
-
-/** Lowest pitch >= floor with the given pitch class. */
-function above(pitchClass, floor) {
-  return floor + ((pitchClass - floor) % 12 + 12) % 12;
+function sectionOf(bar) {
+  if (bar < 4) return "intro";
+  if (bar < 12) return "A";
+  if (bar < 20) return "B";
+  if (bar < 28) return "C";
+  return "outro";
 }
 
-function melodyNotes(bars, firstBar, vel) {
-  const notes = [];
-  bars.forEach((bar, index) => {
-    let beat = (firstBar + index) * BEATS_PER_BAR;
-    for (const [pitch, dur] of bar) {
-      if (pitch !== null) notes.push({ start: beat, dur: dur * 0.95, pitch, vel });
-      beat += dur;
-    }
-  });
-  return notes;
-}
-
-/** Ties notes that continue at the same pitch into one long note (for drones). */
-function tie(notes) {
-  const tied = [];
-  for (const note of [...notes].sort((a, b) => a.start - b.start)) {
-    const held = tied.find((n) => n.pitch === note.pitch && Math.abs(n.start + n.dur - note.start) < 1e-6);
-    if (held) held.dur += note.dur;
-    else tied.push({ ...note });
-  }
-  return tied;
-}
+const LEAD_TONIC = 62; // D4
+const BRASS_TONIC = 50; // D3, doubled an octave up
+const RIFF_TONIC = 50; // D3
 
 function buildTracks() {
   const pad = [];
+  const riff = [];
   const bass = [];
+  const drums = [];
   const timp = [];
+
   progression.forEach((name, bar) => {
     const tones = chordTones[name];
     const start = bar * BEATS_PER_BAR;
-    const section = bar < 8 ? "A" : bar < 16 ? "B" : "A'";
+    const section = sectionOf(bar);
+    const root = tones[0];
 
-    // Low, close-voiced string chords in the B2..A#3 window.
-    for (const pc of tones) {
-      pad.push({ start, dur: BEATS_PER_BAR, pitch: above(pc, 47), vel: section === "B" ? 58 : 50 });
+    // Strings: chords from A onward, swelling into B and C.
+    if (section !== "intro") {
+      const vel = { A: 48, B: 62, C: 70, outro: 48 }[section];
+      for (const pc of tones) pad.push({ start, dur: BEATS_PER_BAR, pitch: above(pc, 50), vel });
     }
 
-    // Contrabass holds each bar.
-    bass.push({ start, dur: BEATS_PER_BAR, pitch: bassLine[bar], vel: 76 });
-
-    // Muffled heartbeat (lub-dub) in A', and one soft hit before the loop point.
-    if (section === "A'") {
-      timp.push({ start, dur: 0.5, pitch: 40, vel: 70 });
-      timp.push({ start: start + 0.5, dur: 0.5, pitch: 40, vel: 50 });
+    // Guitar: the D ostinato, or a power-chord figure on the root in B and C.
+    if (section === "B" || section === "C") {
+      const low = above(root, 45);
+      [0, 0, 7, 0, 12, 0, 7, 0].forEach((step, i) => {
+        riff.push({ start: start + i * 0.5, dur: 0.45, pitch: low + step, vel: i % 2 ? 70 : 88 });
+      });
+    } else {
+      riff.push(...realize(descent.ostinato, { tonic: RIFF_TONIC, startBar: bar, vel: 76, legato: 0.9 }));
     }
-    if (bar === 7) timp.push({ start: start + 3, dur: 1, pitch: 35, vel: 60 });
+
+    // Bass: D drone in the intro and outro, roots elsewhere (pushed half notes in B/C).
+    if (section === "intro" || (section === "outro" && bar < BARS - 1)) {
+      bass.push({ start, dur: BEATS_PER_BAR, pitch: 38, vel: 80 });
+    } else if (section === "A" || section === "outro") {
+      bass.push({ start, dur: BEATS_PER_BAR, pitch: above(root, 33), vel: 80 });
+    } else {
+      const low = above(root, 33);
+      bass.push({ start, dur: 2.5, pitch: low, vel: 90 });
+      bass.push({ start: start + 2.5, dur: 1.5, pitch: low, vel: 80 });
+    }
+
+    // Drums: half-time groove from A to C, heavier as it goes.
+    if (section === "A" || section === "B" || section === "C") {
+      const kicks = section === "C" ? [0, 0.75, 2.5, 3.25] : section === "B" ? [0, 0.75, 2.5, 3.5] : [0, 0.75, 2.5];
+      for (const k of kicks) drums.push({ start: start + k, dur: 0.25, pitch: 36, vel: 100 });
+      drums.push({ start: start + 2, dur: 0.25, pitch: 38, vel: 92 });
+      if (section === "C") drums.push({ start: start + 3.75, dur: 0.25, pitch: 38, vel: 40 });
+      for (let i = 0; i < 8; i++) {
+        const open = section !== "A" && i === 7;
+        drums.push({ start: start + i * 0.5, dur: 0.25, pitch: open ? 46 : 42, vel: i % 2 ? 30 : 46 });
+      }
+      if (bar === 11 || bar === 19 || bar === 27) {
+        [3, 3.25, 3.5, 3.75].forEach((b, i) => drums.push({ start: start + b, dur: 0.25, pitch: 38, vel: 60 + i * 12 }));
+      }
+    }
+
+    // Timpani: on each new harmony in B and C.
+    if ((section === "B" || section === "C") && bar % 2 === 0) {
+      timp.push({ start, dur: 1, pitch: above(root, 38), vel: section === "C" ? 100 : 86 });
+    }
   });
 
-  // Music box: the motif in bars 1-2 and 5-6, then once more in A'.
-  const musicBox = [0, 4, 18].flatMap((bar) => melodyNotes(musicBoxMotif, bar, 60));
+  const lead = [
+    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 4, vel: 96 }),
+    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 6, vel: 96 }),
+    ...realize(descent.answer, { tonic: LEAD_TONIC, startBar: 8, vel: 100 }),
+    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 10, vel: 96 }),
+    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 20, vel: 104 }),
+    ...realize(descent.answer, { tonic: LEAD_TONIC, startBar: 22, vel: 104 }),
+    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 24, vel: 104 }),
+    ...realize(descent.call, { tonic: LEAD_TONIC, startBar: 26, vel: 104 }),
+  ];
+
+  const brassOctaves = { octaves: [12] };
+  const brass = [
+    ...realize(descent.call, { tonic: BRASS_TONIC, startBar: 12, augment: 2, vel: 92, ...brassOctaves }),
+    ...realize(descent.answer, { tonic: BRASS_TONIC, startBar: 16, augment: 2, vel: 96, ...brassOctaves }),
+    ...realize(descent.call, { tonic: BRASS_TONIC, startBar: 20, vel: 92, ...brassOctaves }),
+    ...realize(descent.answer, { tonic: BRASS_TONIC, startBar: 22, vel: 96, ...brassOctaves }),
+    ...realize(descent.call, { tonic: BRASS_TONIC, startBar: 24, vel: 92, ...brassOctaves }),
+    ...realize(descent.call, { tonic: BRASS_TONIC, startBar: 26, vel: 96, ...brassOctaves }),
+    ...realize(descent.call, { tonic: BRASS_TONIC, startBar: 28, vel: 64 }),
+  ];
 
   return [
-    { name: "Low Strings", voice: "strings", channel: 0, program: 48, notes: tie(pad) },
-    { name: "Music Box", voice: "harp", channel: 1, program: 10, notes: musicBox },
-    { name: "French Horn", voice: "horn", channel: 2, program: 60, notes: melodyNotes(hornLament, 8, 84) },
-    { name: "Violin", voice: "violin", channel: 3, program: 40, notes: melodyNotes(violinRub, 16, 46) },
-    { name: "Contrabass", voice: "bass", channel: 4, program: 43, notes: tie(bass) },
+    { name: "Guitar Ostinato", voice: "guitar", channel: 0, program: 25, notes: riff },
+    { name: "Lead Guitar", voice: "lead", channel: 1, program: 24, notes: lead },
+    { name: "Brass", voice: "horn", channel: 2, program: 61, notes: brass },
+    { name: "Strings", voice: "strings", channel: 3, program: 48, notes: tie(pad) },
+    { name: "Bass", voice: "bass", channel: 4, program: 33, notes: tie(bass) },
     { name: "Timpani", voice: "timpani", channel: 5, program: 47, notes: timp },
+    { name: "Drums", voice: "drums", channel: 9, program: 0, notes: drums },
   ];
 }
 
 export const piece = {
   id: "title",
-  name: "NetHack 3D Title Theme (sketch)",
-  bpm: 60,
+  name: "NetHack 3D Title Theme - The Descent (sketch)",
+  bpm: 84,
   beatsPerBar: BEATS_PER_BAR,
-  key: "E minor",
+  bars: BARS,
+  key: "D Phrygian",
   tracks: buildTracks(),
   suno: {
+    // Suno rejects artist names, so the style is described instead.
     style:
-      "dark ambient orchestral, ominous, unsettling, instrumental, E minor, 60 bpm, low string drone, " +
-      "dissonant chromatic harmony, sparse music box motif, mournful low French horn, faint heartbeat timpani, " +
-      "eerie dungeon, suspense, minimal, no vocals, loopable",
+      "dark acoustic frontier trip-hop, ominous yet majestic, heavy and dignified, instrumental, D phrygian, " +
+      "84 bpm half-time groove, gritty acoustic guitar ostinato, twangy lead guitar, deep bass drone, " +
+      "low brass, timpani, recurring leitmotif, cinematic indie game soundtrack, no vocals, loopable",
     notes: [
       "Upload the preview WAV and use Cover so Suno keeps the melody and chords.",
-      "Turn on Instrumental. Keep it restrained: no big crescendo or epic climax.",
-      "The piece loops: bar 24 (B7) leads back into bar 1 (E minor).",
-      "Structure: drone and music box (bars 1-8), horn lament (9-16), drone with high violin and heartbeat (17-24).",
+      "Turn on Instrumental. The recurring theme (call: D D F Eb D | C Bb A D) should stay recognizable.",
+      "The piece loops: bar 32 (A major) leads back into bar 1 (D).",
+      "Structure: drone + ostinato intro (1-4), lead guitar theme (5-12), slow brass theme (13-20), full theme (21-28), outro (29-32).",
     ],
   },
 };

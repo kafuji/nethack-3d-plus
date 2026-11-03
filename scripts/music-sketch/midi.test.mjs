@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { writeMidi } from "./midi.mjs";
+import { pieceEndBeat } from "./helpers.mjs";
+import { descent, motifBars, realize } from "./motifs.mjs";
 import { piece } from "./pieces/title.mjs";
 
 test("writes a format 1 file with a conductor track plus one track per part", () => {
@@ -26,7 +28,22 @@ test("encodes the tempo from bpm", () => {
   assert.equal(midi.readUIntBE(tempo + 3, 3), 500000);
 });
 
-test("title sketch fills 24 bars of 4/4", () => {
-  const end = Math.max(...piece.tracks.flatMap((track) => track.notes.map((n) => n.start + n.dur)));
-  assert.ok(end > 23 * 4 && end <= 24 * 4, `ends at beat ${end}`);
+test("title sketch fills its declared number of bars", () => {
+  const end = pieceEndBeat(piece);
+  const barBeats = piece.beatsPerBar;
+  assert.ok(end > (piece.bars - 1) * barBeats && end <= piece.bars * barBeats, `ends at beat ${end}`);
+});
+
+test("realize places, augments, inverts and doubles a motif", () => {
+  const motif = [[[0, 1], [null, 1], [3, 2]]];
+  assert.deepEqual(
+    realize(motif, { tonic: 60, startBar: 2, legato: 1 }).map((n) => [n.start, n.dur, n.pitch]),
+    [[8, 1, 60], [10, 2, 63]],
+  );
+  assert.deepEqual(
+    realize(motif, { tonic: 60, startBar: 0, augment: 2, invert: true, octaves: [12], legato: 1 }).map((n) => [n.start, n.dur, n.pitch]),
+    [[0, 2, 60], [0, 2, 72], [4, 4, 57], [4, 4, 69]],
+  );
+  assert.equal(motifBars(descent.call), 2);
+  assert.equal(motifBars(descent.answer, 2), 4);
 });

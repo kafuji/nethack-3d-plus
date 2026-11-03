@@ -60,16 +60,46 @@ function timpani({ gain }) {
   };
 }
 
+/** General MIDI drum notes: 36 kick, 38 snare, 42 closed hat, 46 open hat. */
+function drums({ gain }) {
+  return (out, sampleRate, freq, dur, vel, pitch) => {
+    const amp = gain * (vel / 127);
+    const kind = pitch === 36 ? "kick" : pitch === 38 ? "snare" : "hat";
+    const seconds = kind === "kick" ? 0.6 : kind === "snare" ? 0.3 : pitch === 46 ? 0.35 : 0.08;
+    const length = Math.min(out.length, Math.ceil(seconds * sampleRate));
+    let phase = 0;
+    let previousNoise = 0;
+    for (let i = 0; i < length; i++) {
+      const t = i / sampleRate;
+      let sample;
+      if (kind === "kick") {
+        phase += (TAU * (45 + 80 * Math.exp(-t * 30))) / sampleRate;
+        sample = Math.sin(phase) * Math.exp(-t * 7);
+      } else if (kind === "snare") {
+        sample = (0.6 * (Math.random() * 2 - 1) + 0.5 * Math.sin(TAU * 185 * t)) * Math.exp(-t * 18);
+      } else {
+        const noise = Math.random() * 2 - 1;
+        sample = (noise - previousNoise) * 0.35 * Math.exp(-t * (pitch === 46 ? 9 : 45));
+        previousNoise = noise;
+      }
+      out[i] += sample * Math.min(1, i / 20) * amp;
+    }
+  };
+}
+
 const voices = {
+  guitar: { render: plucked({ gain: 0.3, decay: 0.993, ring: 0.6 }), pan: 0.25 },
+  lead: { render: plucked({ gain: 0.8, decay: 0.996, ring: 0.9 }), pan: -0.25 },
+  drums: { render: drums({ gain: 0.3 }), pan: 0 },
   strings: { render: additive({ harmonics: [1, 0.5, 0.33, 0.22, 0.15, 0.1, 0.07], attack: 0.7, release: 1.2, gain: 0.07 }), pan: -0.2 },
   violin: { render: additive({ harmonics: [1, 0.6, 0.4, 0.3, 0.2, 0.14, 0.1, 0.07], attack: 0.3, release: 0.6, gain: 0.12 }), pan: 0.15 },
-  horn: { render: additive({ harmonics: [1, 0.45, 0.2, 0.09, 0.04], attack: 0.12, release: 0.4, gain: 0.18 }), pan: -0.1 },
-  bass: { render: additive({ harmonics: [1, 0.5, 0.25, 0.12], attack: 0.2, release: 0.8, gain: 0.12 }), pan: 0 },
+  horn: { render: additive({ harmonics: [1, 0.45, 0.2, 0.09, 0.04], attack: 0.12, release: 0.4, gain: 0.12 }), pan: -0.1 },
+  bass: { render: additive({ harmonics: [1, 0.5, 0.25, 0.12], attack: 0.2, release: 0.8, gain: 0.08 }), pan: 0 },
   harp: { render: plucked({ gain: 0.22, decay: 0.997, ring: 1.5 }), pan: 0.3 },
   timpani: { render: timpani({ gain: 0.3 }), pan: 0 },
 };
 
-export function renderPreview(piece, { sampleRate = 44100, tailSec = 2 } = {}) {
+export function renderPreview(piece, { sampleRate = 44100, tailSec = 2, normalize: autoGain = true } = {}) {
   const secondsPerBeat = 60 / piece.bpm;
   const end = Math.max(...piece.tracks.flatMap((track) => track.notes.map((n) => n.start + n.dur)));
   const length = Math.ceil((end * secondsPerBeat + tailSec) * sampleRate);
@@ -81,7 +111,7 @@ export function renderPreview(piece, { sampleRate = 44100, tailSec = 2 } = {}) {
     const dry = new Float32Array(length);
     for (const note of track.notes) {
       const startSample = Math.round(note.start * secondsPerBeat * sampleRate);
-      voice.render(dry.subarray(startSample), sampleRate, midiToHz(note.pitch), note.dur * secondsPerBeat, note.vel);
+      voice.render(dry.subarray(startSample), sampleRate, midiToHz(note.pitch), note.dur * secondsPerBeat, note.vel, note.pitch);
     }
     const leftGain = Math.cos(((voice.pan + 1) * Math.PI) / 4);
     const rightGain = Math.sin(((voice.pan + 1) * Math.PI) / 4);
@@ -92,7 +122,7 @@ export function renderPreview(piece, { sampleRate = 44100, tailSec = 2 } = {}) {
   }
   let peak = 0;
   for (let i = 0; i < length; i++) peak = Math.max(peak, Math.abs(left[i]), Math.abs(right[i]));
-  const normalize = peak > 0 ? 0.89 / peak : 1; // about -1 dBFS
+  const normalize = autoGain && peak > 0 ? 0.89 / peak : 1; // about -1 dBFS
   for (let i = 0; i < length; i++) {
     left[i] *= normalize;
     right[i] *= normalize;
