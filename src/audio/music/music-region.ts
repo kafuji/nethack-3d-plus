@@ -27,7 +27,7 @@ export type TrackPreference = Partial<Record<MusicMood, readonly string[]>>;
 export const regionTrackPreferences: Readonly<Record<MusicRegion, TrackPreference>> = {
   dungeon: { calm: ["dungeon"], combat: ["combat"] },
   mines: { calm: ["mines"], combat: ["combat"] },
-  sokoban: { calm: ["dungeon"], combat: ["combat"] },
+  sokoban: { calm: ["sokoban"], combat: ["combat"] },
   quest: { calm: ["dungeon"], combat: ["combat"] },
   ludios: { calm: ["dungeon"], combat: ["combat-boss"] },
   gehennom: { calm: ["dungeon"], combat: ["combat-boss"] },

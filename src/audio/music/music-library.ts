@@ -56,6 +56,16 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/mines.mjs",
     },
+    {
+      id: "sokoban",
+      path: "music/sokoban.mp3",
+      loop: "crossfade",
+      crossfadeSec: 4,
+      gainDb: -6.5,
+      title: "Sokoban",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/sokoban.mjs",
+    },
   ],
   combat: [
     {
