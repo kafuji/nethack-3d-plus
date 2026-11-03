@@ -301,6 +301,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
   const audioHapticsPlatform: AudioHapticsPlatform = new AudioHapticsPlatform({
     get directionPrompts() { return directionPrompts; },
     get engineState() { return engineState; },
+    get levelTerrainCache() { return levelTerrainCache; },
     get movementInput() { return movementInput; },
     get playerMovement() { return playerMovement; },
     get positionSelection() { return positionSelection; },

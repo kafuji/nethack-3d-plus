@@ -76,8 +76,6 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/quest.mjs",
     },
-    // medusa and castle are not picked by any region yet: both levels are part
-    // of the Dungeons of Doom, so they need special-level detection first.
     {
       id: "medusa",
       path: "music/medusa.mp3",

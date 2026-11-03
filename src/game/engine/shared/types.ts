@@ -480,6 +480,10 @@ export type RuntimeLevelIdentity = {
   depth: number | null;
   dungeonName: string | null;
   branchTag: string | null;
+  /** Levels in the Dungeons of Doom (dungeon 0); its last level is the Castle. */
+  mainDungeonLevelCount: number | null;
+  /** Exact special level, only when the runtime exports its topology. */
+  specialLevel: "medusa" | "castle" | null;
 };
 
 export type BloodGroundCacheSnapshot = {

@@ -179,6 +179,11 @@ export class LevelTerrainCache {
       depth: parseInteger(identity.depth),
       dungeonName: this.normalizeLevelCacheName(identity.dungeonName),
       branchTag: this.normalizeLevelCacheName(identity.branchTag),
+      mainDungeonLevelCount: parseInteger(identity.mainDungeonLevelCount),
+      specialLevel:
+        identity.specialLevel === "medusa" || identity.specialLevel === "castle"
+          ? identity.specialLevel
+          : null,
     };
   }
 

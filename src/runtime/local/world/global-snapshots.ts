@@ -292,6 +292,43 @@ export class RuntimeGlobalSnapshots {
     return null;
   }
 
+  /**
+   * Ledger numbers are assigned dungeon by dungeon, so the Dungeons of Doom
+   * (dungeon 0) has as many levels as dungeon 1's ledger starts after it.
+   */
+  resolveMainDungeonLevelCount(dungeons) {
+    const doom = this.resolveDungeonByIndex(dungeons, 0);
+    const next = this.resolveDungeonByIndex(dungeons, 1);
+    if (!doom || typeof doom !== "object" || !next || typeof next !== "object") {
+      return null;
+    }
+    const doomStart = this.deps.memory.normalizeRuntimeInteger(doom.ledger_start);
+    const nextStart = this.deps.memory.normalizeRuntimeInteger(next.ledger_start);
+    if (doomStart === null || nextStart === null || nextStart <= doomStart) {
+      return null;
+    }
+    return Math.trunc(nextStart - doomStart);
+  }
+
+  /** Exact Medusa / Castle match, for runtimes that export those topology levels. */
+  resolveRuntimeSpecialLevel(dnum, dlevel, topology) {
+    if (!topology || typeof topology !== "object") {
+      return null;
+    }
+    const matches = (level) =>
+      level &&
+      typeof level === "object" &&
+      this.deps.memory.normalizeRuntimeInteger(level.dnum) === dnum &&
+      this.deps.memory.normalizeRuntimeInteger(level.dlevel) === dlevel;
+    if (matches(topology.d_medusa_level)) {
+      return "medusa";
+    }
+    if (matches(topology.d_stronghold_level)) {
+      return "castle";
+    }
+    return null;
+  }
+
   resolveRuntimeLevelIdentity() {
     const globals =
       globalThis.nethackGlobal &&
@@ -358,6 +395,8 @@ export class RuntimeGlobalSnapshots {
         depth,
         dungeonName,
         branchTag,
+        mainDungeonLevelCount: this.resolveMainDungeonLevelCount(dungeons),
+        specialLevel: this.resolveRuntimeSpecialLevel(dnum, dlevel, topology),
       };
     } catch (error) {
       console.log("Failed to resolve runtime level identity:", error);
