@@ -75,8 +75,9 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   }
 
   /**
-   * Reorders each mood's playlist so the preferred tracks come first. If the
-   * active mood is playing a track that is no longer preferred, crossfade.
+   * Restricts each mood's playlist to the preferred tracks (moods without a
+   * preference use the whole library). If the active mood is playing a track
+   * that is no longer preferred, crossfade.
    */
   setTrackPreference(preference: TrackPreference): void {
     this.preference = { ...preference };
@@ -265,8 +266,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
     const preferred = (this.preference[mood] ?? [])
       .map((id) => all.find((track) => track.id === id))
       .filter((track): track is MusicTrack => Boolean(track));
-    const rest = this.library[mood].filter((track) => !preferred.includes(track));
-    return [...preferred, ...rest];
+    return preferred.length > 0 ? preferred : [...this.library[mood]];
   }
 
   private getChannel(mood: MusicMood): MoodChannel | null {

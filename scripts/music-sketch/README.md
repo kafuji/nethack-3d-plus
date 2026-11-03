@@ -17,7 +17,7 @@ This writes the following files to `music-sketches/<id>/`, which is gitignored:
 1. Add or edit a piece in `pieces/<id>.mjs`. Each piece exports `piece` with `bpm`, `beatsPerBar`, `key`, `tracks` (notes in beats) and `suno` (style and notes). Each track's `voice` picks a preview voice (and an optional `previewGainDb` balances it in the preview only): `strings`, `violin`, `horn`, `bass`, `harp`, `guitar`, `lead`, `timpani`, `metal` (struck metal, such as picks or an anvil) or `drums` (General MIDI drum notes on channel 9).
 2. Run the command above and listen to the preview WAV.
 3. In Suno, upload the preview WAV, choose Cover, turn on Instrumental, and paste the style prompt.
-4. Download the result. To use it in the game, trim it to loop, normalise the loudness, encode it as Ogg in `public/music/`, then register it in `src/audio/music/music-library.ts` and `public/licenses/music-credits.txt`. Check that your Suno plan allows this use.
+4. Download the MP3 into `music-sketches/<id>/`. To use it in the game, copy it to `public/music/`, register it in `src/audio/music/music-library.ts` (with a `gainDb` trim that brings it to about -24 dB) and pick it for regions in `music-region.ts`, then credit it in `public/licenses/music-credits.txt`. Check that your Suno plan allows this use.
 
 ## Shared leitmotifs
 

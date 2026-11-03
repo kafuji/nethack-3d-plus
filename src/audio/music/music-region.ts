@@ -20,24 +20,16 @@ export function resolveMusicRegion(dungeonName: string | null | undefined): Musi
 export type TrackPreference = Partial<Record<MusicMood, readonly string[]>>;
 
 /**
- * Preferred track ids per mood for each region; tracks not listed keep their
- * library order after these. Gehennom borrows the darker danger pieces for
- * exploration so the descent feels different from the upper dungeon.
+ * Track ids per mood for each region. A mood listed here plays only these
+ * tracks (in order) while in the region; unlisted moods use the whole library.
+ * The faster boss-combat piece is kept for the deep and dangerous places.
  */
 export const regionTrackPreferences: Readonly<Record<MusicRegion, TrackPreference>> = {
-  dungeon: { calm: ["calm-dungeon", "calm-unexplored"] },
-  mines: { calm: ["calm-unexplored", "calm-dungeon"] },
-  sokoban: { calm: ["calm-unexplored"] },
-  quest: { calm: ["calm-unexplored"], combat: ["combat-determined-pursuit"] },
-  ludios: { calm: ["calm-dungeon"], combat: ["combat-determined-pursuit"] },
-  gehennom: {
-    calm: ["danger-tension-and-distress", "calm-dungeon"],
-    combat: ["combat-determined-pursuit"],
-    danger: ["danger-panic-mode"],
-  },
-  endgame: {
-    calm: ["combat-determined-pursuit"],
-    combat: ["combat-determined-pursuit", "combat-battle-theme-a"],
-    danger: ["danger-panic-mode"],
-  },
+  dungeon: { calm: ["dungeon"], combat: ["combat"] },
+  mines: { calm: ["mines"], combat: ["combat"] },
+  sokoban: { calm: ["dungeon"], combat: ["combat"] },
+  quest: { calm: ["dungeon"], combat: ["combat"] },
+  ludios: { calm: ["dungeon"], combat: ["combat-boss"] },
+  gehennom: { calm: ["dungeon"], combat: ["combat-boss"] },
+  endgame: { calm: ["combat"], combat: ["combat-boss"] },
 };

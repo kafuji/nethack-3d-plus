@@ -20,91 +20,87 @@ export type MusicTrack = {
 
 export type MusicLibrary = Record<MusicMood, readonly MusicTrack[]>;
 
+/** Credit fields shared by the soundtrack's own pieces. */
+const originalWork = {
+  author: "NetHack 3D Plus (made with Suno)",
+  license: "Original work; Suno Pro plan",
+} as const;
+
 /**
- * Bundled background music. All tracks are CC0 (public domain) from
- * OpenGameArt.org; loudness-normalised and re-encoded to Ogg Vorbis.
- * Credits are also listed in public/licenses/music-credits.txt.
+ * Bundled background music: the game's own soundtrack, built on the "Descent"
+ * leitmotif. Each piece was sketched with scripts/music-sketch and finished
+ * with Suno (Pro plan). The files are the MP3s Suno exported: they fade out
+ * at the end, so they loop by crossfading, and gainDb brings them down to a
+ * common level (about -24 dB, -22 dB for danger). Regions pick their tracks
+ * in music-region.ts. Credits are also listed in public/licenses/music-credits.txt.
  */
 export const defaultMusicLibrary: MusicLibrary = {
   calm: [
     {
-      id: "calm-dungeon",
-      path: "music/calm-dungeon.ogg",
+      id: "dungeon",
+      path: "music/dungeon.mp3",
       loop: "crossfade",
       crossfadeSec: 4,
-      title: "Dungeon Ambience",
-      author: "yd",
-      license: "CC0 1.0",
-      source: "https://opengameart.org/content/dungeon-ambience",
+      gainDb: -5,
+      title: "Dungeons of Doom",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/dungeon.mjs",
     },
     {
-      id: "calm-unexplored",
-      path: "music/calm-unexplored.ogg",
+      id: "mines",
+      path: "music/mines.mp3",
       loop: "crossfade",
-      crossfadeSec: 3,
-      title: "Unexplored Expansion",
-      author: "TAD / Bo Jingles",
-      license: "CC0 1.0",
-      source: "https://opengameart.org/content/unexplored-expansion",
+      crossfadeSec: 4,
+      gainDb: -8,
+      title: "Gnomish Mines",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/mines.mjs",
     },
   ],
   combat: [
     {
-      id: "combat-battle-theme-a",
-      path: "music/combat-battle-theme-a.ogg",
+      id: "combat",
+      path: "music/combat.mp3",
       loop: "crossfade",
       crossfadeSec: 2,
-      title: "Battle Theme A",
-      author: "cynicmusic",
-      license: "CC0 1.0",
-      source: "https://opengameart.org/content/battle-theme-a",
+      gainDb: -5,
+      title: "Combat",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/combat-heavy.mjs",
     },
     {
-      id: "combat-determined-pursuit",
-      path: "music/combat-determined-pursuit.ogg",
-      loop: "seamless",
-      title: "Determined Pursuit (epic orchestra loop)",
-      author: "Emma_MA",
-      license: "CC0 1.0",
-      source: "https://opengameart.org/content/determined-pursuit-epic-orchestra-loop",
+      id: "combat-boss",
+      path: "music/combat-boss.mp3",
+      loop: "crossfade",
+      crossfadeSec: 2,
+      gainDb: -4,
+      title: "Boss Combat",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/combat.mjs",
     },
   ],
   danger: [
     {
-      id: "danger-tension-and-distress",
-      path: "music/danger-tension-and-distress.ogg",
-      loop: "seamless",
-      title: "Tension and Distress",
-      author: "Allen Yatsura",
-      license: "CC0 1.0",
-      source: "https://opengameart.org/content/tension-and-distress",
-    },
-    {
-      id: "danger-panic-mode",
-      path: "music/danger-panic-mode.ogg",
-      loop: "seamless",
-      title: "Panic Mode",
-      author: "Breadman",
-      license: "CC0 1.0",
-      source: "https://opengameart.org/node/114093",
+      id: "danger",
+      path: "music/danger.mp3",
+      loop: "crossfade",
+      crossfadeSec: 3,
+      gainDb: -3,
+      title: "Danger",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/danger.mjs",
     },
   ],
 };
 
-/**
- * Title screen music (null = silent title screen). An original piece: sketched
- * with scripts/music-sketch (pieces/title.mjs) and finished with Suno (Pro
- * plan). Kept as the MP3 Suno exported; it fades out at the end, so it loops
- * by crossfading, and it is about 7 dB hotter than the normalised tracks.
- */
+/** Title screen music (null = silent title screen), from pieces/title.mjs. */
 export const titleMusicTrack: MusicTrack | null = {
   id: "title-theme",
   path: "music/title-theme.mp3",
   loop: "crossfade",
   crossfadeSec: 4,
-  gainDb: -7,
-  title: "NetHack 3D Plus Title Theme",
-  author: "NetHack 3D Plus (made with Suno)",
-  license: "Original work; Suno Pro plan",
+  gainDb: -7.5,
+  title: "The Descent (Title Theme)",
+  ...originalWork,
   source: "scripts/music-sketch/pieces/title.mjs",
 };

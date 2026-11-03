@@ -77,7 +77,7 @@ describe("BackgroundMusic", () => {
     expect(player.stingers).toEqual([]);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 50, dungeon: "The Gnomish Mines" }, false);
     expect(music.getCurrentRegion()).toBe("mines");
-    expect(player.preferences[player.preferences.length - 1]?.calm?.[0]).toBe("calm-unexplored");
+    expect(player.preferences[player.preferences.length - 1]?.calm?.[0]).toBe("mines");
     expect(player.stingers).toEqual(["region-enter"]);
     music.dispose();
   });
