@@ -28,7 +28,7 @@ export const regionTrackPreferences: Readonly<Record<MusicRegion, TrackPreferenc
   dungeon: { calm: ["dungeon"], combat: ["combat"] },
   mines: { calm: ["mines"], combat: ["combat"] },
   sokoban: { calm: ["sokoban"], combat: ["combat"] },
-  quest: { calm: ["dungeon"], combat: ["combat"] },
+  quest: { calm: ["quest"], combat: ["combat"] },
   ludios: { calm: ["dungeon"], combat: ["combat-boss"] },
   gehennom: { calm: ["dungeon"], combat: ["combat-boss"] },
   endgame: { calm: ["combat"], combat: ["combat-boss"] },

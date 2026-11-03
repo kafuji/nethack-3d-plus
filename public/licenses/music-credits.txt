@@ -9,6 +9,7 @@ public/music/title-theme.mp3   "The Descent (Title Theme)"  scripts/music-sketch
 public/music/dungeon.mp3       "Dungeons of Doom"           scripts/music-sketch/pieces/dungeon.mjs
 public/music/mines.mp3         "Gnomish Mines"              scripts/music-sketch/pieces/mines.mjs
 public/music/sokoban.mp3       "Sokoban"                    scripts/music-sketch/pieces/sokoban.mjs
+public/music/quest.mp3         "The Quest"                  scripts/music-sketch/pieces/quest.mjs
 public/music/combat.mp3        "Combat"                     scripts/music-sketch/pieces/combat-heavy.mjs
 public/music/combat-boss.mp3   "Boss Combat"                scripts/music-sketch/pieces/combat.mjs
 public/music/danger.mp3        "Danger"                     scripts/music-sketch/pieces/danger.mjs
