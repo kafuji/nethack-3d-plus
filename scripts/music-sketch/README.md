@@ -36,8 +36,7 @@ Pieces that use it:
 - `pieces/mines.mjs`: Gnomish Mines, the same ambient on an E pedal in 5/4, so the 4-beat ostinato limps, with distant pick strikes.
 - `pieces/combat.mjs`: boss fights, D Phrygian at 132 BPM. It starts at full energy on beat one; the call is squeezed into one bar (`augment: 0.5`) as the battle figure, and the brass plays it at full length.
 - `pieces/combat-heavy.mjs`: everyday fights, D Phrygian at 100 BPM. Slower and heavier: a stomping beat, a low chugging riff, and the theme at full length in the low brass.
-
-Other pieces can reuse it. A danger piece, for example, could play it upside down (`invert: true`) or in a low register.
+- `pieces/danger.mjs`: danger (low hit points), 112 BPM on a D-Eb-Ab cluster. A heartbeat, a semitone tremble from the ostinato, a cello that creeps up a semitone every two bars, and the call upside down (`invert: true`) in the low brass.
 
 `helpers.mjs` holds small arrangement helpers (`above`, `tie`).
 
