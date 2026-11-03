@@ -10,6 +10,7 @@ import { piece as combat } from "./pieces/combat.mjs";
 import { piece as combatHeavy } from "./pieces/combat-heavy.mjs";
 import { piece as danger } from "./pieces/danger.mjs";
 import { piece as sokoban } from "./pieces/sokoban.mjs";
+import { piece as quest } from "./pieces/quest.mjs";
 
 test("writes a format 1 file with a conductor track plus one track per part", () => {
   const midi = writeMidi(piece);
@@ -34,7 +35,7 @@ test("encodes the tempo from bpm", () => {
   assert.equal(midi.readUIntBE(tempo + 3, 3), 500000);
 });
 
-for (const sketch of [piece, dungeon, mines, combat, combatHeavy, danger, sokoban]) {
+for (const sketch of [piece, dungeon, mines, combat, combatHeavy, danger, sokoban, quest]) {
   test(`${sketch.id} sketch fills its declared number of bars`, () => {
     const end = pieceEndBeat(sketch);
     const barBeats = sketch.beatsPerBar;
