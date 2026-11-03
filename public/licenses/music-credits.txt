@@ -11,6 +11,7 @@ public/music/mines.mp3         "Gnomish Mines"              scripts/music-sketch
 public/music/sokoban.mp3       "Sokoban"                    scripts/music-sketch/pieces/sokoban.mjs
 public/music/quest.mp3         "The Quest"                  scripts/music-sketch/pieces/quest.mjs
 public/music/medusa.mp3        "Medusa's Island"            scripts/music-sketch/pieces/medusa.mjs
+public/music/castle.mp3        "The Castle"                 scripts/music-sketch/pieces/castle.mjs
 public/music/combat.mp3        "Combat"                     scripts/music-sketch/pieces/combat-heavy.mjs
 public/music/combat-boss.mp3   "Boss Combat"                scripts/music-sketch/pieces/combat.mjs
 public/music/danger.mp3        "Danger"                     scripts/music-sketch/pieces/danger.mjs

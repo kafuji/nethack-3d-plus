@@ -76,9 +76,9 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/quest.mjs",
     },
+    // medusa and castle are not picked by any region yet: both levels are part
+    // of the Dungeons of Doom, so they need special-level detection first.
     {
-      // Not picked by any region yet: Medusa's level is part of the Dungeons
-      // of Doom, so it needs special-level detection first.
       id: "medusa",
       path: "music/medusa.mp3",
       loop: "crossfade",
@@ -87,6 +87,16 @@ export const defaultMusicLibrary: MusicLibrary = {
       title: "Medusa's Island",
       ...originalWork,
       source: "scripts/music-sketch/pieces/medusa.mjs",
+    },
+    {
+      id: "castle",
+      path: "music/castle.mp3",
+      loop: "crossfade",
+      crossfadeSec: 4,
+      gainDb: -4.5,
+      title: "The Castle",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/castle.mjs",
     },
   ],
   combat: [
