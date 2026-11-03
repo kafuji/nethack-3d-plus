@@ -10,6 +10,8 @@ export type MusicTrack = {
    */
   loop: "seamless" | "crossfade";
   crossfadeSec?: number;
+  /** Level trim for files that were not loudness-normalised (default 0). */
+  gainDb?: number;
   title: string;
   author: string;
   license: string;
@@ -90,7 +92,19 @@ export const defaultMusicLibrary: MusicLibrary = {
 };
 
 /**
- * Title screen music. None is bundled for now, so the title screen is silent;
- * set a track here to play it while the startup menu is shown.
+ * Title screen music (null = silent title screen). An original piece: sketched
+ * with scripts/music-sketch (pieces/title.mjs) and finished with Suno (Pro
+ * plan). Kept as the MP3 Suno exported; it fades out at the end, so it loops
+ * by crossfading, and it is about 7 dB hotter than the normalised tracks.
  */
-export const titleMusicTrack: MusicTrack | null = null;
+export const titleMusicTrack: MusicTrack | null = {
+  id: "title-theme",
+  path: "music/title-theme.mp3",
+  loop: "crossfade",
+  crossfadeSec: 4,
+  gainDb: -7,
+  title: "NetHack 3D Plus Title Theme",
+  author: "NetHack 3D Plus (made with Suno)",
+  license: "Original work; Suno Pro plan",
+  source: "scripts/music-sketch/pieces/title.mjs",
+};

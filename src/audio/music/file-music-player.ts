@@ -365,8 +365,12 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
       element.preload = "auto";
       element.src = url;
       const source = context.createMediaElementSource(element);
+      // Fixed per-track level trim ahead of the deck's fade gain.
+      const trim = context.createGain();
+      trim.gain.value = Math.pow(10, (track.gainDb ?? 0) / 20);
       const gain = context.createGain();
-      source.connect(gain);
+      source.connect(trim);
+      trim.connect(gain);
       deck = { track, element, gain };
       decks.push(deck);
       setElementRate(element, this.playbackRate);

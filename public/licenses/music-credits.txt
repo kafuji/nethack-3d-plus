@@ -1,10 +1,15 @@
 NetHack 3D - Background music credits
 =====================================
 
-All bundled background music tracks are dedicated to the public domain under
-Creative Commons CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/).
+The in-game background music tracks below are dedicated to the public domain
+under Creative Commons CC0 1.0 Universal
+(https://creativecommons.org/publicdomain/zero/1.0/).
 Attribution is not required, but we gratefully credit the authors.
 Files were trimmed, loudness-normalised and re-encoded to Ogg Vorbis.
+
+The title theme (public/music/title-theme.mp3) is an original piece made for
+NetHack 3D Plus: composed as a MIDI sketch (scripts/music-sketch) and produced
+with Suno under a Pro plan subscription. It is not covered by CC0.
 
 public/music/calm-dungeon.ogg
   "Dungeon Ambience" by yd
