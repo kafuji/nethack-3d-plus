@@ -113,8 +113,10 @@ export function renderPreview(piece, { sampleRate = 44100, tailSec = 2, normaliz
       const startSample = Math.round(note.start * secondsPerBeat * sampleRate);
       voice.render(dry.subarray(startSample), sampleRate, midiToHz(note.pitch), note.dur * secondsPerBeat, note.vel, note.pitch);
     }
-    const leftGain = Math.cos(((voice.pan + 1) * Math.PI) / 4);
-    const rightGain = Math.sin(((voice.pan + 1) * Math.PI) / 4);
+    // previewGainDb balances a part in the preview only; the MIDI file is unchanged.
+    const trim = Math.pow(10, (track.previewGainDb ?? 0) / 20);
+    const leftGain = Math.cos(((voice.pan + 1) * Math.PI) / 4) * trim;
+    const rightGain = Math.sin(((voice.pan + 1) * Math.PI) / 4) * trim;
     for (let i = 0; i < length; i++) {
       left[i] += dry[i] * leftGain;
       right[i] += dry[i] * rightGain;

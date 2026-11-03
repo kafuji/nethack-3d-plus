@@ -4,6 +4,7 @@ import { writeMidi } from "./midi.mjs";
 import { pieceEndBeat } from "./helpers.mjs";
 import { descent, motifBars, realize } from "./motifs.mjs";
 import { piece } from "./pieces/title.mjs";
+import { piece as dungeon } from "./pieces/dungeon.mjs";
 
 test("writes a format 1 file with a conductor track plus one track per part", () => {
   const midi = writeMidi(piece);
@@ -28,11 +29,13 @@ test("encodes the tempo from bpm", () => {
   assert.equal(midi.readUIntBE(tempo + 3, 3), 500000);
 });
 
-test("title sketch fills its declared number of bars", () => {
-  const end = pieceEndBeat(piece);
-  const barBeats = piece.beatsPerBar;
-  assert.ok(end > (piece.bars - 1) * barBeats && end <= piece.bars * barBeats, `ends at beat ${end}`);
-});
+for (const sketch of [piece, dungeon]) {
+  test(`${sketch.id} sketch fills its declared number of bars`, () => {
+    const end = pieceEndBeat(sketch);
+    const barBeats = sketch.beatsPerBar;
+    assert.ok(end > (sketch.bars - 1) * barBeats && end <= sketch.bars * barBeats, `ends at beat ${end}`);
+  });
+}
 
 test("realize places, augments, inverts and doubles a motif", () => {
   const motif = [[[0, 1], [null, 1], [3, 2]]];
