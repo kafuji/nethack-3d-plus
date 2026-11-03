@@ -6,6 +6,7 @@ import { descent, motifBars, realize } from "./motifs.mjs";
 import { piece } from "./pieces/title.mjs";
 import { piece as dungeon } from "./pieces/dungeon.mjs";
 import { piece as mines } from "./pieces/mines.mjs";
+import { piece as combat } from "./pieces/combat.mjs";
 
 test("writes a format 1 file with a conductor track plus one track per part", () => {
   const midi = writeMidi(piece);
@@ -30,7 +31,7 @@ test("encodes the tempo from bpm", () => {
   assert.equal(midi.readUIntBE(tempo + 3, 3), 500000);
 });
 
-for (const sketch of [piece, dungeon, mines]) {
+for (const sketch of [piece, dungeon, mines, combat]) {
   test(`${sketch.id} sketch fills its declared number of bars`, () => {
     const end = pieceEndBeat(sketch);
     const barBeats = sketch.beatsPerBar;
