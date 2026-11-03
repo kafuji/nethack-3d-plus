@@ -318,6 +318,7 @@ export function useTileContextEffects(dependencies: UseTileContextEffectsDepende
     };
 
     const handleKeyDown = (event: KeyboardEvent): void => {
+      if ((event.target as HTMLElement | null)?.closest?.("[data-local-mcp-control]")) return;
       if (event.key === "Escape") {
         controller?.dismissFpsCrosshairContextMenu();
       }

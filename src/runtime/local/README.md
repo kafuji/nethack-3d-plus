@@ -86,6 +86,7 @@ Paths in this table are relative to this directory.
 - Keep coordinated shutdown in the root. It drains input, clears domain state, resolves pending selections/commands, and cancels remaining broker requests in the existing order.
 - Protocol v1 is owned by `src/runtime/protocol/`, `runtime-worker.ts`, and `WorkerRuntimeBridge.ts`. It adds session/command/observation identities around the existing owners. It must replay records through the established engine handler in order; it is not a second input queue or world model. `clear_scene` advances presentation generation without proving a level change. Runtime `u.uz` owns physical level generation.
 - `RuntimeProtocolSession` observes the existing Promise waits. It buffers a prompt only until it knows whether that callback actually suspended, then attaches the request ID. Preserve Promise identity, broker FIFO/kind isolation, and separate received/consumed/closed states.
+- The opt-in local [MCP prototype](../../../docs/mcp-prototype.md) uses the same worker session and request identities. Automation reserves one wait and must only close a prompt when its own command is consumed; a rejected or human-consumed wait must not close it.
 - `RuntimeRefreshRequests` deduplicates cell sets and distinguishes cached presentation from fresh completion. Requests stay pending while WASM helper re-entry is unsafe, cancel on generation change, and share one helper result across overlapping deferred sets.
 
 ## Validation and related guides

@@ -151,8 +151,12 @@ export async function resolveLatestManualSave(
 async function restoreRecord(
   runtimeVersion: NethackRuntimeVersion,
   record: TrialSlotRecord,
+  expectedCharacterName: string,
 ): Promise<TrialSlotResume> {
   const archive = parseSaveArchive(record.archive, runtimeVersion);
+  if (archive.name !== expectedCharacterName) {
+    throw new Error("Trial save character does not match its slot; refusing to replace another character's saves");
+  }
   // A manual save and checkpoint shards of the same character would make
   // NetHack ask about the "game in progress" instead of restoring this copy.
   for (const save of await fetchSavedGames(runtimeVersion)) {
@@ -169,7 +173,7 @@ export async function restoreTrialSlot(
 ): Promise<TrialSlotResume> {
   const record = await readSlotRecord(runtimeVersion, characterName, slot);
   if (!record) throw new Error("Trial slot is empty");
-  return restoreRecord(runtimeVersion, record);
+  return restoreRecord(runtimeVersion, record, characterName);
 }
 
 /*
@@ -321,5 +325,5 @@ export async function restoreAutoSnapshot(
 ): Promise<TrialSlotResume> {
   const entry = (await readAutoSnapshotEntries(runtimeVersion, characterName)).find(item => item.key === id);
   if (!entry) throw new Error("Trial snapshot not found");
-  return restoreRecord(runtimeVersion, entry.record);
+  return restoreRecord(runtimeVersion, entry.record, characterName);
 }

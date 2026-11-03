@@ -60,6 +60,120 @@ afterEach(() => {
 });
 
 describe("versioned worker bridge", () => {
+  it("waits for the matching worker shutdown acknowledgement before terminating", async () => {
+    const bridge = new WorkerRuntimeBridge(() => {});
+    const started = bridge.start();
+    const worker = FakeWorker.current;
+    worker.emit({ type: "runtime_ready", protocol: handshake(bridge.sessionId) });
+    await started;
+    const retired = bridge.disposeAndWait();
+    expect(bridge.disposeAndWait()).toBe(retired);
+    expect(worker.messages[worker.messages.length - 1]).toMatchObject({ type: "shutdown", sessionId: bridge.sessionId });
+    expect(worker.terminate).not.toHaveBeenCalled();
+    worker.emit({ type: "runtime_shutdown_result", sessionId: "wrong-session" });
+    expect(worker.terminate).not.toHaveBeenCalled();
+    worker.emit({ type: "runtime_shutdown_result", sessionId: bridge.sessionId });
+    await expect(retired).resolves.toBeUndefined();
+    expect(worker.terminate).toHaveBeenCalledOnce();
+  });
+
+  it("reports a drain failure or missing acknowledgement rather than claiming success", async () => {
+    const failed = new WorkerRuntimeBridge(() => {});
+    const firstWorker = FakeWorker.current;
+    const firstStart = failed.start();
+    firstWorker.emit({ type: "runtime_ready", protocol: handshake(failed.sessionId) });
+    await firstStart;
+    const failure = failed.disposeAndWait();
+    firstWorker.emit({ type: "runtime_shutdown_result", sessionId: failed.sessionId, error: "storage failed" });
+    await expect(failure).rejects.toThrow("storage failed");
+    expect(firstWorker.terminate).toHaveBeenCalledOnce();
+
+    const stalled = new WorkerRuntimeBridge(() => {});
+    const secondWorker = FakeWorker.current;
+    const secondStart = stalled.start();
+    secondWorker.emit({ type: "runtime_ready", protocol: handshake(stalled.sessionId) });
+    await secondStart;
+    const timeout = stalled.disposeAndWait();
+    const expectation = expect(timeout).rejects.toThrow("timed out");
+    await vi.advanceTimersByTimeAsync(10000);
+    await expectation;
+    expect(secondWorker.terminate).toHaveBeenCalledOnce();
+  });
+
+  it("can terminate a worker which was never started without waiting for an acknowledgement", async () => {
+    const bridge = new WorkerRuntimeBridge(() => {});
+    const worker = FakeWorker.current;
+    await expect(bridge.disposeAndWait()).resolves.toBeUndefined();
+    expect(worker.terminate).toHaveBeenCalledOnce();
+  });
+
+  it("tracks a multi-selection sequence until its owning wait is consumed", async () => {
+    const bridge = new WorkerRuntimeBridge(() => {});
+    const started = bridge.start();
+    FakeWorker.current.emit({ type: "runtime_ready", protocol: handshake(bridge.sessionId) });
+    await started;
+    FakeWorker.current.emit(batch(bridge.sessionId, 1, 1, [{ type: "input_wait", requestId: 10, purpose: "menu", state: "waiting" }]));
+    const consumed = vi.fn();
+    expect(bridge.claimAutomationInput(bridge.sessionId, 10, consumed)).toBe(true);
+    bridge.sendInputSequence(["__MENU_SELECT__:2", "__MENU_SELECT__:3", "Enter"], { requestId: 10 });
+    const command = FakeWorker.current.messages[FakeWorker.current.messages.length - 1];
+    expect(command).toMatchObject({ type: "send_input_sequence", requestId: 10 });
+    expect(consumed).not.toHaveBeenCalled();
+    FakeWorker.current.emit(batch(bridge.sessionId, 2, 2, [
+      { type: "input_consumed", commandId: command.commandId, requestId: 10 },
+      { type: "input_wait", requestId: 10, state: "consumed" },
+    ]));
+    expect(consumed).toHaveBeenCalledOnce();
+    bridge.dispose();
+  });
+
+  it("targets automation input to the observed wait and only acknowledges its own consumed command", async () => {
+    const bridge = new WorkerRuntimeBridge(() => {});
+    const started = bridge.start();
+    FakeWorker.current.emit({ type: "runtime_ready", protocol: handshake(bridge.sessionId) });
+    await started;
+    FakeWorker.current.emit(batch(bridge.sessionId, 1, 1, [{ type: "input_wait", requestId: 10, purpose: "question", state: "waiting" }]));
+    const consumed = vi.fn();
+    expect(bridge.claimAutomationInput("other-session", 10, consumed)).toBe(false);
+    expect(bridge.claimAutomationInput(bridge.sessionId, 9, consumed)).toBe(false);
+    expect(bridge.claimAutomationInput(bridge.sessionId, 10, consumed)).toBe(true);
+    expect(bridge.getAutomationInputWait()).toBeNull();
+    bridge.sendInput("y", { requestId: 10 });
+    const command = FakeWorker.current.messages[FakeWorker.current.messages.length - 1];
+    expect(command.requestId).toBe(10);
+    FakeWorker.current.emit(batch(bridge.sessionId, 2, 2, [
+      { type: "input_consumed", commandId: command.commandId, requestId: 10 },
+      { type: "input_wait", requestId: 10, purpose: "question", state: "consumed" },
+      { type: "input_wait", requestId: 11, purpose: "question", state: "waiting" },
+      { type: "question", inputRequestId: 11, text: "Continue?" },
+    ]));
+    expect(consumed).toHaveBeenCalledOnce();
+    expect(bridge.getAutomationInputWait()).toEqual({ sessionId: bridge.sessionId, requestId: 11, purpose: "question", isPrompt: true });
+    bridge.dispose();
+  });
+
+  it("does not acknowledge an automation answer when a human consumes its wait first", async () => {
+    const bridge = new WorkerRuntimeBridge(() => {});
+    const started = bridge.start();
+    FakeWorker.current.emit({ type: "runtime_ready", protocol: handshake(bridge.sessionId) });
+    await started;
+    FakeWorker.current.emit(batch(bridge.sessionId, 1, 1, [{ type: "input_wait", requestId: 10, purpose: "question", state: "waiting" }]));
+    bridge.sendInput("n"); // Human input was sent before the automation claim.
+    const human = FakeWorker.current.messages[FakeWorker.current.messages.length - 1];
+    const consumed = vi.fn();
+    expect(bridge.claimAutomationInput(bridge.sessionId, 10, consumed)).toBe(true);
+    bridge.sendInput("y", { requestId: 10 });
+    const automation = FakeWorker.current.messages[FakeWorker.current.messages.length - 1];
+    FakeWorker.current.emit(batch(bridge.sessionId, 2, 2, [
+      { type: "input_consumed", commandId: human.commandId, requestId: 10 },
+      { type: "input_wait", requestId: 10, purpose: "question", state: "consumed" },
+      { type: "command_result", commandId: automation.commandId, requestId: 10, status: "rejected" },
+      { type: "input_wait", requestId: 11, purpose: "command-or-position", state: "waiting" },
+    ]));
+    expect(consumed).not.toHaveBeenCalled();
+    expect(bridge.getAutomationInputWait()?.requestId).toBe(11);
+    bridge.dispose();
+  });
   it("signals completed map observations without forwarding protocol bookkeeping", async () => {
     const events: any[] = [], bridge = new WorkerRuntimeBridge(event => events.push(event));
     const started = bridge.start();

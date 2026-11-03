@@ -39,6 +39,7 @@ export interface RuntimeMenuCaptureDependencies {
     | "inferQuestionlessInventoryCategories"
     | "lastEndedInventoryMenuKind"
     | "latestInventoryItems"
+    | "hasInventorySnapshot"
   >;
   readonly memory: Pick<
     RuntimeMemory,
@@ -450,9 +451,11 @@ export class RuntimeMenuCapture {
           this.deps.inventorySnapshots.latestInventoryItems = this.deps.menuSelection.currentMenuItems.map((item) => ({
             ...item,
           }));
+          this.deps.inventorySnapshots.hasInventorySnapshot = true;
           this.deps.coordinator.emit({
             type: "inventory_update",
             items: this.deps.inventorySnapshots.latestInventoryItems.map((item) => ({ ...item })),
+            snapshotAvailable: true,
             window: endMenuWinid,
           });
         } else {

@@ -26,6 +26,7 @@ export interface RuntimeGlobalSnapshotsDependencies {
   readonly inventorySnapshots: Pick<
     RuntimeInventorySnapshots,
     "latestInventoryItems"
+    | "hasInventorySnapshot"
   >;
   readonly mapCallbacks: Pick<
     RuntimeMapCallbacks,
@@ -422,6 +423,7 @@ export class RuntimeGlobalSnapshots {
     this.deps.coordinator.emit({
       type: "inventory_update",
       items: this.deps.inventorySnapshots.latestInventoryItems.map((item) => ({ ...item })),
+      snapshotAvailable: this.deps.inventorySnapshots.hasInventorySnapshot,
       window: 4,
     });
 

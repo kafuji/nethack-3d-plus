@@ -1134,7 +1134,7 @@ export class InputCommands {
 
   sendInput(
     input: string,
-    options: { keepContextMenuOpen?: boolean; delayMs?: number } = {},
+    options: { keepContextMenuOpen?: boolean; delayMs?: number; requestId?: number } = {},
   ): void {
     this.dependencies.engineMessages.logNameInputTrace(input);
     this.dependencies.tilesetAssets.vultureTilesetTranslator?.pauseIdlePreloading();
@@ -1233,13 +1233,13 @@ export class InputCommands {
       });
       // Workaround for a race condition in contextual command handling.
       // TODO: remove once the underlying ordering issue is fixed.
-      this.dependencies.engineState.session.sendInput(resolvedInput, { delayMs: options.delayMs });
+      this.dependencies.engineState.session.sendInput(resolvedInput, { delayMs: options.delayMs, requestId: options.requestId });
     }
   }
 
   sendInputSequence(
     inputs: string[],
-    options: { keepContextMenuOpen?: boolean; delayMs?: number } = {},
+    options: { keepContextMenuOpen?: boolean; delayMs?: number; requestId?: number } = {},
   ): void {
     if (!this.dependencies.engineState.session || inputs.length === 0) {
       return;
@@ -1285,7 +1285,7 @@ export class InputCommands {
     });
     // Workaround for a race condition in contextual command handling.
     // TODO: remove once the underlying ordering issue is fixed.
-    this.dependencies.engineState.session.sendInputSequence(inputs, { delayMs: options.delayMs });
+    this.dependencies.engineState.session.sendInputSequence(inputs, { delayMs: options.delayMs, ...(options.requestId !== undefined ? { requestId: options.requestId } : {}) });
   }
 
   sendForcedDirectionalInput(direction: string): void {

@@ -27,6 +27,19 @@ afterEach(() => {
 });
 
 describe("assembled startup and snapshot contracts", () => {
+  it("distinguishes an uninitialized inventory from a genuinely captured empty inventory across replay", () => {
+    systems.globalSnapshots.sendReconnectSnapshot();
+    expect(events.find(event => event.type === "inventory_update")).toMatchObject({ items: [], snapshotAvailable: false });
+    events.length = 0;
+    vi.spyOn(systems.windows, "isInventoryWindow").mockReturnValue(true);
+    systems.menuSelection.currentMenuItems = [];
+    systems.menuCapture.handleShimEndMenu([4, ""]);
+    expect(events.find(event => event.type === "inventory_update")).toMatchObject({ items: [], snapshotAvailable: true });
+    events.length = 0;
+    systems.globalSnapshots.sendReconnectSnapshot();
+    expect(events.find(event => event.type === "inventory_update")).toMatchObject({ items: [], snapshotAvailable: true });
+  });
+
   it("keeps character tokens ahead of startup tokens and applies shim windowtype first in NetHack's reverse parse order", () => {
     runtime.startupOptions = {
       characterCreation: { mode: "random", name: " Alice,  Rogue " },

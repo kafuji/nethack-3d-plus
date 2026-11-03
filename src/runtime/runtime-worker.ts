@@ -3,6 +3,7 @@ import { setLoggingEnabled } from "../logging";
 import { createTaskCheckpoint, RuntimeEventBatchPublisher } from "./protocol/event-batches";
 import type { RuntimeCommandIdentity, RuntimeLevelIdentity } from "./protocol/types";
 import { bundleMapGlyphEvents } from "./protocol/map-events";
+import { retireRuntime } from "./local/persistence/retire-runtime";
 import type {
   RuntimeCommand,
   RuntimeEvent,
@@ -463,29 +464,16 @@ self.onmessage = async (message: MessageEvent<RuntimeCommand>) => {
         setLoggingEnabled(Boolean(command.enabled));
         return;
       case "shutdown":
-        if (runtime) {
-          try {
-            runtime.shutdown("runtime bridge dispose");
-          } catch (error) {
-            console.warn("Runtime shutdown hook error:", error);
-          }
-          const moduleFs =
-            (runtime as any).nethackModule &&
-            (runtime as any).nethackModule.FS;
-          if (moduleFs && typeof moduleFs.syncfs === "function") {
-            try {
-              await new Promise<void>((resolve) => {
-                moduleFs.syncfs(false, (err: unknown) => {
-                  if (err) {
-                    console.warn("Worker shutdown IDBFS sync error:", err);
-                  }
-                  resolve();
-                });
-              });
-            } catch (error) {
-              console.warn("Worker shutdown IDBFS sync exception:", error);
-            }
-          }
+        // A start is asynchronous and may still install persistence. Do not
+        // acknowledge retirement until it has settled and all storage writes
+        // have been stopped and drained.
+        const shutdownSessionId = protocolSessionId ?? String(command.sessionId ?? "");
+        let shutdownError: string | undefined;
+        try {
+          await retireRuntime(runtime, starting);
+        } catch (error) {
+          shutdownError = error instanceof Error ? error.message : String(error);
+          console.warn("Runtime shutdown persistence failed:", error);
         }
         runtime = null;
         started = false;
@@ -495,6 +483,7 @@ self.onmessage = async (message: MessageEvent<RuntimeCommand>) => {
         checkpoint?.dispose(); checkpoint = null;
         protocolSessionId = null; lastCommandId = 0;
         terminationReported = false;
+        postEnvelopeDirect({ type: "runtime_shutdown_result", sessionId: shutdownSessionId, ...(shutdownError ? { error: shutdownError } : {}) });
         return;
       default:
         return;

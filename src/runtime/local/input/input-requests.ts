@@ -168,7 +168,7 @@ export class RuntimeInputRequests {
       this.deps.coordinator.protocol.cancelWait(
         requestKind === "position"
           ? ["shim_nh_poskey"]
-          : ["shim_nhgetch", "shim_yn_function", "shim_display_nhwindow", "shim_display_file"],
+          : ["shim_nhgetch", "shim_yn_function", "shim_end_menu", "shim_display_nhwindow", "shim_display_file"],
       );
       this.commandInputContinuation = "none";
       return typeof result?.cancelCode === "number" ? result.cancelCode : 27;
@@ -183,7 +183,7 @@ export class RuntimeInputRequests {
       token ?? undefined,
       requestKind === "position"
         ? ["shim_nh_poskey"]
-        : ["shim_nhgetch", "shim_yn_function", "shim_display_nhwindow", "shim_display_file"],
+        : ["shim_nhgetch", "shim_yn_function", "shim_end_menu", "shim_display_nhwindow", "shim_display_file"],
     );
     if (
       requestKind === "position" &&

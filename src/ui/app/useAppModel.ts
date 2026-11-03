@@ -1889,6 +1889,20 @@ export function useAppModel() {
   });
 
   return {
+    localMcpControl: {
+      characterCreationConfig,
+      startupFlowStep,
+      startupInitialLoadingVisible,
+      runtimeVersion,
+      startupInitOptionValues,
+      gameOver,
+      newGamePrompt,
+      globalConfirmationDialog,
+      handleStartNewGame,
+      startNewGameFromPrompt,
+      resolveConfirmation,
+      requestConfirmationChoice,
+    },
     canvasRoot: {
       canvasRootRef,
     },

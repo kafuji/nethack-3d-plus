@@ -98,6 +98,16 @@ export function writeSavePresentationMetadataByKey(
   }
 }
 
+/** For operations that must distinguish a successful file commit from metadata failure. */
+export function writeSavePresentationMetadataByKeyStrict(
+  metadataByKey: Record<string, SavePresentationMetadataEntry>,
+): void {
+  if (typeof window === "undefined" || !window.localStorage) {
+    throw new Error("Save presentation storage is unavailable");
+  }
+  window.localStorage.setItem(savePresentationMetadataStorageKey, JSON.stringify(metadataByKey));
+}
+
 export function resolveStartupPlayModeForSavePresentation(
   runtimeVersion: NethackRuntimeVersion | undefined,
   initOptions: string[] | undefined,

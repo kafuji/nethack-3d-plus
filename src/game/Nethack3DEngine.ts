@@ -21,12 +21,24 @@ import { normalizeNh3dClientOptions } from "./ui-types";
 import { MessageSoundHooks } from "./message-sound-hooks";
 import DirectionPromptOverlay from "./DirectionPromptOverlay";
 import { createEngineSystems, type EngineSystems } from "./engine/create-engine-systems";
+import type { AutomationAction } from "../automation/action-types";
+import { isGameInputKey } from "../runtime/input/keyboard-key";
+import { resolveBoundedQuestionAnswer } from "../runtime/input/question-answer";
+import { ObservedMap } from "../automation/observed-map";
+import { observedMenuItems } from "../automation/observed-menu";
+import { ObservedInventory } from "../automation/observed-inventory";
+import { ObservedNumberPad } from "../automation/observed-number-pad";
+import { ObservedStatus } from "../automation/observed-status";
 
 /** Main engine composition, ordered lifecycle, and public UI controller. */
 class Nethack3DEngine implements Nethack3DEngineController {
   private readonly systems: EngineSystems;
   private startupOnly = false;
   private runtimeGeneration = 0;
+  private readonly automationObservations = new ObservedMap();
+  private readonly automationInventory = new ObservedInventory();
+  private readonly automationNumberPad = new ObservedNumberPad();
+  private readonly automationStatus = new ObservedStatus();
 
   constructor(options: Nethack3DEngineOptions) {
     this.startupOnly = options.startupOnly === true;
@@ -49,6 +61,8 @@ class Nethack3DEngine implements Nethack3DEngineController {
       playMode: "normal",
       runtimeVersion: "3.6.7",
     };
+    this.automationNumberPad.reset(this.systems.engineState.characterCreationConfig.mode,
+      this.systems.extendedCommands.extractNumberPadModeEnabledFromOptionTokens(this.systems.engineState.characterCreationConfig.initOptions));
     this.systems.inputCommands.numberPadModeEnabled = this.systems.extendedCommands.resolveStartupNumberPadModeEnabled(
       this.systems.engineState.characterCreationConfig.initOptions,
     );
@@ -120,6 +134,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
   public startGame(config: CharacterCreationConfig, options: Nh3dClientOptions): void {
     if (!this.startupOnly || this.systems.engineState.disposed) return;
     this.systems.engineState.characterCreationConfig = config;
+    this.automationNumberPad.reset(config.mode, this.systems.extendedCommands.extractNumberPadModeEnabledFromOptionTokens(config.initOptions));
     this.systems.inputCommands.numberPadModeEnabled = this.systems.extendedCommands.resolveStartupNumberPadModeEnabled(config.initOptions);
     this.systems.extendedCommands.useNativeExtendedCommandMenu = this.systems.extendedCommands.resolveStartupExtmenuEnabled(config.initOptions);
     this.applyClientOptions(options);
@@ -848,6 +863,12 @@ class Nethack3DEngine implements Nethack3DEngineController {
     if (this.systems.engineState.disposed) {
       return;
     }
+    const observationSession = this.systems.engineState.session;
+    if (observationSession instanceof WorkerRuntimeBridge) {
+      this.automationObservations.observe(event, observationSession.sessionId, observationSession.getAutomationObservationScope());
+      this.automationInventory.observe(event, observationSession.sessionId);
+      this.automationStatus.observe(event, observationSession.sessionId);
+    }
     const data = event as RuntimeEvent & Record<string, any>;
     switch (data.type) {
       case "map_glyph":
@@ -1005,6 +1026,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
           break;
         }
+        this.automationNumberPad.observePosition();
         console.log(
           `🎯 Received player position update: (${data.x}, ${data.y})`,
         );
@@ -1198,6 +1220,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
         this.systems.directionPrompts.showDirectionQuestion(data.text);
         break;
       case "number_pad_mode":
+        this.automationNumberPad.observeRuntimeCallback(Boolean(data.enabled));
         this.systems.inputCommands.setNumberPadModeEnabled(Boolean(data.enabled));
         break;
 
@@ -2084,9 +2107,150 @@ class Nethack3DEngine implements Nethack3DEngineController {
 
   public sendInput(
     input: string,
-    options: { keepContextMenuOpen?: boolean; delayMs?: number } = {},
+    options: { keepContextMenuOpen?: boolean; delayMs?: number; requestId?: number } = {},
   ): void {
     return this.systems.inputCommands.sendInput(input, options);
+  }
+
+  /** Limited, opt-in local automation surface; the worker remains authoritative. */
+  public getAutomationContext() {
+    const session = this.systems.engineState.session;
+    // Human input may change the UI's mode without a correlated automation
+    // response. Never use an older assumption to choose a direction key.
+    this.automationNumberPad.invalidateIfChanged(this.systems.inputCommands.numberPadModeEnabled);
+    if (session instanceof WorkerRuntimeBridge) {
+      // Some protocol-only events are not forwarded to the engine; synchronize
+      // their scope too so a level change can never expose the previous map.
+      this.automationObservations.observe({ type: "automation_scope_sync" }, session.sessionId, session.getAutomationObservationScope());
+      this.automationInventory.observe({ type: "automation_scope_sync" }, session.sessionId);
+    }
+    return {
+      inputWait: session instanceof WorkerRuntimeBridge ? session.getAutomationInputWait() : null,
+      position: this.systems.playerMovement.hasSeenPlayerPosition ? { ...this.systems.playerMovement.playerPos } : null,
+      player: session instanceof WorkerRuntimeBridge && this.automationStatus.hasStatus(session.sessionId) ? { ...this.systems.playerStatus.playerStats } : null,
+      messages: this.systems.engineMessages.gameMessages.slice(0, 30),
+      positionCursor: this.systems.positionSelection.positionInputModeActive ? { ...this.systems.positionSelection.positionCursor } : null,
+      numberPadMode: this.automationNumberPad.snapshot(),
+      map: session instanceof WorkerRuntimeBridge ? this.automationObservations.snapshot() : null,
+      inventorySnapshot: session instanceof WorkerRuntimeBridge ? this.automationInventory.snapshot() : { available: false, revision: 0 },
+      menuItems: observedMenuItems(this.systems.questionMenus.activeQuestionMenuItems, item => this.systems.questionMenus.isSelectableQuestionMenuItem(item)),
+    };
+  }
+
+  public submitAutomationInput(sessionId: string, requestId: number, kind: "move" | "answer", input: string): void {
+    this.submitAutomationAction(sessionId, requestId, { type: kind === "move" ? "command" : "answer", key: input });
+  }
+
+  /** Submit only against the observed wait. UI prompts close after consumption. */
+  public submitAutomationAction(sessionId: string, requestId: number, action: AutomationAction): void {
+    const session = this.systems.engineState.session;
+    if (!(session instanceof WorkerRuntimeBridge)) throw new Error("Game session is not available");
+    const wait = session.getAutomationInputWait();
+    if (!wait || wait.sessionId !== sessionId || wait.requestId !== requestId) throw new Error("Input request is stale or busy; get state again");
+    const questions = this.systems.questionMenus;
+    const directions = this.systems.directionPrompts;
+    const dialogs = this.systems.promptDialogs;
+    const position = this.systems.positionSelection.positionInputModeActive;
+    const question = questions.isInQuestion;
+    const directionQuestion = directions.isInDirectionQuestion;
+    let inputs: string[];
+    let onConsumed: (() => void) | undefined;
+
+    if (action.type === "command" || action.type === "extended") {
+      if (this.systems.gameOver.gameOverState.active) throw new Error("Game is over");
+      if (wait.purpose !== "command-or-position" || wait.isPrompt || question || directionQuestion || position || dialogs.isInfoDialogVisible || dialogs.isTextInputActive || dialogs.isInventoryDialogVisible) {
+        throw new Error("Game is not waiting for a command");
+      }
+      if (action.type === "command") {
+        if (!isGameInputKey(action.key) && !/^__(?:CTRL|META)__:[A-Za-z]$/.test(action.key)) throw new Error("Invalid command key");
+        inputs = [action.key];
+      } else {
+        if (!/^[A-Za-z0-9_?-]{1,80}$/.test(action.command)) throw new Error("Invalid extended command");
+        inputs = ["#", ...action.command, "Enter"];
+      }
+    } else if (action.type === "answer") {
+      if (!isGameInputKey(action.key)) throw new Error("Invalid answer key");
+      if (!position && (!wait.isPrompt || (!question && !directionQuestion))) throw new Error("No supported question is active for this input wait");
+      if (question && questions.activeQuestionMenuItems.length > 0 && action.key !== "Escape") throw new Error("Use menu selection for this prompt");
+      const simpleQuestion = question && !questions.activeQuestionIsPickupDialog && questions.activeQuestionMenuItems.length === 0;
+      const answer = simpleQuestion
+        ? resolveBoundedQuestionAnswer(action.key, questions.activeQuestionChoices, questions.activeQuestionDefaultChoice)
+        : action.key;
+      if (answer === null) throw new Error("Answer is not valid for this question");
+      inputs = [answer];
+      const effectiveChoice = ["Enter", " ", "Space", "Spacebar"].includes(answer)
+        ? questions.activeQuestionDefaultChoice : answer;
+      const isNumberPadQuestion = simpleQuestion && questions.isNumberPadModeQuestion(questions.activeQuestionText);
+      if (!position) onConsumed = () => {
+        if (question) {
+          if (simpleQuestion) {
+            this.systems.inputCommands.updateNumberPadModeFromChoice(effectiveChoice);
+            this.automationNumberPad.observeConsumedOptionAnswer(isNumberPadQuestion, effectiveChoice);
+          }
+          questions.hideQuestion();
+        }
+        if (directionQuestion) directions.hideDirectionQuestion();
+      };
+    } else if (action.type === "text") {
+      if (!wait.isPrompt || !dialogs.isTextInputActive) throw new Error("No text prompt is active for this input wait");
+      if (typeof action.text !== "string" || action.text.length > 255 || action.text.includes("\0")) throw new Error("Invalid text response");
+      inputs = [`${this.systems.inputCommands.textInputPrefix}${action.text}`];
+      onConsumed = () => dialogs.hideTextInputRequest();
+    } else if (action.type === "menu") {
+      if (!wait.isPrompt || !question || questions.activeQuestionMenuItems.length === 0) throw new Error("No menu is active for this input wait");
+      if (!Array.isArray(action.selections) || action.selections.length > 256 || (!questions.activeQuestionIsPickupDialog && action.selections.length !== 1)) throw new Error("Invalid menu selections");
+      const seen = new Set<number>();
+      const desired = new Map<number, number | undefined>();
+      for (const selection of action.selections) {
+        if (!Number.isSafeInteger(selection.index) || selection.index < 0 || seen.has(selection.index)) throw new Error("Invalid menu index");
+        seen.add(selection.index);
+        const item = questions.activeQuestionMenuItems[selection.index];
+        if (!item || !questions.isSelectableQuestionMenuItem(item)) throw new Error("Menu item is not available");
+        if (selection.count !== undefined && (!Number.isSafeInteger(selection.count) || selection.count < 1)) throw new Error("Invalid menu count");
+        if (selection.count !== undefined && !Number.isInteger(item.menuIndex)) throw new Error("Count is not supported for this menu item");
+        desired.set(selection.index, selection.count);
+      }
+      const encode = (item: any, count?: number) => questions.encodeMenuSelectionInputWithCount(questions.getQuestionMenuSelectionInput(item), count ?? null);
+      inputs = [];
+      if (questions.activeQuestionIsPickupDialog) {
+        for (const [index, item] of questions.activeQuestionMenuItems.entries()) {
+          if (!item || !questions.isSelectableQuestionMenuItem(item)) continue;
+          const key = questions.getMenuSelectionStateKey(item);
+          const selected = questions.activePickupSelections.has(key);
+          const wanted = desired.has(index);
+          const count = desired.get(index);
+          const currentCount = questions.activePickupSelectionCounts.get(key);
+          if (selected && !wanted) inputs.push(encode(item));
+          else if (!selected && wanted) inputs.push(encode(item, count));
+          else if (selected && wanted && count !== undefined && count !== currentCount) inputs.push(encode(item, count));
+          else if (selected && wanted && count === undefined && currentCount !== undefined) inputs.push(encode(item), encode(item));
+        }
+        inputs.push("Enter");
+      } else {
+        const [selection] = action.selections;
+        inputs.push(encode(questions.activeQuestionMenuItems[selection.index], selection.count));
+      }
+      onConsumed = () => questions.hideQuestion();
+    } else if (action.type === "dismiss") {
+      if (dialogs.isTextInputActive) {
+        if (!wait.isPrompt) throw new Error("Text prompt is not waiting for input");
+        inputs = [`${this.systems.inputCommands.textInputPrefix}\x1b`];
+        onConsumed = () => dialogs.hideTextInputRequest();
+      } else {
+        if (dialogs.isInventoryDialogVisible) { dialogs.hideInventoryDialog(); return; }
+        if (!dialogs.isInfoDialogVisible) throw new Error("No information dialog is active");
+        if (!dialogs.infoMenuBlockingActive) { dialogs.hideInfoMenuDialog(); return; }
+        if (!wait.isPrompt) throw new Error("Information dialog is not waiting for input");
+        inputs = [" "];
+        onConsumed = () => { dialogs.infoMenuBlockingActive = false; dialogs.hideInfoMenuDialog(); };
+      }
+    } else {
+      throw new Error("Unsupported automation action");
+    }
+
+    if (!session.claimAutomationInput(sessionId, requestId, onConsumed)) throw new Error("Input request is stale or busy; get state again");
+    if (inputs.length === 1) this.systems.inputCommands.sendInput(inputs[0], { requestId });
+    else this.systems.inputCommands.sendInputSequence(inputs, { requestId });
   }
 
   public toggleInfoMenuDialog(): void {

@@ -2,12 +2,23 @@ import type { NethackRuntimeVersion } from "../../../runtime/types";
 import { getRuntimeSaveCompatTag, getRuntimeSaveDbNames, getRuntimeRootPersistenceDbNames } from "../../../runtime/save-storage";
 import { getRuntimeSavePresentationMetadataKey, normalizeStoredSaveInitOptions } from "../../../runtime/save-presentation-metadata";
 import { fetchSavedGames, resolveSaveCategory, resolveSaveLogicalName, type SaveGameRecord } from "./saved-games";
-import { readSavePresentationMetadataByKey, writeSavePresentationMetadataByKey } from "./save-presentation";
+import { readSavePresentationMetadataByKey, writeSavePresentationMetadataByKey, writeSavePresentationMetadataByKeyStrict, savePresentationMetadataStorageKey } from "./save-presentation";
 
 export const MAX_SAVE_ARCHIVE_BYTES = 64 * 1024 * 1024;
 export type SaveTransferErrorCode = "invalid" | "incompatible" | "exists";
 export class SaveTransferError extends Error {
   constructor(public readonly code: SaveTransferErrorCode) { super(code); }
+}
+
+/** File replacement succeeded; retrying blindly could overwrite a newer save. */
+export class TrialRestoreMetadataError extends Error {
+  readonly filesCommitted = true;
+  readonly cause: unknown;
+  constructor(cause?: unknown) {
+    super("Save files were already restored, but presentation metadata could not be updated. Inspect the saves before retrying.");
+    this.name = "TrialRestoreMetadataError";
+    this.cause = cause;
+  }
 }
 
 type SaveArchive = {
@@ -166,4 +177,127 @@ export async function importSavedGame(
     initOptions: archive.initOptions, runtimeVersion, updatedAt: new Date().toISOString(),
   };
   writeSavePresentationMetadataByKey(metadata);
+}
+
+/**
+ * Replace one character's saves in a single FILE_DATA transaction.
+ * Callers MUST first hold the game's origin-wide exclusive lock and wait for
+ * the previous worker's persistence drain; this function cannot stop other
+ * uncooperative tabs. Cross-database replacement is deliberately rejected.
+ */
+export async function replaceTrialSaveAtomically(
+  text: string,
+  runtimeVersion: NethackRuntimeVersion,
+  expectedCharacterName: string,
+  expectedSaves: readonly SaveGameRecord[],
+): Promise<void> {
+  const archive = parseSaveArchive(text, runtimeVersion);
+  if (archive.name !== expectedCharacterName) throw new Error("Trial save character does not match its slot");
+  // Decode every byte before opening any writable database.
+  const records = archive.files.map(file => ({
+    key: file.key,
+    value: { timestamp: new Date(file.timestamp), mode: 0o100666,
+      contents: Uint8Array.from(atob(file.contents), char => char.charCodeAt(0)) },
+  }));
+
+  const expected = new Map<string, number>();
+  for (const save of expectedSaves) {
+    if (save.name !== expectedCharacterName) throw new Error("Unexpected character in replacement snapshot");
+    for (const file of save.files) {
+      if (file.dbName !== archive.dbName) throw new Error("Cannot atomically restore across save databases");
+      const timestamp = file.timestamp.getTime();
+      if (!Number.isFinite(timestamp) || expected.has(file.key)) throw new Error("Invalid replacement snapshot");
+      expected.set(file.key, timestamp);
+    }
+  }
+
+  const listDatabases = (indexedDB as IDBFactory & { databases?: () => Promise<Array<{ name?: string }>> }).databases;
+  if (typeof listDatabases !== "function") throw new Error("Cannot safely enumerate save databases");
+  const databases = await listDatabases.call(indexedDB);
+  const compatTag = getRuntimeSaveCompatTag(runtimeVersion);
+  const known = new Set([...getRuntimeSaveDbNames(runtimeVersion), ...getRuntimeRootPersistenceDbNames(runtimeVersion)]);
+  const otherNames = databases.flatMap(({ name }) => {
+    if (typeof name !== "string" || name === archive.dbName) return [];
+    const matches = known.has(name) || name === `save-${compatTag}` || name.endsWith(`/save-${compatTag}`) || name === `root-${compatTag}` || name.endsWith(`/root-${compatTag}`);
+    return matches ? [name] : [];
+  });
+  const belongsToCharacter = (key: IDBValidKey): boolean => {
+    if (typeof key !== "string") return false;
+    const filename = key.split("/").pop() ?? "";
+    return /^\d+[^/]+/.test(filename) && resolveSaveLogicalName(filename, resolveSaveCategory(filename)) === expectedCharacterName;
+  };
+  // All other databases must be readable and contain no files for this name.
+  // Opening a nonexistent DB is not necessary: databases() lists existing DBs.
+  for (const name of otherNames) {
+    const other = await openSaveDatabase(name, false);
+    try {
+      if (!other.objectStoreNames.contains("FILE_DATA")) throw new Error(`Cannot inspect save database ${name}`);
+      await new Promise<void>((resolve, reject) => {
+        const tx = other.transaction("FILE_DATA", "readonly");
+        const request = tx.objectStore("FILE_DATA").getAllKeys();
+        let found = false;
+        request.onsuccess = () => { found = request.result.some(belongsToCharacter); };
+        tx.oncomplete = () => found ? reject(new Error("Cannot atomically restore across save databases")) : resolve();
+        tx.onabort = () => reject(tx.error ?? new Error("Save inspection aborted"));
+        tx.onerror = () => reject(tx.error ?? new Error("Save inspection failed"));
+      });
+    } finally { other.close(); }
+  }
+
+  const db = await openSaveDatabase(archive.dbName, true);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction("FILE_DATA", "readwrite");
+      const store = tx.objectStore("FILE_DATA");
+      const keys = store.getAllKeys();
+      const values = store.getAll();
+      let keysReady = false;
+      let valuesReady = false;
+      let reason: Error | null = null;
+      const verifyAndWrite = () => {
+        if (!keysReady || !valuesReady) return;
+        try {
+          const actual = new Map<string, number>();
+          keys.result.forEach((key, index) => {
+            if (!belongsToCharacter(key)) return;
+            const timestamp = new Date(values.result[index]?.timestamp).getTime();
+            if (typeof key !== "string" || !Number.isFinite(timestamp)) throw new Error("Unexpected save record; refresh the save list");
+            actual.set(key, timestamp);
+          });
+          if (actual.size !== expected.size || [...expected].some(([key, timestamp]) => actual.get(key) !== timestamp)) {
+            throw new Error("Save files changed; refresh the save list before restoring");
+          }
+          for (const key of expected.keys()) store.delete(key);
+          // add prevents overwriting an unrelated key even if its metadata is malformed.
+          for (const record of records) store.add(record.value, record.key);
+        } catch (error) {
+          reason = error instanceof Error ? error : new Error(String(error));
+          tx.abort();
+        }
+      };
+      keys.onsuccess = () => { keysReady = true; verifyAndWrite(); };
+      values.onsuccess = () => { valuesReady = true; verifyAndWrite(); };
+      tx.oncomplete = () => resolve();
+      tx.onabort = () => reject(reason ?? tx.error ?? new Error("Trial save replacement aborted"));
+      tx.onerror = () => { /* onabort carries the final transaction failure */ };
+    });
+  } finally { db.close(); }
+
+  try {
+    // Do not silently replace malformed or unreadable metadata with an empty object.
+    if (typeof window === "undefined" || !window.localStorage) throw new Error("Metadata storage unavailable");
+    const raw = window.localStorage.getItem(savePresentationMetadataStorageKey);
+    if (raw) {
+      const parsed: unknown = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid save metadata");
+    }
+    const metadata = readSavePresentationMetadataByKey();
+    metadata[getRuntimeSavePresentationMetadataKey(runtimeVersion, archive.category, archive.name)] = {
+      characterName: archive.displayName, playMode: archive.playMode,
+      initOptions: archive.initOptions, runtimeVersion, updatedAt: new Date().toISOString(),
+    };
+    writeSavePresentationMetadataByKeyStrict(metadata);
+  } catch (error) {
+    throw new TrialRestoreMetadataError(error);
+  }
 }

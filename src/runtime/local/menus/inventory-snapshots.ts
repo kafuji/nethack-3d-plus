@@ -13,10 +13,12 @@ export interface RuntimeInventorySnapshotsDependencies {
 /** Inventory window classification, snapshot eligibility and questionless category inference. */
 export class RuntimeInventorySnapshots {
   declare latestInventoryItems: any[];
+  declare hasInventorySnapshot: boolean;
   declare lastEndedInventoryMenuKind: any;
 
   constructor(private readonly deps: RuntimeInventorySnapshotsDependencies) {
     this.latestInventoryItems = [];
+    this.hasInventorySnapshot = false;
     this.lastEndedInventoryMenuKind = null;
   }
 

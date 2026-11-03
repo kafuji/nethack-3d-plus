@@ -76,6 +76,7 @@ export type RuntimeCommand = (
 
 export type RuntimeWorkerEnvelope =
   | RuntimeEventBatch
+  | { type: "runtime_shutdown_result"; sessionId: string; error?: string }
   | { type: "runtime_event"; event: RuntimeEvent }
   | { type: "runtime_ready"; protocol?: RuntimeProtocolHandshake }
   | { type: "runtime_error"; error: string }

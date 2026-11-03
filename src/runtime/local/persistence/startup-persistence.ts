@@ -8,6 +8,7 @@ import {
   supportsRuntimeRootPersistence,
 } from "../../save-storage";
 import type { RuntimeCheckpoints } from "./checkpoint-files";
+import { PersistenceActivity, watchWriteTransaction } from "./persistence-activity";
 
 export interface RuntimePersistenceDependencies {
   readonly checkpoints: Pick<
@@ -371,6 +372,11 @@ export class RuntimePersistence {
         });
         return entries;
       };
+      const rootPersistenceActivity = new PersistenceActivity();
+      let persistenceClosing = false;
+      let drainPromise = null;
+      let cancelCheckpointPersistence = () => {};
+      let queueShutdownSync = null;
       const flushRootPersistence = (reason, callback = null) => {
         if (!rootPersistenceEnabled) {
           if (typeof callback === "function") {
@@ -378,15 +384,26 @@ export class RuntimePersistence {
           }
           return;
         }
-        const entries = readPersistableRootEntries();
+        const endActivity = rootPersistenceActivity.begin();
+        let finished = false;
+        let openedDb = null;
+        const finish = (error = null) => {
+          if (finished) return;
+          finished = true;
+          if (openedDb) openedDb.close();
+          try { if (typeof callback === "function") callback(error); }
+          finally { endActivity(); }
+        };
+        let entries;
+        try { entries = readPersistableRootEntries(); }
+        catch (error) { finish(error); return; }
         openRootPersistenceDatabase()
           .then((db) => {
             if (!db) {
-              if (typeof callback === "function") {
-                callback(null);
-              }
+              finish(new Error("Root persistence database is unavailable"));
               return;
             }
+            openedDb = db;
             const transaction = db.transaction(
               [rootPersistenceStoreName],
               "readwrite",
@@ -394,18 +411,24 @@ export class RuntimePersistence {
             const store = transaction.objectStore(
               rootPersistenceStoreName,
             );
+            watchWriteTransaction(transaction, (error) => {
+              if (!error && entries.size > 0 && (reason === "startup" || reason === "postRun")) {
+                console.log(`Persisted ${entries.size} NetHack root file(s) to ${rootPersistenceDbName} (${reason})`);
+              }
+              finish(error);
+            });
             const keysRequest = store.getAllKeys();
             keysRequest.onsuccess = () => {
+              try {
               const existingKeys = Array.from(keysRequest.result || [])
                 .filter((key) => typeof key === "string")
                 .map((key) => ({
                   original: key,
                   normalized: normalizeRootPersistenceKey(key),
                 }));
-              const operations = [];
               for (const { original, normalized } of existingKeys) {
                 if (!normalized) {
-                  operations.push(idbRequestToPromise(store.delete(original)));
+                  store.delete(original);
                   continue;
                 }
                 const filename = basenameForRuntimePath(normalized);
@@ -413,57 +436,31 @@ export class RuntimePersistence {
                   isRootPersistenceStaticFilename(filename) ||
                   isRootPersistenceLockFilename(filename)
                 ) {
-                  operations.push(idbRequestToPromise(store.delete(original)));
+                  store.delete(original);
                   continue;
                 }
                 if (!entries.has(normalized)) {
-                  operations.push(idbRequestToPromise(store.delete(original)));
+                  store.delete(original);
                 }
               }
               for (const [path, entry] of entries.entries()) {
-                operations.push(idbRequestToPromise(store.put(entry, path)));
+                store.put(entry, path);
               }
-              Promise.all(operations)
-                .then(() => {
-                  db.close();
-                  if (
-                    entries.size > 0 &&
-                    (reason === "startup" || reason === "postRun")
-                  ) {
-                    console.log(
-                      `Persisted ${entries.size} NetHack root file(s) to ${rootPersistenceDbName} (${reason})`,
-                    );
-                  }
-                  if (typeof callback === "function") {
-                    callback(null);
-                  }
-                })
-                .catch((error) => {
-                  db.close();
-                  if (typeof callback === "function") {
-                    callback(error);
-                  }
-                });
-            };
-            keysRequest.onerror = () => {
-              const error = keysRequest.error;
-              db.close();
-              if (typeof callback === "function") {
-                callback(error);
+              } catch (error) {
+                // Synchronous store errors must abort the whole transaction.
+                try { transaction.abort(); } catch { db.close(); finish(error); }
               }
             };
           })
           .catch((error) => {
-            if (typeof callback === "function") {
-              callback(error);
-            }
+            finish(error);
           });
       };
       let rootPersistenceFlushInFlight = false;
       let rootPersistenceFlushQueued = false;
       let rootPersistenceFlushTimer = 0;
       const runQueuedRootPersistenceFlush = (reason = "queued") => {
-        if (!rootPersistenceEnabled) {
+        if (!rootPersistenceEnabled || persistenceClosing) {
           return;
         }
         if (rootPersistenceFlushInFlight) {
@@ -484,7 +481,7 @@ export class RuntimePersistence {
       };
       const scheduleRootPersistenceFlush = (reason = "scheduled") => {
         if (
-          !rootPersistenceEnabled ||
+          !rootPersistenceEnabled || persistenceClosing ||
           isRootPersistenceOperationActive()
         ) {
           return;
@@ -498,7 +495,13 @@ export class RuntimePersistence {
         }, 75);
       };
       if (rootPersistenceEnabled) {
-        mod.__nh3dFlushRootPersistence = flushRootPersistence;
+        mod.__nh3dFlushRootPersistence = (reason, callback) => {
+          if (persistenceClosing) {
+            if (typeof callback === "function") callback(new Error("Persistence is shutting down"));
+            return;
+          }
+          flushRootPersistence(reason, callback);
+        };
         mod.__nh3dHydrateRootPersistence = hydrateRootPersistence;
       }
 
@@ -656,7 +659,15 @@ export class RuntimePersistence {
           runNext();
         };
 
+        // This final operation is queued behind any sync already in flight.
+        queueShutdownSync = (callback) => queueSyncfs(false, callback);
+
         mod.FS.syncfs = function (populateOrCallback, maybeCallback) {
+          if (persistenceClosing) {
+            const callback = typeof populateOrCallback === "function" ? populateOrCallback : maybeCallback;
+            if (typeof callback === "function") queueMicrotask(() => callback(new Error("Persistence is shutting down")));
+            return;
+          }
           if (typeof populateOrCallback === "function") {
             queueSyncfs(false, populateOrCallback);
             return;
@@ -722,6 +733,11 @@ export class RuntimePersistence {
         let checkpointSyncInFlight = false;
         let checkpointSyncQueued = false;
         let checkpointSyncTimer = 0;
+        cancelCheckpointPersistence = () => {
+          if (checkpointSyncTimer) clearTimeout(checkpointSyncTimer);
+          checkpointSyncTimer = 0;
+          checkpointSyncQueued = false;
+        };
         const checkpointSyncDebounceMs = 150;
         const flushCheckpointSync = () => {
           if (checkpointSyncInFlight) {
@@ -734,13 +750,14 @@ export class RuntimePersistence {
               console.warn("IDBFS checkpoint sync error:", err);
             }
             checkpointSyncInFlight = false;
-            if (checkpointSyncQueued) {
+            if (checkpointSyncQueued && !persistenceClosing) {
               checkpointSyncQueued = false;
               flushCheckpointSync();
             }
           });
         };
         scheduleCheckpointSync = () => {
+          if (persistenceClosing) return;
           if (checkpointSyncTimer) {
             clearTimeout(checkpointSyncTimer);
           }
@@ -783,6 +800,25 @@ export class RuntimePersistence {
           };
         }
       }
+
+      // Stop future automatic writes, wait for independent root transactions,
+      // and queue one final sync behind every already-pending IDBFS sync.
+      // The returned promise resolves only after the final transactions commit.
+      mod.__nh3dDrainPersistence = () => {
+        if (drainPromise) return drainPromise;
+        persistenceClosing = true;
+        if (rootPersistenceFlushTimer) clearTimeout(rootPersistenceFlushTimer);
+        rootPersistenceFlushTimer = 0;
+        rootPersistenceFlushQueued = false;
+        cancelCheckpointPersistence();
+        drainPromise = (async () => {
+          await rootPersistenceActivity.waitForIdle();
+          if (!queueShutdownSync) throw new Error("IDBFS sync is unavailable");
+          await new Promise((resolve, reject) => queueShutdownSync(error => error ? reject(error) : resolve()));
+          await rootPersistenceActivity.waitForIdle();
+        })();
+        return drainPromise;
+      };
 
       try {
         mod.FS.mount(IDBFS, { dbName: saveDbName }, saveDir);

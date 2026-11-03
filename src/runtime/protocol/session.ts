@@ -12,6 +12,7 @@ const purposes: Record<string, RuntimeInputPurpose> = {
   shim_nhgetch: "command-or-position",
   shim_yn_function: "question",
   shim_select_menu: "menu",
+  shim_end_menu: "menu",
   shim_getlin: "text",
   shim_get_ext_cmd: "extended-command",
   shim_display_nhwindow: "unknown",
