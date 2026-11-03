@@ -38,6 +38,7 @@ Pieces that use it:
 - `pieces/quest.mjs`: the Quest, F# Phrygian in 3/4 at 72 BPM. A solemn processional where the theme is stated whole, stretched into triple time (`augment: 1.5`), with a distant summons built from the answer's first three notes.
 - `pieces/medusa.mjs`: Medusa's Island, C# Phrygian in a slow 6/8 (counted in eighths). Harp waves under a cold violin; twice the music is petrified, stopping dead around one held note until a crack sets the water moving again.
 - `pieces/castle.mjs`: the Castle, G# Phrygian at 88 BPM. A slow march with a military snare; the theme as a brass fanfare and a half-speed chorale, framed by a five-note bell tune at the gate (the call's opening) and the drawbridge's chains.
+- `pieces/gehennom.mjs`: Gehennom, Eb Phrygian (the title's flat second) in 7/4 at 60 BPM. Ritual drums, a tritone under the drone, the ostinato backwards and phasing against the bar, and the call backwards in the low brass.
 - `pieces/combat.mjs`: boss fights, D Phrygian at 132 BPM. It starts at full energy on beat one; the call is squeezed into one bar (`augment: 0.5`) as the battle figure, and the brass plays it at full length.
 - `pieces/combat-heavy.mjs`: everyday fights, D Phrygian at 100 BPM. Slower and heavier: a stomping beat, a low chugging riff, and the theme at full length in the low brass.
 - `pieces/danger.mjs`: danger (low hit points), 112 BPM on a D-Eb-Ab cluster. A heartbeat, a semitone tremble from the ostinato, a cello that creeps up a semitone every two bars, and the call upside down (`invert: true`) in the low brass.
