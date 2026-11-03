@@ -96,6 +96,16 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/castle.mjs",
     },
+    {
+      id: "gehennom",
+      path: "music/gehennom.mp3",
+      loop: "crossfade",
+      crossfadeSec: 4,
+      gainDb: -6.5,
+      title: "Gehennom",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/gehennom.mjs",
+    },
   ],
   combat: [
     {
