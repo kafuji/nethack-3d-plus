@@ -30,12 +30,12 @@ describe("game prompt presentation", () => {
     expect(translateGamePrompt("  Pick up a blessed scroll? [ynaq] (n)  ", "ja"))
       .toBe("  祝福された巻物を拾いますか？ [ynaq] (n)  ");
     expect(translateGamePrompt("What do you want to name this dagger?", "ja"))
-      .toBe("この短剣に何と名前を付けますか？");
+      .toBe("このダガーに何と名前を付けますか？");
     expect(translateGamePrompt("Pick 3 of what?", "ja")).toBe("何を3個拾いますか？");
     expect(translateGamePrompt("This spellbook is very difficult to comprehend.  Continue? [yn] (n)", "ja"))
       .toBe("この魔法書を理解するのはとても難しいです。続けますか？ [yn] (n)");
     expect(translateGamePrompt("You are wielding a long sword.  Ready a dagger instead?", "ja"))
-      .toBe("長い剣を手に持っています。代わりに短剣を準備しますか？");
+      .toBe("ロングソードを手に持っています。代わりにダガーを準備しますか？");
   });
 
   it("translates the pronoun-only wield and ready confirmations", () => {
@@ -46,9 +46,9 @@ describe("game prompt presentation", () => {
     expect(translateGamePrompt("That is your alternate weapon.  Ready it instead?", "ja"))
       .toBe("それは予備の武器です。代わりに準備しますか？");
     expect(translateGamePrompt("You have 5 daggers readied.  Wield one?", "ja"))
-      .toBe("短剣 ×5を準備しています。一つを手に持ちますか？");
+      .toBe("ダガー ×5を準備しています。一つを手に持ちますか？");
     expect(translateGamePrompt("You are wielding 3 daggers.  Ready 2 of them?", "ja"))
-      .toBe("短剣 ×3を手に持っています。そのうち2つを準備しますか？");
+      .toBe("ダガー ×3を手に持っています。そのうち2つを準備しますか？");
   });
 
   it("leaves unknown prompts and other locales untouched", () => {

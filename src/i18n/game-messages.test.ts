@@ -36,7 +36,7 @@ describe("game message presentation", () => {
     expect(translateGameMessage("You swap places with your kitten.", "ja"))
       .toBe("あなたの子猫と位置を入れ替えた。");
     expect(translateGameMessage("The goblin thrusts her orcish dagger.", "ja"))
-      .toBe("ゴブリンが自分のオークの短剣を突き出した。");
+      .toBe("ゴブリンが自分のオークのダガーを突き出した。");
     expect(translateGameMessage("h - a scroll labeled ABRA KA DABRA.", "ja"))
       .toBe("h - 「ABRA KA DABRA」と書かれた巻物。");
     expect(translateGameMessage("h - a scroll labeled ABRA KA DABRA.", "en"))
@@ -48,15 +48,15 @@ describe("game message presentation", () => {
     expect(translateGameMessage("Hachi picks up some gold.", "ja"))
       .toBe("Hachiが金貨を拾った。");
     expect(translateGameMessage("The goblin wields an orcish dagger!", "ja"))
-      .toBe("ゴブリンがオークの短剣を手に持った！");
+      .toBe("ゴブリンがオークのダガーを手に持った！");
     expect(translateGameMessage("The goblin casts a spell at Hachi!", "ja"))
       .toBe("ゴブリンがHachiに呪文を唱えた！");
     expect(translateGameMessage("The goblin steals a long sword from Hachi!", "ja"))
-      .toBe("ゴブリンがHachiから長い剣を盗んだ！");
+      .toBe("ゴブリンがHachiからロングソードを盗んだ！");
     expect(translateGameMessage("The goblin falls asleep.", "ja")).toBe("ゴブリンは眠りに落ちた。");
     expect(translateGameMessage("Hachi is trapped!", "ja")).toBe("Hachiは罠にかかった！");
     expect(translateGameMessage("Your long sword crumbles and turns to dust!", "ja"))
-      .toBe("長い剣が崩れて塵になった！");
+      .toBe("ロングソードが崩れて塵になった！");
     expect(translateGameMessage("This wand is a wand of fire!", "ja"))
       .toBe("このワンドは炎のワンドだ！");
     expect(translateGameMessage("This pink potion contains toxic wastes!", "ja"))
@@ -94,12 +94,12 @@ describe("game message presentation", () => {
   });
 
   it("translates common dungeon events and danger messages", () => {
-    expect(translateGameMessage("You drop one dagger!", "ja")).toBe("短剣を1個落とした！");
+    expect(translateGameMessage("You drop one dagger!", "ja")).toBe("ダガーを1個落とした！");
     expect(translateGameMessage('This scroll is marked "ZELGO MER".', "ja"))
       .toBe("この巻物には「ZELGO MER」と書かれている。");
     expect(translateGameMessage("Boing!", "ja")).toBe("ボヨン！");
     expect(translateGameMessage("You see here a blessed +1 long sword.", "ja"))
-      .toBe("ここには祝福された +1 長い剣がある。");
+      .toBe("ここには祝福された +1 ロングソードがある。");
     expect(translateGameMessage("There is a mysterious object here.", "ja"))
       .toBe("ここにはa mysterious objectがある。");
     expect(translateGameMessage("You are suddenly moving much faster.", "ja"))

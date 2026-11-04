@@ -46,6 +46,24 @@ function withoutPrototypes<T>(value: T): T {
   return copy as T;
 }
 
+// Weapons src/i18n names differently from JNetHack (短剣, 小剣, 長剣), so
+// both tiers show the same name.
+const weaponRenames: ReadonlyArray<readonly [RegExp, string, string]> = [
+  [/dagger$/, "短剣", "ダガー"],
+  [/short sword$/, "小剣", "ショートソード"],
+  [/^long sword$/, "長剣", "ロングソード"],
+];
+
+function renameWeapons(data: GameTextData): void {
+  const weapons = data.objects.weapon as Record<string, string> | undefined;
+  if (!weapons) return;
+  for (const [english, japanese] of Object.entries(weapons)) {
+    for (const [pattern, from, to] of weaponRenames) {
+      if (pattern.test(english)) weapons[english] = japanese.replace(from, to);
+    }
+  }
+}
+
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -192,6 +210,7 @@ export class GameTextTranslator {
 
   constructor(data: GameTextData) {
     data = withoutPrototypes(data);
+    renameWeapons(data);
     this.enlightenment = data.enlightenment ?? {};
     this.roleNames = data.roleNames ?? {};
     this.bodyParts = data.bodyParts ?? {};

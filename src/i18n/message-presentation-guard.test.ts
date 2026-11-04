@@ -19,7 +19,7 @@ describe("assembled source messages", () => {
     ["Kaablamm!  You hear an explosion in the distance!", "ちゅどーん！遠くで爆発音が聞こえた！"],
     ["The flute toots.", "フルートはプーと鳴った。"],
     ["You see a drawbridge coming up!", "跳ね橋が上がってくるのが見えた！"],
-    ["A dagger falls from the tree!", "短剣が木から落ちてきた！"],
+    ["A dagger falls from the tree!", "ダガーが木から落ちてきた！"],
   ])("translates %s", (english, japanese) => {
     expect(presentGameMessage(english, "ja").text).toBe(japanese);
   });

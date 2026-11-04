@@ -11,7 +11,7 @@ describe("GameTextTranslator", () => {
     ["You kill the jackal!", "あなたはジャッカルを倒した！"],
     ["The jackal bites!", "ジャッカルは噛みついた！"],
     ["The grid bug misses!", "グリッドバグの攻撃ははずれた！"],
-    ["You see here a dagger.", "ここには短剣がある．"],
+    ["You see here a dagger.", "ここにはダガーがある．"],
     ["You see no objects here.", "ここには何もない．"],
     ["f - an uncursed scroll labeled ZELGO MER.", "f - 呪われていない『へろへろっす』と書かれた巻物．"],
     ["The jackal is killed.", "ジャッカルは死んだ．"],
@@ -20,8 +20,8 @@ describe("GameTextTranslator", () => {
   });
 
   it.each([
-    ["a blessed +1 long sword (weapon in hand)", "祝福された+1 長剣(手に持っている)"],
-    ["2 uncursed daggers", "2本の呪われていない短剣"],
+    ["a blessed +1 long sword (weapon in hand)", "祝福された+1 ロングソード(手に持っている)"],
+    ["2 uncursed daggers", "2本の呪われていないダガー"],
     ["an uncursed potion of healing", "呪われていない回復の薬"],
     ["a ruby potion", "ルビー色の薬"],
     ["the jackal corpse", "ジャッカルの死体"],

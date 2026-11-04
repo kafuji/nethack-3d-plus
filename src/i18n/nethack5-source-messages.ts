@@ -123,6 +123,8 @@ export function translateMessageArgument(value: string): string {
     const pet = translateMonsterName(yours[1], "ja");
     if (pet !== yours[1]) return `あなたの${pet}`;
   }
+  // align_gname(): "The voice of Amaterasu Omikami booms:".
+  if (Object.prototype.hasOwnProperty.call(deityNames, text)) return deityNames[text];
   // Temple priests: "the priestess of Amaterasu Omikami".
   const priest = /^(?:[Tt]he )?(high )?(priest|priestess) of (.+)$/.exec(text);
   if (priest && Object.prototype.hasOwnProperty.call(deityNames, priest[3])) {

@@ -19,7 +19,7 @@ describe("tile context display", () => {
     expect(translateTileContextTitle(": peaceful goblin", "ja")).toBe(": peaceful goblin");
   });
   it("translates NetHack 5 glyph and item descriptions without identifying unknown items", () => {
-    expect(translateTileContextTitle(") a weapon (a long sword)", "ja")).toBe(") 武器（長い剣）");
+    expect(translateTileContextTitle(") a weapon (a long sword)", "ja")).toBe(") 武器（ロングソード）");
     expect(translateTileContextTitle("! a potion (a pink potion)", "ja")).toBe("! ポーション（桃色のポーション）");
     expect(translateTileContextTitle("! a potion (a pink potion named Fire)", "ja")).toBe("! ポーション（桃色のポーション（名前：Fire））");
     expect(translateTileContextTitle("! a potion (a mystery potion)", "ja")).toBe("! ポーション（a mystery potion）");

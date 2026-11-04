@@ -18,7 +18,7 @@ const monsters: Readonly<Record<string, string>> = {
   "gnome": "ノーム", "gnome lord": "ノームの領主", "gnomish wizard": "ノームの魔法使い", "gnome king": "ノームの王",
   "kobold zombie": "コボルドのゾンビ", "gnome zombie": "ノームのゾンビ", "orc zombie": "オークのゾンビ", "dwarf zombie": "ドワーフのゾンビ", "human zombie": "人間のゾンビ",
   // NetHack 5.0 names not covered by the imported entity list.
-  "Aleax": "アレックス", "Angel": "天使", "Arch Priest": "大司祭", "Archon": "アルコン", "Ashikaga Takauji": "足利尊氏",
+  "Aleax": "アレアックス", "Angel": "天使", "Arch Priest": "大司祭", "Archon": "アルコン", "Ashikaga Takauji": "足利尊氏",
   "Asmodeus": "アスモデウス", "Baalzebub": "ベルゼブブ", "Cerberus": "ケルベロス", "Charon": "カロン", "Chromatic Dragon": "クロマティック・ドラゴン",
   "Croesus": "クロイソス", "Cyclops": "サイクロプス", "Dark One": "闇の者", "Death": "死", "Demogorgon": "デモゴルゴン", "Dispater": "ディスパテル",
   "Earendil": "エアレンディル", "Elvenking": "エルフの王", "Elvenqueen": "エルフの女王", "Elwing": "エルウィング", "Famine": "飢饉",

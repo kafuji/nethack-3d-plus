@@ -10,7 +10,7 @@ describe("assembled NetHack 5 messages", () => {
     expect(ja("The jackal bites again!")).toBe("ジャッカルが再び噛みついた！");
     expect(ja("You hit the newt!")).toBe("イモリに攻撃が命中した！");
     expect(ja("You smite the jackal.")).toBe("ジャッカルを打ち据えた。");
-    expect(ja("The dagger hits the jackal.")).toBe("短剣がジャッカルに当たった。");
+    expect(ja("The dagger hits the jackal.")).toBe("ダガーがジャッカルに当たった。");
     expect(ja("The 2 arrows miss the newt.")).toBe("矢 ×2はイモリに当たらなかった。");
     expect(ja("The sleep ray misses the gnome.")).toBe("睡眠光線はノームに当たらなかった。");
     expect(ja("The arrow misses you.")).toBe("矢はあなたに当たらなかった。");

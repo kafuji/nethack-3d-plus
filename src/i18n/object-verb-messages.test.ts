@@ -9,7 +9,7 @@ describe("object and monster verb messages", () => {
   it.each([
     ["Your wand of wishing glows feebly blue for a moment.", "あなたの願いのワンドは一瞬弱々しく青色に輝いた。"],
     ["Your wand of wishing violently glows silver for a while, then evaporates.", "あなたの願いのワンドはしばらく激しく銀色に輝き、蒸発した。"],
-    ["Your long sword softly glows amber.", "あなたの長い剣は柔らかく琥珀色に輝いた。"],
+    ["Your long sword softly glows amber.", "あなたのロングソードは柔らかく琥珀色に輝いた。"],
     ["Your diluted potion of object detection dilutes further.", "あなたの薄められた物体探知のポーションはさらに薄まった。"],
     ["Your potion of healing dilutes.", "あなたの回復のポーションは薄まった。"],
     ["Your 2 scrolls of light catch fire and burn.", "あなたの光の巻物 ×2は火がついて燃えた。"],
@@ -26,6 +26,12 @@ describe("object and monster verb messages", () => {
     ["\"Take off your boots; let me rub your feet.\"", "「ブーツを脱いで。足をさすってあげる」"],
     ["The high priestess of Amaterasu Omikami gives you two bits for an ale.", "天照大神の高尼僧はあなたにエール代として2ビットくれた。"],
     ["Your pony moves the boulder.", "あなたの子馬は岩を動かした。"],
+    ["The Aleax imitates you.", "アレアックスはあなたの真似をした。"],
+    ["An Aleax appears in a flash of light!", "アレアックスが閃光とともに現れた！"],
+    ["A fire elemental appears in a ball of flame!", "火の精霊が炎の玉とともに現れた！"],
+    ["The voice of Amaterasu Omikami booms:", "天照大神の声が響き渡った："],
+    ["You feel Amaterasu Omikami's booming voice:", "天照大神の響き渡る声を感じた："],
+    ["The Aleax vanishes!", "アレアックスは消えた！"],
   ])("translates %s", (english, japanese) => {
     expect(ja(english)).toBe(japanese);
   });
