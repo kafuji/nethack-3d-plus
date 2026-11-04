@@ -51,4 +51,28 @@ describe("silent inventory refresh dispatch", () => {
     expect(f.sendInput).not.toHaveBeenCalled();
     expect(f.gameplayInput).not.toHaveBeenCalled();
   });
+
+  it("retries a mutation refresh once the command's menu has closed", () => {
+    const f = fixture();
+    f.questionMenus.isInQuestion = true;
+    f.prompts.queueSilentInventoryRefresh("inventory-updated-signal");
+    f.prompts.maybeRequestQueuedSilentInventoryRefresh();
+    expect(f.sendInput).not.toHaveBeenCalled();
+    f.questionMenus.isInQuestion = false;
+    f.prompts.maybeRequestQueuedSilentInventoryRefresh();
+    expect(f.sendInput).toHaveBeenCalledExactlyOnceWith(silentInventoryRefreshCommand);
+    f.prompts.inventoryRefreshInFlight = false;
+    f.prompts.maybeRequestQueuedSilentInventoryRefresh();
+    expect(f.sendInput).toHaveBeenCalledOnce();
+  });
+
+  it("repeats a refresh that was already in flight when the inventory changed", () => {
+    const f = fixture();
+    f.prompts.queueSilentInventoryRefresh("first");
+    f.prompts.queueSilentInventoryRefresh("second");
+    expect(f.sendInput).toHaveBeenCalledOnce();
+    f.prompts.inventoryRefreshInFlight = false;
+    f.prompts.maybeRequestQueuedSilentInventoryRefresh();
+    expect(f.sendInput).toHaveBeenCalledTimes(2);
+  });
 });

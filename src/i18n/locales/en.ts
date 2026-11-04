@@ -856,6 +856,11 @@ export const en = {
           label: "Show FPS weapon",
           description: "Display the held weapon sprite in first-person mode.",
         },
+        playerHeldWeaponOverlayVisible: {
+          label: "Show wielded weapons on player",
+          description:
+            "Draw the wielded weapon tile over the player sprite (both weapons when two-weaponing) in tiles mode, outside first-person view.",
+        },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "Show under-player items in overhead tiles",
           description:

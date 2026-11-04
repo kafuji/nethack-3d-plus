@@ -778,6 +778,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.promptDialogs.pendingInventoryDialogOptions = null;
     this.systems.promptDialogs.inventoryRefreshInFlight = false;
     this.systems.promptDialogs.pendingStartupInventoryRefresh = true;
+    this.systems.promptDialogs.queuedSilentInventoryRefreshReason = null;
     this.systems.promptDialogs.pendingStartupInventoryRefreshEarliestAtMs =
       Date.now() + this.systems.promptDialogs.startupInventoryRefreshDelayMs;
     this.systems.engineState.uiAdapter.setInventory(this.systems.promptDialogs.buildInventoryDialogState());
@@ -1000,8 +1001,14 @@ class Nethack3DEngine implements Nethack3DEngineController {
         // Inventory mutation is a strong signal that floor stack order at the
         // player tile may have changed (pickup/drop/eat/use from floor).
         this.systems.tileUpdates.requestPlayerTileRefresh("inventory-updated-signal");
-        if (this.systems.movementInput.isFpsMode() && !this.systems.promptDialogs.pendingStartupInventoryRefresh) {
-          this.systems.promptDialogs.requestSilentInventoryRefresh("inventory-updated-signal");
+        // FPS weapons and the player weapon overlay both read the wielded
+        // item from the inventory snapshot, so keep it current.
+        if (
+          (this.systems.movementInput.isFpsMode() ||
+            this.systems.entityBillboards.resolvePlayerHeldWeaponOverlayBillboardKey() !== null) &&
+          !this.systems.promptDialogs.pendingStartupInventoryRefresh
+        ) {
+          this.systems.promptDialogs.queueSilentInventoryRefresh("inventory-updated-signal");
         }
         break;
 
@@ -1850,7 +1857,9 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.camera.updateCamera(deltaSeconds);
     this.systems.webXrPresentation.updateCamera();
     this.systems.promptDialogs.maybeRequestPendingStartupInventoryRefresh();
+    this.systems.promptDialogs.maybeRequestQueuedSilentInventoryRefresh();
     this.systems.heldWeapon.syncFpsHeldWeaponSprite(deltaSeconds);
+    this.systems.entityBillboards.syncPlayerHeldWeaponOverlay();
     this.systems.entityBillboards.updateMonsterBillboardPitchLockState();
     this.systems.directionPrompts.syncDirectionPromptOverlayVisibility();
     this.systems.directionPrompts.directionPromptOverlay?.update(

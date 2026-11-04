@@ -129,6 +129,7 @@ export type ClientOptionToggleKey =
   | "lightingEnabled"
   | "fpsFlattenEntityBillboards"
   | "fpsHeldWeaponVisible"
+  | "playerHeldWeaponOverlayVisible"
   | "fpsWasdKeyboardMovementEnabled"
   | "showItemsUnderPlayerInOverheadTilesMode"
   | "controllerEnabled"
