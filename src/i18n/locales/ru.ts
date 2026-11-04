@@ -842,6 +842,11 @@ export const ru = {
           label: "Показывать оружие в FPS",
           description: "Показывать спрайт оружия в руках в режиме от первого лица.",
         },
+        playerHeldWeaponOverlayVisible: {
+          label: "Показывать оружие в руках игрока",
+          description:
+            "Рисует плитку оружия в руках поверх спрайта игрока в режиме плиток вне вида от первого лица (оба оружия при бое двумя руками).",
+        },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "Показывать предметы под игроком в верхнем режиме тайлов",
           description:

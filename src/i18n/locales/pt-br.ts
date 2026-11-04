@@ -863,6 +863,11 @@ export const ptBrOverrides = {
           label: "Mostrar arma em FPS",
           description: "Exibe o sprite da arma empunhada no modo em primeira pessoa.",
         },
+        playerHeldWeaponOverlayVisible: {
+          label: "Mostrar armas empunhadas no jogador",
+          description:
+            "Desenha o tile da arma empunhada sobre o sprite do jogador no modo de tiles, fora da visão em primeira pessoa (as duas armas ao lutar com duas).",
+        },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "Mostrar itens sob o jogador em tiles superiores",
           description:
