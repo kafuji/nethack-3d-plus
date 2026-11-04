@@ -35,7 +35,7 @@ describe("game prompt presentation", () => {
     expect(translateGamePrompt("This spellbook is very difficult to comprehend.  Continue? [yn] (n)", "ja"))
       .toBe("この魔法書を理解するのはとても難しいです。続けますか？ [yn] (n)");
     expect(translateGamePrompt("You are wielding a long sword.  Ready a dagger instead?", "ja"))
-      .toBe("長い剣を手に持っています。代わりに短剣を準備しますか？");
+      .toBe("長剣を手に持っています。代わりに短剣を準備しますか？");
   });
 
   it("translates the pronoun-only wield and ready confirmations", () => {
