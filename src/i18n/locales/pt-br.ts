@@ -866,7 +866,7 @@ export const ptBrOverrides = {
         playerHeldWeaponOverlayVisible: {
           label: "Mostrar armas empunhadas no jogador",
           description:
-            "Desenha o tile da arma empunhada sobre o sprite do jogador (as duas armas ao lutar com duas armas) no modo de tiles, fora da visão em primeira pessoa.",
+            "Desenha o tile da arma empunhada sobre o sprite do jogador no modo de tiles, fora da visão em primeira pessoa (as duas armas ao lutar com duas).",
         },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "Mostrar itens sob o jogador em tiles superiores",

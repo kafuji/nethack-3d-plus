@@ -844,9 +844,9 @@ export const ko = {
           description: "1인칭 모드에서 손에 든 무기 스프라이트를 표시합니다.",
         },
         playerHeldWeaponOverlayVisible: {
-          label: "플레이어에 장착 무기 표시",
+          label: "플레이어가 든 무기 표시",
           description:
-            "타일 모드에서 1인칭 시점이 아닐 때 플레이어 스프라이트 위에 장착한 무기 타일을 그립니다(쌍수 전투 시 두 무기 모두).",
+            "타일 모드(1인칭 시점 제외)에서 손에 든 무기 타일을 플레이어 스프라이트 위에 그립니다. 쌍수 전투 중에는 두 무기를 모두 표시합니다.",
         },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "상단 타일 모드에서 플레이어 아래 아이템 표시",

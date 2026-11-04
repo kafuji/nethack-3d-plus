@@ -843,6 +843,11 @@ export const deOverrides: LocaleOverrides<TranslationDictionary> = {
           label: "FPS-Waffe anzeigen",
           description: "Zeigt die gehaltene Waffensprite im Ego-Modus an.",
         },
+        playerHeldWeaponOverlayVisible: {
+          label: "Geführte Waffen am Spieler anzeigen",
+          description:
+            "Zeichnet im Kachelmodus außerhalb der Ego-Ansicht die geführte Waffe über das Spielersprite (bei Zweiwaffenkampf beide Waffen).",
+        },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "Gegenst\u00e4nde unter dem Spieler in Draufsicht zeigen",
           description:

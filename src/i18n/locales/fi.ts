@@ -839,6 +839,11 @@ export const fiOverrides: LocaleOverrides<TranslationDictionary> = {
           label: "Näytä FPS-ase",
           description: "Näyttää kädessä pidetyn aseen spriten ensimmäisen persoonan tilassa.",
         },
+        playerHeldWeaponOverlayVisible: {
+          label: "Näytä pelaajan aseet",
+          description:
+            "Piirtää kädessä pidetyn aseen ruudun pelaajan spriten päälle ruututilassa ensimmäisen persoonan näkymän ulkopuolella (molemmat aseet kahden aseen taistelussa).",
+        },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "Näytä pelaajan alla olevat esineet yläkuvaruuduissa",
           description:

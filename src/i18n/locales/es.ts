@@ -806,9 +806,9 @@ export const esOverrides = {
                     description: "Muestra el sprite del arma equipada en el modo en primera persona.",
                 },
                 playerHeldWeaponOverlayVisible: {
-                  label: "Mostrar armas empuñadas en el jugador",
-                  description:
-                    "Dibuja el tile del arma empuñada sobre el sprite del jugador (ambas armas al usar dos armas) en el modo de tiles, fuera de la vista en primera persona.",
+                    label: "Mostrar armas empuñadas en el jugador",
+                    description:
+                        "Dibuja la casilla del arma empuñada sobre el sprite del jugador en el modo de casillas, fuera de la vista en primera persona (ambas armas al combatir con dos).",
                 },
                 showItemsUnderPlayerInOverheadTilesMode: {
                     label: "Mostrar elementos secundarios en mosaicos superiores",

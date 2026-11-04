@@ -874,7 +874,7 @@ export const fr = {
         playerHeldWeaponOverlayVisible: {
           label: "Afficher les armes maniées sur le joueur",
           description:
-            "Dessine la tuile de l'arme maniée par-dessus le sprite du joueur (les deux armes en combat à deux armes) en mode tuiles, hors de la vue à la première personne.",
+            "Dessine la tuile de l'arme maniée sur le sprite du joueur en mode tuiles, hors vue à la première personne (les deux armes en combat à deux armes).",
         },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "Afficher les objets sous le joueur en vue dessus",
