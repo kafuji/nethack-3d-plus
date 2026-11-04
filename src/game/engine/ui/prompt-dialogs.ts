@@ -113,6 +113,9 @@ export class PromptDialogs {
 
   pendingStartupInventoryRefresh: boolean = false;
 
+  /** Reason of a mutation-driven refresh that could not be sent yet. */
+  queuedSilentInventoryRefreshReason: string | null = null;
+
   pendingStartupInventoryRefreshEarliestAtMs: number = 0;
 
   runtimeTerminationPromptShown: boolean = false;
@@ -367,6 +370,27 @@ export class PromptDialogs {
     // Let the worker wait for an ordinary command prompt before sending i.
     session.sendInput(silentInventoryRefreshCommand);
     return true;
+  }
+
+  /**
+   * Refresh now, or once prompts close. Inventory mutations are often reported
+   * while the command's own menu is still up (e.g. choosing what to wield), and
+   * a refresh already in flight may predate the mutation.
+   */
+  queueSilentInventoryRefresh(reason: string): void {
+    const wasInFlight = this.inventoryRefreshInFlight;
+    if (wasInFlight || !this.requestSilentInventoryRefresh(reason)) {
+      this.queuedSilentInventoryRefreshReason = reason;
+      return;
+    }
+    this.queuedSilentInventoryRefreshReason = null;
+  }
+
+  maybeRequestQueuedSilentInventoryRefresh(): void {
+    const reason = this.queuedSilentInventoryRefreshReason;
+    if (reason !== null && this.requestSilentInventoryRefresh(`${reason}-deferred`)) {
+      this.queuedSilentInventoryRefreshReason = null;
+    }
   }
 
   isStartupInventoryRefreshReady(): boolean {

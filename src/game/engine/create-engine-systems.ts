@@ -473,6 +473,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get movementInput() { return movementInput; },
     get playerMovement() { return playerMovement; },
     get positionSelection() { return positionSelection; },
+    get promptDialogs() { return promptDialogs; },
     get renderPipeline() { return renderPipeline; },
     get terminalRendering() { return terminalRendering; },
     get tilesetAssets() { return tilesetAssets; },

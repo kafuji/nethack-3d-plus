@@ -137,6 +137,12 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "playerHeldWeaponOverlayVisible",
+    label: t.clientOptions.config.playerHeldWeaponOverlayVisible.label,
+    description: t.clientOptions.config.playerHeldWeaponOverlayVisible.description,
+    type: "boolean",
+  },
+  {
     key: "showItemsUnderPlayerInOverheadTilesMode",
     label: t.clientOptions.config.showItemsUnderPlayerInOverheadTilesMode.label,
     description:
