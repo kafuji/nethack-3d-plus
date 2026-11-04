@@ -16,7 +16,7 @@ const features: Readonly<Record<string, string>> = {
   "magic portal": "魔法のポータル", "bear trap": "トラバサミ", "pit": "落とし穴", "spiked pit": "針のある落とし穴",
   "trap door": "落とし戸", "sleeping gas trap": "睡眠ガスの罠", "arrow trap": "矢の罠", "dart trap": "投げ矢の罠",
   "teleportation trap": "テレポートの罠", "level teleporter": "階移動の罠", "fire trap": "火の罠", "magic trap": "魔法の罠",
-  "anti-magic field": "反魔法の場", "rust trap": "錆の罠", "polymorph trap": "変身の罠", "land mine": "地雷", "rolling boulder trap": "転がる大岩の罠",
+  "anti-magic field": "反魔法の場", "rust trap": "錆の罠", "polymorph trap": "変化の罠", "land mine": "地雷", "rolling boulder trap": "転がる大岩の罠",
   "squeaky board": "きしむ床板", "web": "蜘蛛の巣", "hole": "穴", "vibrating square": "振動するマス",
 };
 

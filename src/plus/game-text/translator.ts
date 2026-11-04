@@ -46,12 +46,13 @@ function withoutPrototypes<T>(value: T): T {
   return copy as T;
 }
 
-// Objects src/i18n names differently from JNetHack (短剣, 小剣, 長剣,
+// Objects src/i18n names differently from JNetHack (短剣, 小剣, 長剣, 小手,
 // 魔除け), so both tiers show the same name.
 const objectRenames: ReadonlyArray<readonly [ObjectCategory, RegExp, string, string]> = [
   ["weapon", /dagger$/, "短剣", "ダガー"],
   ["weapon", /short sword$/, "小剣", "ショートソード"],
   ["weapon", /^long sword$/, "長剣", "ロングソード"],
+  ["armor", /./, "小手", "籠手"],
   ["amulet", /./, "魔除け", "護符"],
 ];
 

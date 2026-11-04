@@ -108,7 +108,7 @@ const exactLines: Readonly<Record<string, string>> = {
   "You are protected from shape changers.": "変身能力を持つ敵から守られています。",
   "You cannot change from your current form.": "現在の姿から変身できません。",
   "You are polymorphing periodically.": "定期的に姿が変わります。",
-  "You have polymorph control.": "変身を制御できます。", "You can lay eggs.": "卵を産めます。",
+  "You have polymorph control.": "変化を制御できます。", "You can lay eggs.": "卵を産めます。",
   "You are harmed by silver.": "銀によって傷つきます。", "Your life will be saved.": "命を救われます。",
   "You are lucky.": "運が良いです。", "You are very lucky.": "運がとても良いです。", "You are extremely lucky.": "運が極めて良いです。",
   "You are unlucky.": "運が悪いです。", "You are very unlucky.": "運がとても悪いです。", "You are extremely unlucky.": "運が極めて悪いです。",
@@ -340,7 +340,7 @@ function translateFinalDisclosure(line: string, locale: SupportedLocale): string
   m = /^You (have|had) (?:a wounded (left|right) (leg|foot)|wounded (legs|feet))\.$/.exec(line);
   if (m) return `${m[2] ? (m[2] === "left" ? "左" : "右") : "両"}${(m[3] ?? m[4]).startsWith("f") ? "足" : "脚"}を負傷して${ending(m[1] === "have")}。`;
   m = /^You (have|had) slippery (fingers|gloves)\.$/.exec(line);
-  if (m) return `${m[2] === "gloves" ? "小手" : "指"}が滑りやすくなって${ending(m[1] === "have")}。`;
+  if (m) return `${m[2] === "gloves" ? "籠手" : "指"}が滑りやすくなって${ending(m[1] === "have")}。`;
   m = /^You (take|took) (half|reduced) (physical|spell) damage\.$/.exec(line);
   if (m) return `${m[3] === "spell" ? "呪文" : "物理"}ダメージを${m[2] === "half" ? "半減" : "軽減"}して${ending(m[1] === "take")}。`;
   m = /^You (have|had) an? (small|moderate|large|huge) (?:bonus to hit|penalty to hit|(damage|defense) (bonus|penalty))(?: \(([+-]\d+)\))?(?: due to your (.+))?\.$/.exec(line);

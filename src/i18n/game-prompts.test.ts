@@ -69,7 +69,7 @@ describe("game prompt presentation", () => {
   });
 
   it("translates the just-picked-up menu choice", () => {
-    expect(translateMenuItemText("Just picked up: a platinum wand", "ja")).toBe("直前に拾った物：白金のワンド");
+    expect(translateMenuItemText("Just picked up: a platinum wand", "ja")).toBe("直前に拾った物：白金の杖");
     expect(translateMenuItemText("Items you just picked up", "ja")).toBe("直前に拾った物");
   });
 });

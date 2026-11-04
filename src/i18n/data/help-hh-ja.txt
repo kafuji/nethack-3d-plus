@@ -87,7 +87,7 @@ W     wear      防具を着る（装飾品を身に着けることもできる�
                 装飾品は候補として表示されない）
 x     xchange   手に持った武器と予備の武器を持ち替える
 X     twoweapon 二刀流を切り替える（職業が対応している場合）
-z     zap       ワンドを振る（number_pad が -1 なら z の代わりに y）
+z     zap       杖を振る（number_pad が -1 なら z の代わりに y）
 Z     Zap       呪文を唱える（number_pad が -1 なら Z の代わりに Y）
 <     up        階段を上る
 >     down      階段を下りる

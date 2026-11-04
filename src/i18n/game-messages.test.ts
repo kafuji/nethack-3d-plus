@@ -58,7 +58,7 @@ describe("game message presentation", () => {
     expect(translateGameMessage("Your long sword crumbles and turns to dust!", "ja"))
       .toBe("ロングソードが崩れて塵になった！");
     expect(translateGameMessage("This wand is a wand of fire!", "ja"))
-      .toBe("このワンドは炎のワンドだ！");
+      .toBe("この杖は炎の杖だ！");
     expect(translateGameMessage("This pink potion contains toxic wastes!", "ja"))
       .toBe("この桃色のポーションには有毒な廃棄物が入っている！");
     expect(translateGameMessage("You can't tip a sack while carrying so much.", "ja"))

@@ -25,7 +25,7 @@ const targetNames: Readonly<Record<string, string>> = {
 // Explanations of object classes shown by NetHack's farlook. These are
 // category descriptions only and must not identify the item in parentheses.
 const lookCategories: Readonly<Record<string, string>> = {
-  "a weapon": "武器", "a piece of armor": "防具", "a ring": "指輪", "an amulet": "護符", "a useful item": "道具", "a tool": "道具", "a comestible": "食料", "a potion": "ポーション", "a scroll": "巻物", "a spellbook": "魔法書", "a wand": "ワンド", "a coin": "硬貨", "a gem": "宝石", "a gem or rock": "宝石または石", "a boulder": "大岩", "a statue": "石像", "a trap": "罠",
+  "a weapon": "武器", "a piece of armor": "防具", "a ring": "指輪", "an amulet": "護符", "a useful item": "道具", "a tool": "道具", "a comestible": "食料", "a potion": "ポーション", "a scroll": "巻物", "a spellbook": "魔法書", "a wand": "杖", "a coin": "硬貨", "a gem": "宝石", "a gem or rock": "宝石または石", "a boulder": "大岩", "a statue": "石像", "a trap": "罠",
 };
 
 function own(map: Readonly<Record<string, string>>, key: string): string | undefined {

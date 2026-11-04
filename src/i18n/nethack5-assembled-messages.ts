@@ -97,7 +97,7 @@ const tastes: Readonly<Record<string, string>> = {
 // armor_simple_name() and similar generic armor words.
 const simpleArmor: Readonly<Record<string, string>> = {
   mail: "鎧", suit: "鎧", cloak: "クローク", robe: "ローブ", apron: "エプロン", smock: "上着", helmet: "兜", hat: "帽子",
-  helm: "兜", boots: "ブーツ", shoes: "靴", gloves: "手袋", gauntlets: "小手", shield: "盾", shirt: "シャツ",
+  helm: "兜", boots: "ブーツ", shoes: "靴", gloves: "手袋", gauntlets: "籠手", shield: "盾", shirt: "シャツ",
 };
 const thing = (text: string): string => {
   const armor = own(simpleArmor, text);
