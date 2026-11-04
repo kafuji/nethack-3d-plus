@@ -5,7 +5,7 @@ import { isStartupInitOptionSupported, serializeStartupInitOptionTokens, type St
 import type { ConfirmationDialogChoice, ConfirmationDialogRequest, ConfirmationDialogState } from "../../modals/useConfirmationDialog";
 import { fetchSavedGames } from "../startup/saved-games";
 import type { StartupFlowStep } from "../startup/character-preferences";
-import { listTrialCharacters } from "../../../plus/trial/trial-slots";
+import { captureExistingTrialSlot, listTrialCharacters } from "../../../plus/trial/trial-slots";
 
 export interface LocalMcpAppDependencies {
   characterCreationConfig: CharacterCreationConfig | null;
@@ -16,7 +16,7 @@ export interface LocalMcpAppDependencies {
   gameOver: GameOverState;
   newGamePrompt: NewGamePromptState;
   globalConfirmationDialog: ConfirmationDialogState | null;
-  handleStartNewGame: (config: CharacterCreationConfig) => Promise<void>;
+  handleStartNewGame: (config: CharacterCreationConfig) => Promise<boolean>;
   startNewGameFromPrompt: () => void;
   resolveConfirmation: (choice: ConfirmationDialogChoice) => void;
   requestConfirmationChoice: (request: ConfirmationDialogRequest) => Promise<ConfirmationDialogChoice>;
@@ -53,7 +53,7 @@ export function createLocalMcpAppController(read: () => LocalMcpAppDependencies)
     // The existing startup flow can show a confirmation and wait for a choice.
     // Return immediately so the client can observe and answer that dialog.
     void read().handleStartNewGame(config).then(
-      () => { if (operation === current) operation = { ...current, status: "completed" }; },
+      started => { if (operation === current) operation = { ...current, status: started ? "completed" : "cancelled" }; },
       error => { if (operation === current) operation = { ...current, status: "failed", error: error instanceof Error ? error.message : String(error) }; },
     );
     return { status: "requested", operationId: current.id };
@@ -127,6 +127,17 @@ export function createLocalMcpAppController(read: () => LocalMcpAppDependencies)
         const save = saves.find(item => item.key === params.saveKey && item.isResumable);
         if (!save) throw new Error("Save not found or not resumable; list saves again");
         return begin(method, { mode: "resume", runtimeVersion, name: save.name, initOptions: save.initOptions, resumeCategory: save.category });
+      }
+      if (method === "save_trial_slot") {
+        requireTitle();
+        const runtimeVersion = versionFrom(params.runtimeVersion);
+        if (typeof params.name !== "string" || typeof params.saveKey !== "string" ||
+            !Number.isInteger(params.slot) || (params.slot as number) < 1 || (params.slot as number) > 3) {
+          throw new Error("A character name, manual save key and slot from 1 to 3 are required");
+        }
+        const saved = await captureExistingTrialSlot(runtimeVersion, params.name, params.saveKey, params.slot as number, requireTitle);
+        return { status: "completed", name: saved.name, category: saved.category, slot: params.slot,
+          warning: "The save was read twice and checked for changes; a previous worker or another tab may still write. Observe saves before relying on this copy." };
       }
       if (method === "load_trial_save") {
         // A previous worker may still be writing IndexedDB after returning to

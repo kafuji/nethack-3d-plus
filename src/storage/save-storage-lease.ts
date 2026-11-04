@@ -47,7 +47,18 @@ export async function acquireSaveStorageLease(
       }
       resolveAcquired(lease);
       await held;
-    }).catch(error => rejectAcquired(error instanceof Error ? error : new Error(String(error))));
+    }).catch(error => {
+      const failure = error instanceof Error ? error : new Error(String(error));
+      rejectAcquired(failure);
+      // The request can fail after the lease was handed to the caller. Keep
+      // that failure observable from release() rather than reporting a clean
+      // shutdown when the lock provider has already rejected the request.
+      throw failure;
+    });
+    // Before acquisition the caller observes failures through `acquired`;
+    // afterwards release() observes `completion`. Mark the latter handled in
+    // the meantime so a rejected request does not become an unhandled error.
+    void completion.catch(() => {});
   } catch (error) {
     rejectAcquired(error instanceof Error ? error : new Error(String(error)));
   }

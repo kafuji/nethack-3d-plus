@@ -142,4 +142,23 @@ describe("atomic trial save replacement", () => {
     await expect(replaceTrialSaveAtomically(archive(), runtime, "Test", existing([{ dbName, key: "/save/0Test", timestamp: time }]))).rejects.toMatchObject({ filesCommitted: true, name: "TrialRestoreMetadataError", message: expect.stringMatching(/already restored.*before retrying/) } satisfies Partial<TrialRestoreMetadataError>);
     expect([...db.rows.get("/save/0Test")!.contents]).toEqual([1]);
   });
+
+  it("refuses malformed metadata before changing save files", async () => {
+    const db = new FakeDatabase({ "/save/0Test": row(9) });
+    setup({ [dbName]: db });
+    vi.stubGlobal("window", { localStorage: { getItem: () => "[invalid", setItem: () => {} } });
+    await expect(replaceTrialSaveAtomically(archive(), runtime, "Test", existing([{ dbName, key: "/save/0Test", timestamp: time }]))).rejects.toThrow();
+    expect(db.transactions).toBe(0);
+    expect([...db.rows.get("/save/0Test")!.contents]).toEqual([9]);
+  });
+
+  it("preserves unrelated metadata entries and fields verbatim", async () => {
+    const db = new FakeDatabase({ "/save/0Test": row(9) });
+    setup({ [dbName]: db });
+    const unrelated = { characterName: "Other", futureField: { value: 1 } };
+    let stored = JSON.stringify({ other: unrelated, unknown: "future format" });
+    vi.stubGlobal("window", { localStorage: { getItem: () => stored, setItem: (_key: string, value: string) => { stored = value; } } });
+    await replaceTrialSaveAtomically(archive(), runtime, "Test", existing([{ dbName, key: "/save/0Test", timestamp: time }]));
+    expect(JSON.parse(stored)).toMatchObject({ other: unrelated, unknown: "future format" });
+  });
 });

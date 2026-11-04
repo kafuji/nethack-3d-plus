@@ -243,12 +243,16 @@ export default class WorkerRuntimeBridge implements RuntimeBridge {
   }
 
   dispose(): void {
-    // Keep the existing fire-and-forget API. Callers that need storage
-    // certainty must use disposeAndWait and handle failure.
+    // Keep the existing fire-and-forget API.
     void this.disposeAndWait().catch(error => console.warn("Runtime shutdown did not complete:", error));
   }
 
-  /** Resolve only after worker persistence has stopped and committed. */
+  /**
+   * Wait for the worker's currently queued persistence operations to drain.
+   * Shutdown resolves pending input, so this does not prove that a running
+   * WASM game has stopped writing. Do not use it as an exclusive-storage or
+   * safe-to-restore guarantee.
+   */
   disposeAndWait(): Promise<void> {
     if (this.retirement) return this.retirement;
     this.retirement = new Promise<void>((resolve, reject) => {

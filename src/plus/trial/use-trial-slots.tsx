@@ -220,13 +220,13 @@ export function useTrialSlots(dependencies: UseTrialSlotsDependencies) {
         await new Promise(resolve => window.setTimeout(resolve, WORKER_RETIRE_DELAY_MS));
         const { target } = current;
         resume = current.kind === "save"
-          ? await captureTrialSlot(runtimeVersion, Number(target), current.summary)
+          ? await captureTrialSlot(runtimeVersion, characterName, Number(target), current.summary)
           : typeof target === "string"
             ? await restoreAutoSnapshot(runtimeVersion, characterName, target)
             : await restoreTrialSlot(runtimeVersion, characterName, target);
       } catch (error) {
         console.error("Trial slot operation failed; resuming the just-saved game:", error);
-        resume = await resolveLatestManualSave(runtimeVersion);
+        resume = await resolveLatestManualSave(runtimeVersion, characterName);
       }
       console.log(
         `Trial ${current.kind}: save+exit ${Math.round(savedAt - current.startedAt)}ms, ` +

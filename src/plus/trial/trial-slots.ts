@@ -61,9 +61,11 @@ function openTrialSlotDatabase(): Promise<IDBDatabase> {
 async function withSlotStore<T>(
   mode: IDBTransactionMode,
   run: (store: IDBObjectStore) => IDBRequest<T>,
+  beforeTransaction?: () => void,
 ): Promise<T> {
   const db = await openTrialSlotDatabase();
   try {
+    beforeTransaction?.();
     return await new Promise<T>((resolve, reject) => {
       const transaction = db.transaction(TRIAL_SLOT_STORE, mode);
       const request = run(transaction.objectStore(TRIAL_SLOT_STORE));
@@ -113,21 +115,23 @@ export async function clearTrialSlots(
   await withSlotStore("readwrite", store => store.delete(IDBKeyRange.bound(prefix, `${prefix}\uffff`)));
 }
 
-async function findNewestManualSave(runtimeVersion: NethackRuntimeVersion) {
+async function findNewestManualSave(runtimeVersion: NethackRuntimeVersion, characterName: string) {
+  if (!characterName) throw new Error("Character name is required to find its save");
   const saves = (await fetchSavedGames(runtimeVersion))
-    .filter(save => save.category === "manual" && save.isResumable)
+    .filter(save => save.name === characterName && save.category === "manual" && save.isResumable)
     .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  if (!saves[0]) throw new Error("No manual save found after saving");
+  if (!saves[0]) throw new Error(`No manual save found for ${characterName} after saving`);
   return saves[0];
 }
 
 /** Copy the save file NetHack just wrote into a slot; returns how to resume it. */
 export async function captureTrialSlot(
   runtimeVersion: NethackRuntimeVersion,
+  characterName: string,
   slot: number,
   summary: TrialSlotSummary,
 ): Promise<TrialSlotResume> {
-  const save = await findNewestManualSave(runtimeVersion);
+  const save = await findNewestManualSave(runtimeVersion, characterName);
   const archive = await exportSavedGame(save, runtimeVersion);
   const record: TrialSlotRecord = {
     archive, displayName: save.displayName, savedAt: new Date().toISOString(), ...summary,
@@ -136,11 +140,42 @@ export async function captureTrialSlot(
   return { name: save.name, initOptions: save.initOptions ?? [], category: "manual" };
 }
 
+/** Copy an explicitly selected, already saved character from the title screen. */
+export async function captureExistingTrialSlot(
+  runtimeVersion: NethackRuntimeVersion,
+  characterName: string,
+  saveKey: string,
+  slot: number,
+  assertStillAllowed: () => void,
+): Promise<TrialSlotResume> {
+  if (!characterName || !saveKey || !Number.isInteger(slot) || slot < 1 || slot > TRIAL_SLOT_COUNT) {
+    throw new Error("Invalid character, save key, or trial slot");
+  }
+  const find = async () => (await fetchSavedGames(runtimeVersion)).find(save =>
+    save.key === saveKey && save.name === characterName && save.category === "manual" && save.isResumable);
+  const save = await find();
+  if (!save) throw new Error("Matching resumable manual save not found; list saves again");
+  const signature = (entry: typeof save) => entry.files
+    .map(file => JSON.stringify([file.dbName, file.key, file.timestamp.getTime()])).sort().join("\n");
+  const before = signature(save);
+  const archive = await exportSavedGame(save, runtimeVersion, { requireUnchanged: true });
+  const after = await find();
+  if (!after || signature(after) !== before) throw new Error("Save files changed while reading; list saves and retry");
+  const verified = await exportSavedGame(after, runtimeVersion, { requireUnchanged: true });
+  if (verified !== archive) throw new Error("Save contents changed while reading; list saves and retry");
+  const record: TrialSlotRecord = {
+    archive, displayName: save.displayName, savedAt: new Date().toISOString(), turn: null, dlevel: null,
+  };
+  await withSlotStore("readwrite", store => store.put(record, slotKey(runtimeVersion, characterName, slot)), assertStillAllowed);
+  return { name: save.name, initOptions: save.initOptions ?? [], category: "manual" };
+}
+
 /** The just-saved game, for resuming after a save without touching the slot. */
 export async function resolveLatestManualSave(
   runtimeVersion: NethackRuntimeVersion,
+  characterName: string,
 ): Promise<TrialSlotResume> {
-  const save = await findNewestManualSave(runtimeVersion);
+  const save = await findNewestManualSave(runtimeVersion, characterName);
   return { name: save.name, initOptions: save.initOptions ?? [], category: "manual" };
 }
 

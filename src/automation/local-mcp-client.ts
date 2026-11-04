@@ -27,8 +27,10 @@ function state(engine: Nethack3DEngine) {
       : ui.question ? { type: "question", ...ui.question, menuItems: context.menuItems }
       : ui.textInput ? { type: "text", ...ui.textInput }
       : ui.infoMenu ? { type: "info", ...ui.infoMenu }
+      : ui.inventory.visible ? { type: "inventory", message: "Inventory is open. Use get_inventory to inspect it and dismiss to close it." }
       : ui.positionInputActive ? { type: "position", text: ui.positionRequest, cursor: context.positionCursor } : null,
     gameOver: ui.gameOver.active,
+    gameOverReveal: context.gameOverReveal,
     gameOverDetails: ui.gameOver.active ? { deathMessage: ui.gameOver.deathMessage, promptReady: ui.gameOver.promptReady, tombstoneLines: ui.gameOver.tombstoneLines, postmortemReports: ui.gameOver.postmortemReports } : null,
     numberPadMode: context.numberPadMode.enabled,
     numberPadModeSource: context.numberPadMode.source,
@@ -46,6 +48,11 @@ export function executeLocalMcpRequest(engine: Nethack3DEngine, request: Request
     return { ...snapshot, visible: inventory.visible, freshness: "last inventory snapshot; it can become stale; open inventory to refresh", items: snapshot.available ? inventory.items.map(item => ({ text: item.text, accelerator: item.accelerator, isCategory: item.isCategory, isSelectable: item.isSelectable })) : [] };
   }
   const params = request.params ?? {};
+  if (request.method === "continue_game_over") {
+    if (typeof params.sessionId !== "string" || !Number.isSafeInteger(params.revealId)) throw new Error("sessionId and revealId are required");
+    engine.continueAutomationGameOver(params.sessionId, params.revealId as number);
+    return { status: "completed", message: "Game-over screen continued; call get_state to observe the next prompt." };
+  }
   if (typeof params.sessionId !== "string" || !Number.isSafeInteger(params.requestId)) throw new Error("sessionId and requestId are required");
   const ui = useGameStore.getState();
   let action: Parameters<Nethack3DEngine["submitAutomationAction"]>[2];
@@ -123,7 +130,7 @@ export function startLocalMcpClient(getEngine: () => Nethack3DEngine | null, tok
           reply = completed.get(request.id);
           if (!reply) {
             try {
-              const appMethods = ["get_app_state", "list_saves", "list_trial_saves", "start_game", "load_game", "load_trial_save", "return_to_title", "respond_confirmation"];
+              const appMethods = ["get_app_state", "list_saves", "list_trial_saves", "start_game", "load_game", "save_trial_slot", "load_trial_save", "return_to_title", "respond_confirmation"];
               const engine = getEngine();
               const result = appMethods.includes(request.method)
                 ? await appController.execute(request.method, request.params ?? {})

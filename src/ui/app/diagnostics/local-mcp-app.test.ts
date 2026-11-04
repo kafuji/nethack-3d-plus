@@ -5,8 +5,8 @@ import { createDefaultStartupInitOptionValues, serializeStartupInitOptionTokens 
 
 const fixtures = vi.hoisted(() => ({ saves: [] as unknown[] }));
 vi.mock("../startup/saved-games", () => ({ fetchSavedGames: vi.fn(async () => fixtures.saves) }));
-const trial = vi.hoisted(() => ({ characters: [] as unknown[], restoreTrialSlot: vi.fn(), restoreAutoSnapshot: vi.fn() }));
-vi.mock("../../../plus/trial/trial-slots", () => ({ listTrialCharacters: vi.fn(async () => trial.characters), restoreTrialSlot: trial.restoreTrialSlot, restoreAutoSnapshot: trial.restoreAutoSnapshot, TRIAL_SLOT_COUNT: 3 }));
+const trial = vi.hoisted(() => ({ characters: [] as unknown[], captureExistingTrialSlot: vi.fn(async (..._args: [string, string, string, number, () => void]) => ({ name: "Test", category: "manual" })), restoreTrialSlot: vi.fn(), restoreAutoSnapshot: vi.fn() }));
+vi.mock("../../../plus/trial/trial-slots", () => ({ listTrialCharacters: vi.fn(async () => trial.characters), captureExistingTrialSlot: trial.captureExistingTrialSlot, restoreTrialSlot: trial.restoreTrialSlot, restoreAutoSnapshot: trial.restoreAutoSnapshot, TRIAL_SLOT_COUNT: 3 }));
 
 function setup() {
   const deps = {
@@ -17,7 +17,7 @@ function setup() {
     gameOver: { active: false, promptReady: false },
     newGamePrompt: { visible: false, reason: null },
     globalConfirmationDialog: null,
-    handleStartNewGame: vi.fn(async () => {}),
+    handleStartNewGame: vi.fn(async () => true),
     startNewGameFromPrompt: vi.fn(),
     resolveConfirmation: vi.fn(),
     requestConfirmationChoice: vi.fn(async () => "cancel"),
@@ -83,6 +83,13 @@ describe("local MCP app controller", () => {
     await expect(controller.execute("respond_confirmation", { confirmationId: state.confirmation.confirmationId, choice: "confirm" })).rejects.toThrow("stale");
   });
 
+  it("reports a cancelled startup rather than claiming the game started", async () => {
+    const { deps, controller } = setup();
+    vi.mocked(deps.handleStartNewGame).mockResolvedValueOnce(false);
+    await controller.execute("start_game", { mode: "random", runtimeVersion: "3.6.7", name: "Test" });
+    expect(await controller.execute("get_app_state", {})).toMatchObject({ phase: "title", operation: { status: "cancelled" } });
+  });
+
   it("loads only currently resumable saves and refuses active game abandonment", async () => {
     const { deps, controller } = setup();
     fixtures.saves = [{ key: "manual:Test", name: "Test", displayName: "Test", category: "manual", isResumable: true, timestamp: new Date("2026-01-01T00:00:00Z"), initOptions: [] }];
@@ -110,5 +117,15 @@ describe("local MCP app controller", () => {
     expect(trial.restoreTrialSlot).not.toHaveBeenCalled();
     expect(trial.restoreAutoSnapshot).not.toHaveBeenCalled();
     expect(deps.handleStartNewGame).not.toHaveBeenCalled();
+  });
+
+  it("copies a chosen save only from the title and rechecks before writing", async () => {
+    const { deps, controller } = setup();
+    trial.captureExistingTrialSlot.mockImplementationOnce(async (_runtime, _name, _key, _slot, assertStillAllowed) => {
+      deps.characterCreationConfig = { mode: "random", name: "Test" };
+      assertStillAllowed();
+      return { name: "Test", category: "manual" };
+    });
+    await expect(controller.execute("save_trial_slot", { runtimeVersion: "3.6.7", name: "Test", saveKey: "manual:Test", slot: 1 })).rejects.toThrow("title");
   });
 });

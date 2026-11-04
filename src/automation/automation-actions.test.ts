@@ -45,11 +45,28 @@ function fixture(options: { pickup?: boolean; question?: boolean; text?: boolean
   Object.assign(engine, { automationNumberPad, systems: { engineState: { session }, questionMenus: questions,
     directionPrompts: { isInDirectionQuestion: false, hideDirectionQuestion: vi.fn() },
     promptDialogs: dialogs, positionSelection: { positionInputModeActive: false },
-    gameOver: { gameOverState: { active: options.gameOver ?? false } }, inputCommands: input } });
+    gameOver: { gameOverState: { active: options.gameOver ?? false }, isGameOverUiRevealBlocked: () => false }, inputCommands: input } });
   return { engine, session, questions, dialogs, input, automationNumberPad, consume: () => consumed?.() };
 }
 
 describe("runtime automation actions", () => {
+  it("continues a paused game-over screen without a worker input wait and rejects stale observations", () => {
+    const f = fixture({ gameOver: true });
+    Object.assign(f.session, { sessionId: "death-session", getAutomationInputWait: () => null });
+    let blocked = true;
+    const gameOver = (f.engine as any).systems.gameOver;
+    gameOver.isGameOverUiRevealBlocked = () => blocked;
+    gameOver.releaseDeferredGameOverUiReveal = vi.fn(() => { blocked = false; return true; });
+    Object.assign(f.engine, { automationGameOverRevealId: 3 });
+    expect(() => f.engine.continueAutomationGameOver("old-session", 3)).toThrow(/stale/);
+    expect(() => f.engine.continueAutomationGameOver("death-session", 2)).toThrow(/stale/);
+    f.engine.continueAutomationGameOver("death-session", 3);
+    expect(gameOver.releaseDeferredGameOverUiReveal).toHaveBeenCalledOnce();
+    expect(() => f.engine.continueAutomationGameOver("death-session", 3)).toThrow(/stale/);
+    expect(f.input.sendInput).not.toHaveBeenCalled();
+    expect(f.session.claimAutomationInput).not.toHaveBeenCalled();
+  });
+
   it("returns player stats only for the session that emitted a status update", () => {
     const f = fixture();
     const status = new ObservedStatus();
@@ -91,6 +108,18 @@ describe("runtime automation actions", () => {
     expect(() => f.engine.submitAutomationAction("s", 7, { type: "menu", selections: [{ index: 9 }] })).toThrow(/not available/);
     expect(f.input.sendInput).not.toHaveBeenCalled();
     expect(f.input.sendInputSequence).not.toHaveBeenCalled();
+  });
+
+  it("rejects counts that would wrap in the native signed 32-bit menu result", () => {
+    const f = fixture({ question: true, pickup: true });
+    for (const count of [2147483648, 4294967295, Number.MAX_SAFE_INTEGER]) {
+      expect(() => f.engine.submitAutomationAction("s", 7, { type: "menu", selections: [{ index: 0, count }] })).toThrow(/Invalid menu count/);
+    }
+    expect(f.session.claimAutomationInput).not.toHaveBeenCalled();
+    expect(f.input.sendInput).not.toHaveBeenCalled();
+    expect(f.input.sendInputSequence).not.toHaveBeenCalled();
+    f.engine.submitAutomationAction("s", 7, { type: "menu", selections: [{ index: 0, count: 2147483647 }] });
+    expect(f.input.sendInputSequence).toHaveBeenCalledWith(["__MENU_SELECT__:2:2147483647", "Enter"], { requestId: 7 });
   });
 
   it("keeps human-selected items and changes only the requested selection set", () => {

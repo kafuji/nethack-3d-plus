@@ -139,7 +139,7 @@ export function useCharacterCreation(dependencies: UseCharacterCreationDependenc
             extraLabel: t.saves.loadExisting,
           });
           if (choice === "cancel") {
-            return;
+            return false;
           }
           if (choice === "extra") {
             // Load the detected save instead of starting a new character.
@@ -196,7 +196,7 @@ export function useCharacterCreation(dependencies: UseCharacterCreationDependenc
         initOptions: resumeExistingSave.initOptions,
         resumeCategory: resumeExistingSave.category,
       });
-      return;
+      return true;
     }
     setCharacterCreationConfig({
       ...config,
@@ -204,6 +204,7 @@ export function useCharacterCreation(dependencies: UseCharacterCreationDependenc
       name: effectiveCharacterName,
       initOptions: normalizedInitOptions,
     });
+    return true;
   };
 
   const updateStartupInitOptionValue = useCallback(

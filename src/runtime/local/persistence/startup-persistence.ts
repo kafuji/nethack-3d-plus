@@ -221,6 +221,11 @@ export class RuntimePersistence {
         }
         return null;
       };
+      // postRun fires before hydration, so no root snapshot is authoritative
+      // until the existing persistent state has been restored successfully.
+      let rootHydrationState = "pending";
+      let rootHydrationError = null;
+      const pendingHydrationFlushCallbacks = [];
       const hydrateRootPersistence = (callback) => {
         let settled = false;
         const finish = (error = null) => {
@@ -228,6 +233,20 @@ export class RuntimePersistence {
             return;
           }
           settled = true;
+          if (error) {
+            rootHydrationState = "failed";
+            rootHydrationError = error;
+          } else if (rootHydrationState !== "failed") {
+            rootHydrationState = "ready";
+          }
+          if (pendingHydrationFlushCallbacks.length) {
+            const callbacks = pendingHydrationFlushCallbacks.splice(0);
+            // Coalesce pre-hydration requests and finish their callbacks only
+            // once the deferred write commits (or hydration itself fails).
+            queueMicrotask(() => flushRootPersistence("after-hydration", (flushError) => {
+              for (const pendingCallback of callbacks) pendingCallback(flushError);
+            }));
+          }
           callback(error);
         };
         if (!rootPersistenceEnabled) {
@@ -237,12 +256,12 @@ export class RuntimePersistence {
         openRootPersistenceDatabase()
           .then((db) => {
             if (!db) {
-              finish(null);
+              finish(new Error("Root persistence database is unavailable"));
               return;
             }
             if (!db.objectStoreNames.contains(rootPersistenceStoreName)) {
               db.close();
-              finish(null);
+              finish(new Error("Root persistence store is unavailable"));
               return;
             }
             const transaction = db.transaction(
@@ -258,6 +277,7 @@ export class RuntimePersistence {
             ])
               .then(([values, keys]) => {
                 let restoredCount = 0;
+                let restoreError = null;
                 for (let index = 0; index < values.length; index += 1) {
                   const key =
                     typeof keys[index] === "string"
@@ -286,6 +306,7 @@ export class RuntimePersistence {
                   }
                   const contents = decodeStoredRootContents(values[index]);
                   if (!contents) {
+                    restoreError ??= new Error(`Cannot decode persisted root file ${key}`);
                     continue;
                   }
                   try {
@@ -315,6 +336,7 @@ export class RuntimePersistence {
                     }
                     restoredCount += 1;
                   } catch (error) {
+                    restoreError ??= error instanceof Error ? error : new Error(String(error));
                     console.warn(
                       `Failed to restore persisted root file ${key}:`,
                       error,
@@ -327,7 +349,7 @@ export class RuntimePersistence {
                     `Restored ${restoredCount} NetHack root file(s) from ${rootPersistenceDbName}`,
                   );
                 }
-                finish(null);
+                finish(restoreError);
               })
               .catch((error) => {
                 db.close();
@@ -339,41 +361,35 @@ export class RuntimePersistence {
       const readPersistableRootEntries = () => {
         const entries = new Map();
         runDuringRootPersistenceOperation(() => {
-          let names = [];
-          try {
-            names = mod.FS.readdir("/");
-          } catch {
-            return;
-          }
+          const names = mod.FS.readdir("/");
           for (const name of names) {
             const filename = String(name || "");
             const path = `/${filename}`;
-            if (!shouldPersistRootFilePath(path)) {
+            if (!shouldPersistRootPathName(path, filename)) {
               continue;
             }
-            try {
-              const stat = mod.FS.stat(path);
-              const contents = mod.FS.readFile(path);
-              entries.set(path, {
-                timestamp:
-                  stat && stat.mtime instanceof Date
-                    ? stat.mtime
-                    : new Date(),
-                mode: stat.mode,
-                contents: new Uint8Array(contents),
-              });
-            } catch (error) {
-              console.warn(
-                `Failed to read root file ${path} for persistence:`,
-                error,
-              );
-            }
+            // A partial snapshot must never be treated as authoritative: the
+            // flush removes existing DB entries absent from this snapshot.
+            const stat = mod.FS.stat(path);
+            if (!stat) throw new Error(`Cannot stat root file ${path}`);
+            if (!mod.FS.isFile(stat.mode)) continue;
+            const contents = mod.FS.readFile(path);
+            entries.set(path, {
+              timestamp:
+                stat.mtime instanceof Date ? stat.mtime : new Date(),
+              mode: stat.mode,
+              contents: new Uint8Array(contents),
+            });
           }
         });
         return entries;
       };
       const rootPersistenceActivity = new PersistenceActivity();
       let persistenceClosing = false;
+      let firstPersistenceError = null;
+      const recordPersistenceError = (error) => {
+        if (error && !firstPersistenceError) firstPersistenceError = error;
+      };
       let drainPromise = null;
       let cancelCheckpointPersistence = () => {};
       let queueShutdownSync = null;
@@ -384,12 +400,22 @@ export class RuntimePersistence {
           }
           return;
         }
+        if (rootHydrationState === "pending") {
+          pendingHydrationFlushCallbacks.push(typeof callback === "function" ? callback : () => {});
+          return;
+        }
+        if (rootHydrationState === "failed") {
+          // Preserve the existing database after any incomplete hydration.
+          if (typeof callback === "function") callback(rootHydrationError);
+          return;
+        }
         const endActivity = rootPersistenceActivity.begin();
         let finished = false;
         let openedDb = null;
         const finish = (error = null) => {
           if (finished) return;
           finished = true;
+          recordPersistenceError(error);
           if (openedDb) openedDb.close();
           try { if (typeof callback === "function") callback(error); }
           finally { endActivity(); }
@@ -638,7 +664,11 @@ export class RuntimePersistence {
               return;
             }
             syncfsInFlight = true;
-            originalSyncfs(next.populate, (err) => {
+            let syncCompleted = false;
+            const onSyncComplete = (err) => {
+              if (syncCompleted) return;
+              syncCompleted = true;
+              recordPersistenceError(err);
               const finish = (rootErr = null) => {
                 try {
                   if (next.callback) {
@@ -653,7 +683,12 @@ export class RuntimePersistence {
                 return;
               }
               flushRootPersistence("syncfs", finish);
-            });
+            };
+            try {
+              originalSyncfs(next.populate, onSyncComplete);
+            } catch (error) {
+              onSyncComplete(error);
+            }
           };
 
           runNext();
@@ -816,6 +851,7 @@ export class RuntimePersistence {
           if (!queueShutdownSync) throw new Error("IDBFS sync is unavailable");
           await new Promise((resolve, reject) => queueShutdownSync(error => error ? reject(error) : resolve()));
           await rootPersistenceActivity.waitForIdle();
+          if (firstPersistenceError) throw firstPersistenceError;
         })();
         return drainPromise;
       };
