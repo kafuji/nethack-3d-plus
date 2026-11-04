@@ -7,8 +7,8 @@ const ja = (message: string): string => presentGameMessage(message, "ja").text;
 
 describe("object and monster verb messages", () => {
   it.each([
-    ["Your wand of wishing glows feebly blue for a moment.", "あなたの願いのワンドは一瞬弱々しく青色に輝いた。"],
-    ["Your wand of wishing violently glows silver for a while, then evaporates.", "あなたの願いのワンドはしばらく激しく銀色に輝き、蒸発した。"],
+    ["Your wand of wishing glows feebly blue for a moment.", "あなたの願いの杖は一瞬弱々しく青色に輝いた。"],
+    ["Your wand of wishing violently glows silver for a while, then evaporates.", "あなたの願いの杖はしばらく激しく銀色に輝き、蒸発した。"],
     ["Your long sword softly glows amber.", "あなたのロングソードは柔らかく琥珀色に輝いた。"],
     ["Your diluted potion of object detection dilutes further.", "あなたの薄められた物体探知のポーションはさらに薄まった。"],
     ["Your potion of healing dilutes.", "あなたの回復のポーションは薄まった。"],

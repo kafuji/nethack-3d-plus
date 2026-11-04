@@ -24,6 +24,8 @@ describe("GameTextTranslator", () => {
     ["2 uncursed daggers", "2本の呪われていないダガー"],
     ["an uncursed potion of healing", "呪われていない回復の薬"],
     ["a ruby potion", "ルビー色の薬"],
+    ["a circular amulet", "丸い護符"],
+    ["the Amulet of Yendor", "イェンダーの魔除け"],
     ["the jackal corpse", "ジャッカルの死体"],
     ["3 food rations", "3つの食料"],
     ["a wand of digging (0:5)", "穴掘りの杖(0:5)"],

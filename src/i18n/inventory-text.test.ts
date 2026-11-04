@@ -18,7 +18,7 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("an empty uncursed sack", "ja"))
       .toBe("空の呪われていない袋");
     expect(translateInventoryItem("a wand of locking (0:7)", "ja"))
-      .toBe("施錠のワンド (0:7)");
+      .toBe("施錠の杖 (0:7)");
     expect(translateInventoryItem("a blessed spellbook of force bolt", "ja"))
       .toBe("祝福された魔法の矢の魔法書");
   });
@@ -37,9 +37,9 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("an uncursed wooden ring", "ja"))
       .toBe("呪われていない木製の指輪");
     expect(translateInventoryItem("a hexagonal wand (0:7)", "ja"))
-      .toBe("六角形のワンド (0:7)");
+      .toBe("六角形の杖 (0:7)");
     expect(translateInventoryItem("a red spellbook", "ja")).toBe("赤い魔法書");
-    expect(translateInventoryItem("a circular amulet", "ja")).toBe("円形のお守り");
+    expect(translateInventoryItem("a circular amulet", "ja")).toBe("円形の護符");
     expect(translateInventoryItem("a runed dagger", "ja")).toBe("ルーンの刻まれたダガー");
     expect(translateInventoryItem("a blue gem", "ja")).toBe("青色の宝石");
     expect(translateInventoryItem("2 worthless pieces of blue glass", "ja"))
@@ -58,7 +58,20 @@ describe("inventory display translations", () => {
 
   it("calls enlightenment 啓蒙", () => {
     expect(translateInventoryItem("a potion of enlightenment", "ja")).toBe("啓蒙のポーション");
-    expect(translateInventoryItem("a wand of enlightenment (0:5)", "ja")).toBe("啓蒙のワンド (0:5)");
+    expect(translateInventoryItem("a wand of enlightenment (0:5)", "ja")).toBe("啓蒙の杖 (0:5)");
+  });
+
+  it("calls life saving 救命", () => {
+    expect(translateInventoryItem("an amulet of life saving (being worn)", "ja")).toBe("救命の護符（着用中）");
+  });
+
+  it("names wands, gauntlets, polymorph and unicorn horns without collisions", () => {
+    expect(translateInventoryItem("a wand of polymorph (0:4)", "ja")).toBe("変化の杖 (0:4)");
+    expect(translateInventoryItem("a +0 quarterstaff", "ja")).toBe("+0 六尺棒");
+    expect(translateInventoryItem("an amulet of change", "ja")).toBe("性転換の護符");
+    expect(translateInventoryItem("a ring of polymorph control", "ja")).toBe("変化制御の指輪");
+    expect(translateInventoryItem("a +0 pair of gauntlets of power", "ja")).toBe("+0 剛力の籠手 1組");
+    expect(translateInventoryItem("a unicorn horn", "ja")).toBe("ユニコーンの角");
   });
 
   it("preserves names, status and price while translating recognized descriptions", () => {
@@ -80,7 +93,7 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("a tin", "ja")).toBe("缶詰");
     expect(translateInventoryItem("a statue of a goblin", "ja")).toBe("ゴブリンの石像");
     expect(translateInventoryItem("a wand of fire named 火 (0:7)", "ja"))
-      .toBe("炎のワンド（名前：火） (0:7)");
+      .toBe("炎の杖（名前：火） (0:7)");
     expect(translateInventoryItem("a pair of blessed +1 leather gloves (being worn)", "ja"))
       .toBe("祝福された +1 革の手袋 1組（着用中）");
     expect(translateInventoryItem("2 uncursed pairs of low boots", "ja"))
@@ -103,16 +116,16 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("a clear potion", "ja")).toBe("透明なポーション");
     expect(translateInventoryItem("a bubbly potion", "ja")).toBe("泡立ったポーション");
     expect(translateInventoryItem("an uncursed amulet of flying (being worn)", "ja"))
-      .toBe("呪われていない飛行のお守り（着用中）");
-    expect(translateInventoryItem("an amulet of guarding", "ja")).toBe("守護のお守り");
-    expect(translateInventoryItem("a perforated amulet", "ja")).toBe("穴の開いたお守り");
-    expect(translateInventoryItem("a cubical amulet", "ja")).toBe("立方体のお守り");
+      .toBe("呪われていない飛行の護符（着用中）");
+    expect(translateInventoryItem("an amulet of guarding", "ja")).toBe("守護の護符");
+    expect(translateInventoryItem("a perforated amulet", "ja")).toBe("穴の開いた護符");
+    expect(translateInventoryItem("a cubical amulet", "ja")).toBe("立方体の護符");
     expect(translateInventoryItem("a +0 wooden shield (being worn)", "ja"))
       .toBe("+0 木製の盾（着用中）");
     expect(translateInventoryItem("a shield of shock resistance", "ja")).toBe("電撃耐性の盾");
     expect(translateInventoryItem("a crystal helmet", "ja")).toBe("水晶の兜");
     expect(translateInventoryItem("a checkered spellbook", "ja")).toBe("格子模様の魔法書");
-    expect(translateInventoryItem("a redwood wand", "ja")).toBe("セコイア材のワンド");
+    expect(translateInventoryItem("a redwood wand", "ja")).toBe("セコイア材の杖");
     expect(translateInventoryItem("a gold dragon scale mail", "ja"))
       .toBe("金色のドラゴンの鱗鎧");
     expect(translateInventoryItem("a gold dragon scales", "ja"))

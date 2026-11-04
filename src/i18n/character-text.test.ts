@@ -30,11 +30,11 @@ describe("character information presentation", () => {
     expect(translateCharacterLine("Total elapsed playing time is 1 minute and 3 seconds.", "ja")).toBe("合計プレイ時間：1分3秒。");
     expect(translateCharacterLine("You are unencumbered.", "ja")).toBe("荷物による負担はありません。");
     expect(translateCharacterLine("You are turning to stone.", "ja")).toBe("石化しつつあります。");
-    expect(translateCharacterLine("You are wielding a quarterstaff.", "ja")).toBe("杖を手に持っています。");
+    expect(translateCharacterLine("You are wielding a quarterstaff.", "ja")).toBe("六尺棒を手に持っています。");
     expect(translateCharacterLine("You have basic skill with quarterstaff.", "ja"))
-      .toBe("杖の技能：基本。");
+      .toBe("六尺棒の技能：基本。");
     expect(translateCharacterLine("You have expert skill with quarterstaff.", "ja"))
-      .toBe("杖の技能：専門家。");
+      .toBe("六尺棒の技能：専門家。");
     expect(translateCharacterLine("You are not poison resistant.", "ja"))
       .toBe("You are not poison resistant.");
     expect(translateCharacterLine("You are fire resistant (from an unknown source).", "ja"))

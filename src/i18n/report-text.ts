@@ -53,7 +53,7 @@ const present = (table: Readonly<Record<string, string>>, value: string): string
 const features: Readonly<Record<string, string>> = {
   shop: "店", temple: "寺院", altar: "祭壇", throne: "玉座", fountain: "泉", sink: "流し", grave: "墓", tree: "木",
   "general store": "雑貨店", "untended shop": "店主のいない店", "armor shop": "防具店", "scroll shop": "巻物店", "potion shop": "ポーション店",
-  "weapon shop": "武器店", "food shop": "食料品店", "ring shop": "指輪店", "wand shop": "ワンド店", "hardware store": "金物屋", "tool shop": "道具屋",
+  "weapon shop": "武器店", "food shop": "食料品店", "ring shop": "指輪店", "wand shop": "杖店", "hardware store": "金物屋", "tool shop": "道具屋",
   bookstore: "本屋", "health food store": "健康食品店", "vegetarian food shop": "菜食料理店", "lighting store": "照明店", "lighting shop": "照明店",
   "used armor dealership": "中古防具店", "liquor emporium": "酒屋", "antique weapons outlet": "骨董武器店", delicatessen: "総菜屋",
   jewelers: "宝石店", "quality apparel and accessories": "高級服飾店", "rare books": "稀覯本店",
@@ -180,7 +180,7 @@ const chronicleAchievements: Readonly<Record<string, string>> = {
   "performed the invocation": "儀式を執り行った", "acquired The Amulet of Yendor": "イェンダーの魔除けを手に入れた",
   "entered the Elemental Planes": "元素界に入った", "entered the Astral Plane": "アストラル界に入った", ascended: "昇天した",
   "acquired the Mines' End luckstone": "鉱山の底の幸運の石を手に入れた", "acquired the Sokoban bag of holding": "倉庫番の賞品の魔法の袋を手に入れた",
-  "acquired the Sokoban amulet of reflection": "倉庫番の賞品の反射のお守りを手に入れた", "killed Medusa": "メデューサを倒した",
+  "acquired the Sokoban amulet of reflection": "倉庫番の賞品の反射の護符を手に入れた", "killed Medusa": "メデューサを倒した",
   "entered the Gnomish Mines": "ノームの鉱山に入った", "reached Mine Town": "鉱山町に着いた", "entered a shop": "店に入った",
   "entered a temple": "寺院に入った", "consulted the Oracle": "神託を受けた", "read a Discworld novel": "ディスクワールドの小説を読んだ",
   "entered Sokoban": "倉庫番に入った", "entered the Bigroom": "大部屋に入った", "killed for the first time": "初めて生き物を殺した",

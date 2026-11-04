@@ -8,9 +8,9 @@ import { keepsEnglishRun } from "./message-presentation";
 // These are presentation strings only. Never use the result for identifying an
 // item, choosing an action, resolving a glyph, or submitting a menu selection.
 const categories: Readonly<Record<string, string>> = {
-  "Weapons": "武器", "Armor": "防具", "Rings": "指輪", "Amulets": "お守り",
+  "Weapons": "武器", "Armor": "防具", "Rings": "指輪", "Amulets": "護符",
   "Tools": "道具", "Comestibles": "食料", "Potions": "ポーション", "Scrolls": "巻物",
-  "Spellbooks": "魔法書", "Wands": "ワンド", "Coins": "硬貨", "Gems/Stones": "宝石・石",
+  "Spellbooks": "魔法書", "Wands": "杖", "Coins": "硬貨", "Gems/Stones": "宝石・石",
   "Gems": "宝石", "Boulders/Statues": "岩・彫像", "Iron balls": "鉄球", "Chains": "鎖",
   "Venoms": "毒液", "Items in a bag": "袋の中身", "Items in a box": "箱の中身",
   "Unpaid items": "未払いの品", "Unpaid items already used up": "使用済みの未払いの品",
@@ -34,7 +34,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "elven arrow": "エルフの矢", "orcish arrow": "オークの矢", "silver arrow": "銀の矢", "ya": "竹矢",
   "elven bow": "エルフの弓", "orcish bow": "オークの弓", "yumi": "和弓",
   "scimitar": "三日月刀", "katana": "刀", "axe": "斧", "battle-axe": "戦斧", "mace": "メイス", "club": "こん棒",
-  "quarterstaff": "杖", "bow": "弓", "crossbow": "クロスボウ", "sling": "投石器",
+  "quarterstaff": "六尺棒", "bow": "弓", "crossbow": "クロスボウ", "sling": "投石器",
   "small shield": "小さな盾", "large shield": "大きな盾", "shield of reflection": "反射の盾", "elven shield": "エルフの盾", "orcish shield": "オークの盾",
   "leather armor": "革の鎧", "studded leather armor": "鋲付き革鎧", "ring mail": "リングメイル", "chain mail": "鎖かたびら",
   "scale mail": "スケイルメイル", "splint mail": "スプリントメイル", "plate mail": "プレートメイル",
@@ -52,7 +52,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "potion of gain ability": "能力上昇のポーション", "potion of restore ability": "能力回復のポーション", "potion of levitation": "浮遊のポーション",
   "potion of hallucination": "幻覚のポーション", "potion of invisibility": "透明化のポーション", "potion of see invisible": "透明視のポーション",
   "potion of enlightenment": "啓蒙のポーション", "potion of monster detection": "モンスター探知のポーション", "potion of object detection": "物体探知のポーション",
-  "potion of sleeping": "睡眠のポーション", "potion of polymorph": "変身のポーション", "potion of booze": "酒のポーション", "potion of fruit juice": "果汁のポーション", "potion of acid": "酸のポーション", "potion of oil": "油のポーション",
+  "potion of sleeping": "睡眠のポーション", "potion of polymorph": "変化のポーション", "potion of booze": "酒のポーション", "potion of fruit juice": "果汁のポーション", "potion of acid": "酸のポーション", "potion of oil": "油のポーション",
   "scroll of identify": "識別の巻物", "scroll of remove curse": "解呪の巻物", "scroll of enchant weapon": "武器強化の巻物", "scroll of enchant armor": "防具強化の巻物",
   "scroll of teleportation": "テレポートの巻物", "scroll of magic mapping": "魔法の地図の巻物", "scroll of light": "光の巻物", "scroll of blank paper": "白紙の巻物",
   "scroll of destroy armor": "防具破壊の巻物", "scroll of confuse monster": "モンスター混乱の巻物", "scroll of scare monster": "モンスター威嚇の巻物", "scroll of create monster": "モンスター生成の巻物",
@@ -62,21 +62,21 @@ const itemNames: Readonly<Record<string, string>> = {
   "spellbook of extra healing": "上級回復の魔法書", "spellbook of light": "光の魔法書", "spellbook of identify": "識別の魔法書", "spellbook of remove curse": "解呪の魔法書",
   "spellbook of fireball": "火球の魔法書", "spellbook of cone of cold": "冷気の魔法書", "spellbook of dig": "掘削の魔法書", "spellbook of teleport away": "テレポートの魔法書",
   "spellbook of magic mapping": "魔法の地図の魔法書", "spellbook of blank paper": "白紙の魔法書", "spellbook of detect monsters": "モンスター探知の魔法書", "spellbook of detect food": "食料探知の魔法書",
-  "wand of light": "光のワンド", "wand of digging": "掘削のワンド", "wand of fire": "炎のワンド", "wand of cold": "冷気のワンド", "wand of lightning": "稲妻のワンド",
-  "wand of striking": "打撃のワンド", "wand of teleportation": "テレポートのワンド", "wand of cancellation": "無効化のワンド", "wand of wishing": "願いのワンド",
-  "wand of locking": "施錠のワンド", "wand of opening": "開錠のワンド", "wand of probing": "探査のワンド", "wand of sleep": "睡眠のワンド", "wand of death": "死のワンド",
-  "wand of magic missile": "魔法のミサイルのワンド", "wand of polymorph": "変身のワンド", "wand of create monster": "モンスター生成のワンド", "wand of secret door detection": "隠し扉探知のワンド",
+  "wand of light": "光の杖", "wand of digging": "掘削の杖", "wand of fire": "炎の杖", "wand of cold": "冷気の杖", "wand of lightning": "稲妻の杖",
+  "wand of striking": "打撃の杖", "wand of teleportation": "テレポートの杖", "wand of cancellation": "無効化の杖", "wand of wishing": "願いの杖",
+  "wand of locking": "施錠の杖", "wand of opening": "開錠の杖", "wand of probing": "探査の杖", "wand of sleep": "睡眠の杖", "wand of death": "死の杖",
+  "wand of magic missile": "魔法のミサイルの杖", "wand of polymorph": "変化の杖", "wand of create monster": "モンスター生成の杖", "wand of secret door detection": "隠し扉探知の杖",
   "ring of protection": "防御の指輪", "ring of regeneration": "再生の指輪", "ring of teleportation": "テレポートの指輪", "ring of invisibility": "透明化の指輪",
-  "ring of polymorph": "変身の指輪", "ring of polymorph control": "変身制御の指輪", "ring of protection from shape changers": "変身生物よけの指輪",
+  "ring of polymorph": "変化の指輪", "ring of polymorph control": "変化制御の指輪", "ring of protection from shape changers": "変化生物よけの指輪",
   "ring of levitation": "浮遊の指輪", "ring of free action": "自由行動の指輪", "ring of fire resistance": "火炎耐性の指輪", "ring of cold resistance": "冷気耐性の指輪", "ring of poison resistance": "毒耐性の指輪",
-  "amulet of reflection": "反射のお守り", "amulet of life saving": "生命保護のお守り", "amulet of ESP": "ESPのお守り",
+  "amulet of reflection": "反射の護符", "amulet of life saving": "救命の護符", "amulet of ESP": "ESPの護符",
   "Amulet of Yendor": "イェンダーの魔除け",
   "Bell of Opening": "開門の鐘", "Candelabrum of Invocation": "招来の燭台", "Book of the Dead": "死者の書",
   "sack": "袋", "oilskin sack": "油布の袋", "bag of holding": "保持の袋", "bag of tricks": "手品の袋", "large box": "大きな箱", "chest": "宝箱",
   "skeleton key": "万能鍵", "lock pick": "開錠具", "credit card": "クレジットカード", "tinning kit": "缶詰製造キット", "tin opener": "缶切り",
   "towel": "タオル", "blindfold": "目隠し", "mirror": "鏡", "magic marker": "魔法のマーカー", "stethoscope": "聴診器", "whistle": "笛", "magic whistle": "魔法の笛",
   "oil lamp": "油のランプ", "magic lamp": "魔法のランプ", "brass lantern": "真鍮のランタン", "candle": "ろうそく", "candles": "ろうそく",
-  "pick-axe": "つるはし", "unicorn horn": "一角獣の角", "touchstone": "試金石", "luckstone": "幸運の石", "loadstone": "重荷の石", "flint stone": "火打石", "flint stones": "火打石",
+  "pick-axe": "つるはし", "unicorn horn": "ユニコーンの角", "touchstone": "試金石", "luckstone": "幸運の石", "loadstone": "重荷の石", "flint stone": "火打石", "flint stones": "火打石",
   "rock": "石", "rocks": "石", "gold piece": "金貨", "gold pieces": "金貨",
   "shuriken": "手裏剣", "shurikens": "手裏剣", "boomerang": "ブーメラン", "trident": "三叉槍", "silver dagger": "銀のダガー",
   "athame": "アサメ", "scalpel": "メス", "stiletto": "スティレット", "worm tooth": "ワームの牙", "worm teeth": "ワームの牙", "crysknife": "クリスナイフ",
@@ -88,11 +88,11 @@ const itemNames: Readonly<Record<string, string>> = {
   "fedora": "中折れ帽", "cornuthaum": "円錐帽", "dunce cap": "愚者の帽子", "dented pot": "へこんだ鍋", "helm of opposite alignment": "属性反転の兜", "helm of telepathy": "テレパシーの兜",
   "crystal plate mail": "水晶のプレートメイル", "bronze plate mail": "青銅のプレートメイル", "banded mail": "バンデッドメイル", "dwarvish mithril-coat": "ドワーフのミスリル鎧", "elven mithril-coat": "エルフのミスリル鎧", "orcish chain mail": "オークの鎖かたびら", "orcish ring mail": "オークのリングメイル", "leather jacket": "革の上着", "Hawaiian shirt": "アロハシャツ", "T-shirt": "Tシャツ",
   "mummy wrapping": "ミイラの包帯", "oilskin cloak": "油布のクローク", "alchemy smock": "錬金術師の上着", "Uruk-hai shield": "ウルク＝ハイの盾", "dwarvish roundshield": "ドワーフの丸盾",
-  "gauntlets of fumbling": "不器用の小手", "gauntlets of power": "剛力の小手", "gauntlets of dexterity": "器用さの小手", "iron shoes": "鉄の靴", "speed boots": "加速のブーツ", "water walking boots": "水上歩行のブーツ", "jumping boots": "跳躍のブーツ", "elven boots": "エルフのブーツ", "kicking boots": "蹴りのブーツ", "fumble boots": "不器用のブーツ", "levitation boots": "浮遊のブーツ",
+  "gauntlets of fumbling": "不器用の籠手", "gauntlets of power": "剛力の籠手", "gauntlets of dexterity": "器用さの籠手", "iron shoes": "鉄の靴", "speed boots": "加速のブーツ", "water walking boots": "水上歩行のブーツ", "jumping boots": "跳躍のブーツ", "elven boots": "エルフのブーツ", "kicking boots": "蹴りのブーツ", "fumble boots": "不器用のブーツ", "levitation boots": "浮遊のブーツ",
   "ring of adornment": "装飾の指輪", "ring of gain strength": "腕力上昇の指輪", "ring of gain constitution": "耐久力上昇の指輪", "ring of increase accuracy": "命中率上昇の指輪", "ring of increase damage": "ダメージ増加の指輪", "ring of searching": "探索の指輪", "ring of stealth": "隠密の指輪", "ring of sustain ability": "能力維持の指輪", "ring of hunger": "空腹の指輪", "ring of aggravate monster": "モンスター挑発の指輪", "ring of conflict": "争いの指輪", "ring of warning": "警告の指輪", "ring of shock resistance": "電撃耐性の指輪", "ring of slow digestion": "消化遅延の指輪", "ring of teleport control": "テレポート制御の指輪", "ring of see invisible": "透明視の指輪",
-  "amulet of strangulation": "窒息のお守り", "amulet of restful sleep": "安眠のお守り", "amulet versus poison": "毒よけのお守り", "amulet of change": "変化のお守り", "amulet of unchanging": "不変のお守り", "amulet of magical breathing": "魔法呼吸のお守り", "cheap plastic imitation of the Amulet of Yendor": "イェンダーの魔除けの安っぽいプラスチック製の偽物",
-  "spellbook of finger of death": "死の指の魔法書", "spellbook of knock": "開錠の魔法書", "spellbook of confuse monster": "モンスター混乱の魔法書", "spellbook of cure blindness": "盲目治療の魔法書", "spellbook of drain life": "生命吸収の魔法書", "spellbook of slow monster": "モンスター減速の魔法書", "spellbook of wizard lock": "魔法の施錠の魔法書", "spellbook of create monster": "モンスター生成の魔法書", "spellbook of cause fear": "恐怖の魔法書", "spellbook of clairvoyance": "透視の魔法書", "spellbook of cure sickness": "病気治療の魔法書", "spellbook of charm monster": "モンスター魅了の魔法書", "spellbook of haste self": "自己加速の魔法書", "spellbook of detect unseen": "不可視探知の魔法書", "spellbook of levitation": "浮遊の魔法書", "spellbook of restore ability": "能力回復の魔法書", "spellbook of invisibility": "透明化の魔法書", "spellbook of detect treasure": "宝物探知の魔法書", "spellbook of turn undead": "アンデッド退散の魔法書", "spellbook of polymorph": "変身の魔法書", "spellbook of create familiar": "使い魔召喚の魔法書", "spellbook of cancellation": "無効化の魔法書", "spellbook of protection": "防御の魔法書", "spellbook of jumping": "跳躍の魔法書", "spellbook of stone to flesh": "石の肉化の魔法書",
-  "wand of enlightenment": "啓蒙のワンド", "wand of nothing": "何も起こらないワンド", "wand of make invisible": "透明化のワンド", "wand of slow monster": "モンスター減速のワンド", "wand of speed monster": "モンスター加速のワンド", "wand of undead turning": "アンデッド退散のワンド",
+  "amulet of strangulation": "窒息の護符", "amulet of restful sleep": "安眠の護符", "amulet versus poison": "毒よけの護符", "amulet of change": "性転換の護符", "amulet of unchanging": "不変の護符", "amulet of magical breathing": "魔法呼吸の護符", "cheap plastic imitation of the Amulet of Yendor": "イェンダーの魔除けの安っぽいプラスチック製の偽物",
+  "spellbook of finger of death": "死の指の魔法書", "spellbook of knock": "開錠の魔法書", "spellbook of confuse monster": "モンスター混乱の魔法書", "spellbook of cure blindness": "盲目治療の魔法書", "spellbook of drain life": "生命吸収の魔法書", "spellbook of slow monster": "モンスター減速の魔法書", "spellbook of wizard lock": "魔法の施錠の魔法書", "spellbook of create monster": "モンスター生成の魔法書", "spellbook of cause fear": "恐怖の魔法書", "spellbook of clairvoyance": "透視の魔法書", "spellbook of cure sickness": "病気治療の魔法書", "spellbook of charm monster": "モンスター魅了の魔法書", "spellbook of haste self": "自己加速の魔法書", "spellbook of detect unseen": "不可視探知の魔法書", "spellbook of levitation": "浮遊の魔法書", "spellbook of restore ability": "能力回復の魔法書", "spellbook of invisibility": "透明化の魔法書", "spellbook of detect treasure": "宝物探知の魔法書", "spellbook of turn undead": "アンデッド退散の魔法書", "spellbook of polymorph": "変化の魔法書", "spellbook of create familiar": "使い魔召喚の魔法書", "spellbook of cancellation": "無効化の魔法書", "spellbook of protection": "防御の魔法書", "spellbook of jumping": "跳躍の魔法書", "spellbook of stone to flesh": "石の肉化の魔法書",
+  "wand of enlightenment": "啓蒙の杖", "wand of nothing": "何も起こらない杖", "wand of make invisible": "透明化の杖", "wand of slow monster": "モンスター減速の杖", "wand of speed monster": "モンスター加速の杖", "wand of undead turning": "アンデッド退散の杖",
   "tallow candle": "獣脂のろうそく", "wax candle": "蜜ろうのろうそく", "expensive camera": "高級カメラ", "crystal ball": "水晶玉", "lenses": "レンズ", "saddle": "鞍", "leash": "リード", "can of grease": "グリース缶", "figurine": "小像", "land mine": "地雷", "beartrap": "トラバサミ",
   "tin whistle": "ブリキの笛", "wooden flute": "木のフルート", "magic flute": "魔法のフルート", "tooled horn": "加工された角笛", "frost horn": "冷気の角笛", "fire horn": "炎の角笛", "horn of plenty": "豊穣の角笛", "wooden harp": "木のハープ", "magic harp": "魔法のハープ", "bell": "ベル", "bugle": "ラッパ", "leather drum": "革の太鼓", "drum of earthquake": "地震の太鼓",
   "egg": "卵", "eggs": "卵", "meatball": "ミートボール", "meat stick": "肉の棒", "huge chunk of meat": "大きな肉塊", "kelp frond": "昆布の葉", "eucalyptus leaf": "ユーカリの葉", "melon": "メロン", "sprig of wolfsbane": "トリカブトの小枝", "clove of garlic": "ニンニクのひとかけ", "slime mold": "粘菌", "lump of royal jelly": "ローヤルゼリーの塊", "cream pie": "クリームパイ", "candy bar": "キャンディーバー", "fortune cookie": "フォーチュンクッキー", "pancake": "パンケーキ", "K-ration": "Kレーション", "C-ration": "Cレーション", "tin": "缶詰", "tin of spinach": "ほうれん草の缶詰",
@@ -102,7 +102,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "novel": "小説", "scroll of mail": "郵便の巻物", "shimmering dragon scale mail": "きらめくドラゴンの鱗鎧", "shimmering dragon scales": "きらめくドラゴンの鱗",
   "spellbook of flame sphere": "炎の球の魔法書", "spellbook of freeze sphere": "氷の球の魔法書", "strange object": "奇妙な物体",
   // NetHack 5.0 names. Randomized descriptions remain separate below.
-  "silver mace": "銀のメイス", "helm of caution": "警戒の兜", "shield of drain resistance": "生命吸収耐性の盾", "shield of shock resistance": "電撃耐性の盾", "amulet of guarding": "守護のお守り", "amulet of flying": "飛行のお守り", "wand of stasis": "停止のワンド", "spellbook of chain lightning": "連鎖雷撃の魔法書", "enormous meatball": "巨大なミートボール", "ice box": "アイスボックス",
+  "silver mace": "銀のメイス", "helm of caution": "警戒の兜", "shield of drain resistance": "生命吸収耐性の盾", "shield of shock resistance": "電撃耐性の盾", "amulet of guarding": "守護の護符", "amulet of flying": "飛行の護符", "wand of stasis": "停止の杖", "spellbook of chain lightning": "連鎖雷撃の魔法書", "enormous meatball": "巨大なミートボール", "ice box": "アイスボックス",
   // Samurai names (objnam.c Japanese_items).
   "wakizashi": "脇差", "ninja-to": "忍者刀", "nunchaku": "ヌンチャク", "naginata": "薙刀", "shito": "刺刀", "yugake": "弓懸", "osaku": "オサク", "gunyoki": "軍用食", "koto": "琴", "magic koto": "魔法の琴", "tanko": "短甲", "kabuto": "兜", "potion of sake": "酒のポーション", "meat ring": "肉の輪",
   "splash of venom": "毒液の飛沫", "splash of blinding venom": "目くらましの毒液の飛沫", "splash of acid venom": "酸性の毒液の飛沫",
@@ -132,7 +132,7 @@ const appearanceParts: Readonly<Record<string, string>> = {
 
 // The second term only describes the visible class, never a hidden identity.
 const appearanceClasses: Readonly<Record<string, string>> = {
-  ring: "指輪", rings: "指輪", wand: "ワンド", wands: "ワンド", amulet: "お守り", amulets: "お守り", spellbook: "魔法書", spellbooks: "魔法書",
+  ring: "指輪", rings: "指輪", wand: "杖", wands: "杖", amulet: "護符", amulets: "護符", spellbook: "魔法書", spellbooks: "魔法書",
 };
 
 const gemColors: Readonly<Record<string, string>> = {
@@ -142,8 +142,8 @@ const gemColors: Readonly<Record<string, string>> = {
 const genericAppearances: Readonly<Record<string, string>> = {
   "cloak": "クローク", "helmet": "兜", "shield": "盾", "shirt": "シャツ", "suit": "鎧", "armor": "鎧",
   "wooden shield": "木製の盾", "crystal helmet": "水晶の兜", "bag": "袋",
-  "little dart": "小さな投げ矢", "vulgar polearm": "ありふれた長柄武器", "hilted polearm": "柄のある長柄武器", "forked polearm": "二股の長柄武器", "single-edged polearm": "片刃の長柄武器", "angled poleaxe": "角ばった長柄斧", "long poleaxe": "長い長柄斧", "pole cleaver": "長柄の鉈", "pole sickle": "長柄の鎌", "pruning hook": "剪定用の鉤", "hooked polearm": "鉤状の長柄武器", "pronged polearm": "先端が枝分かれした長柄武器", "beaked polearm": "くちばし状の長柄武器", "broad pick": "幅広いつるはし", "thonged club": "ひも付きのこん棒", "silver bell": "銀の鈴", "boots": "ブーツ", "shoes": "靴", "gloves": "手袋", "gauntlets": "篭手", "hat": "帽子", "helm": "兜", "smock": "スモック", "dragon scales": "ドラゴンの鱗",
-  "runed arrow": "ルーンの刻まれた矢", "crude arrow": "粗末な矢", "bamboo arrow": "竹の矢", "throwing star": "投げ星", "runed spear": "ルーンの刻まれた槍", "crude spear": "粗末な槍", "stout spear": "頑丈な槍", "throwing spear": "投げ槍", "runed dagger": "ルーンの刻まれたダガー", "crude dagger": "粗末なダガー", "double-headed axe": "両刃の斧", "runed short sword": "ルーンの刻まれたショートソード", "crude short sword": "粗末なショートソード", "broad short sword": "幅広のショートソード", "curved sword": "曲がった剣", "runed broadsword": "ルーンの刻まれた幅広の剣", "samurai sword": "侍の剣", "long samurai sword": "長い侍の剣", "runed bow": "ルーンの刻まれた弓", "crude bow": "粗末な弓", "long bow": "長弓", "staff": "杖", "leather hat": "革の帽子", "iron skull cap": "鉄の頭巾", "hard hat": "硬い帽子", "conical hat": "円錐形の帽子", "plumed helmet": "羽飾りの兜", "etched helmet": "模様のある兜", "crested helmet": "飾りのある兜", "visored helmet": "面頬付きの兜", "crude chain mail": "粗末な鎖かたびら", "crude ring mail": "粗末なリングメイル", "faded pall": "色あせた外套", "coarse mantelet": "粗い外套", "hooded cloak": "フード付きの外套", "slippery cloak": "滑りやすい外套", "apron": "エプロン", "tattered cape": "ぼろぼろのケープ", "opera cloak": "オペラ用の外套", "ornamental cope": "装飾された外套", "piece of cloth": "布切れ", "blue and green shield": "青と緑の盾", "white-handed shield": "白い手の盾", "red-eyed shield": "赤い目の盾", "large round shield": "大きな丸盾", "polished silver shield": "磨かれた銀の盾", "old gloves": "古い手袋", "padded gloves": "厚手の手袋", "riding gloves": "乗馬用手袋", "fencing gloves": "フェンシング用手袋", "walking shoes": "歩行靴", "hard shoes": "硬い靴", "jackboots": "乗馬靴", "combat boots": "戦闘靴", "jungle boots": "ジャングルブーツ", "hiking boots": "登山靴", "mud boots": "泥の付いたブーツ", "buckled boots": "留め金付きのブーツ", "riding boots": "乗馬ブーツ", "snow boots": "雪用ブーツ", "key": "鍵", "lamp": "ランプ", "looking glass": "手鏡", "glass orb": "ガラス玉", "flute": "フルート", "horn": "角笛", "harp": "ハープ", "drum": "太鼓", "potion": "ポーション", "potions": "ポーション", "scroll": "巻物", "scrolls": "巻物", "ring": "指輪", "rings": "指輪", "amulet": "お守り", "amulets": "お守り", "wand": "ワンド", "wands": "ワンド", "spellbook": "魔法書", "spellbooks": "魔法書",
+  "little dart": "小さな投げ矢", "vulgar polearm": "ありふれた長柄武器", "hilted polearm": "柄のある長柄武器", "forked polearm": "二股の長柄武器", "single-edged polearm": "片刃の長柄武器", "angled poleaxe": "角ばった長柄斧", "long poleaxe": "長い長柄斧", "pole cleaver": "長柄の鉈", "pole sickle": "長柄の鎌", "pruning hook": "剪定用の鉤", "hooked polearm": "鉤状の長柄武器", "pronged polearm": "先端が枝分かれした長柄武器", "beaked polearm": "くちばし状の長柄武器", "broad pick": "幅広いつるはし", "thonged club": "ひも付きのこん棒", "silver bell": "銀の鈴", "boots": "ブーツ", "shoes": "靴", "gloves": "手袋", "gauntlets": "籠手", "hat": "帽子", "helm": "兜", "smock": "スモック", "dragon scales": "ドラゴンの鱗",
+  "runed arrow": "ルーンの刻まれた矢", "crude arrow": "粗末な矢", "bamboo arrow": "竹の矢", "throwing star": "投げ星", "runed spear": "ルーンの刻まれた槍", "crude spear": "粗末な槍", "stout spear": "頑丈な槍", "throwing spear": "投げ槍", "runed dagger": "ルーンの刻まれたダガー", "crude dagger": "粗末なダガー", "double-headed axe": "両刃の斧", "runed short sword": "ルーンの刻まれたショートソード", "crude short sword": "粗末なショートソード", "broad short sword": "幅広のショートソード", "curved sword": "曲がった剣", "runed broadsword": "ルーンの刻まれた幅広の剣", "samurai sword": "侍の剣", "long samurai sword": "長い侍の剣", "runed bow": "ルーンの刻まれた弓", "crude bow": "粗末な弓", "long bow": "長弓", "staff": "棒", "leather hat": "革の帽子", "iron skull cap": "鉄の頭巾", "hard hat": "硬い帽子", "conical hat": "円錐形の帽子", "plumed helmet": "羽飾りの兜", "etched helmet": "模様のある兜", "crested helmet": "飾りのある兜", "visored helmet": "面頬付きの兜", "crude chain mail": "粗末な鎖かたびら", "crude ring mail": "粗末なリングメイル", "faded pall": "色あせた外套", "coarse mantelet": "粗い外套", "hooded cloak": "フード付きの外套", "slippery cloak": "滑りやすい外套", "apron": "エプロン", "tattered cape": "ぼろぼろのケープ", "opera cloak": "オペラ用の外套", "ornamental cope": "装飾された外套", "piece of cloth": "布切れ", "blue and green shield": "青と緑の盾", "white-handed shield": "白い手の盾", "red-eyed shield": "赤い目の盾", "large round shield": "大きな丸盾", "polished silver shield": "磨かれた銀の盾", "old gloves": "古い手袋", "padded gloves": "厚手の手袋", "riding gloves": "乗馬用手袋", "fencing gloves": "フェンシング用手袋", "walking shoes": "歩行靴", "hard shoes": "硬い靴", "jackboots": "乗馬靴", "combat boots": "戦闘靴", "jungle boots": "ジャングルブーツ", "hiking boots": "登山靴", "mud boots": "泥の付いたブーツ", "buckled boots": "留め金付きのブーツ", "riding boots": "乗馬ブーツ", "snow boots": "雪用ブーツ", "key": "鍵", "lamp": "ランプ", "looking glass": "手鏡", "glass orb": "ガラス玉", "flute": "フルート", "horn": "角笛", "harp": "ハープ", "drum": "太鼓", "potion": "ポーション", "potions": "ポーション", "scroll": "巻物", "scrolls": "巻物", "ring": "指輪", "rings": "指輪", "amulet": "護符", "amulets": "護符", "wand": "杖", "wands": "杖", "spellbook": "魔法書", "spellbooks": "魔法書",
 };
 
 const modifiers: Readonly<Record<string, string>> = {

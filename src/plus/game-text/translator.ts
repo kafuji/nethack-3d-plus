@@ -4,7 +4,7 @@
 // only what is shown to the player goes through translateGameText().
 // Templates and names come from JNetHack (NetHack General Public License),
 // see scripts/plus/extract-jnethack-texts.mjs.
-import { GameNameTranslator, type GameTextNameData } from "./object-names";
+import { GameNameTranslator, type GameTextNameData, type ObjectCategory } from "./object-names";
 import { coreGameTextRules, type CoreRuleContext } from "./core-rules";
 import { disclosureRules } from "./disclosure-rules";
 
@@ -46,20 +46,22 @@ function withoutPrototypes<T>(value: T): T {
   return copy as T;
 }
 
-// Weapons src/i18n names differently from JNetHack (短剣, 小剣, 長剣), so
-// both tiers show the same name.
-const weaponRenames: ReadonlyArray<readonly [RegExp, string, string]> = [
-  [/dagger$/, "短剣", "ダガー"],
-  [/short sword$/, "小剣", "ショートソード"],
-  [/^long sword$/, "長剣", "ロングソード"],
+// Objects src/i18n names differently from JNetHack (短剣, 小剣, 長剣, 小手,
+// 魔除け), so both tiers show the same name.
+const objectRenames: ReadonlyArray<readonly [ObjectCategory, RegExp, string, string]> = [
+  ["weapon", /dagger$/, "短剣", "ダガー"],
+  ["weapon", /short sword$/, "小剣", "ショートソード"],
+  ["weapon", /^long sword$/, "長剣", "ロングソード"],
+  ["armor", /./, "小手", "籠手"],
+  ["amulet", /./, "魔除け", "護符"],
 ];
 
-function renameWeapons(data: GameTextData): void {
-  const weapons = data.objects.weapon as Record<string, string> | undefined;
-  if (!weapons) return;
-  for (const [english, japanese] of Object.entries(weapons)) {
-    for (const [pattern, from, to] of weaponRenames) {
-      if (pattern.test(english)) weapons[english] = japanese.replace(from, to);
+function renameObjects(data: GameTextData): void {
+  for (const [category, pattern, from, to] of objectRenames) {
+    const table = data.objects[category] as Record<string, string> | undefined;
+    if (!table) continue;
+    for (const [english, japanese] of Object.entries(table)) {
+      if (pattern.test(english)) table[english] = japanese.replace(from, to);
     }
   }
 }
@@ -173,7 +175,7 @@ const inventoryCategoryNames: Readonly<Record<string, string>> = {
   Weapons: "武器",
   Armor: "鎧",
   Rings: "指輪",
-  Amulets: "魔除け",
+  Amulets: "護符",
   Tools: "道具",
   Comestibles: "食料",
   Potions: "薬",
@@ -210,7 +212,7 @@ export class GameTextTranslator {
 
   constructor(data: GameTextData) {
     data = withoutPrototypes(data);
-    renameWeapons(data);
+    renameObjects(data);
     this.enlightenment = data.enlightenment ?? {};
     this.roleNames = data.roleNames ?? {};
     this.bodyParts = data.bodyParts ?? {};
