@@ -88,6 +88,11 @@ gameplay `i`. The worker coalesces these requests and services them at a normal
 An inventory-change notification can precede a shop's sale question, so the
 engine's current dialog state alone cannot make a raw refresh command safe.
 
+Mutation-driven refreshes (FPS weapons, the player weapon overlay) go through
+`PromptDialogs.queueSilentInventoryRefresh`. A request refused because a menu is
+still open, or one that arrives while another refresh is in flight, is retried
+each frame by `maybeRequestQueuedSilentInventoryRefresh` once prompts close.
+
 Explicit yes/no prompts validate their allowed choices in both the engine and
 the runtime. Invalid keys leave the current request open; they are not coerced
 into refusal or queued as future gameplay. Validation is limited to yes/no

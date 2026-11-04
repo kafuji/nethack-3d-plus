@@ -39,6 +39,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
   private readonly automationInventory = new ObservedInventory();
   private readonly automationNumberPad = new ObservedNumberPad();
   private readonly automationStatus = new ObservedStatus();
+  private automationGameOverRevealId = 0;
 
   constructor(options: Nethack3DEngineOptions) {
     this.startupOnly = options.startupOnly === true;
@@ -778,6 +779,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.promptDialogs.pendingInventoryDialogOptions = null;
     this.systems.promptDialogs.inventoryRefreshInFlight = false;
     this.systems.promptDialogs.pendingStartupInventoryRefresh = true;
+    this.systems.promptDialogs.queuedSilentInventoryRefreshReason = null;
     this.systems.promptDialogs.pendingStartupInventoryRefreshEarliestAtMs =
       Date.now() + this.systems.promptDialogs.startupInventoryRefreshDelayMs;
     this.systems.engineState.uiAdapter.setInventory(this.systems.promptDialogs.buildInventoryDialogState());
@@ -1000,8 +1002,14 @@ class Nethack3DEngine implements Nethack3DEngineController {
         // Inventory mutation is a strong signal that floor stack order at the
         // player tile may have changed (pickup/drop/eat/use from floor).
         this.systems.tileUpdates.requestPlayerTileRefresh("inventory-updated-signal");
-        if (this.systems.movementInput.isFpsMode() && !this.systems.promptDialogs.pendingStartupInventoryRefresh) {
-          this.systems.promptDialogs.requestSilentInventoryRefresh("inventory-updated-signal");
+        // FPS weapons and the player weapon overlay both read the wielded
+        // item from the inventory snapshot, so keep it current.
+        if (
+          (this.systems.movementInput.isFpsMode() ||
+            this.systems.entityBillboards.resolvePlayerHeldWeaponOverlayBillboardKey() !== null) &&
+          !this.systems.promptDialogs.pendingStartupInventoryRefresh
+        ) {
+          this.systems.promptDialogs.queueSilentInventoryRefresh("inventory-updated-signal");
         }
         break;
 
@@ -1474,6 +1482,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
 
       case "game_over_started":
         this.systems.combatAttribution.triggerPlayerDeathEffects();
+        this.automationGameOverRevealId++;
         this.systems.gameOver.armGameOverUiRevealDelay();
         break;
 
@@ -1850,7 +1859,9 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.camera.updateCamera(deltaSeconds);
     this.systems.webXrPresentation.updateCamera();
     this.systems.promptDialogs.maybeRequestPendingStartupInventoryRefresh();
+    this.systems.promptDialogs.maybeRequestQueuedSilentInventoryRefresh();
     this.systems.heldWeapon.syncFpsHeldWeaponSprite(deltaSeconds);
+    this.systems.entityBillboards.syncPlayerHeldWeaponOverlay();
     this.systems.entityBillboards.updateMonsterBillboardPitchLockState();
     this.systems.directionPrompts.syncDirectionPromptOverlayVisibility();
     this.systems.directionPrompts.directionPromptOverlay?.update(
@@ -2131,10 +2142,22 @@ class Nethack3DEngine implements Nethack3DEngineController {
       messages: this.systems.engineMessages.gameMessages.slice(0, 30),
       positionCursor: this.systems.positionSelection.positionInputModeActive ? { ...this.systems.positionSelection.positionCursor } : null,
       numberPadMode: this.automationNumberPad.snapshot(),
+      gameOverReveal: session instanceof WorkerRuntimeBridge && this.systems.gameOver.isGameOverUiRevealBlocked()
+        ? { sessionId: session.sessionId, revealId: this.automationGameOverRevealId } : null,
       map: session instanceof WorkerRuntimeBridge ? this.automationObservations.snapshot() : null,
       inventorySnapshot: session instanceof WorkerRuntimeBridge ? this.automationInventory.snapshot() : { available: false, revision: 0 },
       menuItems: observedMenuItems(this.systems.questionMenus.activeQuestionMenuItems, item => this.systems.questionMenus.isSelectableQuestionMenuItem(item)),
     };
+  }
+
+  /** Release the local death-screen pause without injecting a game command. */
+  public continueAutomationGameOver(sessionId: string, revealId: number): void {
+    const session = this.systems.engineState.session;
+    if (!(session instanceof WorkerRuntimeBridge) || session.sessionId !== sessionId ||
+        this.automationGameOverRevealId !== revealId || !this.systems.gameOver.isGameOverUiRevealBlocked()) {
+      throw new Error("Game-over reveal is stale or no longer active; get state again");
+    }
+    this.systems.gameOver.releaseDeferredGameOverUiReveal();
   }
 
   public submitAutomationInput(sessionId: string, requestId: number, kind: "move" | "answer", input: string): void {
@@ -2206,7 +2229,10 @@ class Nethack3DEngine implements Nethack3DEngineController {
         seen.add(selection.index);
         const item = questions.activeQuestionMenuItems[selection.index];
         if (!item || !questions.isSelectableQuestionMenuItem(item)) throw new Error("Menu item is not available");
-        if (selection.count !== undefined && (!Number.isSafeInteger(selection.count) || selection.count < 1)) throw new Error("Invalid menu count");
+        // The native menu result stores counts in a signed 32-bit field. A
+        // larger JavaScript integer would wrap, potentially becoming -1
+        // (NetHack's select-all sentinel) instead of the requested quantity.
+        if (selection.count !== undefined && (!Number.isSafeInteger(selection.count) || selection.count < 1 || selection.count > 0x7fffffff)) throw new Error("Invalid menu count (expected 1 to 2147483647)");
         if (selection.count !== undefined && !Number.isInteger(item.menuIndex)) throw new Error("Count is not supported for this menu item");
         desired.set(selection.index, selection.count);
       }

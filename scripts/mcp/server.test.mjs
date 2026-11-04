@@ -6,7 +6,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 
-const toolNames = ['get_state', 'get_app_state', 'list_saves', 'list_trial_saves', 'load_trial_save', 'start_game', 'load_game', 'return_to_title', 'respond_confirmation', 'get_map', 'get_inventory', 'move', 'command', 'extended_command', 'answer_prompt', 'submit_text', 'select_menu', 'dismiss'];
+const toolNames = ['get_state', 'continue_game_over', 'get_app_state', 'list_saves', 'list_trial_saves', 'save_trial_slot', 'load_trial_save', 'start_game', 'load_game', 'return_to_title', 'respond_confirmation', 'get_map', 'get_inventory', 'move', 'command', 'extended_command', 'answer_prompt', 'submit_text', 'select_menu', 'dismiss'];
 
 test('stdio tools bridge only to the authenticated game, one operation at a time', async t => {
   const token = '42'.repeat(32);
@@ -88,6 +88,7 @@ test('official SDK client discovers and calls the server over stdio', async t =>
   for (const [name, args] of [
     ['get_map', { extra: true }],
     ['get_inventory', { extra: true }],
+    ['continue_game_over', { sessionId: 'sdk-session', revealId: 0 }],
     ['command', { ...identity, key: 'multiple' }],
     ['command', { ...identity, key: '' }],
     ['command', { ...identity, key: 'Ctrl+ab' }],
@@ -101,6 +102,8 @@ test('official SDK client discovers and calls the server over stdio', async t =>
     ['submit_text', { ...identity, text: 'a\u0000b' }],
     ['select_menu', { ...identity, selections: [{ index: -1 }] }],
     ['select_menu', { ...identity, selections: [{ index: 0, count: 0 }] }],
+    ['select_menu', { ...identity, selections: [{ index: 0, count: 2147483648 }] }],
+    ['select_menu', { ...identity, selections: [{ index: 0, count: 4294967295 }] }],
     ['select_menu', { ...identity, selections: [{ index: 0, extra: true }] }],
     ['select_menu', { ...identity, selections: Array.from({ length: 257 }, (_, index) => ({ index })) }],
     ['list_saves', { runtimeVersion: 'unknown' }],
@@ -151,6 +154,7 @@ test('official SDK client discovers and calls the server over stdio', async t =>
   for (const [name, args] of [
     ['get_map', {}],
     ['get_inventory', {}],
+    ['continue_game_over', { sessionId: 'sdk-session', revealId: 1 }],
     ['get_app_state', {}],
     ['list_saves', { runtimeVersion: '3.6.7' }],
     ['list_trial_saves', { runtimeVersion: '3.6.7' }],
@@ -166,6 +170,7 @@ test('official SDK client discovers and calls the server over stdio', async t =>
     ['answer_prompt', { ...identity, answer: 'Escape' }],
     ['submit_text', { ...identity, text: '' }],
     ['select_menu', { ...identity, selections: [{ index: 0, count: 2 }, { index: 3 }] }],
+    ['select_menu', { ...identity, selections: [{ index: 0, count: 2147483647 }] }],
     ['select_menu', { ...identity, selections: [] }],
     ['dismiss', identity],
   ]) {

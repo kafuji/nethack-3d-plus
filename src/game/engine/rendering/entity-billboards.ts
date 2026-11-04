@@ -16,11 +16,34 @@ import type { Lighting } from "./lighting";
 import type { MovementInput } from "../input/movement-input";
 import type { PlayerMovement } from "../world/player-movement";
 import type { PositionSelection } from "../input/position-selection";
+import type { PromptDialogs } from "../ui/prompt-dialogs";
+import {
+  buildPlayerHeldWeaponsKey,
+  drawPlayerHeldWeaponOverlay,
+  resolvePlayerHeldWeapons,
+  type HeldWeaponOverlayImage,
+  type PlayerHeldWeaponTile,
+  type PlayerHeldWeapons,
+} from "./player-held-weapon-overlay";
 import type { RenderPipeline } from "./render-pipeline";
 import type { TerminalRendering } from "./terminal-rendering";
 import type { TilesetAssets } from "./tileset-assets";
 import type { VultureProjection } from "./vulture-projection";
 import type { WorldClassification } from "../world/world-classification";
+
+/** Inputs that fully determine a billboard's (possibly decorated) texture. */
+export interface BillboardTextureSpec {
+  readonly baseTextureKey: string;
+  readonly useTiles: boolean;
+  readonly tileIndex: number;
+  readonly glyphChar: string;
+  readonly textColor: string;
+  readonly sourceGlyph: number | null;
+  readonly materialKind: TileMaterialKind | null;
+  readonly showPetHeart: boolean;
+  /** Non-empty when the wielded weapons are drawn over this (player) sprite. */
+  readonly heldWeaponsKey: string;
+}
 
 export interface EntityBillboardsDependencies {
   readonly billboardShatter: Pick<
@@ -62,6 +85,10 @@ export interface EntityBillboardsDependencies {
   readonly positionSelection: Pick<
     PositionSelection,
     "isFpsFarLookViewActive"
+  >;
+  readonly promptDialogs: Pick<
+    PromptDialogs,
+    "currentInventory"
   >;
   readonly renderPipeline: Pick<
     RenderPipeline,
@@ -299,6 +326,226 @@ export class EntityBillboards {
     texture.colorSpace = baseTexture.colorSpace;
     baseTexture.dispose();
     return texture;
+  }
+
+  private heldWeaponsInventoryRef: readonly unknown[] | null = null;
+
+  private heldWeaponsFromInventory: PlayerHeldWeapons = {
+    primary: null,
+    secondary: null,
+  };
+
+  private playerHeldWeaponOverlaySignature = "";
+
+  /** Wielded weapons to draw over the player sprite, cached per inventory snapshot. */
+  resolveCurrentPlayerHeldWeapons(): PlayerHeldWeapons {
+    const inventory = this.dependencies.promptDialogs.currentInventory;
+    if (this.heldWeaponsInventoryRef !== inventory) {
+      this.heldWeaponsInventoryRef = inventory;
+      this.heldWeaponsFromInventory = resolvePlayerHeldWeapons(inventory);
+    }
+    return this.heldWeaponsFromInventory;
+  }
+
+  /** Billboard key of the sprite that currently shows the player, if any. */
+  resolvePlayerHeldWeaponOverlayBillboardKey(): string | null {
+    const options = this.dependencies.engineState.clientOptions;
+    if (
+      !options.playerHeldWeaponOverlayVisible ||
+      options.tilesetMode !== "tiles" ||
+      this.dependencies.movementInput.isFpsMode() ||
+      !this.dependencies.playerMovement.hasSeenPlayerPosition
+    ) {
+      return null;
+    }
+    const { x, y } = this.dependencies.playerMovement.playerPos;
+    return `${x},${y}`;
+  }
+
+  resolveBillboardHeldWeaponsKey(key: string, useTiles: boolean): string {
+    if (!useTiles || key !== this.resolvePlayerHeldWeaponOverlayBillboardKey()) {
+      return "";
+    }
+    return buildPlayerHeldWeaponsKey(this.resolveCurrentPlayerHeldWeapons());
+  }
+
+  private buildPlayerHeldWeaponOverlaySignature(
+    playerKey: string | null,
+    weaponsKey: string,
+  ): string {
+    const sprite = playerKey ? this.monsterBillboards.get(playerKey) : undefined;
+    return `${playerKey ?? ""}|${weaponsKey}|${sprite?.id ?? -1}|${
+      sprite?.userData?.textureKey ?? ""}`;
+  }
+
+  /**
+   * Re-decorate billboards when the wielded weapons or the player tile change.
+   * Only the texture is swapped, so in-flight movement animations are kept.
+   */
+  syncPlayerHeldWeaponOverlay(): void {
+    const playerKey = this.resolvePlayerHeldWeaponOverlayBillboardKey();
+    const weaponsKey = playerKey
+      ? buildPlayerHeldWeaponsKey(this.resolveCurrentPlayerHeldWeapons())
+      : "";
+    if (
+      this.buildPlayerHeldWeaponOverlaySignature(playerKey, weaponsKey) ===
+        this.playerHeldWeaponOverlaySignature
+    ) {
+      return;
+    }
+    for (const [key, sprite] of this.monsterBillboards) {
+      const spec = sprite.userData?.billboardTextureSpec as BillboardTextureSpec | undefined;
+      if (!spec) {
+        continue;
+      }
+      const nextHeldWeaponsKey = key === playerKey && spec.useTiles ? weaponsKey : "";
+      if (nextHeldWeaponsKey === spec.heldWeaponsKey) {
+        continue;
+      }
+      this.applyBillboardTextureSpec(sprite, { ...spec, heldWeaponsKey: nextHeldWeaponsKey });
+    }
+    this.playerHeldWeaponOverlaySignature =
+      this.buildPlayerHeldWeaponOverlaySignature(playerKey, weaponsKey);
+  }
+
+  resolveBillboardTextureKey(spec: BillboardTextureSpec): string {
+    return `${spec.baseTextureKey}|${spec.showPetHeart ? "pet-heart" : "plain"}${
+      spec.heldWeaponsKey ? `|hw:${spec.heldWeaponsKey}` : ""}`;
+  }
+
+  createBillboardTexture(spec: BillboardTextureSpec): THREE.CanvasTexture {
+    let texture = spec.useTiles
+      ? this.dependencies.glyphTextures.createTileTexture(spec.tileIndex, 1, true, {
+          sourceGlyph: spec.sourceGlyph,
+          materialKind: spec.materialKind,
+        }) // Billboards use transparency.
+      : this.createMonsterBillboardTexture(spec.glyphChar, spec.textColor);
+    if (spec.showPetHeart) {
+      texture = this.createPetHighlightedBillboardTexture(texture);
+    }
+    if (spec.heldWeaponsKey) {
+      // Decoration is cosmetic: never let it break the frame loop.
+      try {
+        texture = this.createHeldWeaponDecoratedBillboardTexture(
+          texture,
+          this.resolveCurrentPlayerHeldWeapons(),
+        );
+      } catch (error) {
+        console.warn("Failed to draw held weapons over the player sprite", error);
+      }
+    }
+    return texture;
+  }
+
+  /** Swap a billboard's texture in place, keeping its transform untouched. */
+  applyBillboardTextureSpec(sprite: THREE.Sprite, spec: BillboardTextureSpec): void {
+    const material = sprite.material;
+    if (!(material instanceof THREE.SpriteMaterial)) {
+      return;
+    }
+    const nextTextureKey = this.resolveBillboardTextureKey(spec);
+    const existingTextureKey =
+      typeof sprite.userData?.textureKey === "string" ? sprite.userData.textureKey : "";
+    if (existingTextureKey === nextTextureKey) {
+      sprite.userData.billboardTextureSpec = spec;
+      return;
+    }
+    const nextTexture = this.acquireMonsterBillboardTexture(
+      nextTextureKey,
+      () => this.createBillboardTexture(spec),
+    );
+    sprite.userData.billboardTextureSpec = spec;
+    if (existingTextureKey) {
+      this.releaseMonsterBillboardTexture(existingTextureKey);
+    } else if (material.map) {
+      material.map.dispose();
+    }
+    material.map = nextTexture;
+    material.needsUpdate = true;
+    sprite.userData.textureKey = nextTextureKey;
+  }
+
+  createHeldWeaponDecoratedBillboardTexture(
+    baseTexture: THREE.CanvasTexture,
+    weapons: PlayerHeldWeapons,
+  ): THREE.CanvasTexture {
+    const sourceInfo =
+      this.dependencies.billboardShatter.resolveMonsterBillboardTextureSource(baseTexture);
+    if (!sourceInfo || (!weapons.primary && !weapons.secondary)) {
+      return baseTexture;
+    }
+    const baseMetrics = this.measureBillboardSpriteMetrics(baseTexture);
+    // Upscale small atlases with nearest-neighbour so the shrunken weapon keeps
+    // readable pixels. Vulture billboards size from texture pixels: keep 1:1.
+    const outputScale = this.dependencies.tilesetAssets.shouldUseVultureTiles()
+      ? 1
+      : Math.max(1, Math.ceil(64 / Math.max(1, Math.min(sourceInfo.width, sourceInfo.height))));
+    const canvas = document.createElement("canvas");
+    canvas.width = sourceInfo.width * outputScale;
+    canvas.height = sourceInfo.height * outputScale;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) {
+      return baseTexture;
+    }
+    context.imageSmoothingEnabled = outputScale === 1;
+    context.drawImage(sourceInfo.source, 0, 0, canvas.width, canvas.height);
+    const weaponTextures: THREE.CanvasTexture[] = [];
+    const loadWeapon = (tile: PlayerHeldWeaponTile | null): HeldWeaponOverlayImage | null => {
+      if (!tile) {
+        return null;
+      }
+      const texture = this.dependencies.glyphTextures.createTileTexture(tile.tileIndex, 1, true, {
+        sourceGlyph: tile.sourceGlyph,
+      });
+      weaponTextures.push(texture);
+      return this.dependencies.billboardShatter.resolveMonsterBillboardTextureSource(texture);
+    };
+    context.imageSmoothingEnabled = false;
+    drawPlayerHeldWeaponOverlay(
+      context,
+      canvas.width,
+      canvas.height,
+      loadWeapon(weapons.primary),
+      loadWeapon(weapons.secondary),
+    );
+    for (const texture of weaponTextures) {
+      texture.dispose();
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    texture.anisotropy = this.dependencies.tilesetAssets.resolveTextureAnisotropyLevel();
+    texture.magFilter = baseTexture.magFilter;
+    texture.minFilter = baseTexture.minFilter;
+    texture.generateMipmaps = false;
+    texture.colorSpace = baseTexture.colorSpace;
+    if (baseMetrics) {
+      texture.userData.billboardSpriteMetrics = baseMetrics;
+    }
+    baseTexture.dispose();
+    return texture;
+  }
+
+  /** Grounding metrics, preferring those of the undecorated sprite. */
+  measureBillboardSpriteMetrics(
+    texture: THREE.Texture | null,
+  ): { verticalOffset: number; contentWidth: number } | null {
+    const cached = texture?.userData?.billboardSpriteMetrics;
+    if (cached && typeof cached.verticalOffset === "number" && typeof cached.contentWidth === "number") {
+      return cached;
+    }
+    if (!(texture?.image instanceof HTMLCanvasElement)) {
+      return null;
+    }
+    const canvas = texture.image;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) {
+      return null;
+    }
+    return {
+      verticalOffset: this.getLowestPixelOffset(context, canvas.width, canvas.height),
+      contentWidth: this.getSpriteContentWidth(context, canvas.width, canvas.height),
+    };
   }
 
   ensureEntityBlobShadowTexture(): THREE.CanvasTexture {
@@ -951,11 +1198,21 @@ export class EntityBillboards {
     const sourceGlyphKey =
       normalizedSourceGlyph === null ? "none" : String(normalizedSourceGlyph);
     const materialKindKey = normalizedMaterialKind ?? "none";
-    const petHeartKey = showPetHeart ? "pet-heart" : "plain";
     const textureKey = useTiles
       ? `tile-billboard:${tileIndex}|sg:${sourceGlyphKey}|mk:${materialKindKey}|bg:${backgroundRemovalTextureKey}`
       : `${this.getMonsterBillboardQualityKey()}|${glyphChar}|${textColor}`;
-    const decoratedTextureKey = `${textureKey}|${petHeartKey}`;
+    const textureSpec: BillboardTextureSpec = {
+      baseTextureKey: textureKey,
+      useTiles,
+      tileIndex,
+      glyphChar,
+      textColor,
+      sourceGlyph: normalizedSourceGlyph,
+      materialKind: normalizedMaterialKind,
+      showPetHeart,
+      heldWeaponsKey: this.resolveBillboardHeldWeaponsKey(key, useTiles),
+    };
+    const decoratedTextureKey = this.resolveBillboardTextureKey(textureSpec);
 
     const spriteKey = key;
     let sprite = this.monsterBillboards.get(spriteKey);
@@ -974,17 +1231,7 @@ export class EntityBillboards {
       useVultureBillboardGrounding,
     );
     if (!sprite) {
-      const factory = () => {
-        const baseTexture = useTiles
-          ? this.dependencies.glyphTextures.createTileTexture(tileIndex, 1, true, {
-              sourceGlyph: normalizedSourceGlyph,
-              materialKind: normalizedMaterialKind,
-            }) // Billboards use transparency.
-          : this.createMonsterBillboardTexture(glyphChar, textColor);
-        return showPetHeart
-          ? this.createPetHighlightedBillboardTexture(baseTexture)
-          : baseTexture;
-      };
+      const factory = () => this.createBillboardTexture(textureSpec);
 
       const texture = this.acquireMonsterBillboardTexture(
         decoratedTextureKey,
@@ -1021,17 +1268,7 @@ export class EntityBillboards {
           } else if (material.map) {
             material.map.dispose();
           }
-          const factory = () => {
-            const baseTexture = useTiles
-              ? this.dependencies.glyphTextures.createTileTexture(tileIndex, 1, true, {
-                  sourceGlyph: normalizedSourceGlyph,
-                  materialKind: normalizedMaterialKind,
-                })
-              : this.createMonsterBillboardTexture(glyphChar, textColor);
-            return showPetHeart
-              ? this.createPetHighlightedBillboardTexture(baseTexture)
-              : baseTexture;
-          };
+          const factory = () => this.createBillboardTexture(textureSpec);
 
           material.map = this.acquireMonsterBillboardTexture(
             decoratedTextureKey,
@@ -1059,6 +1296,7 @@ export class EntityBillboards {
         : -1;
     sprite.userData.sourceGlyph = normalizedSourceGlyph;
     sprite.userData.materialKind = normalizedMaterialKind;
+    sprite.userData.billboardTextureSpec = textureSpec;
     sprite.userData.entityType = entityType;
     sprite.userData.isWall = isWall;
     const mainSpriteMaterial = sprite.material;
@@ -1108,21 +1346,10 @@ export class EntityBillboards {
       scaleX *= billboardScale;
       scaleY *= billboardScale;
     }
-    if (useTiles && texture?.image instanceof HTMLCanvasElement) {
-      const canvas = texture.image;
-      const context = canvas.getContext("2d", { willReadFrequently: true });
-      if (context) {
-        verticalOffset = this.getLowestPixelOffset(
-          context,
-          canvas.width,
-          canvas.height,
-        );
-        contentWidth = this.getSpriteContentWidth(
-          context,
-          canvas.width,
-          canvas.height,
-        );
-      }
+    const spriteMetrics = useTiles ? this.measureBillboardSpriteMetrics(texture) : null;
+    if (spriteMetrics) {
+      verticalOffset = spriteMetrics.verticalOffset;
+      contentWidth = spriteMetrics.contentWidth;
     }
     if (useVultureBillboardGrounding) {
       // Anchor vulture billboards from bottom-center so they stand on the tile center.

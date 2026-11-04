@@ -819,6 +819,11 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           label: "FPS武器を表示",
           description: "一人称モードで手に持った武器スプライトを表示します。",
         },
+        playerHeldWeaponOverlayVisible: {
+          label: "プレイヤーの装備武器を表示",
+          description:
+            "タイルモード（一人称以外）で、手に持っている武器のタイルをプレイヤーのスプライトに重ねて表示します。二刀流時は両手の武器を表示します。",
+        },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "見下ろしタイルでプレイヤー下のアイテムを表示",
           description:

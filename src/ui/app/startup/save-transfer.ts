@@ -2,7 +2,7 @@ import type { NethackRuntimeVersion } from "../../../runtime/types";
 import { getRuntimeSaveCompatTag, getRuntimeSaveDbNames, getRuntimeRootPersistenceDbNames } from "../../../runtime/save-storage";
 import { getRuntimeSavePresentationMetadataKey, normalizeStoredSaveInitOptions } from "../../../runtime/save-presentation-metadata";
 import { fetchSavedGames, resolveSaveCategory, resolveSaveLogicalName, type SaveGameRecord } from "./saved-games";
-import { readSavePresentationMetadataByKey, writeSavePresentationMetadataByKey, writeSavePresentationMetadataByKeyStrict, savePresentationMetadataStorageKey } from "./save-presentation";
+import { readSavePresentationMetadataByKey, writeSavePresentationMetadataByKey, savePresentationMetadataStorageKey } from "./save-presentation";
 
 export const MAX_SAVE_ARCHIVE_BYTES = 64 * 1024 * 1024;
 export type SaveTransferErrorCode = "invalid" | "incompatible" | "exists";
@@ -105,7 +105,11 @@ function openSaveDatabase(name: string, create: boolean): Promise<IDBDatabase> {
   });
 }
 
-export async function exportSavedGame(save: SaveGameRecord, runtimeVersion: NethackRuntimeVersion): Promise<string> {
+export async function exportSavedGame(
+  save: SaveGameRecord,
+  runtimeVersion: NethackRuntimeVersion,
+  options?: { requireUnchanged?: boolean },
+): Promise<string> {
   // A checkpoint must be exported as one coherent set, never mixed with an
   // older copy of the character in a legacy database.
   const newestFile = [...save.files].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())[0];
@@ -116,14 +120,20 @@ export async function exportSavedGame(save: SaveGameRecord, runtimeVersion: Neth
     files = await new Promise((resolve, reject) => {
       const transaction = db.transaction("FILE_DATA", "readonly");
       const result: SaveArchive["files"] = [];
+      let failure: Error | null = null;
       transaction.oncomplete = () => resolve(result);
-      transaction.onabort = () => reject(transaction.error ?? new Error("Save read aborted"));
+      transaction.onabort = () => reject(failure ?? transaction.error ?? new Error("Save read aborted"));
       transaction.onerror = () => reject(transaction.error);
       for (const file of save.files.filter(file => file.dbName === newestFile.dbName)) {
         const request = transaction.objectStore("FILE_DATA").get(file.key);
         request.onsuccess = () => {
           const value = request.result;
           if (!(value?.contents instanceof Uint8Array) || !value.contents.length) { transaction.abort(); return; }
+          if (options?.requireUnchanged && new Date(value.timestamp).getTime() !== file.timestamp.getTime()) {
+            failure = new Error("Save files changed while reading; list saves and retry");
+            transaction.abort();
+            return;
+          }
           result.push({ key: file.key, timestamp: new Date(value.timestamp).toISOString(), contents: encodeBytes(value.contents) });
         };
       }
@@ -199,6 +209,19 @@ export async function replaceTrialSaveAtomically(
     value: { timestamp: new Date(file.timestamp), mode: 0o100666,
       contents: Uint8Array.from(atob(file.contents), char => char.charCodeAt(0)) },
   }));
+
+  // Detect unavailable or malformed metadata before changing save files.
+  // The subsequent write can still fail, and is reported separately below.
+  const readMetadata = () => {
+    if (typeof window === "undefined" || !window.localStorage) throw new Error("Metadata storage unavailable");
+    const raw = window.localStorage.getItem(savePresentationMetadataStorageKey);
+    if (!raw) return {} as Record<string, unknown>;
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid save metadata");
+    // Preserve unrelated entries verbatim, including fields from newer clients.
+    return parsed as Record<string, unknown>;
+  };
+  readMetadata();
 
   const expected = new Map<string, number>();
   for (const save of expectedSaves) {
@@ -284,19 +307,14 @@ export async function replaceTrialSaveAtomically(
   } finally { db.close(); }
 
   try {
-    // Do not silently replace malformed or unreadable metadata with an empty object.
-    if (typeof window === "undefined" || !window.localStorage) throw new Error("Metadata storage unavailable");
-    const raw = window.localStorage.getItem(savePresentationMetadataStorageKey);
-    if (raw) {
-      const parsed: unknown = JSON.parse(raw);
-      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid save metadata");
-    }
-    const metadata = readSavePresentationMetadataByKey();
+    // Re-read after the database work so intervening unrelated metadata edits
+    // are retained; a failure here is explicitly marked as post-commit.
+    const metadata = readMetadata();
     metadata[getRuntimeSavePresentationMetadataKey(runtimeVersion, archive.category, archive.name)] = {
       characterName: archive.displayName, playMode: archive.playMode,
       initOptions: archive.initOptions, runtimeVersion, updatedAt: new Date().toISOString(),
     };
-    writeSavePresentationMetadataByKeyStrict(metadata);
+    window.localStorage.setItem(savePresentationMetadataStorageKey, JSON.stringify(metadata));
   } catch (error) {
     throw new TrialRestoreMetadataError(error);
   }

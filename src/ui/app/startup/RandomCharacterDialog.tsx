@@ -46,7 +46,7 @@ export interface RandomCharacterDialogProps {
   resetStartupInitOptionValues: () => void;
   runtimeVersion: NethackRuntimeVersion;
   startupInitOptionValues: StartupInitOptionValues;
-  handleStartNewGame: (config: CharacterCreationConfig) => Promise<void>;
+  handleStartNewGame: (config: CharacterCreationConfig) => Promise<boolean>;
   clientOptions: Nh3dClientOptions;
   startupInitOptionTokens: string[];
   setStartupFlowStep: React.Dispatch<React.SetStateAction<StartupFlowStep>>;

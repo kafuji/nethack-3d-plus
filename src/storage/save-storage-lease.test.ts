@@ -29,4 +29,20 @@ describe("save-storage lease", () => {
   it("fails closed when Web Locks is unavailable", async () => {
     await expect(acquireSaveStorageLease({} as Pick<LockManager, "request">)).rejects.toThrow(/does not support/);
   });
+  it("reports a lock request failure after acquisition when releasing", async () => {
+    let rejectRequest!: (error: Error) => void;
+    const locks = {
+      request: (_name: string, _options: LockOptions, callback: (lock: Lock | null) => Promise<void>) => {
+        void callback({ name: saveStorageLockName, mode: "exclusive" } as Lock);
+        return new Promise<void>((_resolve, reject) => { rejectRequest = reject; });
+      },
+    } as unknown as Pick<LockManager, "request">;
+    const lease = await acquireSaveStorageLease(locks);
+    rejectRequest(new Error("lock provider failed"));
+    await expect(lease.release()).rejects.toThrow("lock provider failed");
+  });
+  it("reports a lock request failure before acquisition", async () => {
+    const locks = { request: () => Promise.reject(new Error("lock request failed")) } as unknown as Pick<LockManager, "request">;
+    await expect(acquireSaveStorageLease(locks)).rejects.toThrow("lock request failed");
+  });
 });
