@@ -49,14 +49,59 @@ function withoutPrototypes<T>(value: T): T {
 }
 
 // Objects src/i18n names differently from JNetHack (短剣, 小剣, 長剣, 小手,
-// 魔除け), so both tiers show the same name.
+// 魔除け, 薬), for entries src/i18n has no name of its own for.
 const objectRenames: ReadonlyArray<readonly [ObjectCategory, RegExp, string, string]> = [
   ["weapon", /dagger$/, "短剣", "ダガー"],
   ["weapon", /short sword$/, "小剣", "ショートソード"],
   ["weapon", /^long sword$/, "長剣", "ロングソード"],
   ["armor", /./, "小手", "籠手"],
   ["amulet", /./, "魔除け", "護符"],
+  ["potion", /./, "の薬", "のポーション"],
 ];
+
+/** src/i18n's names, so a message this tier translates names things the way the curated messages do. */
+export interface CuratedNames {
+  readonly monster?: (english: string) => string | undefined;
+  /** Name for a JNetHack objects-table entry ("striking" in the wand table). */
+  readonly object?: (category: ObjectCategory, english: string) => string | undefined;
+  readonly feature?: (english: string) => string | undefined;
+}
+
+// Words JNetHack uses where src/i18n has settled on another term.
+const termRenames: ReadonlyArray<readonly [RegExp, string]> = [
+  [/怪物/g, "モンスター"],
+  [/瞬間移動/g, "テレポート"],
+  [/変身/g, "変化"],
+  [/鞄/g, "袋"],
+  [/魔導書/g, "魔法書"],
+];
+// Only in message templates: quest texts also use 薬 for medicine. 薬指 (ring
+// finger), 薬瓶 and 薬っぽい stay.
+const templateTermRenames: ReadonlyArray<readonly [RegExp, string]> = [
+  [/薬(?![指瓶っ師物])/g, "ポーション"],
+  [/小手/g, "手袋"],
+];
+
+function renameTerms(text: string, renames: ReadonlyArray<readonly [RegExp, string]>): string {
+  for (const [pattern, replacement] of renames) text = text.replace(pattern, replacement);
+  return text;
+}
+
+function useCuratedNames(data: GameTextData, curated: CuratedNames): void {
+  const replaceAll = (table: object | undefined, rename: (english: string, japanese: string) => string): void => {
+    const record = (table ?? {}) as Record<string, string>;
+    for (const [english, japanese] of Object.entries(record)) record[english] = rename(english, japanese);
+  };
+  replaceAll(data.monsters, (english, japanese) => curated.monster?.(english) ?? japanese);
+  for (const [category, table] of Object.entries(data.objects) as [ObjectCategory, object][]) {
+    replaceAll(table, (english, japanese) => curated.object?.(category, english) ?? japanese);
+  }
+  replaceAll(data.features, (english, japanese) => curated.feature?.(english) ?? renameTerms(japanese, termRenames));
+  replaceAll(data.enlightenment, (_english, japanese) => renameTerms(japanese, termRenames));
+  replaceAll(data.templates, (_english, japanese) => renameTerms(renameTerms(japanese, termRenames), templateTermRenames));
+  (data as { questTexts?: GameTextData["questTexts"] }).questTexts =
+    data.questTexts?.map(([english, japanese]) => [english, renameTerms(japanese, termRenames)] as const);
+}
 
 function renameObjects(data: GameTextData): void {
   for (const [category, pattern, from, to] of objectRenames) {
@@ -233,12 +278,12 @@ const statusWords: Readonly<Record<string, string>> = {
 const inventoryCategoryNames: Readonly<Record<string, string>> = {
   "Illegal objects": "妙な物体",
   Weapons: "武器",
-  Armor: "鎧",
+  Armor: "防具",
   Rings: "指輪",
   Amulets: "護符",
   Tools: "道具",
   Comestibles: "食料",
-  Potions: "薬",
+  Potions: "ポーション",
   Scrolls: "巻物",
   Spellbooks: "魔法書",
   Wands: "杖",
@@ -271,17 +316,10 @@ export class GameTextTranslator {
   private readonly questSynopses: CompiledQuestText[];
   private readonly enlightenment: Readonly<Record<string, string>>;
 
-  /**
-   * curatedMonsterName gives src/i18n's name for a monster, so a message this
-   * tier translates names it the way the curated messages do.
-   */
-  constructor(data: GameTextData, curatedMonsterName?: (english: string) => string | undefined) {
+  constructor(data: GameTextData, curated: CuratedNames = {}) {
     data = withoutPrototypes(data);
     renameObjects(data);
-    if (curatedMonsterName) {
-      const monsters = data.monsters as Record<string, string>;
-      for (const english of Object.keys(monsters)) monsters[english] = curatedMonsterName(english) ?? monsters[english]!;
-    }
+    useCuratedNames(data, curated);
     this.enlightenment = data.enlightenment ?? {};
     this.roleNames = data.roleNames ?? {};
     this.bodyParts = data.bodyParts ?? {};

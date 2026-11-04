@@ -20,6 +20,11 @@ const features: Readonly<Record<string, string>> = {
   "squeaky board": "きしむ床板", "web": "蜘蛛の巣", "hole": "穴", "vibrating square": "振動するマス",
 };
 
+/** src/i18n's own name for a map feature or trap ("teleportation trap"), if any. */
+export function translateCuratedFeature(name: string): string | undefined {
+  return Object.prototype.hasOwnProperty.call(features, name) ? features[name] : undefined;
+}
+
 /** Translate a visible ground feature or item without changing game state. */
 export function translateGroundObject(text: string, locale: SupportedLocale): string {
   if (locale !== "ja" || !text.trim()) return text;

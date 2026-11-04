@@ -2156,7 +2156,7 @@
       "spellbook of ",
       ""
     ],
-    "translation": "$1の魔導書"
+    "translation": "$1の魔法書"
   },
   {
     "parts": [
@@ -2170,7 +2170,7 @@
       "spellbooks of ",
       ""
     ],
-    "translation": "$1の魔導書"
+    "translation": "$1の魔法書"
   },
   {
     "parts": [
@@ -2776,7 +2776,7 @@
       " hath surrounded ",
       " with hordes of foul creatures.\""
     ],
-    "translation": "「用心せよ、$1は$2自身を邪悪な怪物の群れで囲んでいる。」"
+    "translation": "「用心せよ、$1は$2自身を邪悪なモンスターの群れで囲んでいる。」"
   },
   {
     "parts": [
@@ -4743,7 +4743,7 @@
       " in ",
       " form"
     ],
-    "translation": "$2の姿の$1に変身した"
+    "translation": "$2の姿の$1に変化した"
   },
   {
     "parts": [

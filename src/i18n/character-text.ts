@@ -105,8 +105,8 @@ const exactLines: Readonly<Record<string, string>> = {
   "You can breathe water.": "水中で呼吸できます。", "You can walk through walls.": "壁を通り抜けられます。",
   "You regenerate.": "体力が再生します。", "You have slower digestion.": "消化が遅くなっています。",
   "You take reduced poison gas damage.": "毒ガスから受けるダメージが減ります。",
-  "You are protected from shape changers.": "変身能力を持つ敵から守られています。",
-  "You cannot change from your current form.": "現在の姿から変身できません。",
+  "You are protected from shape changers.": "変化するモンスターから守られています。",
+  "You cannot change from your current form.": "現在の姿から変化できません。",
   "You are polymorphing periodically.": "定期的に姿が変わります。",
   "You have polymorph control.": "変化を制御できます。", "You can lay eggs.": "卵を産めます。",
   "You are harmed by silver.": "銀によって傷つきます。", "Your life will be saved.": "命を救われます。",
@@ -334,7 +334,7 @@ function translateFinalDisclosure(line: string, locale: SupportedLocale): string
   }
   m = /^You (are|were) (chained to a heavy iron ball|punished|transformed|walking on (water|lava))\.$/.exec(line);
   if (m) {
-    const state = m[2] === "punished" ? "罰を受けて" : m[2] === "transformed" ? "変身して" : m[3] ? `${m[3] === "lava" ? "溶岩" : "水"}の上を歩いて` : "重い鉄球につながれて";
+    const state = m[2] === "punished" ? "罰を受けて" : m[2] === "transformed" ? "変化して" : m[3] ? `${m[3] === "lava" ? "溶岩" : "水"}の上を歩いて` : "重い鉄球につながれて";
     return `${state}${ending(m[1] === "are")}。`;
   }
   m = /^You (have|had) (?:a wounded (left|right) (leg|foot)|wounded (legs|feet))\.$/.exec(line);

@@ -223,7 +223,7 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
         "Rolling boulder trap": "巨岩の罠",
         "Dart trap": "投げ矢の罠",
         "Arrow trap": "矢の罠",
-        "Teleport trap": "瞬間移動の罠",
+        "Teleport trap": "テレポートの罠",
         "Magic trap": "魔法の罠",
         "Anti-magic trap": "反魔法空間の罠",
         "Squeaky board": "きしむ板",

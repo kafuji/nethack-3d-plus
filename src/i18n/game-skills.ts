@@ -12,11 +12,12 @@ const skills: Readonly<Record<string, string>> = {
 };
 
 const spells: Readonly<Record<string, string>> = {
-  "force bolt": "魔法の矢", "magic missile": "魔法のミサイル", "fireball": "火球", "cone of cold": "冷気の円錐", "chain lightning": "連鎖雷撃", "sleep": "睡眠", "finger of death": "死の指", "drain life": "生命吸収",
-  "healing": "回復", "extra healing": "上級回復", "cure blindness": "盲目治療", "cure sickness": "病気治療", "restore ability": "能力回復", "stone to flesh": "石を肉に変える",
-  "light": "光", "detect monsters": "モンスター探知", "detect food": "食料探知", "detect treasure": "宝物探知", "detect unseen": "不可視のものを探知", "identify": "識別", "magic mapping": "魔法の地図", "clairvoyance": "透視",
+  "force bolt": "衝撃", "magic missile": "魔法の矢", "fireball": "火球", "cone of cold": "冷気の円錐", "chain lightning": "連鎖雷撃", "sleep": "睡眠", "finger of death": "死の指", "drain life": "生命吸収",
+  "healing": "回復", "extra healing": "上級回復", "cure blindness": "盲目治療", "cure sickness": "病気治療", "restore ability": "能力回復", "stone to flesh": "石の肉化",
+  "light": "光", "detect monsters": "モンスター探知", "detect food": "食料探知", "detect treasure": "宝物探知", "detect unseen": "不可視探知", "identify": "識別", "magic mapping": "魔法の地図", "clairvoyance": "透視",
   "confuse monster": "モンスター混乱", "slow monster": "モンスター減速", "cause fear": "恐怖", "charm monster": "モンスター魅了", "remove curse": "解呪", "create monster": "モンスター生成", "create familiar": "使い魔召喚", "turn undead": "アンデッド退散", "protection": "防御",
   "jumping": "跳躍", "haste self": "自己加速", "invisibility": "透明化", "levitation": "浮遊", "teleport away": "テレポート", "cancellation": "無効化", "dig": "掘削", "knock": "開錠", "wizard lock": "魔法の施錠", "polymorph": "変化",
+  "flame sphere": "炎の球", "freeze sphere": "氷の球",
 };
 
 function lookup(value: string, locale: SupportedLocale, table: Readonly<Record<string, string>>): string {

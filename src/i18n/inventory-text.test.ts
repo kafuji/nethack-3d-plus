@@ -20,7 +20,7 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("a wand of locking (0:7)", "ja"))
       .toBe("施錠の杖 (0:7)");
     expect(translateInventoryItem("a blessed spellbook of force bolt", "ja"))
-      .toBe("祝福された魔法の矢の魔法書");
+      .toBe("祝福された衝撃の魔法書");
   });
 
   it("does not identify an unknown item's randomized appearance", () => {

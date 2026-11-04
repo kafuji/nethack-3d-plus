@@ -72,9 +72,9 @@ const bodyParts: Readonly<Record<string, string>> = {
 
 /** Names of rays and breath attacks (zap.c flash_types). */
 export const rayNames: Readonly<Record<string, string>> = {
-  "magic missile": "魔法のミサイル", "bolt of fire": "炎の矢", "bolt of cold": "冷気の矢", "sleep ray": "睡眠光線", "death ray": "死の光線",
+  "magic missile": "魔法の矢", "bolt of fire": "炎の矢", "bolt of cold": "冷気の矢", "sleep ray": "睡眠光線", "death ray": "死の光線",
   "bolt of lightning": "稲妻の矢", fireball: "火球", "cone of cold": "冷気の円錐", "finger of death": "死の指",
-  "blast of missiles": "ミサイルの奔流", "blast of fire": "炎の息", "blast of frost": "冷気の息", "blast of sleep gas": "睡眠ガスの息",
+  "blast of missiles": "魔法の矢の息", "blast of fire": "炎の息", "blast of frost": "冷気の息", "blast of sleep gas": "睡眠ガスの息",
   "blast of disintegration": "分解の息", "blast of lightning": "稲妻の息", "blast of poison gas": "毒ガスの息", "blast of acid": "酸の息",
   "spray of water": "水しぶき",
 };
