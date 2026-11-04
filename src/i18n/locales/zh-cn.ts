@@ -611,6 +611,11 @@ export const zhCnOverrides = {
           label: "显示第一人称武器",
           description: "在第一人称模式中显示手持武器精灵。",
         },
+        playerHeldWeaponOverlayVisible: {
+          label: "在玩家身上显示所持武器",
+          description:
+            "在图块模式下（第一人称视角以外），于玩家精灵上绘制所持武器图块（双持时显示两把武器）。",
+        },
         showItemsUnderPlayerInOverheadTilesMode: {
           label: "在俯视瓦片模式中显示玩家脚下物品",
           description: "在俯视瓦片模式下使用运行时底层字形数据来显示玩家脚下的物品和地面特征。",
