@@ -202,7 +202,7 @@ const categoryNouns: ReadonlyArray<readonly [ObjectCategory, string, string]> = 
   ["scroll", "scroll", "巻物"],
   ["wand", "wand", "杖"],
   ["ring", "ring", "指輪"],
-  ["amulet", "amulet", "魔除け"],
+  ["amulet", "amulet", "護符"],
   ["spellbook", "spellbook", "魔法書"],
 ];
 

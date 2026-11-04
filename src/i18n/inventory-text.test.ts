@@ -39,7 +39,7 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("a hexagonal wand (0:7)", "ja"))
       .toBe("六角形のワンド (0:7)");
     expect(translateInventoryItem("a red spellbook", "ja")).toBe("赤い魔法書");
-    expect(translateInventoryItem("a circular amulet", "ja")).toBe("円形のお守り");
+    expect(translateInventoryItem("a circular amulet", "ja")).toBe("円形の護符");
     expect(translateInventoryItem("a runed dagger", "ja")).toBe("ルーンの刻まれたダガー");
     expect(translateInventoryItem("a blue gem", "ja")).toBe("青色の宝石");
     expect(translateInventoryItem("2 worthless pieces of blue glass", "ja"))
@@ -62,7 +62,7 @@ describe("inventory display translations", () => {
   });
 
   it("calls life saving 救命", () => {
-    expect(translateInventoryItem("an amulet of life saving (being worn)", "ja")).toBe("救命のお守り（着用中）");
+    expect(translateInventoryItem("an amulet of life saving (being worn)", "ja")).toBe("救命の護符（着用中）");
   });
 
   it("preserves names, status and price while translating recognized descriptions", () => {
@@ -107,10 +107,10 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("a clear potion", "ja")).toBe("透明なポーション");
     expect(translateInventoryItem("a bubbly potion", "ja")).toBe("泡立ったポーション");
     expect(translateInventoryItem("an uncursed amulet of flying (being worn)", "ja"))
-      .toBe("呪われていない飛行のお守り（着用中）");
-    expect(translateInventoryItem("an amulet of guarding", "ja")).toBe("守護のお守り");
-    expect(translateInventoryItem("a perforated amulet", "ja")).toBe("穴の開いたお守り");
-    expect(translateInventoryItem("a cubical amulet", "ja")).toBe("立方体のお守り");
+      .toBe("呪われていない飛行の護符（着用中）");
+    expect(translateInventoryItem("an amulet of guarding", "ja")).toBe("守護の護符");
+    expect(translateInventoryItem("a perforated amulet", "ja")).toBe("穴の開いた護符");
+    expect(translateInventoryItem("a cubical amulet", "ja")).toBe("立方体の護符");
     expect(translateInventoryItem("a +0 wooden shield (being worn)", "ja"))
       .toBe("+0 木製の盾（着用中）");
     expect(translateInventoryItem("a shield of shock resistance", "ja")).toBe("電撃耐性の盾");

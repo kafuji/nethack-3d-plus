@@ -180,7 +180,7 @@ const chronicleAchievements: Readonly<Record<string, string>> = {
   "performed the invocation": "儀式を執り行った", "acquired The Amulet of Yendor": "イェンダーの魔除けを手に入れた",
   "entered the Elemental Planes": "元素界に入った", "entered the Astral Plane": "アストラル界に入った", ascended: "昇天した",
   "acquired the Mines' End luckstone": "鉱山の底の幸運の石を手に入れた", "acquired the Sokoban bag of holding": "倉庫番の賞品の魔法の袋を手に入れた",
-  "acquired the Sokoban amulet of reflection": "倉庫番の賞品の反射のお守りを手に入れた", "killed Medusa": "メデューサを倒した",
+  "acquired the Sokoban amulet of reflection": "倉庫番の賞品の反射の護符を手に入れた", "killed Medusa": "メデューサを倒した",
   "entered the Gnomish Mines": "ノームの鉱山に入った", "reached Mine Town": "鉱山町に着いた", "entered a shop": "店に入った",
   "entered a temple": "寺院に入った", "consulted the Oracle": "神託を受けた", "read a Discworld novel": "ディスクワールドの小説を読んだ",
   "entered Sokoban": "倉庫番に入った", "entered the Bigroom": "大部屋に入った", "killed for the first time": "初めて生き物を殺した",
