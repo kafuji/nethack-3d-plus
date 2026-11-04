@@ -50,13 +50,13 @@ describe("character information presentation", () => {
       "  You can't safely pray.", "Miscellaneous:", "  Total elapsed playing time is 7 seconds."];
     expect(raw.map((line) => translateCharacterLine(line, "ja"))).toEqual([
       "状態：", "  空腹ではありません。", "  荷物による負担はありません。",
-      "  長剣を手に持っています。", "  長剣の技能：基本。",
+      "  ロングソードを手に持っています。", "  ロングソードの技能：基本。",
       "特性：", "  属性に強く忠実です。", "  装備による特殊攻撃への防護があります（MC：1）。", "  素早く動けます。",
       "  今は安全に祈ることができません。", "その他：", "  合計プレイ時間：7秒。",
     ]);
     expect(translateCharacterLine(raw.join("\n"), "ja")).toContain("\n  空腹ではありません。\n");
     expect(translateCharacterLine("  You are skilled in long sword and can enhance that.", "ja"))
-      .toBe("  長剣の技能：熟練（上達可能）。");
+      .toBe("  ロングソードの技能：熟練（上達可能）。");
     expect(translateCharacterLine("  You can't safely pray.  ", "en"))
       .toBe("  You can't safely pray.  ");
     expect(translateCharacterLine("  You were warded.", "ja")).toBe("  装備による特殊攻撃への防護がありました（MC：1）。");
@@ -90,7 +90,7 @@ describe("final disclosure lines assembled by insight.c", () => {
     ["You are dead.", "死亡しました。"],
     ["You are dead (2nd time!).", "死亡しました（2回目！）。"],
     ["You disabled loading and storing of bones levels.", "骨レベルの読み込みと保存を無効にしていました。"],
-    ["You had basic skill with long sword and could have enhanced that.", "長剣の技能：基本（上達できた）。"],
+    ["You had basic skill with long sword and could have enhanced that.", "ロングソードの技能：基本（上達できた）。"],
     ["You were unskilled in bow.", "弓の技能：未熟練。"],
     ["You had 126 experience points, 34 more were needed to attain level 5.", "経験値：126（レベル5まであと34）。"],
     ["You are riding your pony.", "あなたの子馬に乗っています。"],

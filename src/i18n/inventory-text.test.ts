@@ -4,7 +4,7 @@ import { translateInventoryCategory, translateInventoryItem } from "./inventory-
 describe("inventory display translations", () => {
   it("translates recognized items while preserving the visible count, enchantment and equipment status", () => {
     expect(translateInventoryItem("a blessed +1 long sword (weapon in hand)", "ja"))
-      .toBe("祝福された +1 長剣（装備中）");
+      .toBe("祝福された +1 ロングソード（装備中）");
     expect(translateInventoryItem("  29 +0 arrows (in quiver)  ", "ja"))
       .toBe("  +0 矢 ×29（矢筒にセット中）  ");
     expect(translateInventoryItem("an uncursed food ration", "ja"))
@@ -12,7 +12,7 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("2 potions of healing", "ja"))
       .toBe("回復のポーション ×2");
     expect(translateInventoryItem("a +0 orcish short sword (weapon in hand)", "ja"))
-      .toBe("+0 オークの短い剣（装備中）");
+      .toBe("+0 オークのショートソード（装備中）");
     expect(translateInventoryItem("a +2 bullwhip (weapon in right hand)", "ja"))
       .toBe("+2 むち（右手に装備中）");
     expect(translateInventoryItem("an empty uncursed sack", "ja"))
@@ -40,7 +40,7 @@ describe("inventory display translations", () => {
       .toBe("六角形のワンド (0:7)");
     expect(translateInventoryItem("a red spellbook", "ja")).toBe("赤い魔法書");
     expect(translateInventoryItem("a circular amulet", "ja")).toBe("円形のお守り");
-    expect(translateInventoryItem("a runed dagger", "ja")).toBe("ルーンの刻まれた短剣");
+    expect(translateInventoryItem("a runed dagger", "ja")).toBe("ルーンの刻まれたダガー");
     expect(translateInventoryItem("a blue gem", "ja")).toBe("青色の宝石");
     expect(translateInventoryItem("2 worthless pieces of blue glass", "ja"))
       .toBe("価値のない青色のガラス片 ×2");
@@ -57,12 +57,12 @@ describe("inventory display translations", () => {
   });
 
   it("preserves names, status and price while translating recognized descriptions", () => {
-    expect(translateInventoryItem("a long sword named Sting", "ja")).toBe("長剣（名前：Sting）");
+    expect(translateInventoryItem("a long sword named Sting", "ja")).toBe("ロングソード（名前：Sting）");
     expect(translateInventoryItem("a pink potion called potion of healing", "ja"))
       .toBe("桃色のポーション（呼び名：potion of healing）");
     expect(translateInventoryItem("a long sword (unpaid, 20 zorkmids)", "ja"))
-      .toBe("長剣（未払い、20 ゾークミド）");
-    expect(translateInventoryItem("a very rusty long sword", "ja")).toBe("ひどく錆びた長剣");
+      .toBe("ロングソード（未払い、20 ゾークミド）");
+    expect(translateInventoryItem("a very rusty long sword", "ja")).toBe("ひどく錆びたロングソード");
     expect(translateInventoryItem("a partly eaten goblin corpse", "ja"))
       .toBe("食べかけのゴブリンの死体");
     expect(translateInventoryItem("a goblin corpse", "ja")).toBe("ゴブリンの死体");
@@ -86,11 +86,11 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("a cursed vulgar polearm", "ja")).toBe("呪われたありふれた長柄武器");
     expect(translateInventoryItem("a forked polearm", "ja")).toBe("二股の長柄武器");
     expect(translateInventoryItem("a blessed locked chest", "ja")).toBe("祝福された施錠された宝箱");
-    expect(translateInventoryItem("an unblessed long sword", "ja")).toBe("祝福されていない長剣");
+    expect(translateInventoryItem("an unblessed long sword", "ja")).toBe("祝福されていないロングソード");
     expect(translateInventoryItem("the blessed +1 Excalibur (weapon in right hand)", "ja"))
       .toBe("祝福された +1 エクスカリバー（右手に装備中）");
     expect(translateInventoryItem("a long sword named Excalibur", "ja"))
-      .toBe("長剣（名前：Excalibur）");
+      .toBe("ロングソード（名前：Excalibur）");
     expect(translateInventoryItem("The Orb of Fate", "ja")).toBe("運命の宝珠");
     expect(translateInventoryItem("a silver bell", "ja")).toBe("銀の鈴");
     expect(translateInventoryItem("the Bell of Opening", "ja")).toBe("開門の鐘");
@@ -116,7 +116,7 @@ describe("inventory display translations", () => {
 
   it("preserves NetHack 5 equipment state and container contents", () => {
     expect(translateInventoryItem("a blessed +1 long sword (weapon in right hand)", "ja"))
-      .toBe("祝福された +1 長剣（右手に装備中）");
+      .toBe("祝福された +1 ロングソード（右手に装備中）");
     expect(translateInventoryItem("an uncursed leash (attached to Spot)", "ja"))
       .toBe("呪われていないリード（Spotにつながれている）");
     expect(translateInventoryItem("an uncursed bag containing 3 items", "ja"))
