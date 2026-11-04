@@ -61,6 +61,10 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("a wand of enlightenment (0:5)", "ja")).toBe("啓蒙のワンド (0:5)");
   });
 
+  it("calls life saving 救命", () => {
+    expect(translateInventoryItem("an amulet of life saving (being worn)", "ja")).toBe("救命のお守り（着用中）");
+  });
+
   it("preserves names, status and price while translating recognized descriptions", () => {
     expect(translateInventoryItem("a long sword named Sting", "ja")).toBe("ロングソード（名前：Sting）");
     expect(translateInventoryItem("a pink potion called potion of healing", "ja"))

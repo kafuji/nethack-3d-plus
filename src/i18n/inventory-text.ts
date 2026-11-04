@@ -69,7 +69,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "ring of protection": "防御の指輪", "ring of regeneration": "再生の指輪", "ring of teleportation": "テレポートの指輪", "ring of invisibility": "透明化の指輪",
   "ring of polymorph": "変身の指輪", "ring of polymorph control": "変身制御の指輪", "ring of protection from shape changers": "変身生物よけの指輪",
   "ring of levitation": "浮遊の指輪", "ring of free action": "自由行動の指輪", "ring of fire resistance": "火炎耐性の指輪", "ring of cold resistance": "冷気耐性の指輪", "ring of poison resistance": "毒耐性の指輪",
-  "amulet of reflection": "反射のお守り", "amulet of life saving": "生命保護のお守り", "amulet of ESP": "ESPのお守り",
+  "amulet of reflection": "反射のお守り", "amulet of life saving": "救命のお守り", "amulet of ESP": "ESPのお守り",
   "Amulet of Yendor": "イェンダーの魔除け",
   "Bell of Opening": "開門の鐘", "Candelabrum of Invocation": "招来の燭台", "Book of the Dead": "死者の書",
   "sack": "袋", "oilskin sack": "油布の袋", "bag of holding": "保持の袋", "bag of tricks": "手品の袋", "large box": "大きな箱", "chest": "宝箱",
