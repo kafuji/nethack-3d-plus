@@ -5,7 +5,14 @@
 // text is shown. src/plus/game-text/fallback.ts plugs this into the curated
 // translations in src/i18n as a second tier before unreviewed references.
 import { getCurrentLocale } from "../../i18n/core";
+import { translateMonsterName } from "../../i18n/game-monsters";
 import type { GameTextData, GameTextTranslator } from "./translator";
+
+/** The curated name for a JNetHack monster entry, if src/i18n has one. */
+function curatedMonsterName(english: string): string | undefined {
+  const named = translateMonsterName(`the ${english}`, "ja");
+  return named !== `the ${english}` ? named : undefined;
+}
 
 let translator: GameTextTranslator | null = null;
 let loading: Promise<void> | null = null;
@@ -24,7 +31,7 @@ export function ensureGameTextTranslatorLoaded(): void {
   loading = Promise.all([import("./translator"), import("./data/jnethack.generated.json")])
     .then(([module, data]) => {
       const json = data as unknown as { default?: GameTextData } & GameTextData;
-      translator = new module.GameTextTranslator(json.default ?? json);
+      translator = new module.GameTextTranslator(json.default ?? json, curatedMonsterName);
     })
     .catch((error: unknown) => {
       console.error("Failed to load game text translations:", error);

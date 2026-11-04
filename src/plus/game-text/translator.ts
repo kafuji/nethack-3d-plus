@@ -7,6 +7,8 @@
 import { GameNameTranslator, type GameTextNameData, type ObjectCategory } from "./object-names";
 import { coreGameTextRules, type CoreRuleContext } from "./core-rules";
 import { disclosureRules } from "./disclosure-rules";
+import { questSynopses } from "./quest-synopses";
+import { questTextFixes } from "./quest-text-fixes";
 
 export interface GameTextData extends GameTextNameData {
   /** Quest/legacy texts (English, Japanese) with %x substitution codes. */
@@ -117,34 +119,92 @@ interface CompiledQuestText {
   readonly needle: string;
   readonly codes: string[];
   readonly japanese: string;
+  readonly literalLength: number;
 }
 
-// quest.lua substitution codes: %d deity, %r rank, %G "god"/"goddess", ...
-// An optional capital suffix (%dC, %dI) selects a capitalized variant.
-const questCodePattern = /%([A-Za-z])(?:[A-Z](?![a-z]))?/g;
+const questPronounPatterns: Readonly<Record<string, string>> = {
+  h: "(he|she|it|they)", i: "(him|her|it|them)", j: "(his|her|its|their)",
+};
 
-function compileQuestTexts(texts: ReadonlyArray<readonly [string, string]>): CompiledQuestText[] {
+// quest.lua substitution codes: %d deity, %r rank, %G "god"/"goddess", ...
+// questpgr.c convert_line() always takes one modifier letter from "AaCPpSst"
+// after the code (%Ra "a Ryoshu", %ns "Ashikaga Takauji's"), and takes a
+// pronoun modifier (h, i, j and capitals) only after d, l, n or o.
+const questCodePattern = /%([A-Za-z])([A-Za-z]?)/g;
+
+function questModifier(code: string, letter: string): string {
+  if (letter && "AaCPpSst".includes(letter)) return letter;
+  if (letter && "hHiIjJ".includes(letter) && "dlno".includes(code.toLowerCase())) return letter;
+  return "";
+}
+
+/** Replace each quest code with fill(code, modifier), keeping unconsumed letters. */
+function replaceQuestCodes(text: string, fill: (code: string, modifier: string) => string): string {
+  return text.replace(questCodePattern, (_token, code: string, letter: string) => {
+    const modifier = questModifier(code, letter);
+    return fill(code, modifier) + (modifier ? "" : letter);
+  });
+}
+
+const questPronouns: Readonly<Record<string, string>> = {
+  he: "彼", she: "彼女", him: "彼", her: "彼女", his: "彼の", it: "それ", its: "その", they: "彼ら", them: "彼ら", their: "彼らの",
+};
+// %s/%S kin, %a/%A/%C/%N/%L alignments, and %x, which the Japanese texts
+// use as a verb stem ("%xた").
+const questWords: Readonly<Record<string, string>> = {
+  brother: "兄弟", sister: "姉妹", son: "息子", daughter: "娘",
+  lawful: "秩序", neutral: "中立", chaotic: "混沌", unaligned: "無属性",
+  see: "見", sense: "感じ",
+};
+// Quest values JNetHack's roleNames lacks: the quest artifacts (%o) and the
+// Ranger, whom it has no names for. Spelled as in src/i18n.
+const questNames: Readonly<Record<string, string>> = {
+  "Orb of Detection": "探知の宝珠", "Heart of Ahriman": "アーリマンの心臓", "Sceptre of Might": "力の王笏",
+  "Staff of Aesculapius": "アスクレピオスの杖", "Magic Mirror of Merlin": "マーリンの魔法の鏡", "Eyes of the Overworld": "異界の眼",
+  "Mitre of Holiness": "聖なる司教冠", "Longbow of Diana": "ディアナの長弓", "Master Key of Thievery": "盗賊の万能鍵",
+  "Tsurugi of Muramasa": "村正の剣", "Platinum Yendorian Express Card": "プラチナ・イェンダー・エクスプレスカード",
+  "Orb of Fate": "運命の宝珠", "Eye of the Aethiopica": "エチオピカの眼",
+  Ranger: "レンジャー", Mercury: "メルクリウス", Venus: "ウェヌス", Mars: "マルス",
+  Tenderfoot: "駆け出し", Lookout: "見張り", Trailblazer: "道開き", Reconnoiterer: "偵察者", Reconnoiteress: "偵察者",
+  Scout: "斥候", Arbalester: "弩兵", Archer: "射手", Sharpshooter: "狙撃手", Marksman: "名射手", Markswoman: "名射手",
+};
+for (const table of [questPronouns, questPronounPatterns, questWords, questNames]) Object.setPrototypeOf(table, null);
+
+function compileQuestTexts(texts: ReadonlyArray<readonly [string, string]>, minNeedle = 8): CompiledQuestText[] {
   const compiled: CompiledQuestText[] = [];
-  for (const [english, japanese] of texts) {
+  for (const [english, jnethack] of texts) {
     const normalized = normalizeSpaces(english);
+    const japanese = questTextFixes[normalized] ?? jnethack;
+    // A few JNetHack entries were never translated (the English of another
+    // version); matching them would only swap one English text for another.
+    const latin = japanese.replace(/%[A-Za-z]+/g, "").replace(/[^A-Za-z]/g, "").length;
+    if (latin * 2 > japanese.replace(/\s/g, "").length) continue;
     const codes: string[] = [];
     let pattern = "";
     let needle = "";
+    let literalLength = 0;
     let last = 0;
     for (const match of normalized.matchAll(questCodePattern)) {
+      const modifier = questModifier(match[1]!, match[2]!);
       const literal = normalized.slice(last, match.index);
-      pattern += escapeRegExp(literal) + "(.+?)";
+      // A pronoun is one word; matching it as such keeps "%o %lh" from
+      // splitting "the Orb of Detection he" at the wrong space.
+      pattern += escapeRegExp(literal) + (questPronounPatterns[modifier.toLowerCase()] ?? "(.+?)");
+      literalLength += literal.length;
       if (literal.trim().length > needle.length) needle = literal.trim().toLowerCase();
-      codes.push(match[1]!);
-      last = match.index! + match[0].length;
+      codes.push(match[1]! + modifier);
+      last = match.index! + 1 + match[1]!.length + modifier.length;
     }
     const tail = normalized.slice(last);
     pattern += escapeRegExp(tail);
+    literalLength += tail.length;
     if (tail.trim().length > needle.length) needle = tail.trim().toLowerCase();
-    if (needle.replace(/[^a-z]/g, "").length < 8) continue;
-    compiled.push({ regex: new RegExp(`^${pattern}$`, "i"), needle, codes, japanese });
+    if (needle.replace(/[^a-z]/g, "").length < minNeedle) continue;
+    compiled.push({ regex: new RegExp(`^${pattern}$`, "i"), needle, codes, japanese, literalLength });
   }
-  return compiled;
+  // "Once again, you stand before %i." also matches the text of "...before
+  // the entrance to %i."; try the template with the most fixed text first.
+  return compiled.sort((a, b) => b.literalLength - a.literalLength);
 }
 
 function fillJapanese(template: string, values: readonly string[]): string {
@@ -208,15 +268,26 @@ export class GameTextTranslator {
   private readonly roleNames: Readonly<Record<string, string>>;
   private readonly bodyParts: Readonly<Record<string, string>>;
   private readonly questTexts: CompiledQuestText[];
+  private readonly questSynopses: CompiledQuestText[];
   private readonly enlightenment: Readonly<Record<string, string>>;
 
-  constructor(data: GameTextData) {
+  /**
+   * curatedMonsterName gives src/i18n's name for a monster, so a message this
+   * tier translates names it the way the curated messages do.
+   */
+  constructor(data: GameTextData, curatedMonsterName?: (english: string) => string | undefined) {
     data = withoutPrototypes(data);
     renameObjects(data);
+    if (curatedMonsterName) {
+      const monsters = data.monsters as Record<string, string>;
+      for (const english of Object.keys(monsters)) monsters[english] = curatedMonsterName(english) ?? monsters[english]!;
+    }
     this.enlightenment = data.enlightenment ?? {};
     this.roleNames = data.roleNames ?? {};
     this.bodyParts = data.bodyParts ?? {};
     this.questTexts = compileQuestTexts(data.questTexts ?? []);
+    // Only ever seen in brackets, so short ones ("%nC dies.") are safe to match.
+    this.questSynopses = compileQuestTexts(questSynopses, 0);
     this.templates = compileTemplates(data.templates);
     this.names = new GameNameTranslator(data);
     this.context = {
@@ -239,6 +310,13 @@ export class GameTextTranslator {
 
   private translateUncached(source: string): string {
     const normalized = normalizeSpaces(source);
+    // questpgr.c puts each quest text window in the message history as
+    // "[synopsis]", or as "[the whole text]" when it has no synopsis.
+    const synopsis = /^\[(.+)\]$/.exec(normalized);
+    if (synopsis) {
+      const quest = this.translateQuestText(synopsis[1]!, this.questSynopses) ?? this.translateQuestText(synopsis[1]!);
+      if (quest !== null) return `[${quest.replace(/\s*\n\s*/g, "")}]`;
+    }
     const whole = this.translateSentence(normalized, 0);
     if (whole !== null) return whole;
     // Spoken lines (verbalize) arrive wrapped in quotes: translate the inside.
@@ -274,28 +352,47 @@ export class GameTextTranslator {
     return quest === null ? null : quest.split("\n");
   }
 
-  private translateQuestText(text: string): string | null {
+  private translateQuestText(text: string, texts: readonly CompiledQuestText[] = this.questTexts): string | null {
     const normalized = normalizeSpaces(text);
     if (normalized.length < 8) return null;
     const lower = normalized.toLowerCase();
-    for (const quest of this.questTexts) {
+    for (const quest of texts) {
       if (!lower.includes(quest.needle)) continue;
       const match = quest.regex.exec(normalized);
       if (!match) continue;
+      // Keyed by code plus modifier ("nh" is a pronoun, "n" a name); a
+      // Japanese code falls back to the bare code's value.
       const values = new Map<string, string>();
-      quest.codes.forEach((code, i) => {
-        if (!values.has(code)) values.set(code, this.translateQuestValue(code, match[i + 1]!));
+      quest.codes.forEach((token, i) => {
+        if (!values.has(token)) values.set(token, this.translateQuestValue(token, match[i + 1]!));
+        const code = token[0]!;
+        if (!values.has(code) && !/[hHiIjJ]/.test(token.slice(1))) values.set(code, values.get(token)!);
       });
-      return quest.japanese.replace(questCodePattern, (token, code: string) => values.get(code) ?? token);
+      return replaceQuestCodes(quest.japanese, (code, modifier) =>
+        values.get(code + modifier) ?? values.get(code) ?? `%${code}${modifier}`);
     }
     return null;
   }
 
-  private translateQuestValue(code: string, value: string): string {
+  private translateQuestValue(token: string, value: string): string {
     const trimmed = value.trim();
+    const code = token[0]!;
+    const modifier = token.slice(1);
     if (code === "G") return /goddess/i.test(trimmed) ? "女神" : "神";
-    const bare = trimmed.replace(/^(?:the|a|an) /i, "");
-    return this.roleNames[trimmed] ?? this.roleNames[bare] ?? this.translateNoun(trimmed);
+    if (/[hHiIjJ]/.test(modifier)) return questPronouns[trimmed.toLowerCase()] ?? trimmed;
+    const bare = trimmed.replace(/^(?:the|a|an) /i, "").replace(/'s?$/, "");
+    if ("sSaACNLx".includes(code)) {
+      const word = questWords[bare.toLowerCase().replace(/s$/, "")] ?? questWords[bare.toLowerCase()];
+      if (word) return word;
+    }
+    // %HC capitalizes "the College of Archeology" to "The College ...".
+    const lowered = trimmed.replace(/^The /, "the ").replace(/'s?$/, "");
+    // %Rp, %gP: makeplural() of a rank or guard ("Excavators", "Priestesses").
+    for (const name of /[pP]/.test(modifier) ? [bare, bare.replace(/es$/, ""), bare.replace(/s$/, "")] : [bare]) {
+      const found = this.roleNames[trimmed] ?? this.roleNames[lowered] ?? this.roleNames[name] ?? questNames[name];
+      if (found) return found;
+    }
+    return this.translateNoun(bare);
   }
 
   /** "You were fast." -> JNetHack insight.c wording (enlght_line). */
