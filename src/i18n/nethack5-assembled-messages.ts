@@ -4,6 +4,8 @@ import { deityNames } from "./intro-story";
 import { translateSkillName } from "./game-skills";
 import { rayNames, translateMessageArgument as arg } from "./nethack5-source-messages";
 import { translateGroundObject } from "./game-ground";
+// Only called at run time, after both modules have loaded.
+import { presentGameMessage } from "./message-presentation";
 
 // Messages that NetHack assembles from several pieces (verbs chosen at
 // runtime, vtense(), exclam(), shopkeeper honorifics, occupation text, ...).
@@ -425,6 +427,124 @@ export const assembledMessageTemplates: readonly Template[] = [
   [/^This (.+?) is (terrible|bland|delicious|grody|gnarly)([.!])$/, (food, taste, p) => `この${arg(food)}は${own(tastes, taste) ?? taste}${mark(p)}`],
 ];
 
+// insight.c mstatusline()/ustatusline(), from a stethoscope or probing:
+// "Status of the arch-lich (chaotic, medium):  Level 24  HP 42(92)  AC -6, fast."
+const statusAlignments: Readonly<Record<string, string>> = {
+  lawful: "秩序", neutral: "中立", chaotic: "混沌", unaligned: "無属性", unknown: "不明",
+};
+const statusSizes: Readonly<Record<string, string>> = {
+  tiny: "極小", small: "小型", medium: "中型", large: "大型", huge: "巨大", gigantic: "超巨大",
+};
+// piousness(): the hero's alignment record, before the alignment word.
+const statusPiety: Readonly<Record<string, string>> = {
+  piously: "敬虔な", devoutly: "篤信の", fervently: "熱心な", stridently: "強硬な", haltingly: "ためらいがちな",
+  nominally: "名ばかりの", insufficiently: "不十分な", strayed: "道を外れた", sinned: "罪を犯した", transgressed: "背信した",
+};
+const statusWords: Readonly<Record<string, string>> = {
+  tame: "手なずけられている", peaceful: "友好的", "single segment": "体節1つ", shapechanger: "変化している", eating: "食事中",
+  hiding: "隠れている", cancelled: "無力化されている", confused: "混乱している", blind: "目が見えない", stunned: "朦朧としている",
+  asleep: "眠っている", "can't move": "動けない", meditating: "瞑想している", scared: "怯えている", trapped: "罠にかかっている",
+  fast: "高速", slow: "低速", "very fast": "超高速", "[? speed]": "速度不明", invisible: "透明", "digesting you": "あなたを消化している",
+  "swallowing you": "あなたを飲み込んでいる", "engulfing you": "あなたを包み込んでいる", "holding you": "あなたを捕まえている",
+  "held by you": "あなたに捕まっている", "carrying you": "あなたを乗せている", "dying from food poisoning": "食中毒で死にかけている",
+  "dying from illness": "病気で死にかけている", "dying from food poisoning and illness": "食中毒と病気で死にかけている",
+  solidifying: "石化しつつある", "becoming slimy": "スライムになりつつある", "being strangled": "首を絞められている",
+  nauseated: "吐き気がする", "covered by sticky goop": "ねばねばに覆われている", "sticky goop": "ねばねばに覆われている",
+  concealed: "隠れている", disguised: "変装している",
+};
+for (const table of [statusAlignments, statusSizes, statusPiety, statusWords]) Object.setPrototypeOf(table, null);
+
+const statusInfo = (item: string): string | undefined => {
+  const word = own(statusWords, item);
+  if (word !== undefined) return word;
+  let m = /^(\d+)(?:st|nd|rd|th) of (\d+) segments$/.exec(item);
+  if (m) return `全${m[2]}節中${m[1]}節目`;
+  m = /^injured (.+)$/.exec(item);
+  if (m) return `${arg(m[1])}を負傷している`;
+  m = /^slippery (.+)$/.exec(item);
+  if (m) return `${arg(m[1])}が滑りやすい`;
+  m = /^(mimicking|masquerading as|hiding under) (.+)$/.exec(item);
+  if (m) return m[1] === "hiding under" ? `${arg(m[2])}の下に隠れている` : `${arg(m[2])}に化けている`;
+  m = /^chained to (.+)$/.exec(item);
+  if (m) return `${arg(m[1])}につながれている`;
+  m = /^in a cloud of (poison gas|vapor)$/.exec(item);
+  if (m) return m[1] === "vapor" ? "蒸気の雲の中にいる" : "毒ガスの雲の中にいる";
+  m = /^(being digested by|held by|holding) (.+)$/.exec(item);
+  if (m) {
+    const who = arg(m[2]);
+    return m[1] === "holding" ? `${who}を捕まえている` : m[1] === "held by" ? `${who}に捕まっている` : `${who}に消化されている`;
+  }
+  return undefined;
+};
+
+const statusLine = (who: string, kind: string, level: string, hp: string, hpmax: string, ac: string, rest: string): string => {
+  // A monster has "(alignment, size)"; the hero has "(piety alignment)".
+  const monster = /^(\w+), (\w+)$/.exec(kind);
+  let kindJa: string | undefined;
+  if (monster) {
+    const alignment = own(statusAlignments, monster[1]);
+    const size = own(statusSizes, monster[2]);
+    kindJa = alignment && size ? `${alignment}、${size}` : undefined;
+  } else {
+    const hero = /^(?:(\w+) )?(\w+)$/.exec(kind);
+    const piety = hero?.[1] ? own(statusPiety, hero[1]) : "";
+    const alignment = hero ? own(statusAlignments, hero[2]) : undefined;
+    kindJa = piety !== undefined && alignment ? `${piety}${alignment}` : undefined;
+  }
+  const items = rest ? rest.replace(/^, /, "").split(", ").map(statusInfo) : [];
+  if (kindJa === undefined || items.some((item) => item === undefined)) return "";
+  const name = monster ? arg(who) : who;
+  return `${name}の状態（${kindJa}）：レベル${level} HP ${hp}(${hpmax}) AC ${ac}${items.map((item) => `、${item}`).join("")}。`;
+};
+
+// apply.c use_magic_whistle(), once the whistle is known: "Two creatures
+// shift locations and your large dog appears." (clauses for pets that moved,
+// came into view, or went out of view).
+const whistleCounts: Readonly<Record<string, string>> = {
+  two: "2匹", three: "3匹", four: "4匹", several: "数匹", many: "多く",
+};
+Object.setPrototypeOf(whistleCounts, null);
+const whistleVerbs = {
+  shift: ["場所を移り", "場所を移った"], appear: ["現われ", "現われた"], disappear: ["消え", "消えた"],
+} as const;
+const whistleClause = (clause: string): readonly [string, keyof typeof whistleVerbs] | undefined => {
+  const many = /^(\w+) (creatures|other creatures|others) (shift locations|appear|disappear)$/i.exec(clause);
+  if (many) {
+    const count = own(whistleCounts, many[1].toLowerCase());
+    if (count === undefined) return undefined;
+    const who = many[2] === "creatures" ? `${count}の生き物` : `ほかの${count}`;
+    return [who, many[3].startsWith("shift") ? "shift" : (many[3] as "appear" | "disappear")];
+  }
+  const one = /^(.+?) (shifts location|appears|disappears)$/.exec(clause);
+  if (!one) return undefined;
+  const pet = arg(one[1]);
+  if (/[A-Za-z]/.test(pet)) return undefined;
+  return [pet, one[2] === "shifts location" ? "shift" : one[2] === "appears" ? "appear" : "disappear"];
+};
+const whistleMessage = (body: string): string => {
+  const clauses = body.split(/,? and |, /).map(whistleClause);
+  if (clauses.length === 0 || clauses.some((c) => c === undefined)) return "";
+  return clauses
+    .map((c, i) => `${c![0]}が${whistleVerbs[c![1]][i === clauses.length - 1 ? 1 : 0]}`)
+    .join("、") + "。";
+};
+
+// pray.c godvoice() and similar: "The voice of Anu thunders: "Thou hast
+// angered me."" -- the head and the quote are separate curated messages.
+const headAndQuote = (head: string, quote: string): string => {
+  const headJa = presentGameMessage(`${head}:`, "ja").text;
+  const quoteJa = presentGameMessage(`"${quote}"`, "ja").text;
+  if (/[A-Za-z]{2,}/.test(headJa) || /[A-Za-z]{2,}/.test(quoteJa)) return "";
+  return `${headJa}${quoteJa}`;
+};
+
+const statusAndWhistleTemplates: readonly Template[] = [
+  [/^(.+?): "(.+)"$/, headAndQuote],
+  [/^Status of (.+?) \(([^)]+)\):\s+Level (\d+)\s+HP (-?\d+)\((\d+)\)\s+AC (-?\d+)((?:, [^,]+)*)\.$/, statusLine],
+  [/^((?:Two|Three|Four|Several|Many) creatures shift locations|.+? (?:shifts location|appears|disappears))((?:,? and |, ).+)?\.$/,
+    (first, rest) => whistleMessage(first + (rest ?? ""))],
+];
+
 /** Translate an assembled message, or return undefined. */
 export function translateLookDescriptionMessage(message: string): string | undefined {
   if (!/^[a-z][a-z' -]*(?: (?:called|named) .+)?$/.test(message)) return undefined;
@@ -434,7 +554,7 @@ export function translateLookDescriptionMessage(message: string): string | undef
 export function translateAssembledMessage(message: string): string | undefined {
   const look = translateLookDescriptionMessage(message);
   if (look !== undefined) return look;
-  for (const [pattern, render] of assembledMessageTemplates) {
+  for (const [pattern, render] of [...assembledMessageTemplates, ...statusAndWhistleTemplates]) {
     const match = pattern.exec(message);
     // A capture spanning a sentence boundary means several messages were joined.
     if (!match || match.slice(1).some((part) => part !== undefined && /[.!?]\s/.test(part))) continue;

@@ -113,6 +113,16 @@ export function translateMessageArgument(value: string): string {
   if (body !== undefined) return body;
   const monster = translateMonsterName(text, "ja");
   if (monster !== text) return monster;
+  // makemon.c: "2 jackals suddenly appear next to you!"
+  const counted = /^(\d+) (.+)$/.exec(text);
+  if (counted) {
+    const plural = counted[2];
+    for (const singular of [plural.replace(/ies$/, "y"), plural.replace(/ves$/, "f"), plural.replace(/men$/, "man"),
+      plural.replace(/es$/, ""), plural.replace(/s$/, ""), plural]) {
+      const name = translateMonsterName(`a ${singular}`, "ja");
+      if (name !== `a ${singular}`) return `${name}${counted[1]}匹`;
+    }
+  }
   const yours = /^(?:your|Your) (.+)$/.exec(text);
   if (yours) {
     const part = own(bodyParts, yours[1]);
