@@ -173,7 +173,7 @@ export const ascensionMusicTrack: MusicTrack = {
   path: "music/ascension.mp3",
   loop: "crossfade",
   gainDb: -2.5,
-  title: "The Descent (Ascension)",
+  title: "Labyrinth of DOOM (Ascension)",
   ...originalWork,
   source: "scripts/music-sketch/pieces/title.mjs",
 };
@@ -185,7 +185,7 @@ export const titleMusicTrack: MusicTrack | null = {
   loop: "crossfade",
   crossfadeSec: 4,
   gainDb: -6,
-  title: "The Descent (Title Theme)",
+  title: "Labyrinth of DOOM",
   ...originalWork,
   source: "scripts/music-sketch/pieces/title.mjs",
 };

@@ -37,7 +37,7 @@ Each track is rendered alone and leveled to match its balance in the built-in vo
 1. Add or edit a piece in `pieces/<id>.mjs`. Each piece exports `piece` with `bpm`, `beatsPerBar`, `key`, `tracks` (notes in beats) and `suno` (style and notes). `sections` lists named bar ranges for the sheet. Each track's `program` is the General MIDI sound that FluidSynth plays (use a sustaining one for drones), and its `voice` picks the built-in voice (an optional `previewGainDb` balances it in the preview only): `strings`, `violin`, `horn`, `bass`, `harp`, `guitar`, `lead`, `timpani`, `metal` (struck metal, such as picks or an anvil) or `drums` (General MIDI drum notes on channel 9).
 2. Run the command above and listen to the preview WAV.
 3. In Suno, upload the preview WAV, choose Cover, turn on Instrumental, and paste the style prompt.
-4. Download the MP3 into `music-sketches/<id>/`. To use it in the game, copy it to `public/music/`, register it in `src/audio/music/music-library.ts` (with a `gainDb` trim that brings it to about -24 dB) and pick it for regions in `music-region.ts`, then credit it in `public/licenses/music-credits.txt`. Check that your Suno plan allows this use.
+4. Download the MP3 into `music-sketches/<id>/`. To use it in the game, copy it to `public/music/`, register it in `src/audio/music/music-library.ts` (with a `gainDb` trim that brings it to about -24 dB) and pick it for regions in `music-region.ts`, credit it in `public/licenses/music-credits.txt`, and run `node scripts/music-sketch/tag-music.mjs` to set its MP3 tags from the library (Node 22.18 or later). Check that your Suno plan allows this use.
 
 ## Shared leitmotifs
 
@@ -68,4 +68,4 @@ Pieces that use it:
 
 `helpers.mjs` holds small arrangement helpers (`above`, `tie`).
 
-Run the tests with `node --test scripts/music-sketch/midi.test.mjs`.
+Run the tests with `node --test scripts/music-sketch/midi.test.mjs scripts/music-sketch/id3.test.mjs`.
