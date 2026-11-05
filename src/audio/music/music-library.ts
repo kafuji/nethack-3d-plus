@@ -106,6 +106,16 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/gehennom.mjs",
     },
+    {
+      id: "astral",
+      path: "music/astral.mp3",
+      loop: "crossfade",
+      crossfadeSec: 4,
+      gainDb: -4.5,
+      title: "The Astral Plane",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/astral.mjs",
+    },
   ],
   combat: [
     {
@@ -128,6 +138,16 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/combat.mjs",
     },
+    {
+      id: "astral-combat",
+      path: "music/astral-combat.mp3",
+      loop: "crossfade",
+      crossfadeSec: 2,
+      gainDb: -3,
+      title: "Astral Combat",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/astral-combat.mjs",
+    },
   ],
   danger: [
     {
@@ -143,6 +163,21 @@ export const defaultMusicLibrary: MusicLibrary = {
   ],
 };
 
+/**
+ * Played once when the player ascends. A Suno Cover of the title theme (style:
+ * Symphony and Metal, fanfare, glorious, epic, dramatic, grand finale), not a
+ * sketch of its own. It ends with a fade, so it does not need to loop.
+ */
+export const ascensionMusicTrack: MusicTrack = {
+  id: "ascension",
+  path: "music/ascension.mp3",
+  loop: "crossfade",
+  gainDb: -2.5,
+  title: "Labyrinth of DOOM (Ascension)",
+  ...originalWork,
+  source: "scripts/music-sketch/pieces/title.mjs",
+};
+
 /** Title screen music (null = silent title screen), from pieces/title.mjs. */
 export const titleMusicTrack: MusicTrack | null = {
   id: "title-theme",
@@ -150,7 +185,7 @@ export const titleMusicTrack: MusicTrack | null = {
   loop: "crossfade",
   crossfadeSec: 4,
   gainDb: -6,
-  title: "The Descent (Title Theme)",
+  title: "Labyrinth of DOOM",
   ...originalWork,
   source: "scripts/music-sketch/pieces/title.mjs",
 };

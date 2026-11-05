@@ -53,6 +53,9 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   private effects: MusicStatusEffectChain | null = null;
   private statusEffects: MusicStatusEffect[] = [];
   private playbackRate = 1;
+  private onceRequest: MusicTrack | null = null;
+  private onceElement: HTMLAudioElement | null = null;
+  private onceOutput: GainNode | null = null;
 
   constructor(
     private readonly library: MusicLibrary,
@@ -106,6 +109,35 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
     for (const decks of this.decksByTrack.values()) {
       for (const deck of decks) setElementRate(deck.element, rate);
     }
+  }
+
+  playOnce(track: MusicTrack): void {
+    this.stopOnce();
+    this.onceRequest = track;
+    void (async () => {
+      const url = await this.loadTrackUrl(track);
+      const context = this.ensureContext();
+      if (!url || !context || !this.master || this.onceRequest !== track || this.disposed) return;
+      const element = new Audio();
+      element.src = url;
+      const output = context.createGain();
+      output.gain.value = Math.pow(10, (track.gainDb ?? 0) / 20);
+      context.createMediaElementSource(element).connect(output);
+      output.connect(this.master);
+      this.onceElement = element;
+      this.onceOutput = output;
+      void element.play().catch(() => undefined);
+    })();
+  }
+
+  stopOnce(): void {
+    this.onceRequest = null;
+    this.onceElement?.pause();
+    this.onceElement?.removeAttribute("src");
+    this.onceElement?.load();
+    this.onceOutput?.disconnect();
+    this.onceElement = null;
+    this.onceOutput = null;
   }
 
   playStinger(kind: MusicStinger): void {
@@ -166,6 +198,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
 
   dispose(): void {
     this.disposed = true;
+    this.stopOnce();
     this.fallback?.dispose();
     if (this.monitorTimer !== null) clearInterval(this.monitorTimer);
     this.monitorTimer = null;

@@ -101,7 +101,7 @@ function buildTracks() {
     { name: "Cello", voice: "violin", channel: 3, program: 42, notes: cello, previewGainDb: -1 },
     { name: "Horn", voice: "horn", channel: 4, program: 60, notes: horn },
     { name: "Strings", voice: "strings", channel: 5, program: 48, notes: tie(pad) },
-    { name: "Bass Drone", voice: "bass", channel: 6, program: 33, notes: tie(bass) },
+    { name: "Bass Drone", voice: "bass", channel: 6, program: 43, notes: tie(bass) },
     { name: "Stone", voice: "metal", channel: 7, program: 113, notes: stone, previewGainDb: 5 },
     { name: "Timpani", voice: "timpani", channel: 8, program: 47, notes: timp },
     { name: "Tide", voice: "drums", channel: 9, program: 0, notes: drums },
@@ -114,6 +114,14 @@ export const piece = {
   bpm: 150, // eighth notes; 50 dotted quarters a minute
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "Waves", bars: [1, 4] },
+    { name: "Theme", bars: [5, 12] },
+    { name: "Petrified", bars: [13, 14] },
+    { name: "Theme", bars: [15, 24] },
+    { name: "Petrified", bars: [25, 26] },
+    { name: "Waves", bars: [27, 32] },
+  ],
   key: "C# Phrygian, 6/8",
   tracks: buildTracks(),
   suno: {

@@ -68,7 +68,7 @@ function buildTracks() {
     { name: "Brass", voice: "horn", channel: 1, program: 61, notes: brass, previewGainDb: -3 },
     { name: "Cello", voice: "violin", channel: 2, program: 42, notes: cello },
     { name: "Strings", voice: "strings", channel: 3, program: 48, notes: tie(pad) },
-    { name: "Bass Drone", voice: "bass", channel: 4, program: 33, notes: tie(bass) },
+    { name: "Bass Drone", voice: "bass", channel: 4, program: 43, notes: tie(bass) },
     { name: "Timpani", voice: "timpani", channel: 5, program: 47, notes: timp },
     { name: "Heartbeat", voice: "drums", channel: 9, program: 0, notes: drums },
   ];
@@ -80,6 +80,12 @@ export const piece = {
   bpm: 112,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "Pulse", bars: [1, 4] },
+    { name: "Inverted call", bars: [5, 12] },
+    { name: "Half-speed call", bars: [13, 20] },
+    { name: "Inverted call", bars: [21, 24] },
+  ],
   key: "D (cluster on D-Eb-Ab)",
   tracks: buildTracks(),
   suno: {

@@ -1,6 +1,6 @@
 import { MusicDirector, type MusicMood } from "./music-director";
 import { FileMusicPlayer } from "./file-music-player";
-import { defaultMusicLibrary, type MusicLibrary } from "./music-library";
+import { ascensionMusicTrack, defaultMusicLibrary, type MusicLibrary } from "./music-library";
 import { ProceduralMusicPlayer, type BackgroundMusicPlayer } from "./procedural-music-player";
 import {
   regionTrackPreferences,
@@ -27,6 +27,13 @@ export type BackgroundMusicStats = {
 };
 
 const EVALUATE_INTERVAL_MS = 250;
+
+/**
+ * Only an ascension prints the choir line: offering the Amulet at your own
+ * altar. It comes before the game-over sequence, so the music starts with the
+ * moment itself. The final killer text "ascended" is the fallback.
+ */
+const ASCENSION_MESSAGE = /invisible choir sings|^\s*ascended\b/i;
 
 function resolvePublicAssetUrl(path: string): string {
   const normalizedPath = String(path || "").replace(/^\/+/, "");
@@ -60,6 +67,7 @@ export class BackgroundMusic {
   private stats: BackgroundMusicStats | null = null;
   private dangerCondition = false;
   private gameOver = false;
+  private ascended = false;
   private previewMood: MusicMood | null | undefined = undefined;
   private region: MusicRegion | null = null;
   private statusEffectsKey = "";
@@ -122,6 +130,18 @@ export class BackgroundMusic {
     }
   }
 
+  /** A game message or the final death text; an ascension starts its music. */
+  notifyGameMessage(text: string): void {
+    if (ASCENSION_MESSAGE.test(text)) this.notifyAscension();
+  }
+
+  notifyAscension(): void {
+    if (this.ascended) return;
+    this.ascended = true;
+    this.evaluate();
+    if (this.isEnabled()) this.player.playOnce?.(ascensionMusicTrack);
+  }
+
   /** The player attacked, missed, or killed something. */
   notifyCombatActivity(): void {
     this.director.notifyCombat(this.now(), this.stats?.time ?? 0);
@@ -132,7 +152,7 @@ export class BackgroundMusic {
     const ended = active && !this.gameOver;
     this.gameOver = active;
     this.evaluate();
-    if (ended && this.isEnabled()) this.player.playStinger?.("game-over");
+    if (ended && !this.ascended && this.isEnabled()) this.player.playStinger?.("game-over");
   }
 
   resumeFromUserGesture(): void {
@@ -145,6 +165,8 @@ export class BackgroundMusic {
     this.stats = null;
     this.dangerCondition = false;
     this.gameOver = false;
+    this.ascended = false;
+    this.player.stopOnce?.();
     this.region = null;
     this.setStatusEffects([]);
     this.player.setMood(null);
@@ -183,7 +205,7 @@ export class BackgroundMusic {
       this.stopTimer();
       return;
     }
-    if (!this.isEnabled() || this.gameOver || !this.stats || this.stats.maxHp <= 0) {
+    if (!this.isEnabled() || this.gameOver || this.ascended || !this.stats || this.stats.maxHp <= 0) {
       this.player.setMood(null);
       this.stopTimer();
       return;

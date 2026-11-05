@@ -30,6 +30,14 @@ class FakePlayer implements BackgroundMusicPlayer {
   playStinger(kind: MusicStinger): void {
     this.stingers.push(kind);
   }
+  played: string[] = [];
+  stoppedOnce = 0;
+  playOnce(track: { id: string }): void {
+    this.played.push(track.id);
+  }
+  stopOnce(): void {
+    this.stoppedOnce += 1;
+  }
 }
 
 const on = { soundEnabled: true, musicEnabled: true, musicVolume: 0.5 };
@@ -99,6 +107,33 @@ describe("BackgroundMusic", () => {
     music.notifyPlayerStats({ ...doom, time: 4, specialLevel: null }, false);
     expect(music.getCurrentRegion()).toBe("dungeon");
     expect(player.stingers).toEqual(["region-enter", "region-enter"]);
+    music.dispose();
+  });
+
+  it("plays the ascension track once in place of the moods and the game-over cue", () => {
+    const player = new FakePlayer();
+    const music = new BackgroundMusic(player, () => 0);
+    music.setSettings(on);
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1 }, false);
+    music.notifyGameMessage("You hear a door open.");
+    expect(player.played).toEqual([]);
+    music.notifyGameMessage("An invisible choir sings, and you are bathed in radiance...");
+    music.notifyGameMessage("ascended");
+    expect(player.played).toEqual(["ascension"]);
+    expect(player.moods[player.moods.length - 1]).toBeNull();
+    music.setGameOver(true);
+    expect(player.stingers).toEqual([]);
+    music.reset();
+    expect(player.stoppedOnce).toBe(1);
+    music.dispose();
+  });
+
+  it("does not start the ascension track while music is off", () => {
+    const player = new FakePlayer();
+    const music = new BackgroundMusic(player, () => 0);
+    music.setSettings({ ...on, musicEnabled: false });
+    music.notifyAscension();
+    expect(player.played).toEqual([]);
     music.dispose();
   });
 

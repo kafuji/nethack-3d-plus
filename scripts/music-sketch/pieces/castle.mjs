@@ -135,7 +135,7 @@ function buildTracks() {
     { name: "Violins", voice: "violin", channel: 2, program: 40, notes: violins },
     { name: "Guitar Ostinato", voice: "guitar", channel: 3, program: 25, notes: riff },
     { name: "Strings", voice: "strings", channel: 4, program: 48, notes: tie(pad) },
-    { name: "Bass", voice: "bass", channel: 5, program: 33, notes: tie(bass) },
+    { name: "Bass", voice: "bass", channel: 5, program: 43, notes: tie(bass) },
     { name: "Bells and Chains", voice: "metal", channel: 6, program: 14, notes: bells, previewGainDb: 8 },
     { name: "Timpani", voice: "timpani", channel: 7, program: 47, notes: timp },
     { name: "Drums", voice: "drums", channel: 9, program: 0, notes: drums },
@@ -148,6 +148,13 @@ export const piece = {
   bpm: 88,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "Gate", bars: [1, 4] },
+    { name: "March", bars: [5, 12] },
+    { name: "Chorale", bars: [13, 20] },
+    { name: "Garrison", bars: [21, 28] },
+    { name: "Gate", bars: [29, 32] },
+  ],
   key: "G# Phrygian",
   tracks: buildTracks(),
   suno: {
