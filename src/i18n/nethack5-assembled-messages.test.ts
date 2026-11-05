@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { translateGameMessage } from "./game-messages";
 import { translateGamePrompt } from "./game-prompts";
+import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { translateStatusBadgeLabel } from "./status-text";
 
 const ja = (message: string): string => translateGameMessage(message, "ja");
@@ -93,5 +94,17 @@ describe("assembled NetHack 5 messages", () => {
     expect(translateGamePrompt("What do you want to throw? [$b or ?*]", "ja")).toBe("何を投げますか？ [$b or ?*]");
     expect(translateStatusBadgeLabel("Hungry", "ja")).toBe("空腹");
     expect(translateStatusBadgeLabel("Hungry", "en")).toBe("Hungry");
+  });
+});
+
+describe("assembled messages with the JNetHack dictionary loaded", () => {
+  beforeAll(loadJapaneseDictionary, 40000);
+
+  it("keeps a curated template ahead of the dictionary", () => {
+    expect(ja("stash one item into the large box")).toBe("大きな箱に1つしまう");
+  });
+
+  it("takes a counted missile's name from the dictionary, which reads better in a sentence", () => {
+    expect(ja("The 2 arrows miss the newt.")).toBe("2本の矢はイモリに当たらなかった。");
   });
 });
