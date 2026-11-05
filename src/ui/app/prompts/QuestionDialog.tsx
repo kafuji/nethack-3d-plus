@@ -5,6 +5,7 @@ import { GamePromptText } from "./GamePromptText";
 import { GameMessageText } from "../messages/GameMessageText";
 import { translateReportLine } from "../../../i18n/report-text";
 import { translateInventoryCategory, translateMenuItemText } from "../../../i18n/inventory-text";
+import { WikiLinkedText } from "../../../plus/wiki-links/WikiLinkedText";
 import { translateGameMenuItem } from "../../../i18n/game-menu";
 import {
   Nh3dIcon,
@@ -303,7 +304,7 @@ export function QuestionDialog({
                           {item.accelerator})
                         </span>
                       </span>
-                      <span className="nh3d-pickup-text">{translateMenuItemText(item.text ?? "", locale)}</span>
+                      <span className="nh3d-pickup-text"><WikiLinkedText english={item.text ?? ""} display={translateMenuItemText(item.text ?? "", locale)} /></span>
                       {typeof selectedCount === "number" &&
                         Number.isFinite(selectedCount) &&
                         selectedCount > 0 ? (

@@ -25,7 +25,18 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
     },
   },
   plus: {
+    wikiLinks: {
+      loading: "NetHackWiki から概要を取得中...",
+      missing: "NetHackWiki に記事がありません。",
+      unavailable: "概要を取得できませんでした。",
+      openHint: "NetHackWiki より（CC BY-SA 3.0）。クリックで記事を開きます。",
+    },
     clientOptions: {
+      wikiLinks: {
+        label: "NetHackWiki リンク",
+        description:
+          "Ctrl（macOS では Cmd）を押している間、メッセージログとアイテム一覧のモンスター名・アイテム名に下線を表示します。ホバーすると nethackwiki.com から取得した概要を表示し、クリックすると記事を開きます。",
+      },
       desktopMessageLogBackgroundOpacity: {
         label: "デスクトップメッセージログの背景不透明度",
         description:

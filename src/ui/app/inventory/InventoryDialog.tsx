@@ -4,6 +4,7 @@ import {
 import type { NethackMenuItem, InventoryDialogState, Nethack3DEngineController, Nh3dInventoryFixedTileSizeMode } from "../../../game/ui-types";
 import { useI18n } from "../../../i18n";
 import { translateInventoryCategory, translateInventoryItem } from "../../../i18n/inventory-text";
+import { WikiLinkedText } from "../../../plus/wiki-links/WikiLinkedText";
 import AnimatedDialog from "../../modals/AnimatedDialog";
 import type * as React from "react";
 import type {
@@ -407,7 +408,7 @@ export function InventoryDialog({
                     </span>
                   </span>
                   <span className={item.className as string}>
-                    {item.text ? translateInventoryItem(item.text, locale) : t.dialogs.inventory.unknownItem}
+                    {item.text ? <WikiLinkedText english={item.text} display={translateInventoryItem(item.text, locale)} /> : t.dialogs.inventory.unknownItem}
                   </span>
                 </div>
               );

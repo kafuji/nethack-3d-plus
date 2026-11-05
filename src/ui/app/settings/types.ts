@@ -153,6 +153,7 @@ export type ClientOptionToggleKey =
   | "monsterShatter"
   | "monsterShatterBloodBorders"
   | "liveMessageLog"
+  | "wikiLinks"
   | "showPersistentMobileMessageLog"
   | "rumbleEnabled"
   | "manualMobileBottomSafeZoneEnabled"

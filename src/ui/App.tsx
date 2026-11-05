@@ -49,6 +49,7 @@ import { PositionDialog } from "./app/prompts/PositionDialog";
 import { ControllerSupportDialog } from "./app/controller/ControllerSupportDialog";
 import { GlobalConfirmationDialog } from "./app/layout/GlobalConfirmationDialog";
 import { LocalMcpControl } from "./app/diagnostics/LocalMcpControl";
+import { WikiLinkLayer } from "../plus/wiki-links/WikiLinkLayer";
 
 /** UI composition; feature hooks own state and behavior under ./app. */
 export default function App(): JSX.Element {
@@ -105,6 +106,7 @@ export default function App(): JSX.Element {
       <ControllerSupportDialog {...model.controllerSupportDialog} />
       <GlobalConfirmationDialog {...model.globalConfirmationDialog} />
       <LocalMcpControl {...model.localMcpControl} />
+      <WikiLinkLayer {...model.wikiLinkLayer} />
     </>
   );
 }

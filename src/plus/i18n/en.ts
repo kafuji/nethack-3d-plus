@@ -7,6 +7,17 @@ export const plusEn = {
       description:
         "Lower this to let more of the dungeon show through the boxed desktop message log.",
     },
+    wikiLinks: {
+      label: "NetHackWiki links",
+      description:
+        "Hold Ctrl (Cmd on macOS) to underline monster and item names in the message log and item lists. Hover to read the wiki summary, which is fetched from nethackwiki.com; click to open the article.",
+    },
+  },
+  wikiLinks: {
+    loading: "Loading summary from NetHackWiki...",
+    missing: "No NetHackWiki article.",
+    unavailable: "Could not load the summary.",
+    openHint: "From NetHackWiki (CC BY-SA 3.0). Click to open the article.",
   },
   messageLog: {
     resizeHandle:

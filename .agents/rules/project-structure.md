@@ -57,6 +57,7 @@ This is a living steering doc. Update it whenever architecture, file ownership, 
 - `src/runtime/displayFileCatalog.ts`: bundled help and display-file text catalog.
 - `src/runtime/types.ts`: runtime commands, envelopes, and shared bridge types.
 - `src/storage/client-options-storage.ts`: IndexedDB persistence plus localStorage migration for client options and startup preferences.
+- `src/plus/wiki-links/`: Ctrl-held NetHackWiki links and summaries for names in the message log, inventory and menus. See [localization](../../docs/game-message-localization.md#nethackwiki-links).
 - `src/update/github-version-checker.ts`: GitHub release/version checks used by the UI.
 - `src/update/types.ts`: update type definitions.
 - `public/assets/*`: shipped images, UI icons, and Vulture asset roots.

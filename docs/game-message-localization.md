@@ -79,6 +79,24 @@ unidentified item's effect. Do not modify item names in state, user input,
 command keys or raw runtime payloads. Unmatched text must continue to fall back
 to the original.
 
+## NetHackWiki links
+
+`src/plus/wiki-links/` links monster and item names to nethackwiki.com while
+Ctrl (Cmd on macOS) is held, in the message log, inventory and menus. Text is
+plain otherwise, and the name data loads on first use. Names are recognized in
+the English runtime text and then located in the translated text, so a word in
+a translation links only if the original message named it. A sentence whose
+translation hides the name stays plain.
+
+Only names that reveal nothing link: real item names from `itemNames`, monsters
+and visible classes. An unidentified `ruby potion` links to `Potion`, and a
+generic appearance such as `combat boots` does not link at all, because its wiki
+page can reveal the item. Add a new randomized appearance to
+`genericAppearances`, never to `itemNames`.
+
+Summaries are fetched per hover from the wiki's MediaWiki API, kept in memory for
+the session, and never bundled. Wiki text is CC BY-SA 3.0, which the card states.
+
 ## Encyclopedia (data.base)
 
 `src/i18n/data/encyclopedia-ja.txt` holds Japanese text for all 515 entries of
