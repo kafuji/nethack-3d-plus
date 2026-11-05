@@ -3,14 +3,13 @@
 // Pointer and click handling is delegated here: a link appears under a resting
 // pointer when the key is pressed, which per-element handlers would miss.
 import { useSyncExternalStore } from "react";
-import { cachedWikiSummary, wikiArticleUrl } from "./wiki-client";
+import { wikiArticleUrl } from "./wiki-url";
 import type { WikiNameIndex } from "./wiki-names";
 
 export const wikiLinkArticleAttribute = "data-nh3d-wiki-article";
 
 export interface WikiLinkHover {
   readonly article: string;
-  readonly displayText: string;
   readonly rect: { readonly left: number; readonly top: number; readonly bottom: number };
 }
 
@@ -71,7 +70,6 @@ function setHoverElement(element: Element | null): void {
     const rect = element.getBoundingClientRect();
     hover = {
       article: element.getAttribute(wikiLinkArticleAttribute) ?? "",
-      displayText: element.textContent ?? "",
       rect: { left: rect.left, top: rect.top, bottom: rect.bottom },
     };
   }
@@ -92,7 +90,6 @@ export function refreshWikiLinkHover(): void {
 }
 
 function openArticle(article: string): void {
-  if (cachedWikiSummary(article)?.status === "missing") return;
   window.open(wikiArticleUrl(article), "_blank", "noopener,noreferrer");
 }
 

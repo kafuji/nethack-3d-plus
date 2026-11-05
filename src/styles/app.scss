@@ -788,7 +788,7 @@ canvas {
 .nh3d-wiki-card {
   position: fixed;
   z-index: 100000;
-  padding: 8px 10px;
+  padding: 4px 8px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 6px;
   background: rgba(16, 18, 24, 0.97);
@@ -797,23 +797,6 @@ canvas {
   line-height: 1.45;
   pointer-events: none;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-}
-
-.nh3d-wiki-card-title {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 8px;
-  margin-bottom: 4px;
-}
-
-.nh3d-wiki-card-summary {
-  white-space: pre-line;
-}
-
-.nh3d-wiki-card-note {
-  margin-top: 4px;
-  font-size: 0.85em;
-  opacity: 0.7;
 }
 
 .nh3d-reference-message-label {

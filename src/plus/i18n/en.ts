@@ -10,14 +10,8 @@ export const plusEn = {
     wikiLinks: {
       label: "NetHackWiki links",
       description:
-        "Hold Ctrl (Cmd on macOS) to underline monster and item names in the message log and item lists. Hover to read the wiki summary, which is fetched from nethackwiki.com; click to open the article.",
+        "Hold Ctrl (Cmd on macOS) to underline monster and item names in the message log and item lists. Hover to see the original name; click to open its article on nethackwiki.com.",
     },
-  },
-  wikiLinks: {
-    loading: "Loading summary from NetHackWiki...",
-    missing: "No NetHackWiki article.",
-    unavailable: "Could not load the summary.",
-    openHint: "From NetHackWiki (CC BY-SA 3.0). Click to open the article.",
   },
   messageLog: {
     resizeHandle:
