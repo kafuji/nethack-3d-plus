@@ -601,8 +601,6 @@ export function translateLookDescriptionMessage(message: string): string | undef
 }
 
 export function translateAssembledMessage(message: string): string | undefined {
-  const look = translateLookDescriptionMessage(message);
-  if (look !== undefined) return look;
   for (const [pattern, render] of [...assembledMessageTemplates, ...statusAndWhistleTemplates]) {
     const match = pattern.exec(message);
     // A capture spanning a sentence boundary means several messages were joined.
@@ -610,5 +608,7 @@ export function translateAssembledMessage(message: string): string | undefined {
     const result = render(...match.slice(1));
     if (result) return result;
   }
-  return undefined;
+  // Last: a look description can reach the JNetHack item fallback, which would
+  // otherwise take any lowercase sentence it knows ahead of the templates above.
+  return translateLookDescriptionMessage(message);
 }
