@@ -198,7 +198,7 @@ export function counterFor(category: ObjectCategory | null, singularName: string
 }
 
 const categoryNouns: ReadonlyArray<readonly [ObjectCategory, string, string]> = [
-  ["potion", "potion", "薬"],
+  ["potion", "potion", "ポーション"],
   ["scroll", "scroll", "巻物"],
   ["wand", "wand", "杖"],
   ["ring", "ring", "指輪"],

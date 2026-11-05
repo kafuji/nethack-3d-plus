@@ -8,7 +8,7 @@ import {
   getMenuSelectionInput,
   isSelectableQuestionMenuItem
 } from "./question-choices";
-import { translateSkillName } from "../../../i18n/game-skills";
+import { translateSkillLegendLine, translateSkillName } from "../../../i18n/game-skills";
 import type { SupportedLocale } from "../../../i18n/core";
 
 /** Enhancement menu content rendering. */
@@ -56,7 +56,7 @@ export function renderEnhanceMenuContent(
               className="nh3d-enhance-legend-line"
               key={`enhance-legend-${index}`}
             >
-              {line}
+              {translateSkillLegendLine(line, locale)}
             </div>
           ))}
         </div>

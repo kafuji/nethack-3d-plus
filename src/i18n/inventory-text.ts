@@ -14,6 +14,8 @@ const categories: Readonly<Record<string, string>> = {
   "Gems": "宝石", "Boulders/Statues": "岩・彫像", "Iron balls": "鉄球", "Chains": "鎖",
   "Venoms": "毒液", "Items in a bag": "袋の中身", "Items in a box": "箱の中身",
   "Unpaid items": "未払いの品", "Unpaid items already used up": "使用済みの未払いの品",
+  // shk.c dopay itemized-billing menu headings.
+  "Used up item:": "使用済みの品：", "Used up items:": "使用済みの品：", "Unpaid item:": "未払いの品：", "Unpaid items:": "未払いの品：",
   "All types": "すべての種類", "All worn and wielded types": "身に着けている・手に持っているすべての種類",
   "Auto-select every relevant item": "該当する物をすべて自動選択", "Auto-select every item being worn or wielded": "身に着けている・手に持っている物をすべて自動選択",
   "(ignored unless some other choices are also picked)": "（ほかの選択肢も選んだときだけ有効）", "(if no other choices are picked, 'a' is implied)": "（ほかに何も選ばなければ 'a' とみなす）",
@@ -58,14 +60,14 @@ const itemNames: Readonly<Record<string, string>> = {
   "scroll of destroy armor": "防具破壊の巻物", "scroll of confuse monster": "モンスター混乱の巻物", "scroll of scare monster": "モンスター威嚇の巻物", "scroll of create monster": "モンスター生成の巻物",
   "scroll of taming": "手なずけの巻物", "scroll of genocide": "抹殺の巻物", "scroll of gold detection": "金貨探知の巻物", "scroll of food detection": "食料探知の巻物",
   "scroll of amnesia": "健忘の巻物", "scroll of fire": "炎の巻物", "scroll of earth": "大地の巻物", "scroll of punishment": "罰の巻物", "scroll of charging": "充填の巻物", "scroll of stinking cloud": "悪臭の雲の巻物",
-  "spellbook of force bolt": "魔法の矢の魔法書", "spellbook of magic missile": "魔法のミサイルの魔法書", "spellbook of sleep": "睡眠の魔法書", "spellbook of healing": "回復の魔法書",
+  "spellbook of force bolt": "衝撃の魔法書", "spellbook of magic missile": "魔法の矢の魔法書", "spellbook of sleep": "睡眠の魔法書", "spellbook of healing": "回復の魔法書",
   "spellbook of extra healing": "上級回復の魔法書", "spellbook of light": "光の魔法書", "spellbook of identify": "識別の魔法書", "spellbook of remove curse": "解呪の魔法書",
-  "spellbook of fireball": "火球の魔法書", "spellbook of cone of cold": "冷気の魔法書", "spellbook of dig": "掘削の魔法書", "spellbook of teleport away": "テレポートの魔法書",
+  "spellbook of fireball": "火球の魔法書", "spellbook of cone of cold": "冷気の円錐の魔法書", "spellbook of dig": "掘削の魔法書", "spellbook of teleport away": "テレポートの魔法書",
   "spellbook of magic mapping": "魔法の地図の魔法書", "spellbook of blank paper": "白紙の魔法書", "spellbook of detect monsters": "モンスター探知の魔法書", "spellbook of detect food": "食料探知の魔法書",
   "wand of light": "光の杖", "wand of digging": "掘削の杖", "wand of fire": "炎の杖", "wand of cold": "冷気の杖", "wand of lightning": "稲妻の杖",
-  "wand of striking": "打撃の杖", "wand of teleportation": "テレポートの杖", "wand of cancellation": "無効化の杖", "wand of wishing": "願いの杖",
+  "wand of striking": "衝撃の杖", "wand of teleportation": "テレポートの杖", "wand of cancellation": "無効化の杖", "wand of wishing": "願いの杖",
   "wand of locking": "施錠の杖", "wand of opening": "開錠の杖", "wand of probing": "探査の杖", "wand of sleep": "睡眠の杖", "wand of death": "死の杖",
-  "wand of magic missile": "魔法のミサイルの杖", "wand of polymorph": "変化の杖", "wand of create monster": "モンスター生成の杖", "wand of secret door detection": "隠し扉探知の杖",
+  "wand of magic missile": "魔法の矢の杖", "wand of polymorph": "変化の杖", "wand of create monster": "モンスター生成の杖", "wand of secret door detection": "隠し扉探知の杖",
   "ring of protection": "防御の指輪", "ring of regeneration": "再生の指輪", "ring of teleportation": "テレポートの指輪", "ring of invisibility": "透明化の指輪",
   "ring of polymorph": "変化の指輪", "ring of polymorph control": "変化制御の指輪", "ring of protection from shape changers": "変化生物よけの指輪",
   "ring of levitation": "浮遊の指輪", "ring of free action": "自由行動の指輪", "ring of fire resistance": "火炎耐性の指輪", "ring of cold resistance": "冷気耐性の指輪", "ring of poison resistance": "毒耐性の指輪",
@@ -109,7 +111,7 @@ const itemNames: Readonly<Record<string, string>> = {
   // Proper artifact names are translated only when the name itself is shown;
   // arbitrary user-supplied `named`/`called` labels are kept verbatim.
   "Excalibur": "エクスカリバー", "Stormbringer": "ストームブリンガー", "Mjollnir": "ミョルニル", "Cleaver": "クリーヴァー", "Grimtooth": "グリムトゥース", "Orcrist": "オルクリスト", "Sting": "つらぬき丸", "Magicbane": "マジックベイン", "Frost Brand": "フロストブランド", "Fire Brand": "ファイアブランド", "Dragonbane": "ドラゴンベイン", "Demonbane": "デーモンベイン", "Werebane": "ウェアベイン", "Grayswandir": "グレイスワンディール", "Giantslayer": "ジャイアントスレイヤー", "Ogresmasher": "オーガスマッシャー", "Trollsbane": "トロルズベイン", "Vorpal Blade": "ヴォーパルブレード", "Snickersnee": "スニッカースニー", "Sunsword": "サンソード",
-  "Orb of Detection": "探知の宝珠", "Heart of Ahriman": "アーリマンの心臓", "Sceptre of Might": "力の王笏", "Staff of Aesculapius": "アスクレピオスの杖", "Magic Mirror of Merlin": "マーリンの魔法の鏡", "Eyes of the Overworld": "異界の眼", "Mitre of Holiness": "聖なる司教冠", "Longbow of Diana": "ディアナの長弓", "Master Key of Thievery": "盗賊の万能鍵", "Tsurugi of Muramasa": "村正の剣", "Platinum Yendorian Express Card": "プラチナ・イェンダー・エクスプレスカード", "Orb of Fate": "運命の宝珠", "Eye of the Aethiopica": "エチオピカの眼",
+  "Palantir of Westernesse": "西方のパランティア", "Orb of Detection": "探知の宝珠", "Heart of Ahriman": "アーリマンの心臓", "Sceptre of Might": "力の王笏", "Staff of Aesculapius": "アスクレピオスの杖", "Magic Mirror of Merlin": "マーリンの魔法の鏡", "Eyes of the Overworld": "異界の眼", "Mitre of Holiness": "聖なる司教冠", "Longbow of Diana": "ディアナの長弓", "Master Key of Thievery": "盗賊の万能鍵", "Tsurugi of Muramasa": "村正の剣", "Platinum Yendorian Express Card": "プラチナ・イェンダー・エクスプレスカード", "Orb of Fate": "運命の宝珠", "Eye of the Aethiopica": "エチオピカの眼",
   "glob of gray ooze": "灰色ウーズの塊", "glob of brown pudding": "茶色プディングの塊", "glob of green slime": "緑色スライムの塊", "glob of black pudding": "黒色プディングの塊",
   "gray dragon scales": "灰色のドラゴンの鱗", "gold dragon scales": "金色のドラゴンの鱗", "silver dragon scales": "銀色のドラゴンの鱗", "red dragon scales": "赤いドラゴンの鱗", "white dragon scales": "白いドラゴンの鱗", "orange dragon scales": "オレンジ色のドラゴンの鱗", "black dragon scales": "黒いドラゴンの鱗", "blue dragon scales": "青いドラゴンの鱗", "green dragon scales": "緑色のドラゴンの鱗", "yellow dragon scales": "黄色いドラゴンの鱗",
   "gray dragon scale mail": "灰色のドラゴンの鱗鎧", "gold dragon scale mail": "金色のドラゴンの鱗鎧", "silver dragon scale mail": "銀色のドラゴンの鱗鎧", "red dragon scale mail": "赤いドラゴンの鱗鎧", "white dragon scale mail": "白いドラゴンの鱗鎧", "orange dragon scale mail": "オレンジ色のドラゴンの鱗鎧", "black dragon scale mail": "黒いドラゴンの鱗鎧", "blue dragon scale mail": "青いドラゴンの鱗鎧", "green dragon scale mail": "緑色のドラゴンの鱗鎧", "yellow dragon scale mail": "黄色いドラゴンの鱗鎧",
@@ -189,6 +191,12 @@ export function translateMenuItemText(text: string, locale: SupportedLocale): st
     const picked = justPickedUp[1] === undefined ? "" : translateInventoryItem(justPickedUp[1], locale);
     if (picked !== justPickedUp[1]) return `${leading}直前に拾った物${picked ? `：${picked}` : ""}${trailing}`;
   }
+  // shk.c itemized billing: "%*ld Zm, %s" with paydoname()'s item phrase.
+  const bill = /^(\s*)(\d+) Zm, (.+)$/.exec(text.trimEnd());
+  if (bill) {
+    const item = translatePaidItem(bill[3], locale);
+    if (item !== undefined) return `${bill[1]}${bill[2]} ゾークミド：${item}${trailing}`;
+  }
   // translateGameMessage calls back into the item translator for item phrases.
   translatingMenuRow = true;
   try {
@@ -197,6 +205,16 @@ export function translateMenuItemText(text: string, locale: SupportedLocale): st
   } finally {
     translatingMenuRow = false;
   }
+}
+
+/** paydoname(): an item name, with the container forms it adds. */
+function translatePaidItem(text: string, locale: SupportedLocale): string | undefined {
+  const container = /^(the contents of )?(your |an unpaid )?(.+?)( and its contents)?$/.exec(text);
+  const [, contentsOf, owner, rest, andContents] = container!;
+  const name = owner ? translateInventoryItem(`a ${rest}`, locale) : translateInventoryItem(rest, locale);
+  if (name === (owner ? `a ${rest}` : rest)) return undefined;
+  const owned = owner === "your " ? `あなたの${name}` : owner ? `未払いの${name}` : name;
+  return contentsOf ? `${owned}の中身` : andContents ? `${owned}とその中身` : owned;
 }
 
 /** Translate only fully recognized item descriptions; otherwise retain the original. */
@@ -209,6 +227,12 @@ export function translateInventoryItem(text: string, locale: SupportedLocale): s
   const jnethack = jnethackItem(text.trim());
   if (jnethack !== undefined) return `${leading}${jnethack}${trailing}`;
   return text;
+}
+
+/** src/i18n's own name for an item, without the JNetHack fallback. */
+export function translateCuratedItemName(text: string): string | undefined {
+  const translated = translateCuratedInventoryItem(text, "ja");
+  return translated !== text ? translated : undefined;
 }
 
 function translateCuratedInventoryItem(text: string, locale: SupportedLocale): string {
@@ -254,7 +278,12 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   // Preserve user-supplied item names and calls exactly. Only display a
   // translation when the remaining item is independently recognized.
   const labelMatch = /^(.+?) (named|called) (.+)$/.exec(item);
-  const label = labelMatch ? `（${labelMatch[2] === "named" ? "名前" : "呼び名"}：${labelMatch[3]}）` : "";
+  // xname(): an artifact not yet identified is "tsurugi named the Tsurugi of Muramasa".
+  // Artifact names are capitalized; "named potion of healing" is the player's label.
+  const artifactName = labelMatch?.[2] === "named" && /^(?:[Tt]he )?[A-Z]/.test(labelMatch[3])
+    ? own(itemNames, labelMatch[3].replace(/^[Tt]he /, ""))
+    : undefined;
+  const label = labelMatch ? `（${labelMatch[2] === "named" ? "名前" : "呼び名"}：${artifactName ?? labelMatch[3]}）` : "";
   if (labelMatch) item = labelMatch[1];
   const quantity = /^(a|an|the|The|\d+) (.+)$/.exec(item);
   if (quantity) item = quantity[2];

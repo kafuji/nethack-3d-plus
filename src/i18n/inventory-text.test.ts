@@ -20,7 +20,7 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("a wand of locking (0:7)", "ja"))
       .toBe("施錠の杖 (0:7)");
     expect(translateInventoryItem("a blessed spellbook of force bolt", "ja"))
-      .toBe("祝福された魔法の矢の魔法書");
+      .toBe("祝福された衝撃の魔法書");
   });
 
   it("does not identify an unknown item's randomized appearance", () => {
@@ -75,7 +75,7 @@ describe("inventory display translations", () => {
   });
 
   it("preserves names, status and price while translating recognized descriptions", () => {
-    expect(translateInventoryItem("a long sword named Sting", "ja")).toBe("ロングソード（名前：Sting）");
+    expect(translateInventoryItem("a long sword named Sting", "ja")).toBe("ロングソード（名前：つらぬき丸）");
     expect(translateInventoryItem("a pink potion called potion of healing", "ja"))
       .toBe("桃色のポーション（呼び名：potion of healing）");
     expect(translateInventoryItem("a long sword (unpaid, 20 zorkmids)", "ja"))
@@ -108,7 +108,7 @@ describe("inventory display translations", () => {
     expect(translateInventoryItem("the blessed +1 Excalibur (weapon in right hand)", "ja"))
       .toBe("祝福された +1 エクスカリバー（右手に装備中）");
     expect(translateInventoryItem("a long sword named Excalibur", "ja"))
-      .toBe("ロングソード（名前：Excalibur）");
+      .toBe("ロングソード（名前：エクスカリバー）");
     expect(translateInventoryItem("The Orb of Fate", "ja")).toBe("運命の宝珠");
     expect(translateInventoryItem("a silver bell", "ja")).toBe("銀の鈴");
     expect(translateInventoryItem("the Bell of Opening", "ja")).toBe("開門の鐘");

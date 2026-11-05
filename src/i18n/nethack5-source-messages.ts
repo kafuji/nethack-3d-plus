@@ -72,9 +72,9 @@ const bodyParts: Readonly<Record<string, string>> = {
 
 /** Names of rays and breath attacks (zap.c flash_types). */
 export const rayNames: Readonly<Record<string, string>> = {
-  "magic missile": "魔法のミサイル", "bolt of fire": "炎の矢", "bolt of cold": "冷気の矢", "sleep ray": "睡眠光線", "death ray": "死の光線",
+  "magic missile": "魔法の矢", "bolt of fire": "炎の矢", "bolt of cold": "冷気の矢", "sleep ray": "睡眠光線", "death ray": "死の光線",
   "bolt of lightning": "稲妻の矢", fireball: "火球", "cone of cold": "冷気の円錐", "finger of death": "死の指",
-  "blast of missiles": "ミサイルの奔流", "blast of fire": "炎の息", "blast of frost": "冷気の息", "blast of sleep gas": "睡眠ガスの息",
+  "blast of missiles": "魔法の矢の息", "blast of fire": "炎の息", "blast of frost": "冷気の息", "blast of sleep gas": "睡眠ガスの息",
   "blast of disintegration": "分解の息", "blast of lightning": "稲妻の息", "blast of poison gas": "毒ガスの息", "blast of acid": "酸の息",
   "spray of water": "水しぶき",
 };
@@ -113,6 +113,11 @@ export function translateMessageArgument(value: string): string {
   if (body !== undefined) return body;
   const monster = translateMonsterName(text, "ja");
   if (monster !== text) return monster;
+  // A unique monster's bare name ("Death"), before the wand of the same name.
+  if (/^[A-Z]/.test(text)) {
+    const unique = translateMonsterName(`the ${text}`, "ja");
+    if (unique !== `the ${text}`) return unique;
+  }
   // makemon.c: "2 jackals suddenly appear next to you!"
   const counted = /^(\d+) (.+)$/.exec(text);
   if (counted) {
@@ -161,6 +166,13 @@ export function translateMessageArgument(value: string): string {
     const part = own(bodyParts, possessive[2]);
     if (part !== undefined && owner !== possessive[1]) return `${owner}の${part}`;
   }
+  // "the jackal's long sword": a known owner and object.
+  const ownedItem = /^(.+?)'s? (.+)$/.exec(text);
+  if (ownedItem) {
+    const owner = translateMessageArgument(ownedItem[1]);
+    const item = translateInventoryItem(ownedItem[2], "ja");
+    if (owner !== ownedItem[1] && item !== ownedItem[2]) return `${owner}の${item}`;
+  }
   // s_suffix() owner on its own ("The jackal's" before a separate object).
   const owner = /^(.+?)'s?$/.exec(text);
   if (owner) {
@@ -189,15 +201,17 @@ export function translateNethack5SourceMessage(message: string): string | undefi
     const match = pattern.exec(message);
     if (!match) continue;
     let mixed = false;
-    const rendered = translation.replace(/\{(\d+)\}(?=(輝|光|オーラ)?)/g, (_, index: string, glow?: string) => {
+    const rendered = translation.replace(/\{(\d+)\}(?=(輝|光|オーラ)?)/g, (token: string, index: string, glow: string | undefined, offset: number) => {
       const value = match[Number(index)] ?? "";
       // hcolor() before a glow verb or aura: "glows blue" -> "青色に輝いた".
       const color = glow === undefined ? undefined
         : glow === "オーラ" ? colorAdjective(value.replace(/^an? /, "")) : colorAdverb(value);
       if (color !== undefined) return color;
       const translated = translateMessageArgument(value);
-      if (isUntranslatedPhrase(value, translated)) mixed = true;
-      return translated;
+      // Splitting "The dagger glows" after its article is not a real match.
+      if (isUntranslatedPhrase(value, translated) || /^(?:the|an?|your)$/i.test(value.trim())) mixed = true;
+      // Some owners ("your candle's") are already rendered with の.
+      return translation[offset + token.length] === "の" ? translated.replace(/の$/, "") : translated;
     });
     if (mixed) continue;
     result = rendered;

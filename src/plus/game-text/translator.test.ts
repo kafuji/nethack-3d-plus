@@ -22,8 +22,8 @@ describe("GameTextTranslator", () => {
   it.each([
     ["a blessed +1 long sword (weapon in hand)", "祝福された+1 ロングソード(手に持っている)"],
     ["2 uncursed daggers", "2本の呪われていないダガー"],
-    ["an uncursed potion of healing", "呪われていない回復の薬"],
-    ["a ruby potion", "ルビー色の薬"],
+    ["an uncursed potion of healing", "呪われていない回復のポーション"],
+    ["a ruby potion", "ルビー色のポーション"],
     ["a circular amulet", "丸い護符"],
     ["the Amulet of Yendor", "イェンダーの魔除け"],
     ["the jackal corpse", "ジャッカルの死体"],
