@@ -84,7 +84,7 @@ function buildTracks() {
     { name: "Horn", voice: "horn", channel: 1, program: 60, notes: horn, previewGainDb: 1 },
     { name: "Cello", voice: "violin", channel: 2, program: 42, notes: cello },
     { name: "Strings", voice: "strings", channel: 3, program: 48, notes: tie(pad) },
-    { name: "Bass Drone", voice: "bass", channel: 4, program: 33, notes: tie(bass) },
+    { name: "Bass Drone", voice: "bass", channel: 4, program: 43, notes: tie(bass) },
     { name: "Stars", voice: "harp", channel: 5, program: 46, notes: stars, previewGainDb: 14 },
     { name: "Bell", voice: "metal", channel: 6, program: 14, notes: bells, previewGainDb: 6 },
     { name: "Timpani", voice: "timpani", channel: 7, program: 47, notes: timp },
@@ -98,6 +98,12 @@ export const piece = {
   bpm: 66,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "Fifths", bars: [1, 2] },
+    { name: "Canon", bars: [3, 9] },
+    { name: "Resolution", bars: [10, 11] },
+    { name: "Tolls", bars: [12, 12] },
+  ],
   key: "D Phrygian, resolving to D major, 9/4",
   tracks: buildTracks(),
   suno: {

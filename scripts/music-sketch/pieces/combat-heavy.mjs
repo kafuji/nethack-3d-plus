@@ -113,6 +113,11 @@ export const piece = {
   bpm: 100,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "A", bars: [1, 8] },
+    { name: "B", bars: [9, 16] },
+    { name: "C", bars: [17, 24] },
+  ],
   key: "D Phrygian",
   tracks: buildTracks(),
   suno: {

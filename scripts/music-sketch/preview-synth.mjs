@@ -121,6 +121,9 @@ const voices = {
   metal: { render: metal({ gain: 0.15 }), pan: 0.35 },
 };
 
+/** Stereo position of a preview voice, -1 (left) to 1 (right). */
+export const voicePan = (voice) => voices[voice]?.pan ?? 0;
+
 export function renderPreview(piece, { sampleRate = 44100, tailSec = 2, normalize: autoGain = true } = {}) {
   const secondsPerBeat = 60 / piece.bpm;
   const end = Math.max(...piece.tracks.flatMap((track) => track.notes.map((n) => n.start + n.dur)));

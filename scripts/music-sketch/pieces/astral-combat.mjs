@@ -154,6 +154,12 @@ export const piece = {
   bpm: 144,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "A", bars: [1, 16] },
+    { name: "B canon", bars: [17, 32] },
+    { name: "C climax", bars: [33, 44] },
+    { name: "D turn", bars: [45, 48] },
+  ],
   key: "D Phrygian, resolving to D major, 3/4",
   tracks: buildTracks(),
   suno: {

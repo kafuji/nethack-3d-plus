@@ -88,7 +88,7 @@ function buildTracks() {
     { name: "Low Horn", voice: "horn", channel: 1, program: 58, notes: horn, previewGainDb: -4 },
     { name: "Cello", voice: "violin", channel: 2, program: 42, notes: cello },
     { name: "Strings", voice: "strings", channel: 3, program: 48, notes: tie(pad) },
-    { name: "Bass Drone", voice: "bass", channel: 4, program: 33, notes: tie(bass) },
+    { name: "Bass Drone", voice: "bass", channel: 4, program: 43, notes: tie(bass) },
     { name: "Timpani", voice: "timpani", channel: 5, program: 47, notes: timp },
     { name: "Drums and Embers", voice: "drums", channel: 9, program: 0, notes: drums },
   ];
@@ -100,6 +100,11 @@ export const piece = {
   bpm: 60,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "Embers", bars: [1, 2] },
+    { name: "Ritual", bars: [3, 14] },
+    { name: "Embers", bars: [15, 16] },
+  ],
   key: "Eb Phrygian, 7/4",
   tracks: buildTracks(),
   suno: {

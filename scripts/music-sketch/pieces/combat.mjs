@@ -147,6 +147,12 @@ export const piece = {
   bpm: 132,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "A", bars: [1, 8] },
+    { name: "B", bars: [9, 16] },
+    { name: "C half-time", bars: [17, 24] },
+    { name: "D", bars: [25, 32] },
+  ],
   key: "D Phrygian",
   tracks: buildTracks(),
   suno: {

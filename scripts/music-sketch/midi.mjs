@@ -37,10 +37,12 @@ function trackChunk(events) {
 
 /**
  * piece: { name, bpm, beatsPerBar, tracks: [{ name, channel, program, notes: [{ start, dur, pitch, vel }] }] }
- * Times are in beats (quarter notes).
+ * Times are in beats (quarter notes). tailBeats keeps the file running after the
+ * last note, so a renderer does not cut off the ring.
  */
-export function writeMidi(piece, ppq = 480) {
+export function writeMidi(piece, ppq = 480, { tailBeats = 0 } = {}) {
   const microsPerBeat = Math.round(60_000_000 / piece.bpm);
+  const lastBeat = Math.max(0, ...piece.tracks.flatMap((track) => track.notes.map((n) => n.start + n.dur)));
   const conductor = trackChunk([
     { tick: 0, order: 0, bytes: textEvent(0x03, piece.name) },
     {
@@ -49,6 +51,7 @@ export function writeMidi(piece, ppq = 480) {
       bytes: [0xff, 0x51, 0x03, (microsPerBeat >> 16) & 0xff, (microsPerBeat >> 8) & 0xff, microsPerBeat & 0xff],
     },
     { tick: 0, order: 2, bytes: [0xff, 0x58, 0x04, piece.beatsPerBar ?? 4, 2, 24, 8] },
+    ...(tailBeats > 0 ? [{ tick: Math.round((lastBeat + tailBeats) * ppq), order: 3, bytes: textEvent(0x06, "end") }] : []),
   ]);
   const toTick = (beats) => Math.round(beats * ppq);
   const tracks = piece.tracks.map((track) => {

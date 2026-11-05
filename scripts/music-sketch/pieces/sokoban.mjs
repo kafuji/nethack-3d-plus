@@ -102,7 +102,7 @@ function buildTracks() {
     { name: "Horn", voice: "horn", channel: 2, program: 60, notes: horn, previewGainDb: -2 },
     { name: "Cello", voice: "violin", channel: 3, program: 42, notes: cello, previewGainDb: -2 },
     { name: "Strings", voice: "strings", channel: 4, program: 48, notes: tie(pad) },
-    { name: "Bass", voice: "bass", channel: 5, program: 33, notes: tie(bass) },
+    { name: "Bass", voice: "bass", channel: 5, program: 43, notes: tie(bass) },
     { name: "Timpani", voice: "timpani", channel: 6, program: 47, notes: timp },
     { name: "Percussion", voice: "drums", channel: 9, program: 0, notes: drums },
   ];
@@ -114,6 +114,11 @@ export const piece = {
   bpm: 92,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "Cell", bars: [1, 4] },
+    { name: "Pushes", bars: [5, 28] },
+    { name: "Solved", bars: [29, 32] },
+  ],
   key: "B Phrygian (pedal)",
   tracks: buildTracks(),
   suno: {

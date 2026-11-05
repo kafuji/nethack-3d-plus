@@ -9,12 +9,32 @@ node scripts/music-sketch/sketch.mjs title
 This writes the following files to `music-sketches/<id>/`, which is gitignored:
 
 - `<id>.mid`: one track per part, with General MIDI programs, for a DAW.
-- `<id>-preview.wav`: a rough render from the built-in voices. It only needs to carry the melody, chords and pacing.
+- `<id>-preview.wav`: a dry render through FluidSynth and a SoundFont, with slight human timing and velocity. It is only input for Suno.
+- `<id>-sheet.html`: a piano roll with sections, bar numbers and note names, and a playhead over the preview.
 - `suno-prompt.txt`: the style prompt and notes for Suno.
+
+### Pointing at notes
+
+Open the sheet from its folder, so it finds the preview next to it. Clicking a note or a bar number adds a line such as `13小節目 Brass 3音目 (1拍目, D4): ` to the list below the roll. Write what should change after each line, then paste the list into a request. Clicking an empty spot plays from there, and the buttons above the roll hide tracks.
+
+To hear part of a piece, pass `--bars` and/or `--solo`, which only write `<id>-excerpt.wav`:
+
+```
+node scripts/music-sketch/sketch.mjs title --bars 13-20 --solo "Brass,Strings"
+```
+
+### Render tools
+
+Previews use FluidSynth and `MuseScore_General.sf2`, found under `~/.nethack-music-sketch/` or through the `MUSIC_SKETCH_FLUIDSYNTH` and `MUSIC_SKETCH_SOUNDFONT` environment variables. Without them, or with `--synth builtin`, the sketch falls back to the built-in voices.
+
+- [FluidSynth releases](https://github.com/FluidSynth/fluidsynth/releases): unzip into `~/.nethack-music-sketch/fluidsynth/`.
+- [MuseScore General](https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/): put the `.sf2` in `~/.nethack-music-sketch/`.
+
+Each track is rendered alone and leveled to match its balance in the built-in voices, including `previewGainDb`, so that balance still applies.
 
 ## Workflow
 
-1. Add or edit a piece in `pieces/<id>.mjs`. Each piece exports `piece` with `bpm`, `beatsPerBar`, `key`, `tracks` (notes in beats) and `suno` (style and notes). Each track's `voice` picks a preview voice (and an optional `previewGainDb` balances it in the preview only): `strings`, `violin`, `horn`, `bass`, `harp`, `guitar`, `lead`, `timpani`, `metal` (struck metal, such as picks or an anvil) or `drums` (General MIDI drum notes on channel 9).
+1. Add or edit a piece in `pieces/<id>.mjs`. Each piece exports `piece` with `bpm`, `beatsPerBar`, `key`, `tracks` (notes in beats) and `suno` (style and notes). `sections` lists named bar ranges for the sheet. Each track's `program` is the General MIDI sound that FluidSynth plays (use a sustaining one for drones), and its `voice` picks the built-in voice (an optional `previewGainDb` balances it in the preview only): `strings`, `violin`, `horn`, `bass`, `harp`, `guitar`, `lead`, `timpani`, `metal` (struck metal, such as picks or an anvil) or `drums` (General MIDI drum notes on channel 9).
 2. Run the command above and listen to the preview WAV.
 3. In Suno, upload the preview WAV, choose Cover, turn on Instrumental, and paste the style prompt.
 4. Download the MP3 into `music-sketches/<id>/`. To use it in the game, copy it to `public/music/`, register it in `src/audio/music/music-library.ts` (with a `gainDb` trim that brings it to about -24 dB) and pick it for regions in `music-region.ts`, then credit it in `public/licenses/music-credits.txt`. Check that your Suno plan allows this use.

@@ -130,7 +130,7 @@ function buildTracks() {
     { name: "Lead Guitar", voice: "lead", channel: 1, program: 24, notes: lead },
     { name: "Brass", voice: "horn", channel: 2, program: 61, notes: brass },
     { name: "Strings", voice: "strings", channel: 3, program: 48, notes: tie(pad) },
-    { name: "Bass", voice: "bass", channel: 4, program: 33, notes: tie(bass) },
+    { name: "Bass", voice: "bass", channel: 4, program: 43, notes: tie(bass) },
     { name: "Timpani", voice: "timpani", channel: 5, program: 47, notes: timp },
     { name: "Drums", voice: "drums", channel: 9, program: 0, notes: drums },
   ];
@@ -142,6 +142,13 @@ export const piece = {
   bpm: 84,
   beatsPerBar: BEATS_PER_BAR,
   bars: BARS,
+  sections: [
+    { name: "Intro", bars: [1, 4] },
+    { name: "A", bars: [5, 12] },
+    { name: "B", bars: [13, 20] },
+    { name: "C", bars: [21, 28] },
+    { name: "Outro", bars: [29, 32] },
+  ],
   key: "D Phrygian",
   tracks: buildTracks(),
   suno: {
