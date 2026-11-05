@@ -1,4 +1,5 @@
 import type { MusicMood } from "./music-director";
+import type { MusicTrack } from "./music-library";
 import type { TrackPreference } from "./music-region";
 import { playMusicStinger, type MusicStinger } from "./stingers";
 import { MusicStatusEffectChain, type MusicStatusEffect } from "./status-effects";
@@ -16,6 +17,9 @@ export interface BackgroundMusicPlayer {
   dispose(): void;
   /** Prefer these track ids per mood (players without tracks ignore it). */
   setTrackPreference?(preference: TrackPreference): void;
+  /** Play a whole track once, apart from the moods (players without tracks ignore it). */
+  playOnce?(track: MusicTrack): void;
+  stopOnce?(): void;
   /** Play a short musical cue over the current music. */
   playStinger?(kind: MusicStinger): void;
   /** Color the music for status effects such as confusion or hallucination. */

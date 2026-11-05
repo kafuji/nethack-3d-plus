@@ -5,7 +5,7 @@ export { MusicDirector } from "./music-director";
 export type { MusicMood } from "./music-director";
 export { ProceduralMusicPlayer } from "./procedural-music-player";
 export { FileMusicPlayer } from "./file-music-player";
-export { defaultMusicLibrary, titleMusicTrack } from "./music-library";
+export { ascensionMusicTrack, defaultMusicLibrary, titleMusicTrack } from "./music-library";
 export type { MusicLibrary, MusicTrack } from "./music-library";
 export type { BackgroundMusicPlayer } from "./procedural-music-player";
 export { resolveMusicRegion, regionTrackPreferences } from "./music-region";

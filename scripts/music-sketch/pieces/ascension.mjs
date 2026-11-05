@@ -1,4 +1,5 @@
-// Ascension sketch: plays once when the player ascends, and does not loop. The
+// Not used in the game: the ascension track is a Suno Cover of title.mjs instead.
+// Kept for its ideas. An ending sketch that plays once and does not loop. The
 // whole adventure in memory: the Descent theme passes through every region in
 // the order the game met them, each in its own key and with a trace of its own
 // texture, growing steadily. Gehennom's Eb then falls a semitone to D, the flat

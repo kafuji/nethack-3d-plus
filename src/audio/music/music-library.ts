@@ -163,6 +163,21 @@ export const defaultMusicLibrary: MusicLibrary = {
   ],
 };
 
+/**
+ * Played once when the player ascends. A Suno Cover of the title theme (style:
+ * Symphony and Metal, fanfare, glorious, epic, dramatic, grand finale), not a
+ * sketch of its own. It ends with a fade, so it does not need to loop.
+ */
+export const ascensionMusicTrack: MusicTrack = {
+  id: "ascension",
+  path: "music/ascension.mp3",
+  loop: "crossfade",
+  gainDb: -2.5,
+  title: "The Descent (Ascension)",
+  ...originalWork,
+  source: "scripts/music-sketch/pieces/title.mjs",
+};
+
 /** Title screen music (null = silent title screen), from pieces/title.mjs. */
 export const titleMusicTrack: MusicTrack | null = {
   id: "title-theme",

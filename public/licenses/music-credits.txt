@@ -17,4 +17,5 @@ public/music/astral.mp3        "The Astral Plane"           scripts/music-sketch
 public/music/combat.mp3        "Combat"                     scripts/music-sketch/pieces/combat-heavy.mjs
 public/music/combat-boss.mp3   "Boss Combat"                scripts/music-sketch/pieces/combat.mjs
 public/music/astral-combat.mp3 "Astral Combat"              scripts/music-sketch/pieces/astral-combat.mjs
+public/music/ascension.mp3     "The Descent (Ascension)"    scripts/music-sketch/pieces/title.mjs
 public/music/danger.mp3        "Danger"                     scripts/music-sketch/pieces/danger.mjs

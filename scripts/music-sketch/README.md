@@ -61,7 +61,7 @@ Pieces that use it:
 - `pieces/gehennom.mjs`: Gehennom, Eb Phrygian (the title's flat second) in 7/4 at 60 BPM. Ritual drums, a tritone under the drone, the ostinato backwards and phasing against the bar, and the call backwards in the low brass.
 - `pieces/astral.mjs`: the Astral Plane, back in D in a slow 9/4. A three-voice canon on the theme, with three bell tolls; the answer finally resolves its flat second to the tonic, onto a D major chord.
 - `pieces/astral-combat.mjs`: combat on the Astral Plane, 3/4 at 144 BPM. The one openly grand piece: full brass and choir, a canon on the theme, and the resolved answer leading through Bb and C to D major.
-- `pieces/ascension.mjs`: the ending, played once after ascending. The theme passes through every region's key and texture in turn, then rises for the first time in D major and ends on a plagal Amen.
+- `pieces/ascension.mjs`: an ending sketch that passes through every region's key and rises in D major. Not used in the game: the ascension track is a Suno Cover of `pieces/title.mjs` (Symphony and Metal, fanfare, glorious, epic, dramatic, grand finale).
 - `pieces/combat.mjs`: boss fights, D Phrygian at 132 BPM. It starts at full energy on beat one; the call is squeezed into one bar (`augment: 0.5`) as the battle figure, and the brass plays it at full length.
 - `pieces/combat-heavy.mjs`: everyday fights, D Phrygian at 100 BPM. Slower and heavier: a stomping beat, a low chugging riff, and the theme at full length in the low brass.
 - `pieces/danger.mjs`: danger (low hit points), 112 BPM on a D-Eb-Ab cluster. A heartbeat, a semitone tremble from the ostinato, a cello that creeps up a semitone every two bars, and the call upside down (`invert: true`) in the low brass.

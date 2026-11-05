@@ -185,6 +185,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
    *   __nh3dMusic.preview("calm" | "combat" | "danger" | null)
    *   __nh3dMusic.auto()   // back to situation-driven music
    *   __nh3dMusic.mood()   // mood the director currently wants
+   *   __nh3dMusic.ascend() // play the ascension track
    */
   private exposeBackgroundMusicDebugHandle(): void {
     if (typeof window === "undefined") return;
@@ -193,6 +194,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
       preview: (mood: MusicMood | null) => music.setPreviewMood(mood),
       auto: () => music.setPreviewMood(undefined),
       mood: () => music.getCurrentMood(),
+      ascend: () => music.notifyAscension(),
     };
   }
 
@@ -1178,6 +1180,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
         }
         this.systems.combatAttribution.captureDamageFromMessage(data.text);
+        this.systems.audioHapticsPlatform.backgroundMusic?.notifyGameMessage(data.text);
         this.systems.engineMessages.addGameMessage(data.text);
         break;
 
@@ -1200,6 +1203,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
         }
         this.systems.combatAttribution.captureDamageFromMessage(data.text);
+        this.systems.audioHapticsPlatform.backgroundMusic?.notifyGameMessage(data.text);
         this.systems.engineMessages.addGameMessage(data.text);
         break;
 
@@ -1490,6 +1494,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
         const shouldDeferPromptReady = this.systems.promptDialogs.infoMenuBlockingActive;
         const deathMessage =
           typeof data.deathMessage === "string" ? data.deathMessage : null;
+        if (deathMessage) this.systems.audioHapticsPlatform.backgroundMusic?.notifyGameMessage(deathMessage);
         const tombstoneLines = Array.isArray(data.tombstoneLines)
           ? (data.tombstoneLines as string[])
           : null;
