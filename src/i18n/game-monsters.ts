@@ -1,5 +1,6 @@
 import type { SupportedLocale } from "./core";
 import { lookupImportedJapaneseEntity } from "./imported-entities";
+import { translatePlayerRank } from "./player-title";
 
 // Names are matched in their entirety against the bundled monster catalog.
 // Do not strip adjectives: "peaceful", "tame", "invisible" and others can
@@ -57,6 +58,9 @@ export function translateMonsterName(text: string, locale: SupportedLocale): str
     name = modifier[2];
   }
   const translated = Object.prototype.hasOwnProperty.call(monsters, name) ? monsters[name] : lookupImportedJapaneseEntity(name);
-  if (translated === undefined) return text;
-  return `${/^your /i.test(match[1]) ? "あなたの" : ""}${modifiers.join("")}${translated}`;
+  // do_name.c: a player monster is named by its rank ("the kunoichi").
+  const rankName = name.replace(/(^| )([a-z])/g, (_all, gap: string, letter: string) => gap + letter.toUpperCase());
+  const rank = translated ?? translatePlayerRank(rankName, "ja");
+  if (rank === rankName) return text;
+  return `${/^your /i.test(match[1]) ? "あなたの" : ""}${modifiers.join("")}${rank}`;
 }

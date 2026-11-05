@@ -15,7 +15,7 @@ describe("object and monster verb messages", () => {
     ["Your 2 scrolls of light catch fire and burn.", "あなたの光の巻物 ×2は火がついて燃えた。"],
     ["All of your potions of healing freeze and shatter!", "あなたの回復のポーションはすべて凍って砕け散った！"],
     ["The jackal's leather armor looks completely rusted.", "ジャッカルの革の鎧は完全に錆びついたようだ。"],
-    ["The gnome lord's helmet glows black for a moment.", "ノームの領主の兜は一瞬黒く輝いた。"],
+    ["The gnome lord's helmet glows black for a moment.", "ノームの領主の兜が一瞬黒色に光った。"],
     ["Your candle goes out.", "あなたのろうそくの火が消えた。"],
     ["Your candles are getting short.", "あなたのろうそくは短くなってきた。"],
     ["The little dog yelps!", "子犬はキャンと鳴いた！"],

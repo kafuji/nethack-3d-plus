@@ -111,7 +111,7 @@ const itemNames: Readonly<Record<string, string>> = {
   // Proper artifact names are translated only when the name itself is shown;
   // arbitrary user-supplied `named`/`called` labels are kept verbatim.
   "Excalibur": "エクスカリバー", "Stormbringer": "ストームブリンガー", "Mjollnir": "ミョルニル", "Cleaver": "クリーヴァー", "Grimtooth": "グリムトゥース", "Orcrist": "オルクリスト", "Sting": "つらぬき丸", "Magicbane": "マジックベイン", "Frost Brand": "フロストブランド", "Fire Brand": "ファイアブランド", "Dragonbane": "ドラゴンベイン", "Demonbane": "デーモンベイン", "Werebane": "ウェアベイン", "Grayswandir": "グレイスワンディール", "Giantslayer": "ジャイアントスレイヤー", "Ogresmasher": "オーガスマッシャー", "Trollsbane": "トロルズベイン", "Vorpal Blade": "ヴォーパルブレード", "Snickersnee": "スニッカースニー", "Sunsword": "サンソード",
-  "Orb of Detection": "探知の宝珠", "Heart of Ahriman": "アーリマンの心臓", "Sceptre of Might": "力の王笏", "Staff of Aesculapius": "アスクレピオスの杖", "Magic Mirror of Merlin": "マーリンの魔法の鏡", "Eyes of the Overworld": "異界の眼", "Mitre of Holiness": "聖なる司教冠", "Longbow of Diana": "ディアナの長弓", "Master Key of Thievery": "盗賊の万能鍵", "Tsurugi of Muramasa": "村正の剣", "Platinum Yendorian Express Card": "プラチナ・イェンダー・エクスプレスカード", "Orb of Fate": "運命の宝珠", "Eye of the Aethiopica": "エチオピカの眼",
+  "Palantir of Westernesse": "西方のパランティア", "Orb of Detection": "探知の宝珠", "Heart of Ahriman": "アーリマンの心臓", "Sceptre of Might": "力の王笏", "Staff of Aesculapius": "アスクレピオスの杖", "Magic Mirror of Merlin": "マーリンの魔法の鏡", "Eyes of the Overworld": "異界の眼", "Mitre of Holiness": "聖なる司教冠", "Longbow of Diana": "ディアナの長弓", "Master Key of Thievery": "盗賊の万能鍵", "Tsurugi of Muramasa": "村正の剣", "Platinum Yendorian Express Card": "プラチナ・イェンダー・エクスプレスカード", "Orb of Fate": "運命の宝珠", "Eye of the Aethiopica": "エチオピカの眼",
   "glob of gray ooze": "灰色ウーズの塊", "glob of brown pudding": "茶色プディングの塊", "glob of green slime": "緑色スライムの塊", "glob of black pudding": "黒色プディングの塊",
   "gray dragon scales": "灰色のドラゴンの鱗", "gold dragon scales": "金色のドラゴンの鱗", "silver dragon scales": "銀色のドラゴンの鱗", "red dragon scales": "赤いドラゴンの鱗", "white dragon scales": "白いドラゴンの鱗", "orange dragon scales": "オレンジ色のドラゴンの鱗", "black dragon scales": "黒いドラゴンの鱗", "blue dragon scales": "青いドラゴンの鱗", "green dragon scales": "緑色のドラゴンの鱗", "yellow dragon scales": "黄色いドラゴンの鱗",
   "gray dragon scale mail": "灰色のドラゴンの鱗鎧", "gold dragon scale mail": "金色のドラゴンの鱗鎧", "silver dragon scale mail": "銀色のドラゴンの鱗鎧", "red dragon scale mail": "赤いドラゴンの鱗鎧", "white dragon scale mail": "白いドラゴンの鱗鎧", "orange dragon scale mail": "オレンジ色のドラゴンの鱗鎧", "black dragon scale mail": "黒いドラゴンの鱗鎧", "blue dragon scale mail": "青いドラゴンの鱗鎧", "green dragon scale mail": "緑色のドラゴンの鱗鎧", "yellow dragon scale mail": "黄色いドラゴンの鱗鎧",
@@ -278,7 +278,12 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   // Preserve user-supplied item names and calls exactly. Only display a
   // translation when the remaining item is independently recognized.
   const labelMatch = /^(.+?) (named|called) (.+)$/.exec(item);
-  const label = labelMatch ? `（${labelMatch[2] === "named" ? "名前" : "呼び名"}：${labelMatch[3]}）` : "";
+  // xname(): an artifact not yet identified is "tsurugi named the Tsurugi of Muramasa".
+  // Artifact names are capitalized; "named potion of healing" is the player's label.
+  const artifactName = labelMatch?.[2] === "named" && /^(?:[Tt]he )?[A-Z]/.test(labelMatch[3])
+    ? own(itemNames, labelMatch[3].replace(/^[Tt]he /, ""))
+    : undefined;
+  const label = labelMatch ? `（${labelMatch[2] === "named" ? "名前" : "呼び名"}：${artifactName ?? labelMatch[3]}）` : "";
   if (labelMatch) item = labelMatch[1];
   const quantity = /^(a|an|the|The|\d+) (.+)$/.exec(item);
   if (quantity) item = quantity[2];

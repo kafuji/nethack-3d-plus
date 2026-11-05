@@ -26,6 +26,26 @@ function lookup(value: string, locale: SupportedLocale, table: Readonly<Record<s
   return Object.prototype.hasOwnProperty.call(table, key) ? table[key] : value;
 }
 
+// weapon.c #enhance menu legend: what the "*" and "#" flags mean.
+const skillLegends: Readonly<Record<string, string>> = {
+  "may be enhanced when you're more experienced": "は、もっと経験を積めば上げられる。",
+  "may be enhanced if skill slots become available": "は、技能スロットが空けば上げられる。",
+  "cannot be enhanced any further": "は、これ以上上げられない。",
+};
+
+/** Rest of a legend line after its flag mark, or undefined. */
+export function translateSkillLegend(mark: string, rest: string): string | undefined {
+  const ending = Object.prototype.hasOwnProperty.call(skillLegends, rest) ? skillLegends[rest] : undefined;
+  return ending === undefined ? undefined : `「${mark}」の付いた技能${ending}`;
+}
+
+/** A whole legend line, parenthesized or not; other text stays as it is. */
+export function translateSkillLegendLine(line: string, locale: SupportedLocale): string {
+  if (locale !== "ja") return line;
+  const match = /^\(?Skills? flagged by "([*#])" (.+?)\.\)?$/.exec(line.trim());
+  return (match && translateSkillLegend(match[1]!, match[2]!)) ?? line;
+}
+
 export function translateSkillName(value: string, locale: SupportedLocale): string {
   return lookup(value, locale, skills);
 }
