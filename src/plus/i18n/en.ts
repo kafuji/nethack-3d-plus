@@ -7,6 +7,11 @@ export const plusEn = {
       description:
         "Lower this to let more of the dungeon show through the boxed desktop message log.",
     },
+    wikiLinks: {
+      label: "NetHackWiki links",
+      description:
+        "Hold Ctrl (Cmd on macOS) to underline monster and item names in the message log and item lists. Hover to see the original name; click to open its article on nethackwiki.com.",
+    },
   },
   messageLog: {
     resizeHandle:

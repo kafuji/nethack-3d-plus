@@ -1910,6 +1910,9 @@ export function useAppModel() {
       terminalDesktopGutterVisible,
       desktopGameMessageLog,
     },
+    wikiLinkLayer: {
+      enabled: clientOptions.wikiLinks,
+    },
     pauseMenu: {
       renderPauseMenu,
     },

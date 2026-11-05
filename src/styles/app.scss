@@ -775,6 +775,30 @@ canvas {
   cursor: pointer;
 }
 
+.nh3d-wiki-link {
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.15em;
+}
+
+.nh3d-wiki-link:hover {
+  text-decoration-style: solid;
+}
+
+.nh3d-wiki-card {
+  position: fixed;
+  z-index: 100000;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 6px;
+  background: rgba(16, 18, 24, 0.97);
+  color: #e8e8e8;
+  font-size: nh3d-scale-font(13px);
+  line-height: 1.45;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
 .nh3d-reference-message-label {
   font-size: 0.85em;
   opacity: 0.8;

@@ -26,6 +26,11 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
   },
   plus: {
     clientOptions: {
+      wikiLinks: {
+        label: "NetHackWiki リンク",
+        description:
+          "Ctrl（macOS では Cmd）を押している間、メッセージログとアイテム一覧のモンスター名・アイテム名に下線を表示します。ホバーすると原文の名称を表示し、クリックすると nethackwiki.com の記事を開きます。",
+      },
       desktopMessageLogBackgroundOpacity: {
         label: "デスクトップメッセージログの背景不透明度",
         description:

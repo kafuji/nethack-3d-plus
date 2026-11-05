@@ -378,6 +378,12 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "wikiLinks",
+    label: plusStrings.clientOptions.wikiLinks.label,
+    description: plusStrings.clientOptions.wikiLinks.description,
+    type: "boolean",
+  },
+  {
     key: "liveMessageDisplayTimeMs",
     label: t.clientOptions.config.liveMessageDisplayTimeMs.label,
     description: t.clientOptions.config.liveMessageDisplayTimeMs.description,

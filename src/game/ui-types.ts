@@ -329,6 +329,7 @@ export type Nh3dClientOptions = {
   monsterShatter: boolean;
   monsterShatterBloodBorders: boolean;
   liveMessageLog: boolean;
+  wikiLinks: boolean;
   showPersistentMobileMessageLog: boolean;
   rumbleEnabled: boolean;
   manualMobileBottomSafeZoneEnabled: boolean;
@@ -495,6 +496,7 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   monsterShatter: true,
   monsterShatterBloodBorders: true,
   liveMessageLog: true,
+  wikiLinks: true,
   showPersistentMobileMessageLog: false,
   rumbleEnabled: true,
   manualMobileBottomSafeZoneEnabled: false,
@@ -1303,6 +1305,10 @@ export function normalizeNh3dClientOptions(
       typeof overrides?.liveMessageLog === "boolean"
         ? overrides.liveMessageLog
         : defaultNh3dClientOptions.liveMessageLog,
+    wikiLinks:
+      typeof overrides?.wikiLinks === "boolean"
+        ? overrides.wikiLinks
+        : defaultNh3dClientOptions.wikiLinks,
     showPersistentMobileMessageLog:
       typeof overrides?.showPersistentMobileMessageLog === "boolean"
         ? overrides.showPersistentMobileMessageLog

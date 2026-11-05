@@ -162,6 +162,16 @@ const statuses: Readonly<Record<string, string>> = {
   "alternate weapon; not wielded": "予備武器・未装備", "alternate weapons; not wielded": "予備武器・未装備", "being worn": "着用中", "being worn; slippery": "着用中・滑りやすい", "being donned": "着用中（着替えの途中）", "being doffed": "脱いでいる途中", "embedded in your skin": "皮膚に埋め込まれている", "wielded": "手に持っている", "wielded in right hand": "右手に装備中", "wielded in left hand": "左手に装備中", "tethered to right hand": "右手につながれている", "tethered to left hand": "左手につながれている", "on left hand": "左手に装備中", "on right hand": "右手に装備中", "from left hand": "左手から", "from right hand": "右手から", "in quiver": "矢筒にセット中", "in quiver pouch": "矢筒の小袋にセット中", "lit": "点灯中", "chained to you": "あなたにつながれている", "attached to you": "あなたに取り付けられている", "unpaid": "未払い", "no charge": "無料",
 };
 
+/** Real item names, singular and plural. Randomized appearances are not included. */
+export function curatedItemNames(): readonly string[] {
+  return Object.keys(itemNames);
+}
+
+/** Appearances and generic nouns that can stand for an unidentified item. */
+export function genericAppearanceNames(): readonly string[] {
+  return Object.keys(genericAppearances);
+}
+
 function own(map: Readonly<Record<string, string>>, key: string): string | undefined {
   return Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined;
 }
