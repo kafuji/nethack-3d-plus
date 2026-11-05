@@ -106,6 +106,16 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/gehennom.mjs",
     },
+    {
+      id: "astral",
+      path: "music/astral.mp3",
+      loop: "crossfade",
+      crossfadeSec: 4,
+      gainDb: -4.5,
+      title: "The Astral Plane",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/astral.mjs",
+    },
   ],
   combat: [
     {
