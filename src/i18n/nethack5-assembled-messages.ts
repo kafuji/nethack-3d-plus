@@ -1,7 +1,7 @@
 import { translateInventoryItem } from "./inventory-text";
 import { translateMonsterName } from "./game-monsters";
 import { deityNames } from "./intro-story";
-import { translateSkillName } from "./game-skills";
+import { translateSkillLegend, translateSkillName, translateSpellName } from "./game-skills";
 import { rayNames, translateMessageArgument as arg } from "./nethack5-source-messages";
 import { translateGroundObject } from "./game-ground";
 // Only called at run time, after both modules have loaded.
@@ -538,7 +538,56 @@ const headAndQuote = (head: string, quote: string): string => {
   return `${headJa}${quoteJa}`;
 };
 
+// insight.c weapon skill lines. skill_level_name() gives "grand-master"; the
+// skill table says "grand master".
+const skillLevel = (level: string): string => translateSkillName(level.replace("-", " "), "ja");
+const skillList = (list: string): string => list
+  .split(/, and | and also with |, /)
+  .map((skill) => (skill === "two weapons" ? "二刀流" : translateSkillName(skill, "ja")))
+  .join("と");
+const limitedEnding = (verb: string, also: string | undefined): string =>
+  `${also ? "同様に" : ""}制限されてい${verb === "was" ? "た" : "る"}。`;
+
+const directions: Readonly<Record<string, string>> = {
+  north: "北", south: "南", east: "東", west: "西",
+  northeast: "北東", northwest: "北西", southeast: "南東", southwest: "南西",
+  up: "上", down: "下",
+};
+const loadTrouble: Readonly<Record<string, string>> = {
+  "a little trouble": "少し苦労した", trouble: "苦労した", "much trouble": "かなり苦労した", "extreme difficulty": "ひどく苦労した",
+};
+// pickup.c prinv() with the load prefix: the item keeps its inventory letter.
+const lettered = (item: string): string => {
+  const letter = /^(\S) - (.+)$/.exec(item);
+  return letter ? `${letter[1]} - ${arg(letter[2]!)}` : arg(item);
+};
+const spellName = (name: string): string => translateSpellName(name, "ja");
+
 const statusAndWhistleTemplates: readonly Template[] = [
+  [/^Your skill in (.+?) (is|was) (also )?limited by being (.+?) with two weapons\.$/, (skill, verb, also, level) =>
+    `${translateSkillName(skill, "ja")}の技能は、二刀流が${skillLevel(level)}であるため${limitedEnding(verb, also)}`],
+  [/^Your two weapon skill (is|was) (also )?limited by (?:being (.+?)|having no skill) with (.+?)\.$/, (verb, also, level, skill) =>
+    `二刀流の技能は、${translateSkillName(skill, "ja")}が${level ? skillLevel(level) : "技能なし"}であるため${limitedEnding(verb, also)}`],
+  [/^You (?:also )?(?:have|had) no skill (?:with|in) (.+?)( and two weapons)?\.$/, (skill, two) =>
+    `あなたには${translateSkillName(skill, "ja")}${two ? "と二刀流" : ""}の技能がない。`],
+  [/^You (?:also )?(have|are|had|were) (basic|expert|master|grand-master|unskilled|skilled) (?:skill with|in) (.+?)( and two weapons)?( and (?:can enhance|could have enhanced) that)?\.$/, (verb, level, skill, two, enhance) => {
+    const past = verb === "had" || verb === "were";
+    const line = `${translateSkillName(skill, "ja")}${two ? "と二刀流" : ""}の技能は${skillLevel(level)}${past ? "だった" : "だ"}。`;
+    return enhance ? `${line}${past ? "上げることもできた。" : "上げることもできる。"}` : line;
+  }],
+  [/^You (can enhance|could have enhanced) skills? with (.+?)\.$/, (verb, list) =>
+    `${skillList(list)}の技能を上げ${verb === "can enhance" ? "られる" : "ることができた"}。`],
+  [/^\(?Skills? flagged by "([*#])" (.+?)\.?\)?$/, (mark, rest) => translateSkillLegend(mark, rest) ?? ""],
+  [/^You have already gone as far (\w+) as possible\.$/, (direction) =>
+    (Object.prototype.hasOwnProperty.call(directions, direction) ? `これ以上${directions[direction]}へは進めない。` : "")],
+  [/^(.+?) (hands|tosses) (.+?) back to you\.$/, (monster, verb, item) =>
+    `${arg(monster)}は${arg(item)}をあなたに${verb === "hands" ? "手渡した" : "投げ返した"}。`],
+  [/^You have (a little trouble|trouble|much trouble|extreme difficulty) (lifting|removing) (.+?)\.$/, (degree, verb, item) =>
+    `${lettered(item)}を${verb === "lifting" ? "持ち上げる" : "取り出す"}のに${loadTrouble[degree]}。`],
+  [/^You learn the "(.+)" spell\.$/, (spell) => `「${spellName(spell)}」の呪文を習得した。`],
+  [/^You add the "(.+)" spell to your repertoire, as '(.)'\.$/, (spell, letter) => `「${spellName(spell)}」の呪文を習得した（'${letter}'）。`],
+  [/^Your knowledge of (?:the )?"(.+?)"(?: spell)? is (keener|restored)\.$/, (spell, state) =>
+    `「${spellName(spell)}」の知識が${state === "keener" ? "深まった" : "よみがえった"}。`],
   [/^(.+?): "(.+)"$/, headAndQuote],
   [/^Status of (.+?) \(([^)]+)\):\s+Level (\d+)\s+HP (-?\d+)\((\d+)\)\s+AC (-?\d+)((?:, [^,]+)*)\.$/, statusLine],
   [/^((?:Two|Three|Four|Several|Many) creatures shift locations|.+? (?:shifts location|appears|disappears))((?:,? and |, ).+)?\.$/,

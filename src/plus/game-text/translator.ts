@@ -7,6 +7,7 @@
 import { GameNameTranslator, type GameTextNameData, type ObjectCategory } from "./object-names";
 import { coreGameTextRules, type CoreRuleContext } from "./core-rules";
 import { disclosureRules } from "./disclosure-rules";
+import { questLines } from "./quest-lines";
 import { questSynopses } from "./quest-synopses";
 import { questTextFixes } from "./quest-text-fixes";
 
@@ -253,10 +254,12 @@ function compileQuestTexts(texts: ReadonlyArray<readonly [string, string]>, minN
 }
 
 function fillJapanese(template: string, values: readonly string[]): string {
-  return template.replace(/\{\{|\}\}|\{(\d+)!?\}/g, (token, index: string | undefined) => {
+  return template.replace(/\{\{|\}\}|\{(\d+)!?\}/g, (token, index: string | undefined, offset: number) => {
     if (token === "{{") return "{";
     if (token === "}}") return "}";
-    return values[Number(index)] ?? "";
+    const value = values[Number(index)] ?? "";
+    // A possessive argument ("the jackal's") is already rendered with の.
+    return template[offset + token.length] === "の" ? value.replace(/の$/, "") : value;
   });
 }
 
@@ -323,7 +326,7 @@ export class GameTextTranslator {
     this.enlightenment = data.enlightenment ?? {};
     this.roleNames = data.roleNames ?? {};
     this.bodyParts = data.bodyParts ?? {};
-    this.questTexts = compileQuestTexts(data.questTexts ?? []);
+    this.questTexts = compileQuestTexts([...(data.questTexts ?? []), ...questLines]);
     // Only ever seen in brackets, so short ones ("%nC dies.") are safe to match.
     this.questSynopses = compileQuestTexts(questSynopses, 0);
     this.templates = compileTemplates(data.templates);

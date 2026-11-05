@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { translateInventoryItem, translateMenuItemText } from "./inventory-text";
 import { translateSpellName } from "./game-skills";
 import { GameTextTranslator, type GameTextData } from "../plus/game-text/translator";
-import { curatedNames } from "../plus/game-text/index";
+import { curatedNames } from "../plus/game-text/curated-names";
 import data from "../plus/game-text/data/jnethack.generated.json";
 
 describe("itemized billing menu", () => {
