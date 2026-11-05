@@ -138,6 +138,16 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/combat.mjs",
     },
+    {
+      id: "astral-combat",
+      path: "music/astral-combat.mp3",
+      loop: "crossfade",
+      crossfadeSec: 2,
+      gainDb: -3,
+      title: "Astral Combat",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/astral-combat.mjs",
+    },
   ],
   danger: [
     {

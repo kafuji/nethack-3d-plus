@@ -16,4 +16,5 @@ public/music/gehennom.mp3      "Gehennom"                   scripts/music-sketch
 public/music/astral.mp3        "The Astral Plane"           scripts/music-sketch/pieces/astral.mjs
 public/music/combat.mp3        "Combat"                     scripts/music-sketch/pieces/combat-heavy.mjs
 public/music/combat-boss.mp3   "Boss Combat"                scripts/music-sketch/pieces/combat.mjs
+public/music/astral-combat.mp3 "Astral Combat"              scripts/music-sketch/pieces/astral-combat.mjs
 public/music/danger.mp3        "Danger"                     scripts/music-sketch/pieces/danger.mjs

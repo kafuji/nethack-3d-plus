@@ -97,5 +97,5 @@ export const regionTrackPreferences: Readonly<Record<MusicRegion, TrackPreferenc
   quest: { calm: ["quest"], combat: ["combat"] },
   ludios: { calm: ["dungeon"], combat: ["combat-boss"] },
   gehennom: { calm: ["gehennom"], combat: ["combat-boss"] },
-  endgame: { calm: ["astral"], combat: ["combat-boss"] },
+  endgame: { calm: ["astral"], combat: ["astral-combat"] },
 };
