@@ -25,10 +25,14 @@ const roles = ["arc", "bar", "cav", "hea", "kni", "mon", "pri", "rog", "ran", "s
 // ordinary random play rarely reaches.
 const movement = [..."hjklyubn"];
 const ctrl = (letter) => String.fromCharCode(letter.charCodeAt(0) & 0x1f);
+const meta = (letter) => String.fromCharCode(letter.charCodeAt(0) | 0x80);
 const commands = [
   ...movement, ...movement, ...movement, ...movement, ",", ":", "s", "s", "i", "e", "d", "a", "r", "q", "z", "Z", "w", "W", "T", "P", "R", "t", "f", "x", "o", "c",
   "D", "E", "F", "A", "p", ">", "<", "_", "^", "\\", "`", "#", "X", "@", "O", "m",
   ctrl("X"), ctrl("T"), ctrl("D"), ctrl("O"), ctrl("A"),
+  // Shops and conversation are worth more visits than one key in sixty.
+  ",", ",", "p", "p", "d",
+  ...[..."ccccpodflmsRrTtuwiqjA"].map(meta),
   ...(debugMode ? [ctrl("F"), ctrl("V"), ctrl("G"), ctrl("I"), ctrl("W"), ctrl("W"), ctrl("W"), ctrl("E")] : []),
 ];
 // Wishes that open up further messages when used.
@@ -105,7 +109,8 @@ async function play(seed) {
         if (windows.get(win) === "message") record("message", text);
         else documents.set(win, [...(documents.get(win) ?? []), String(text ?? "")]);
         // getpos() takes the same keys as play, so answer it before it eats them.
-        if (/Where do you|Move cursor|Pick an? |Pick the|desired|For instructions/.test(text ?? "")) pendingKeys.push(random(2) ? "." : pick(movement), ".");
+        // Jumping to a monster, door or altar lands in shops and temples far more often than walking.
+        if (/Where do you|Move cursor|Pick an? |Pick the|desired|For instructions/.test(text ?? "")) pendingKeys.push(pick([".", ...movement, "m", "m", "m", "m", "o", "d", "<", ">", "_"]), ".");
         return 0;
       }
       case "shim_raw_print": case "shim_raw_print_bold": record("text", args[0]); return 0;
@@ -160,7 +165,8 @@ async function play(seed) {
         let answer = "\u001b";
         if (/wish/i.test(question ?? "")) answer = pick(wishTopics());
         else if (/kind of monster|create|genocide|class of monsters|monster/i.test(question ?? "")) answer = pick(monsters);
-        else if (/level/i.test(question ?? "")) answer = String(1 + random(50));
+        // "?" lists the special levels in debug mode, and the menu picks one at random.
+        else if (/level/i.test(question ?? "")) answer = debugMode && random(4) ? "?" : String(1 + random(50));
         else if (/name|call|annotation|engrave|write|type/i.test(question ?? "")) answer = random(2) ? "Elbereth" : "x";
         mod.stringToUTF8(answer, buffer, 200);
         return 0;

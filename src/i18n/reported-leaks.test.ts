@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { translateGameMenuItem } from "./game-menu";
+import { translateHelpDocument } from "./help-text";
 import { translateInventoryCategory, translateInventoryItem } from "./inventory-text";
 import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { presentGameMessage } from "./message-presentation";
@@ -45,16 +46,33 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["You hear a lieutenant incant ZELGO MER.", "中尉が「ZELGO MER」と唱えるのが聞こえた。"],
   ["stone (no travel path)", "石（移動経路なし）"],
   ["The blast of gravy hits you!", "グレイビーソースの爆風があなたに当たった！"],
-  ["The priest of Moloch casts a spell!", "モロクの僧侶は呪文を唱えた！"],
+  ["The priest of Moloch casts a spell!", "モロクの僧侶が呪文を唱えた！"],
   ["(2north,3east): doorway.", "（2北、3東）：戸口"],
   ["<17,6>   %  an uncursed apple", "<17,6> % 呪われていないリンゴ"],
   ["Portal to The Quest: 12", "クエストへのポータル：12階"],
   ["You have been killed twice.", "あなたは2回殺されたことがある。"],
+  // The first pass over dat/ and the source's assembled sentences.
+  ["Priestesses aren't able to use two weapons at once.", "女司祭は二つの武器を同時に使えない。"],
+  ["The Dalek hits!", "ダーレクが攻撃を命中させた！"],
+  ["The succubus of Set hits!", "セトのサキュバスが攻撃を命中させた！"],
+  ["Added hilite hunger/changed/red&italic", "強調表示を追加した：空腹／変化時／赤＆斜体"],
+  ["title/\"Adept\"/light-green&underline", "称号／「熟達者」／明るい緑＆下線"],
+  ["cond_blind", "cond_blind（盲目）"],
+  ["pickup_types          [\$]  (for autopickup)", "pickup_types [$]（自動拾い用）"],
+  ["`role'               - your starting role (e.g., Barbarian, Valkyrie),", "`role' - 開始時の職業（例：Barbarian、Valkyrie）、"],
+  ["'m' prefix has no effect for the look command.", "「m」接頭辞は #look コマンドに効果がない。"],
+  ["\"Thou art doomed, wittol!\"", "「汝の運命は尽きた、間抜けめ！」"],
+  ["You turn into a female silver dragon!", "シルバードラゴンに変化した！"],
+  ["The design features toucans on an abstract background.", "抽象的な背景にオオハシの柄が描かれている。"],
+  ["The voice of Thoth booms out: Thou hast angered me.", "トートの声が響いた：「汝は我を怒らせた。」"],
+  ["You have 50 zorkmids credit at Asidonhopo's general store.", "Asidonhopoの雑貨店に50ゴールドの信用がある。"],
+  ["\"Don't Panic\"", "「あわてるな」"],
 ];
 
 const reportLines: ReadonlyArray<readonly [string, string]> = [
   ["you, killed by a falling rock.", "あなた（落石に殺された）。"],
   ["you, killed by kicking a wall.", "あなた（壁を蹴ったことに殺された）。"],
+  ["you, killed by a jackal, while praying.", "あなた（祈っている間にジャッカルに殺された）。"],
 ];
 
 const items: ReadonlyArray<readonly [string, string]> = [
@@ -78,6 +96,32 @@ function reportedLeaks(): void {
 
   it.each(reportLines)("translates the report line %s", (english, japanese) => {
     expect(translateReportLine(english, "ja")).toBe(japanese);
+  });
+
+  it.each([
+    ["Welcome to NetHack!                ( description of version 3.6 )", "Have Fun, and Happy Hacking!", "NetHack へようこそ"],
+    ["Debug-Mode Quick Reference:", "[Opt] = conditionally available depending upon build-time settings", "デバッグモード早見表"],
+    ["How dynamically setting options works:", "those saved ones.", "ゲーム中のオプション設定"],
+    ["This is a terse description of nethack's command line arguments.", "or can be viewed via 'nethack --usage | more' at the shell prompt.", "コマンドライン引数"],
+    ["NetHack History file for release 5.0", "Ingo Paschke              Mike Engber               Yitzhak Sapir", "NetHack リリース 5.0 の歴史"],
+    ["Menu control keys:", "Escape   Cancel menu without making any choice(s)", "メニューの操作キー"],
+  ])("recognizes the help document starting %s", (first, last, japanese) => {
+    expect(translateHelpDocument([first, "", last], "ja")).toContain(japanese);
+  });
+
+  it("translates the #version document's feature list but keeps Lua's license", () => {
+    const document = translateHelpDocument([
+      "Unix NetHack Version 5.0.0-0 post-release - last build Sep 23 2026 12:47:25",
+      "",
+      "Options compiled into this edition:",
+      "    color, data librarian, save and bones files accepted from version 5.0.0 only, and",
+      "    basic NetHack features.",
+      "",
+      "NetHack 5.0.* uses the 'Lua' interpreter to process some data:",
+      "    \"Permission is hereby granted, free of charge,",
+    ], "ja");
+    expect(document).toContain("カラー、データライブラリアン、バージョン 5.0.0 のセーブファイルと骨ファイルに対応、NetHack の基本機能。");
+    expect(document).toContain("Permission is hereby granted");
   });
 
   it("translates a menu sentence that ends in an item name", () => {

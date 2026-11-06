@@ -152,7 +152,7 @@ const modifiers: Readonly<Record<string, string>> = {
   blessed: "祝福された", uncursed: "呪われていない", cursed: "呪われた",
   unblessed: "祝福されていない", locked: "施錠された", unlocked: "鍵のかかっていない", trapped: "罠の仕掛けられた", broken: "壊れた",
   rusty: "錆びた", corroded: "腐食した", burnt: "焦げた", rotted: "腐った", greased: "油を塗った",
-  poisoned: "毒を塗った", erodeproof: "腐食しない", rustproof: "錆びない", fireproof: "燃えない", fixed: "損傷しない", empty: "空の", diluted: "薄められた", "partly eaten": "食べかけの", "partly used": "使いかけの", "very rusty": "ひどく錆びた", "thoroughly rusty": "完全に錆びた", "very corroded": "ひどく腐食した", "thoroughly corroded": "完全に腐食した", "very burnt": "ひどく焦げた", "thoroughly burnt": "完全に焦げた", "very rotted": "ひどく腐った", "thoroughly rotted": "完全に腐った", wet: "濡れた",
+  tempered: "鍛えられた", moist: "湿った", poisoned: "毒を塗った", erodeproof: "腐食しない", rustproof: "錆びない", fireproof: "燃えない", fixed: "損傷しない", empty: "空の", diluted: "薄められた", "partly eaten": "食べかけの", "partly used": "使いかけの", "very rusty": "ひどく錆びた", "thoroughly rusty": "完全に錆びた", "very corroded": "ひどく腐食した", "thoroughly corroded": "完全に腐食した", "very burnt": "ひどく焦げた", "thoroughly burnt": "完全に焦げた", "very rotted": "ひどく腐った", "thoroughly rotted": "完全に腐った", wet: "濡れた",
 };
 
 const statuses: Readonly<Record<string, string>> = {
@@ -163,6 +163,13 @@ const statuses: Readonly<Record<string, string>> = {
 };
 
 /** Real item names, singular and plural. Randomized appearances are not included. */
+// objnam.c: the motifs and backgrounds of a Hawaiian shirt.
+export const hawaiianDesigns: Readonly<Record<string, string>> = {
+  flamingo: "フラミンゴ", parrot: "オウム", toucan: "オオハシ", "bird of paradise": "極楽鳥", "sea turtle": "ウミガメ", "tropical fish": "熱帯魚", jellyfish: "クラゲ", "giant eel": "巨大ウナギ", "water nymph": "水のニンフ",
+  plumeria: "プルメリア", orchid: "蘭", "hibiscus flower": "ハイビスカス", "palm tree": "ヤシの木", "hula dancer": "フラダンサー", sailboat: "帆船", ukulele: "ウクレレ",
+  purple: "紫色の", yellow: "黄色の", red: "赤色の", blue: "青色の", orange: "橙色の", black: "黒色の", green: "緑色の", abstract: "抽象的な", geometric: "幾何学的な", patterned: "模様入りの", naturalistic: "自然風の",
+};
+
 export function curatedItemNames(): readonly string[] {
   return Object.keys(itemNames);
 }
@@ -310,7 +317,7 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   // unknown name or a user-provided inscription.
   const takeModifiers = (): void => {
     for (;;) {
-      const part = /^(\+\d+|-\d+|blessed|unblessed|uncursed|cursed|locked|unlocked|trapped|broken|very rusty|thoroughly rusty|very corroded|thoroughly corroded|very burnt|thoroughly burnt|very rotted|thoroughly rotted|partly eaten|partly used|rusty|corroded|burnt|rotted|greased|poisoned|erodeproof|rustproof|fireproof|fixed|empty|diluted|wet) (.+)$/.exec(item);
+      const part = /^(\+\d+|-\d+|tempered|moist|wet|blessed|unblessed|uncursed|cursed|locked|unlocked|trapped|broken|very rusty|thoroughly rusty|very corroded|thoroughly corroded|very burnt|thoroughly burnt|very rotted|thoroughly rotted|partly eaten|partly used|rusty|corroded|burnt|rotted|greased|poisoned|erodeproof|rustproof|fireproof|fixed|empty|diluted|wet) (.+)$/.exec(item);
       if (!part) break;
       descriptions.push(own(modifiers, part[1]) ?? part[1]);
       item = part[2];
@@ -319,6 +326,8 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   takeModifiers();
   // xname(): boots and gloves come in pairs, dragon scales in sets.
   // objnam.c: a tin names how its meat was prepared.
+  const homemade = /^homemade (tins? of .+)$/.exec(item);
+  if (homemade) item = homemade[1].replace(/^(tins? of )/, "$1homemade ");
   const tin = /^tins? of (?:(homemade|boiled|deep fried|broiled|candied|dried|french fried|fried|pickled|pureed|rotten|sauteed|smoked|stir fried|szechuan|soup made from|stewed) )?(.+?)(?: meat)?$/.exec(item);
   if (tin && translateMonsterName(`the ${tin[2]}`, locale) !== `the ${tin[2]}`) {
     const preparations: Readonly<Record<string, string>> = {
@@ -331,11 +340,7 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   // objnam.c: a Hawaiian shirt's design.
   const shirt = /^(.+?) with an? (.+) motif$/.exec(item);
   if (shirt) {
-    const motifs: Readonly<Record<string, string>> = {
-      flamingo: "フラミンゴ", parrot: "オウム", toucan: "オオハシ", "bird of paradise": "極楽鳥", "sea turtle": "ウミガメ", "tropical fish": "熱帯魚", jellyfish: "クラゲ", "giant eel": "巨大ウナギ", "water nymph": "水のニンフ",
-      plumeria: "プルメリア", orchid: "蘭", "hibiscus flower": "ハイビスカス", "palm tree": "ヤシの木", "hula dancer": "フラダンサー", sailboat: "帆船", ukulele: "ウクレレ",
-      purple: "紫色の", yellow: "黄色の", red: "赤色の", blue: "青色の", orange: "橙色の", black: "黒色の", green: "緑色の", abstract: "抽象的な", geometric: "幾何学的な", patterned: "模様入りの", naturalistic: "自然風の",
-    };
+    const motifs = hawaiianDesigns;
     const shirtName = translateCuratedInventoryItem(shirt[1], locale);
     const motif = own(motifs, shirt[2]);
     if (motif !== undefined && shirtName !== shirt[1]) return `${descriptions.join("")}${motif}柄の${shirtName}${statusParts.join("")}`;

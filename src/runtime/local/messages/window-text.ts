@@ -15,6 +15,7 @@ export interface RuntimeWindowTextDependencies {
     | "emit"
     | "eventHandler"
     | "protocol"
+    | "runtimeVersion"
   >;
   readonly gameOver: Pick<
     RuntimeGameOver,
@@ -67,7 +68,7 @@ export class RuntimeWindowText {
       `DISPLAY FILE request: "${fileName || "<empty>"}" (mustExist=${mustExist})`,
     );
 
-    const bundled = getBundledDisplayFile(fileName);
+    const bundled = getBundledDisplayFile(fileName, this.deps.coordinator.runtimeVersion);
     if (bundled && bundled.lines.length > 0) {
       if (this.deps.coordinator.eventHandler) {
         this.deps.coordinator.emit({
