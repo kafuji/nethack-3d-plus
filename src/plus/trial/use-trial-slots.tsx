@@ -33,13 +33,20 @@ const WORKER_RETIRE_DELAY_MS = 400;
  */
 const SNAPSHOT_CAPTURE_INTERVAL_MS = 500;
 const SNAPSHOT_CAPTURE_ATTEMPTS = 40;
-/** How much older than the level change a checkpoint may be and still be its. */
-const CHECKPOINT_MAX_AGE_MS = 3000;
 /** Covers a resume's runtime boot (about 4-6s). */
 const RESUME_SETTLE_MS = 10000;
 
 function finiteOrNull(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function summarizeLocation(stats: PlayerStatsSnapshot): TrialSlotSummary {
+  return {
+    turn: finiteOrNull(stats.time),
+    dlevel: finiteOrNull(stats.levelDepth) ?? finiteOrNull(stats.dlevel),
+    dungeon: stats.dungeon || null,
+    branchLevel: finiteOrNull(stats.levelBranchNumber),
+  };
 }
 
 export type TrialSlotPhase = "idle" | "saving" | "loading";
@@ -96,7 +103,12 @@ export function useTrialSlots(dependencies: UseTrialSlotsDependencies) {
   // Level tracking for automatic snapshots, reset for every game session.
   const sessionId = useRef(0);
   const sessionStartTime = useRef(0);
-  const previousLevelKey = useRef<string | null>(null);
+  const previousLedger = useRef<number | null>(null);
+  // What the status showed on arriving at each level, by ledger number.
+  const levelArrivals = useRef(new Map<number, TrialSlotSummary>());
+  const newestArrivalLedger = useRef<number | null>(null);
+  const capturePollSession = useRef<number | null>(null);
+  const captureAttemptsLeft = useRef(0);
   const captureInitialLevel = useRef(false);
   const lastCheckpointTime = useRef(0);
 
@@ -117,7 +129,9 @@ export function useTrialSlots(dependencies: UseTrialSlotsDependencies) {
   useEffect(() => {
     sessionId.current += 1;
     sessionStartTime.current = Date.now();
-    previousLevelKey.current = null;
+    previousLedger.current = null;
+    levelArrivals.current.clear();
+    newestArrivalLedger.current = null;
     const mode = characterCreationConfig?.mode;
     const isNewGame = mode === "random" || mode === "create";
     // A resumed game is already snapshotted (or is a slot); a new one gets
@@ -132,61 +146,81 @@ export function useTrialSlots(dependencies: UseTrialSlotsDependencies) {
     refreshSlotInfo();
   }, [characterCreationConfig, refreshSlotInfo]);
 
-  const captureLevelSnapshot = (summary: TrialSlotSummary, notBeforeTime: number) => {
+  // One polling loop per session: it stays on until the newest arrival has a
+  // snapshot, so quick level changes cannot race each other. Checkpoints a
+  // later level change overwrote before they were read are simply skipped.
+  const pollForLevelSnapshot = () => {
+    captureAttemptsLeft.current = SNAPSHOT_CAPTURE_ATTEMPTS;
     const session = sessionId.current;
-    const notBefore = Math.max(lastCheckpointTime.current, notBeforeTime);
+    if (capturePollSession.current === session) return;
+    capturePollSession.current = session;
     void (async () => {
-      for (let attempt = 0; attempt < SNAPSHOT_CAPTURE_ATTEMPTS; attempt += 1) {
+      while (session === sessionId.current && captureAttemptsLeft.current > 0) {
+        captureAttemptsLeft.current -= 1;
         await new Promise(resolve => window.setTimeout(resolve, SNAPSHOT_CAPTURE_INTERVAL_MS));
-        if (session !== sessionId.current || pending.current) return;
-        try {
-          const checkpointTime = await captureAutoSnapshot(runtimeVersion, characterName, summary, notBefore);
-          if (checkpointTime === null) continue;
-          if (session !== sessionId.current) return;
-          lastCheckpointTime.current = checkpointTime;
-          refreshSlotInfo();
+        if (session !== sessionId.current) return;
+        if (pending.current) {
+          capturePollSession.current = null;
           return;
+        }
+        try {
+          const captured = await captureAutoSnapshot(
+            runtimeVersion,
+            characterName,
+            ledger => levelArrivals.current.get(ledger) ?? null,
+            Math.max(lastCheckpointTime.current, sessionStartTime.current),
+          );
+          if (session !== sessionId.current) return;
+          if (!captured) continue;
+          lastCheckpointTime.current = captured.checkpointTime;
+          refreshSlotInfo();
+          if (captured.ledger === newestArrivalLedger.current) {
+            capturePollSession.current = null;
+            return;
+          }
         } catch (error) {
           console.warn("Failed to capture trial snapshot:", error);
+          capturePollSession.current = null;
           return;
         }
       }
-      console.warn("Trial snapshot skipped: checkpoint did not reach storage in time");
+      if (session === sessionId.current) {
+        capturePollSession.current = null;
+        console.warn("Trial snapshot skipped: checkpoint did not reach storage in time");
+      }
     })();
   };
 
-  const dlevel = finiteOrNull(playerStats.dlevel);
-  const levelKey = dlevel === null ? null : `${playerStats.dungeon}:${dlevel}`;
+  // The ledger number names a level exactly, unlike playerStats.dlevel, which
+  // alternates between depth and branch level during a status update.
+  const ledger = finiteOrNull(playerStats.levelLedgerNo);
   useEffect(() => {
-    if (!trialModeActive || !characterName || levelKey === null) return;
-    const previous = previousLevelKey.current;
-    previousLevelKey.current = levelKey;
-    if (previous === null) {
-      // The status still shows defaults while a new game boots, so wait for
-      // the starting checkpoint itself rather than for a level change.
-      if (captureInitialLevel.current) {
-        captureLevelSnapshot({ turn: 1, dlevel: 1 }, sessionStartTime.current);
-      }
+    if (!trialModeActive || !characterName || ledger === null) return;
+    const previous = previousLedger.current;
+    previousLedger.current = ledger;
+    if (previous === ledger) return;
+    const settling = Date.now() - sessionStartTime.current < RESUME_SETTLE_MS;
+    if (!captureInitialLevel.current && (previous === null || settling)) {
+      // A resumed game's status starts from the previous game's level; let it
+      // settle to the restored one before treating changes as level changes.
       return;
     }
-    if (previous === levelKey) return;
-    // A resumed game's status starts from the previous game's level; let it
-    // settle to the restored one before treating changes as level changes.
-    if (!captureInitialLevel.current && Date.now() - sessionStartTime.current < RESUME_SETTLE_MS) return;
-    // NetHack writes the checkpoint just before the status shows the new
-    // level; older shards (a restored game's, say) must not pass for it.
-    captureLevelSnapshot(
-      { turn: finiteOrNull(playerStats.time), dlevel },
-      Date.now() - CHECKPOINT_MAX_AGE_MS,
-    );
-  }, [levelKey, trialModeActive, characterName]);
+    const summary = summarizeLocation(playerStats);
+    levelArrivals.current.set(ledger, {
+      ...summary,
+      // Its time may still be the previous game's while a new game boots.
+      turn: captureInitialLevel.current && settling ? 1 : summary.turn,
+    });
+    newestArrivalLedger.current = ledger;
+    pollForLevelSnapshot();
+  }, [ledger, trialModeActive, characterName]);
 
   const begin = (kind: "save" | "load", target: number | string) => {
     if (!trialModeActive || !controller || pending.current) return;
     pending.current = {
       kind,
       target,
-      summary: { turn: finiteOrNull(playerStats.time), dlevel: finiteOrNull(playerStats.dlevel) },
+      summary: summarizeLocation(playerStats),
       startedAt: performance.now(),
       answered: false,
     };

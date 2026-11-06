@@ -1,5 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { captureExistingTrialSlot, resolveLatestManualSave, restoreAutoSnapshot, restoreTrialSlot } from "./trial-slots";
+import {
+  captureAutoSnapshot,
+  captureExistingTrialSlot,
+  readCheckpointState,
+  resolveLatestManualSave,
+  restoreAutoSnapshot,
+  restoreTrialSlot,
+} from "./trial-slots";
 
 const mocked = vi.hoisted(() => ({
   archive: { name: "Bob", initOptions: [], category: "manual" },
@@ -64,6 +71,53 @@ describe("trial save capture", () => {
   });
 });
 afterEach(() => vi.unstubAllGlobals());
+
+function shardArchive(ledger: number, stateTime: string, levelTime = stateTime) {
+  const state = new Uint8Array(new Int32Array([42, ledger]).buffer);
+  return JSON.stringify({
+    files: [
+      { key: "/save/0Alice.0", timestamp: stateTime, contents: btoa(String.fromCharCode(...state)) },
+      { key: "/save/0Alice.1", timestamp: levelTime, contents: "AAAA" },
+    ],
+  });
+}
+
+describe("automatic snapshot labels", () => {
+  const stateTime = "2026-01-01T00:00:10.000Z";
+  const autosave = { key: "autosave:Alice", name: "Alice", displayName: "Alice", category: "autosave", isResumable: true,
+    timestamp: new Date(stateTime), initOptions: [], files: [] };
+
+  it("reads the level a checkpoint really holds", () => {
+    expect(readCheckpointState(shardArchive(7, stateTime))).toEqual({ ledger: 7, checkpointTime: Date.parse(stateTime) });
+  });
+
+  it("rejects shards from the middle of a level change", () => {
+    expect(readCheckpointState(shardArchive(7, stateTime, "2026-01-01T00:00:11.000Z"))).toBeNull();
+  });
+
+  it("labels a snapshot from the level in its shards, not the latest level change", async () => {
+    mocked.fetchSavedGames.mockResolvedValue([autosave] as never);
+    mocked.exportSavedGame.mockResolvedValue(shardArchive(2, stateTime));
+    const labels = new Map([[2, { turn: 100, dlevel: 2 }], [3, { turn: 120, dlevel: 3 }]]);
+    await expect(captureAutoSnapshot("3.6.7", "Alice", ledger => labels.get(ledger) ?? null, 0))
+      .resolves.toEqual({ ledger: 2, checkpointTime: Date.parse(stateTime) });
+    expect(mocked.puts[0].value).toMatchObject({ turn: 100, dlevel: 2 });
+  });
+
+  it("waits while the shards' level has not been seen arriving", async () => {
+    mocked.fetchSavedGames.mockResolvedValue([autosave] as never);
+    mocked.exportSavedGame.mockResolvedValue(shardArchive(9, stateTime));
+    await expect(captureAutoSnapshot("3.6.7", "Alice", () => null, 0)).resolves.toBeNull();
+    expect(mocked.puts).toHaveLength(0);
+  });
+
+  it("ignores a checkpoint it has already captured", async () => {
+    mocked.fetchSavedGames.mockResolvedValue([autosave] as never);
+    await expect(captureAutoSnapshot("3.6.7", "Alice", () => ({ turn: 1, dlevel: 1 }), Date.parse(stateTime)))
+      .resolves.toBeNull();
+    expect(mocked.exportSavedGame).not.toHaveBeenCalled();
+  });
+});
 
 describe("trial restore character identity", () => {
   it.each([
