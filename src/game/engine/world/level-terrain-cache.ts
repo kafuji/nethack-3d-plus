@@ -219,6 +219,10 @@ export class LevelTerrainCache {
     }
 
     this.latestRuntimeLevelIdentity = identity;
+    // nh3d-plus: exact level for trial-and-error snapshots.
+    this.dependencies.playerStatus.playerStats.levelLedgerNo = identity.ledgerNo;
+    this.dependencies.playerStatus.playerStats.levelDepth = identity.depth;
+    this.dependencies.playerStatus.playerStats.levelBranchNumber = identity.dlevel;
 
     if (Number.isFinite(identity.dlevel)) {
       this.dependencies.playerStatus.playerStats.dlevel = Math.trunc(identity.dlevel);

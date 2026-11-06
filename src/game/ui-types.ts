@@ -64,6 +64,11 @@ export type PlayerStatsSnapshot = {
   dungeon: string;
   dlevel: number;
   locationLabel?: string;
+  // nh3d-plus: the exact level, for trial-and-error snapshots. dlevel holds
+  // the depth or the level within the branch depending on the last status field.
+  levelLedgerNo?: number | null;
+  levelDepth?: number | null;
+  levelBranchNumber?: number | null;
   gold: number;
   alignment: string;
   hunger: string;

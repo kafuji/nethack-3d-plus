@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { getCurrentLocale } from "../../i18n/core";
 import { commonStrings, plusStrings } from "../../ui/app/shared/translations";
+import { describeTrialLocation } from "./trial-location";
 import type { TrialSlotPhase, TrialSlotPicker } from "./use-trial-slots";
 import {
   TRIAL_SLOT_COUNT,
@@ -27,9 +29,13 @@ export function isTrialSlotPanelVisible(state: TrialSlotMenuState): boolean {
   return state.trialSlotPhase !== "idle" || state.trialSlotPicker !== null;
 }
 
-export function describeDetail(info: TrialSlotInfo, depthInTitle = false): string {
+function describeLocation(info: TrialSlotInfo): string | null {
+  return describeTrialLocation(info, trialStrings.slotDepth, getCurrentLocale());
+}
+
+export function describeDetail(info: TrialSlotInfo, locationInTitle = false): string {
   return [
-    info.dlevel !== null && !depthInTitle ? trialStrings.slotDepth(info.dlevel) : null,
+    locationInTitle ? null : describeLocation(info),
     info.turn !== null ? trialStrings.slotTurn(info.turn) : null,
     info.savedAt.toLocaleString(undefined, {
       month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit",
@@ -140,12 +146,10 @@ export function TrialLoadEntries(props: {
         <Section label={trialStrings.autoSection} wide={props.wide}>
           {props.snapshots.map(snapshot => (
             <EntryButton
-              detail={describeDetail(snapshot, snapshot.dlevel !== null)}
+              detail={describeDetail(snapshot, describeLocation(snapshot) !== null)}
               key={snapshot.id}
               onClick={() => props.onLoadSnapshot(snapshot.id)}
-              title={snapshot.dlevel !== null
-                ? trialStrings.slotDepth(snapshot.dlevel)
-                : trialStrings.autoSection}
+              title={describeLocation(snapshot) ?? trialStrings.autoSection}
             />
           ))}
         </Section>

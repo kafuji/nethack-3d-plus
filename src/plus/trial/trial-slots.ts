@@ -17,7 +17,11 @@ export const TRIAL_SLOT_COUNT = 3;
 /** Where the character was when saved, so slots can be told apart. */
 export type TrialSlotSummary = {
   turn: number | null;
+  /** True depth (NetHack's Dlvl), not the level number within a branch. */
   dlevel: number | null;
+  /** Older records have neither of these. */
+  dungeon?: string | null;
+  branchLevel?: number | null;
 };
 
 export type TrialSlotInfo = TrialSlotSummary & {
@@ -87,6 +91,17 @@ async function readSlotRecord(
   return record ?? null;
 }
 
+function toSlotInfo(record: TrialSlotRecord): TrialSlotInfo {
+  return {
+    displayName: record.displayName,
+    savedAt: new Date(record.savedAt),
+    turn: record.turn ?? null,
+    dlevel: record.dlevel ?? null,
+    dungeon: record.dungeon ?? null,
+    branchLevel: record.branchLevel ?? null,
+  };
+}
+
 /** Every slot of the character, index 0 being slot 1; null for empty slots. */
 export async function readTrialSlots(
   runtimeVersion: NethackRuntimeVersion,
@@ -95,12 +110,7 @@ export async function readTrialSlots(
   const slots: Array<TrialSlotInfo | null> = [];
   for (let slot = 1; slot <= TRIAL_SLOT_COUNT; slot += 1) {
     const record = await readSlotRecord(runtimeVersion, characterName, slot);
-    slots.push(record ? {
-      displayName: record.displayName,
-      savedAt: new Date(record.savedAt),
-      turn: record.turn ?? null,
-      dlevel: record.dlevel ?? null,
-    } : null);
+    slots.push(record ? toSlotInfo(record) : null);
   }
   return slots;
 }
@@ -303,35 +313,62 @@ export async function readAutoSnapshots(
 ): Promise<TrialAutoSnapshotInfo[]> {
   return (await readAutoSnapshotEntries(runtimeVersion, characterName)).map(({ key, record }) => ({
     id: key,
-    displayName: record.displayName,
-    savedAt: new Date(record.savedAt),
-    turn: record.turn ?? null,
-    dlevel: record.dlevel ?? null,
+    ...toSlotInfo(record),
   }));
 }
 
+export type TrialCheckpointState = {
+  /** The level the checkpoint was written on (NetHack's ledger number). */
+  ledger: number;
+  checkpointTime: number;
+};
+
 /**
- * Copy the character's current checkpoint shards into a new snapshot, but only
- * once they are newer than `newerThan` (the previous snapshot's checkpoint
- * time); returns the captured checkpoint time, or null if not synced yet.
+ * What a shard set actually holds. "<lock>.0" starts with the process id and
+ * the current level's ledger number, both native ints, and is written last;
+ * a level file newer than it means NetHack is still mid level change, so the
+ * set is not coherent yet (null).
+ */
+export function readCheckpointState(archiveText: string): TrialCheckpointState | null {
+  const files = (JSON.parse(archiveText) as { files: Array<{ key: string; timestamp: string; contents: string }> }).files;
+  const stateFile = files.find(file => file.key.endsWith(".0"));
+  if (!stateFile) return null;
+  const checkpointTime = Date.parse(stateFile.timestamp);
+  if (files.some(file => Date.parse(file.timestamp) > checkpointTime)) return null;
+  const bytes = Uint8Array.from(atob(stateFile.contents), char => char.charCodeAt(0));
+  if (bytes.length < 8) return null;
+  return { ledger: new DataView(bytes.buffer).getInt32(4, true), checkpointTime };
+}
+
+/**
+ * Copy the character's current checkpoint shards into a new snapshot, once
+ * they are newer than `newerThan` (the previous snapshot's checkpoint time).
+ * The label comes from the level the shards really hold: `describeLevel` turns
+ * its ledger number into a summary, or null if that level's arrival has not
+ * been seen yet. Returns the captured state, or null if there is nothing to
+ * capture yet.
  */
 export async function captureAutoSnapshot(
   runtimeVersion: NethackRuntimeVersion,
   characterName: string,
-  summary: TrialSlotSummary,
+  describeLevel: (ledger: number) => TrialSlotSummary | null,
   newerThan: number,
-): Promise<number | null> {
+): Promise<TrialCheckpointState | null> {
   const save = (await fetchSavedGames(runtimeVersion)).find(
     candidate => candidate.category === "autosave" && candidate.name === characterName && candidate.isResumable,
   );
   if (!save || save.timestamp.getTime() <= newerThan) return null;
   const archive = await exportSavedGame(save, runtimeVersion);
+  const state = readCheckpointState(archive);
+  if (!state || state.checkpointTime <= newerThan) return null;
+  const summary = describeLevel(state.ledger);
+  if (!summary) return null;
   const capturedAt = Date.now();
   const record: TrialAutoSnapshotRecord = {
     archive,
     displayName: save.displayName,
     savedAt: new Date(capturedAt).toISOString(),
-    checkpointTime: save.timestamp.getTime(),
+    checkpointTime: state.checkpointTime,
     ...summary,
   };
   const key = `${autoSnapshotPrefix(runtimeVersion, characterName)}${String(capturedAt).padStart(15, "0")}`;
@@ -350,7 +387,7 @@ export async function captureAutoSnapshot(
       transaction.onerror = () => reject(transaction.error);
     });
   } finally { db.close(); }
-  return record.checkpointTime;
+  return state;
 }
 
 export async function restoreAutoSnapshot(

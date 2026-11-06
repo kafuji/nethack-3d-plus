@@ -132,7 +132,10 @@ export class PlayerStatus {
     score: 0,
   };
 
-  playerStats = { ...this.initialPlayerStats };
+  // nh3d-plus: exact level fields are set from the runtime's level identity.
+  playerStats: typeof this.initialPlayerStats &
+    Pick<PlayerStatsSnapshot, "levelLedgerNo" | "levelDepth" | "levelBranchNumber"> =
+    { ...this.initialPlayerStats };
 
   resetForNewGame(): void {
     this.playerStats = { ...this.initialPlayerStats };
