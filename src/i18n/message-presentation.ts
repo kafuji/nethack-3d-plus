@@ -60,7 +60,7 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
  */
 export function keepsEnglishRun(original: string, translated: string): boolean {
   // Quoted text is the game's own label or a player's words ("ZELGO MER").
-  for (const run of translated.replace(/「[^」]*」/g, "").match(/[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){2,}/g) ?? []) {
+  for (const run of translated.replace(/「[^」]*」/g, "").replace(/\b[A-Z][\w-]+ of [A-Z][a-z]+\b/g, "").match(/[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){2,}/g) ?? []) {
     if (original.includes(run)) return true;
   }
   return false;

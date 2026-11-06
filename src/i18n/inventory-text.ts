@@ -87,7 +87,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "partisan": "パルチザン", "ranseur": "ランサー", "spetum": "スぺタム", "glaive": "グレイブ", "lance": "ランス", "halberd": "ハルバード",
   "bardiche": "バルディッシュ", "voulge": "ヴォウジェ", "dwarvish mattock": "ドワーフのつるはし", "fauchard": "フォシャール", "guisarme": "ギザルム",
   "bill-guisarme": "ビルギザルム", "lucern hammer": "ルツェルンハンマー", "bec de corbin": "ベク・ド・コルバン", "morning star": "モーニングスター", "war hammer": "戦槌", "flail": "フレイル", "bullwhip": "むち", "aklys": "アクリュス", "rubber hose": "ゴムホース",
-  "fedora": "中折れ帽", "cornuthaum": "円錐帽", "dunce cap": "愚者の帽子", "dented pot": "へこんだ鍋", "helm of opposite alignment": "属性反転の兜", "helm of telepathy": "テレパシーの兜",
+  "cloth hat": "布の帽子", "smooth shield": "滑らかな盾", "fedora": "中折れ帽", "cornuthaum": "円錐帽", "dunce cap": "愚者の帽子", "dented pot": "へこんだ鍋", "helm of opposite alignment": "属性反転の兜", "helm of telepathy": "テレパシーの兜",
   "crystal plate mail": "水晶のプレートメイル", "bronze plate mail": "青銅のプレートメイル", "banded mail": "バンデッドメイル", "dwarvish mithril-coat": "ドワーフのミスリル鎧", "elven mithril-coat": "エルフのミスリル鎧", "orcish chain mail": "オークの鎖かたびら", "orcish ring mail": "オークのリングメイル", "leather jacket": "革の上着", "Hawaiian shirt": "アロハシャツ", "T-shirt": "Tシャツ",
   "mummy wrapping": "ミイラの包帯", "oilskin cloak": "油布のクローク", "alchemy smock": "錬金術師の上着", "Uruk-hai shield": "ウルク＝ハイの盾", "dwarvish roundshield": "ドワーフの丸盾",
   "gauntlets of fumbling": "不器用の籠手", "gauntlets of power": "剛力の籠手", "gauntlets of dexterity": "器用さの籠手", "iron shoes": "鉄の靴", "speed boots": "加速のブーツ", "water walking boots": "水上歩行のブーツ", "jumping boots": "跳躍のブーツ", "elven boots": "エルフのブーツ", "kicking boots": "蹴りのブーツ", "fumble boots": "不器用のブーツ", "levitation boots": "浮遊のブーツ",

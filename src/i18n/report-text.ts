@@ -90,6 +90,8 @@ function translateOverviewFeatures(line: string): string | undefined {
 const killerModifiers: Readonly<Record<string, string>> = { invisible: "透明な", "hallucinogen-distorted": "幻覚で歪んだ" };
 // How a character can die without a monster involved (end.c, trap.c, and others).
 const deathCauses: Readonly<Record<string, string>> = {
+  overexertion: "過労",
+  "an unsuccessful polymorph": "変化の失敗",
   "a falling rock": "落石", "falling rock": "落石", "a falling object": "落下物", "falling object": "落下物", "falling boulder": "落石",
   "jumping out of a bear trap": "トラバサミからの跳躍", "crunched in the head by an iron ball": "鉄球による頭部の打撃", "leg damage from being pulled out of a bear trap": "トラバサミから引き抜いた脚の傷",
   "dragged downstairs by an iron ball": "鉄球に階段を引きずられたこと", "iron ball collision": "鉄球との衝突", "axing a hard object": "固い物を斧で叩いたこと", "squished under a boulder": "岩の下敷き",
