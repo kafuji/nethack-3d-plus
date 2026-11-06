@@ -33,7 +33,7 @@ describe("end of game reports", () => {
     expect(translateReportLine("  2 gnome leaders", "ja")).toBe("  ノームの指導者 ×2");
     expect(translateReportLine("  a little dog", "ja")).toBe("  子犬");
     expect(translateReportLine("  2 dwarves", "ja")).toBe("  ドワーフ ×2");
-    expect(translateReportLine("the Oracle (twice)", "ja")).toBe("神託者 ×2");
+    expect(translateReportLine("the Oracle (twice)", "ja")).toBe("神託師 ×2");
     expect(translateReportLine("Medusa", "ja")).toBe("メデューサ");
     expect(translateReportLine("Dog or other canine", "ja")).toBe("犬またはその他のイヌ科の動物");
     expect(translateReportLine(" gnomes (extinct)", "ja")).toBe(" ノーム（絶滅）");

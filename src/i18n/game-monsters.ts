@@ -29,7 +29,7 @@ const monsters: Readonly<Record<string, string>> = {
   "Lord Carnarvon": "カーナヴォン卿", "Lord Sato": "佐藤卿", "Lord Surtur": "スルト卿", "Master Assassin": "暗殺者の頭領",
   "Master Kaen": "カエン師", "Master of Thieves": "盗賊の頭領", "Medusa": "メデューサ", "Minion of Huhetotl": "フエフエテオトルの手下",
   "Nalzok": "ナルゾク", "Nazgul": "ナズグル", "Neferet the Green": "緑のネフェレト", "Norn": "ノルン", "Olog-hai": "オログ＝ハイ",
-  "Oracle": "神託者", "Orcus": "オルクス", "Orion": "オリオン", "Pelias": "ペリアス", "Pestilence": "疫病", "Scorpius": "スコルピウス",
+  "Oracle": "神託師", "Orcus": "オルクス", "Orion": "オリオン", "Pelias": "ペリアス", "Pestilence": "疫病", "Scorpius": "スコルピウス",
   "Shaman Karnov": "シャーマン・カルノフ", "Thoth Amon": "トート・アモン", "Twoflower": "トゥーフラワー", "Vlad the Impaler": "串刺し公ヴラド",
   "Wizard of Yendor": "イェンダーの魔法使い", "Woodland-elf": "森エルフ", "Yeenoghu": "イーノグー", "aligned cleric": "聖職者",
   "baby shimmering dragon": "子供のきらめくドラゴン", "barbed devil": "とげの悪魔", "beholder": "ビホルダー", "chieftain": "族長",

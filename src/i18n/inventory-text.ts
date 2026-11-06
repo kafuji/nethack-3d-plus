@@ -8,7 +8,7 @@ import { keepsEnglishRun } from "./message-presentation";
 // These are presentation strings only. Never use the result for identifying an
 // item, choosing an action, resolving a glyph, or submitting a menu selection.
 const categories: Readonly<Record<string, string>> = {
-  "Weapons": "武器", "Armor": "防具", "Rings": "指輪", "Amulets": "護符",
+  "Special": "特殊", "Weapons": "武器", "Armor": "防具", "Rings": "指輪", "Amulets": "護符",
   "Tools": "道具", "Comestibles": "食料", "Potions": "ポーション", "Scrolls": "巻物",
   "Spellbooks": "魔法書", "Wands": "杖", "Coins": "硬貨", "Gems/Stones": "宝石・石",
   "Gems": "宝石", "Boulders/Statues": "岩・彫像", "Iron balls": "鉄球", "Chains": "鎖",
@@ -73,7 +73,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "ring of levitation": "浮遊の指輪", "ring of free action": "自由行動の指輪", "ring of fire resistance": "火炎耐性の指輪", "ring of cold resistance": "冷気耐性の指輪", "ring of poison resistance": "毒耐性の指輪",
   "amulet of reflection": "反射の護符", "amulet of life saving": "救命の護符", "amulet of ESP": "ESPの護符",
   "Amulet of Yendor": "イェンダーの魔除け",
-  "Bell of Opening": "開門の鐘", "Candelabrum of Invocation": "招来の燭台", "Book of the Dead": "死者の書",
+  "Bell of Opening": "開門の鐘", "Candelabrum of Invocation": "招来の燭台", candelabrum: "燭台", "Book of the Dead": "死者の書",
   "sack": "袋", "oilskin sack": "油布の袋", "bag of holding": "保持の袋", "bag of tricks": "手品の袋", "large box": "大きな箱", "chest": "宝箱",
   "skeleton key": "万能鍵", "lock pick": "開錠具", "credit card": "クレジットカード", "tinning kit": "缶詰製造キット", "tin opener": "缶切り",
   "towel": "タオル", "blindfold": "目隠し", "mirror": "鏡", "magic marker": "魔法のマーカー", "stethoscope": "聴診器", "whistle": "笛", "magic whistle": "魔法の笛",
@@ -273,7 +273,9 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
     const join = (text: string): string => [text, weightText].filter(Boolean).join("、");
     const attachedTo = /^attached to ([^()\r\n]+)$/.exec(detail);
     const total = /^(\d+) in total$/.exec(detail);
+    const candles = /^(\d+) of 7 candles?(?: attached|(, lit))$/.exec(detail);
     if (translatedStatus !== undefined) statusParts.unshift(`（${join(translatedStatus)}）`);
+    else if (candles) statusParts.unshift(`（${join(`ろうそく ${candles[1]}/7本${candles[2] ? "、点灯中" : ""}`)}）`);
     else if (/^\d+:-?\d+$/.test(detail)) statusParts.unshift(weightText ? ` (${detail}, ${weightText})` : ` (${detail})`);
     else if (price) statusParts.unshift(`（${join(`${priceLabel[price[1]]}、${price[2]} ゾークミド`)}）`);
     else if (attachedTo) statusParts.unshift(`（${join(`${attachedTo[1]}につながれている`)}）`);
@@ -309,7 +311,8 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
     }
   };
   takeModifiers();
-  const pairMatch = /^pairs? of (.+)$/.exec(item);
+  // xname(): boots and gloves come in pairs, dragon scales in sets.
+  const pairMatch = /^(?:pairs?|sets?) of (.+)$/.exec(item);
   if (pairMatch) {
     item = pairMatch[1];
     takeModifiers();

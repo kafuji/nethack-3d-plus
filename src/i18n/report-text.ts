@@ -176,7 +176,7 @@ function translateEndSummary(line: string, locale: SupportedLocale): string | un
 
 const chronicleAchievements: Readonly<Record<string, string>> = {
   "acquired the Bell of Opening": "開門の鐘を手に入れた", "entered Gehennom": "ゲヘナに入った",
-  "acquired the Candelabrum of Invocation": "召喚の燭台を手に入れた", "acquired the Book of the Dead": "死者の書を手に入れた",
+  "acquired the Candelabrum of Invocation": "招来の燭台を手に入れた", "acquired the Book of the Dead": "死者の書を手に入れた",
   "performed the invocation": "儀式を執り行った", "acquired The Amulet of Yendor": "イェンダーの魔除けを手に入れた",
   "entered the Elemental Planes": "元素界に入った", "entered the Astral Plane": "アストラル界に入った", ascended: "昇天した",
   "acquired the Mines' End luckstone": "鉱山の底の幸運の石を手に入れた", "acquired the Sokoban bag of holding": "倉庫番の賞品の魔法の袋を手に入れた",
@@ -252,7 +252,7 @@ function translateContent(line: string, locale: SupportedLocale): string {
   if (m) return `${translatePlayerRank(m[1], locale)}の称号を得ました。`;
   m = /^You (have|had|have handled|handled|have obtained|had obtained|delivered) (the Bell of Opening|the Candelabrum of Invocation|the Book of the Dead|the Amulet of Yendor)\.$/.exec(line);
   if (m) {
-    const objects: Readonly<Record<string, string>> = { "the Bell of Opening": "開門の鐘", "the Candelabrum of Invocation": "召喚の燭台", "the Book of the Dead": "死者の書", "the Amulet of Yendor": "イェンダーの魔除け" };
+    const objects: Readonly<Record<string, string>> = { "the Bell of Opening": "開門の鐘", "the Candelabrum of Invocation": "招来の燭台", "the Book of the Dead": "死者の書", "the Amulet of Yendor": "イェンダーの魔除け" };
     const action = m[1] === "have" ? "を持っています" : m[1] === "had" ? "を持っていました" : m[1].includes("handled") ? "を手にしたことがあります" : m[1] === "delivered" ? "を届けました" : "を手に入れました";
     return `${objects[m[2]]}${action}。`;
   }

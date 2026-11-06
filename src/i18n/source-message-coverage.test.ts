@@ -8,10 +8,10 @@ import { setCurrentLocale } from "./core";
 // Vitest exposes the process environment as import.meta.env.
 const samplesFile = (import.meta.env as Record<string, string | undefined>).NH_MESSAGE_SAMPLES;
 
-/** Shown in English: no Japanese, or two or more English words in a row. */
+/** Shown in English: no Japanese, or any English word kept apart from the sample's arguments. */
 function isUntranslated(text: string): boolean {
   return !/[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(text)
-    || /[A-Za-z]{2,}[,.!?']*(?: +[A-Za-z][A-Za-z'.,!?-]*)+/.test(text.replace(/KAABLAMM|Kaablamm/g, ""));
+    || /[A-Za-z]{3,}/.test(text.replace(/KAABLAMM|Kaablamm|Anhur|Agent/g, ""));
 }
 
 it.skipIf(!samplesFile)("reports source messages without a Japanese rendering", async () => {

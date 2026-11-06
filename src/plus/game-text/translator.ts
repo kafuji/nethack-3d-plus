@@ -75,6 +75,7 @@ const termRenames: ReadonlyArray<readonly [RegExp, string]> = [
   [/変身/g, "変化"],
   [/鞄/g, "袋"],
   [/魔導書/g, "魔法書"],
+  [/鉄の棒/g, "鉄格子"],
 ];
 // Only in message templates: quest texts also use 薬 for medicine. 薬指 (ring
 // finger), 薬瓶 and 薬っぽい stay.
@@ -546,7 +547,8 @@ export class GameTextTranslator {
     const possessive = /^(.+?)(?:'s|')$/.exec(value);
     if (possessive) {
       const base = this.translateNoun(possessive[1]!);
-      return base !== possessive[1] ? `${base}の` : value;
+      // A proper name keeps its spelling but not the English possessive.
+      return base !== possessive[1] || /^[A-Z]/.test(base) ? `${base}の` : value;
     }
     const bodyPart = this.translateBodyPart(value);
     if (bodyPart) return bodyPart;
