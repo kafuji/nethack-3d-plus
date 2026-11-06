@@ -67,12 +67,28 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["The voice of Thoth booms out: Thou hast angered me.", "トートの声が響いた：「汝は我を怒らせた。」"],
   ["You have 50 zorkmids credit at Asidonhopo's general store.", "Asidonhopoの雑貨店に50ゴールドの信用がある。"],
   ["\"Don't Panic\"", "「あわてるな」"],
+  // Assembled from the source's word tables.
+  ["adjust: adjust inventory letters", "adjust: 持ち物の文字を整理する"],
+  ["So, Agent, you dare return to Asidonhopo's general store?!", "Agentよ、Asidonhopoの雑貨店によくも戻って来られたな！"],
+  ["You enter Asidonhopo's general store again!", "Asidonhopoの雑貨店に再び入った！"],
+  ["You owe Asidonhopo 50 zorkmids for goods lost.", "Asidonhopoに失われた品物の代金として50ゴールドの借りがある。"],
+  ["The massive hammer hits!  Lightning strikes the jackal!", "巨大なハンマーが命中した！稲妻がジャッカルを撃った！"],
+  ["Your dagger glows brown.", "あなたのダガーが茶色に光った。"],
+  ["Your long sword softly glows amber and is now as good as new.", "あなたのロングソードが琥珀色に光った。新品同様になった。"],
+  ["You feel like marching.", "行進したい気分だ。"],
+  ["You begin bashing monsters with your bare hands.", "素手でモンスターを殴り始めた。"],
+  ["You see a little dog drop out of your pack!", "子犬が背負い袋から出てくるのが見えた！"],
+  ["A viridian glow surrounds you.", "ビリジアン色の光があなたを包んだ。"],
+  ["The fiery blade burns the jackal!", "炎の刃がジャッカルを焼いた！"],
+  ["You consume smoked newt.", "燻製のイモリの肉を食べた。"],
+  ["There is a chest here.  Check it for traps?", "ここに宝箱がある。罠を調べますか？"],
 ];
 
 const reportLines: ReadonlyArray<readonly [string, string]> = [
   ["you, killed by a falling rock.", "あなた（落石に殺された）。"],
   ["you, killed by kicking a wall.", "あなた（壁を蹴ったことに殺された）。"],
   ["you, killed by a jackal, while praying.", "あなた（祈っている間にジャッカルに殺された）。"],
+  ["you, killed by overexertion.", "あなた（過労に殺された）。"],
 ];
 
 const items: ReadonlyArray<readonly [string, string]> = [

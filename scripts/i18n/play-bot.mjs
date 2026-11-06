@@ -3,6 +3,8 @@
 // Usage: node scripts/i18n/play-bot.mjs <out.json> [--first-seed 1] [--steps 3000] [--normal]
 // Run one seed per process: a second game in one process breaks Asyncify.
 // --normal plays as an ordinary character, without debug mode's extra commands and output.
+// --shop goes to Minetown in debug mode and keeps teleporting next to its monsters,
+// so that most of the game is spent in shops and temples, among their keepers.
 // Pass the result to src/i18n/played-text-coverage.test.ts.
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
@@ -18,6 +20,7 @@ const seeds = option("seeds", 3);
 const steps = option("steps", 3000);
 const firstSeed = option("first-seed", 1);
 const debugMode = !argv.includes("--normal");
+const shopMode = argv.includes("--shop");
 const publicDir = path.resolve("public");
 const roles = ["arc", "bar", "cav", "hea", "kni", "mon", "pri", "rog", "ran", "sam", "tou", "val", "wiz"];
 
@@ -69,6 +72,7 @@ async function play(seed) {
   const pick = (list) => list[random(list.length)];
 
   let budget = steps;
+  let shopTurn = 0;
   let finish;
   const finished = new Promise((resolve) => { finish = resolve; });
   const stop = () => finish();
@@ -78,6 +82,12 @@ async function play(seed) {
     if (pendingKeys.length) return pendingKeys.shift();
     budget--;
     if (budget <= 0) stop();
+    if (shopMode) {
+      shopTurn++;
+      if (shopTurn % 400 === 1) return ctrl("V");
+      if (shopTurn % 15 === 0) return ctrl("T");
+      if (random(3) === 0) return pick([",", ",", "p", "p", "d", "D", meta("c"), meta("c"), "i", "$", ...movement]);
+    }
     return pick(commands);
   };
   const toCode = (key) => (typeof key === "number" ? key : key.charCodeAt(0));
@@ -125,7 +135,7 @@ async function play(seed) {
         // win, glyphinfo, identifier, accelerator, groupacc, attr, clr, text, itemflags
         const text = args.find((value) => typeof value === "string" && value.length > 1);
         record(Number(args[2]) === 0 ? "menu-heading" : "menu", text);
-        menu.push({ identifier: args[2], accelerator: args[3] });
+        menu.push({ identifier: args[2], accelerator: args[3], text });
         return 0;
       }
       case "shim_end_menu": record("menu-title", args[1]); return 0;
@@ -133,6 +143,15 @@ async function play(seed) {
         const [, how, listPointer] = args;
         await wait();
         const selectable = menu.filter((row) => Number(row.identifier) !== 0);
+        const town = shopMode ? selectable.find((row) => /minetn|minetown/i.test(row.text ?? "")) : undefined;
+        if (town) {
+          const chosen = mod._malloc(16);
+          for (let offset = 0; offset < 16; offset += 4) mod.setValue(chosen + offset, 0, "i32");
+          mod.setValue(chosen, Number(town.identifier), "i32");
+          mod.setValue(chosen + 8, -1, "i32");
+          mod.setValue(listPointer, chosen, "*");
+          return 1;
+        }
         if (how === 0 || selectable.length === 0 || random(4) === 0) {
           if (listPointer) mod.setValue(listPointer, 0, "*");
           return how === 0 ? 0 : -1;
@@ -166,7 +185,7 @@ async function play(seed) {
         if (/wish/i.test(question ?? "")) answer = pick(wishTopics());
         else if (/kind of monster|create|genocide|class of monsters|monster/i.test(question ?? "")) answer = pick(monsters);
         // "?" lists the special levels in debug mode, and the menu picks one at random.
-        else if (/level/i.test(question ?? "")) answer = debugMode && random(4) ? "?" : String(1 + random(50));
+        else if (/level/i.test(question ?? "")) answer = shopMode || (debugMode && random(4)) ? "?" : String(1 + random(50));
         else if (/name|call|annotation|engrave|write|type/i.test(question ?? "")) answer = random(2) ? "Elbereth" : "x";
         mod.stringToUTF8(answer, buffer, 200);
         return 0;

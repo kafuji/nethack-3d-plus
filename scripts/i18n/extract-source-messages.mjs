@@ -29,7 +29,7 @@ function stripComments(src) {
       i = j;
     } else if (ch === "/" && src[i + 1] === "*") {
       const end = src.indexOf("*/", i + 2);
-      out += " ";
+      out += " " + src.slice(i, end < 0 ? src.length : end).replace(/[^\n]/g, "");
       i = end < 0 ? src.length : end + 1;
     } else if (ch === "/" && src[i + 1] === "/") {
       const end = src.indexOf("\n", i);
@@ -71,12 +71,76 @@ const verbS = (v) => {
   return v + "s";
 };
 
+/** Top-level "cond ? a : b" of an expression, ignoring parentheses and strings. */
+function splitTernary(expr) {
+  let depth = 0, question = -1, nested = 0;
+  for (let i = 0; i < expr.length; i++) {
+    const ch = expr[i];
+    if (ch === '"' || ch === "'") {
+      let j = i + 1;
+      while (j < expr.length && expr[j] !== ch) j += expr[j] === "\\" ? 2 : 1;
+      i = j;
+    } else if (ch === "(" || ch === "[") depth++;
+    else if (ch === ")" || ch === "]") depth--;
+    else if (depth === 0 && ch === "?") {
+      if (question < 0) question = i; else nested++;
+    } else if (depth === 0 && ch === ":" && question >= 0) {
+      if (nested > 0) nested--;
+      else return [expr.slice(question + 1, i).trim(), expr.slice(i + 1).trim()];
+    }
+  }
+  return null;
+}
+
+const bodyParts = { HAND: "hand", LEG: "leg", FACE: "face", FOOT: "foot", ARM: "arm", HEAD: "head", FINGER: "finger", FINGERTIP: "fingertip", BLOOD: "blood", NECK: "neck", HAIR: "hair", EYE: "eye", STOMACH: "stomach", TOE: "toe", LUNG: "lung", SPINE: "spine", NOSE: "nose", BONE: "bone", TONGUE: "tongue", BELLY: "belly", CHEST: "chest", BACK: "back", SKIN: "skin", LIGHT_HEADED: "light headed" };
+const colorNames = { NH_RED: "red", NH_BLUE: "blue", NH_GREEN: "green", NH_BLACK: "black", NH_WHITE: "white", NH_AMBER: "amber", NH_SILVER: "silver", NH_GOLDEN: "golden", NH_LIGHT_BLUE: "light blue", NH_PURPLE: "purple", NH_ORANGE: "orange", NH_YELLOW: "yellow", NH_BROWN: "brown", NH_GRAY: "gray" };
+
+// The enclosing function's source, set for each call: variables and tables resolve against it.
+let scope = "";
+let fileSource = "";
+const resolving = new Set();
+
+function resolveName(name) {
+  if (resolving.has(name)) return null;
+  resolving.add(name);
+  try {
+    const values = [];
+    for (const m of scope.matchAll(new RegExp(String.raw`\b${name}\s*=\s*([^;=][^;]*);`, "g"))) values.push(...fills(m[1].trim()));
+    for (const m of scope.matchAll(new RegExp(String.raw`\bStrcpy\(\s*${name}\s*,\s*([^;]+)\);`, "g"))) values.push(...fills(m[1].trim()));
+    const table = new RegExp(String.raw`\b${name.replace(/\[.*$/, "")}\s*\[[^\]]*\]\s*=\s*\{([^}]*)\}`).exec(fileSource);
+    if (table) values.push(...[...table[1].matchAll(literalRe)].map((m) => m[1]));
+    const known = values.filter((value) => !/^(?:the jackal|the dagger|it)$/.test(value));
+    return known.length ? [...new Set(known)].slice(0, 8) : null;
+  } finally {
+    resolving.delete(name);
+  }
+}
+
 /** Representative values for one %s argument expression. */
 function fills(arg) {
   const lit = literalValue(arg);
   if (lit !== null) return [lit];
-  const tern = /^[^?]*\?\s*("(?:[^"\\]|\\.)*")\s*:\s*("(?:[^"\\]|\\.)*")\s*$/.exec(arg);
-  if (tern) return [literalValue(tern[1]), literalValue(tern[2])];
+  const paren = /^\((?:const char \*|char \*)\)\s*(.+)$/.exec(arg);
+  if (paren) return fills(paren[1]);
+  const ternary = splitTernary(arg);
+  if (ternary) return [...new Set([...fills(ternary[0]), ...fills(ternary[1])])];
+  if (/^\(.*\)$/.test(arg) && !/^\([^()]*\)[^()]*\(/.test(arg)) return fills(arg.slice(1, -1).trim());
+  const part = /\b(?:body_part|mbodypart)\s*\((?:[^,()]*,\s*)?([A-Z_]+)\)/.exec(arg);
+  if (part && bodyParts[part[1]]) return [/makeplural/.test(arg) ? `${bodyParts[part[1]]}s` : bodyParts[part[1]]];
+  const color = /\bhcolor\s*\((NH_[A-Z_]+)\)/.exec(arg);
+  if (color && colorNames[color[1]]) return [colorNames[color[1]]];
+  if (/\bcurrency\s*\(/.test(arg)) return ["zorkmids"];
+  if (/\bshkname\s*\(/.test(arg)) return ["Asidonhopo"];
+  if (/\bshtypes\b/.test(arg)) return ["general store"];
+  if (/\bplur\s*\(/.test(arg)) return ["", "s"];
+  if (/\bexclam\s*\(/.test(arg)) return ["!", "."];
+  if (/\bShk_Your\s*\(/.test(arg)) return ["Your "];
+  if (/\bceiling\s*\(/.test(arg)) return ["ceiling"];
+  if (/\btrapname\s*\(/.test(arg)) return ["pit"];
+  if (/^[a-z_][a-z0-9_]*(?:\[[^\]]*\])?$/i.test(arg)) {
+    const resolved = resolveName(arg.replace(/\[.*$/, ""));
+    if (resolved) return resolved;
+  }
   const verb = /"([a-z][a-z ]*)"/.exec(arg)?.[1];
   if (/\bTobjnam\s*\(/.test(arg) && verb) return [`The flute ${verbS(verb)}`, `The dagger ${verbS(verb)}`];
   if (/\bYobjnam2\s*\(/.test(arg) && verb) return [`Your dagger ${verbS(verb)}`];
@@ -108,6 +172,7 @@ const entries = [];
 for (const file of readdirSync(srcDir).filter((name) => name.endsWith(".c"))) {
   const raw = readFileSync(path.join(srcDir, file), "latin1");
   const src = stripComments(raw);
+  fileSource = src;
   const callRe = new RegExp(String.raw`\b(${Object.keys(prefixes).join("|")})\s*\(`, "g");
   for (const match of src.matchAll(callRe)) {
     const fn = match[1];
@@ -116,6 +181,8 @@ for (const file of readdirSync(srcDir).filter((name) => name.endsWith(".c"))) {
     if (/(?:void|static|define)\s*$/.test(before)) continue;
     const args = callArgs(src, open);
     if (!args) continue;
+    // A function starts at a closing brace in the first column.
+    scope = src.slice(Math.max(src.lastIndexOf("\n}", match.index), 0), match.index);
     const skip = skipArgs[fn] ?? 0;
     const format = literalValue(args[skip] ?? "");
     if (format === null || !format.trim() || /\n/.test(format)) continue;
@@ -127,17 +194,20 @@ for (const file of readdirSync(srcDir).filter((name) => name.endsWith(".c"))) {
       if (c[1] === "*") argIndex++;
       const arg = rest[argIndex++] ?? "";
       if (c[2] === "s") return fills(arg);
-      if (c[2] === "c") return ["a"];
+      if (c[2] === "c") return [c.index + c[0].length === format.length ? "!" : "a"];
       return ["2"];
     });
-    const count = Math.max(1, ...slotFills.map((f) => f.length));
     const samples = new Set();
-    for (let k = 0; k < count; k++) {
-      let i = 0;
+    const total = slotFills.reduce((product, f) => product * f.length, 1);
+    const step = Math.max(1, Math.floor(total / 24));
+    for (let k = 0; k < total && samples.size < 24; k += step) {
+      let i = 0, rest = k;
       const text = format.replace(conversionRe, (m) => {
         if (m === "%%") return "%";
         const f = slotFills[i++];
-        return f[Math.min(k, f.length - 1)];
+        const value = f[rest % f.length];
+        rest = Math.floor(rest / f.length);
+        return value;
       });
       samples.add((prefixes[fn] + text).replace(/\s+$/, ""));
     }

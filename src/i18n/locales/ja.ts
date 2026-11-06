@@ -186,11 +186,11 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
       playmode: {
         label: "プレイモード",
         description:
-          "起動モードを選択します。Wizard モードは NetHack のデバッグモードです (`playmode:debug`)。",
+          "起動モードを選択します。ウィザードモードは NetHack のデバッグモードです (`playmode:debug`)。",
         options: {
           normal: "通常",
           explore: "探索",
-          debug: "Wizard / Debug",
+          debug: "ウィザード / デバッグ",
         },
       },
       pauper: {
@@ -488,7 +488,7 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
         detail: "呪文インベントリを表示",
       },
       technique: {
-        label: "Technique",
+        label: "テクニック",
         detail: "役割/種族の能力を使う",
       },
       known: {
@@ -850,7 +850,7 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
             "ASCII グリフ描画時の配色です。クラシックは暗い背景に NetHack 本来の色を使い、ペットを反転表示で強調します。NetHack 3D は元の未変更レンダリングを使用します。",
           options: {
             nethack3d: "NetHack 3D",
-            terminal: "Terminal",
+            terminal: "ターミナル",
             classic: "クラシック",
           },
         },
