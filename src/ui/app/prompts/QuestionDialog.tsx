@@ -3,6 +3,7 @@ import { useI18n } from "../../../i18n";
 import { translateGamePrompt } from "../../../i18n/game-prompts";
 import { GamePromptText } from "./GamePromptText";
 import { GameMessageText } from "../messages/GameMessageText";
+import { translateMenuHeading } from "../../../i18n/game-menu";
 import { translateReportLine } from "../../../i18n/report-text";
 import { translateInventoryCategory, translateMenuItemText } from "../../../i18n/inventory-text";
 import { WikiLinkedText } from "../../../plus/wiki-links/WikiLinkedText";
@@ -220,7 +221,7 @@ export function QuestionDialog({
                         }
                         key={`cat-${index}`}
                       >
-                        {item.isCategory ? translateReportLine(translateInventoryCategory(item.text ?? "", locale), locale) : <GameMessageText message={translateReportLine(item.text ?? "", locale)} />}
+                        {item.isCategory ? translateMenuHeading(item.text ?? "", locale) : <GameMessageText message={translateReportLine(item.text ?? "", locale)} />}
                       </div>
                     );
                   }

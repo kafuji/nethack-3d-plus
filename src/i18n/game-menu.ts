@@ -3,6 +3,7 @@ import { translateInventoryCategory, translateInventoryItem } from "./inventory-
 import { translateGamePrompt } from "./game-prompts";
 import { translateGameMessage } from "./game-messages";
 import { translateHelpMenuItem } from "./help-text";
+import { translateReportLine } from "./report-text";
 
 /** Translate known menu options in context without changing selection inputs. */
 export function translateGameMenuItem(text: string, question: string, locale: SupportedLocale): string {
@@ -19,4 +20,10 @@ export function translateGameMenuItem(text: string, question: string, locale: Su
   if (item !== text) return item;
   const prompt = translateGamePrompt(text, locale);
   return prompt !== text ? prompt : translateGameMessage(text, locale);
+}
+
+/** A menu heading: an object class, a report line, or any other menu text. */
+export function translateMenuHeading(text: string, locale: SupportedLocale): string {
+  const heading = translateReportLine(translateInventoryCategory(text, locale), locale);
+  return heading !== text ? heading : translateGameMenuItem(text, "", locale);
 }

@@ -111,6 +111,9 @@ export function translateMessageArgument(value: string): string {
   if (ray !== undefined) return ray;
   const body = own(bodyParts, text);
   if (body !== undefined) return body;
+  // A named ghost: "Dirk's ghost" (do_name.c rndghostname).
+  const namedGhost = /^(?:[Tt]he )?([A-Z][A-Za-z' -]*?)'s? ghost$/.exec(text);
+  if (namedGhost) return `${namedGhost[1]}の幽霊`;
   const monster = translateMonsterName(text, "ja");
   if (monster !== text) return monster;
   // A unique monster's bare name ("Death"), before the wand of the same name.
