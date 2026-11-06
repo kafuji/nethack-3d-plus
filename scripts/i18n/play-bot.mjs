@@ -79,6 +79,12 @@ async function play(seed) {
   const toCode = (key) => (typeof key === "number" ? key : key.charCodeAt(0));
   let menu = [];
   const windows = new Map();
+  const documents = new Map();
+  const flushDocument = (win) => {
+    const lines = documents.get(win);
+    if (lines?.some((line) => line.trim())) record("document", lines.join("\u0001"));
+    documents.delete(win);
+  };
 
   globalThis.nethackGlobal = globalThis.nethackGlobal ?? { helpers: {}, constants: {}, globals: {}, pointers: {} };
   const wait = () => {
@@ -95,7 +101,9 @@ async function play(seed) {
     switch (name) {
       case "shim_putstr": {
         const [win, , text] = args;
-        record(windows.get(win) === "message" ? "message" : "text", text);
+        // Other windows are shown as whole documents, so keep their lines together.
+        if (windows.get(win) === "message") record("message", text);
+        else documents.set(win, [...(documents.get(win) ?? []), String(text ?? "")]);
         // getpos() takes the same keys as play, so answer it before it eats them.
         if (/Where do you|Move cursor|Pick an? |Pick the|desired|For instructions/.test(text ?? "")) pendingKeys.push(random(2) ? "." : pick(movement), ".");
         return 0;
@@ -106,6 +114,7 @@ async function play(seed) {
         windows.set(id, args[0] === 1 ? "message" : "other");
         return id;
       }
+      case "shim_display_nhwindow": case "shim_destroy_nhwindow": case "shim_clear_nhwindow": flushDocument(args[0]); return 0;
       case "shim_start_menu": menu = []; return 0;
       case "shim_add_menu": {
         // win, glyphinfo, identifier, accelerator, groupacc, attr, clr, text, itemflags

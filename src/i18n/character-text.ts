@@ -33,6 +33,10 @@ const values: Readonly<Record<string, string>> = {
 export const deityNames: Readonly<Record<string, string>> = {
   Thoth: "トート", Ptah: "プタハ", Anhur: "アンフル", "Amaterasu Omikami": "天照大神", Raijin: "雷神", Susanowo: "スサノオ",
   Tyr: "テュール", Odin: "オーディン", Loki: "ロキ", Anu: "アヌ", Ishtar: "イシュタル", Anshar: "アンシャル", Kos: "コス", Mog: "モグ", Issek: "イセク",
+  Quetzalcoatl: "ケツァルコアトル", Camaxtli: "カマックストリ", Huhetotl: "フエフエテオトル", Mitra: "ミトラ", Crom: "クロム", Set: "セト",
+  Athena: "アテナ", Hermes: "ヘルメス", Poseidon: "ポセイドン", Lugh: "ルー", Brigit: "ブリギット", "Manannan Mac Lir": "マナナン・マクリル",
+  "Shan Lai Ching": "山雷経", "Chih Sung-tzu": "赤松子", "Huan Ti": "黄帝", Mercury: "メルクリウス", Venus: "ヴィーナス", Mars: "マルス",
+  "Blind Io": "盲目のイオ", "The Lady": "淑女", Offler: "オフラー", Moloch: "モロク",
 };
 const exactLines: Readonly<Record<string, string>> = {
   "You have just started your adventure.": "冒険を始めたばかりです。",

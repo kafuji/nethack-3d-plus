@@ -18,7 +18,7 @@ describe("NetHack 5 information reports", () => {
     expect(translateReportLine("      Stairs down to The Gnomish Mines.", "ja"))
       .toBe("      ノームの鉱山への下り階段。");
     expect(translateReportLine("      A temple and an altar to Amaterasu Omikami, some fountains.", "ja"))
-      .toBe("      寺院が1つ、祭壇（Amaterasu Omikamiに捧げられた）が1つ、泉がいくつか。");
+      .toBe("      寺院が1つ、祭壇（天照大神に捧げられた）が1つ、泉がいくつか。");
     expect(translateReportLine(" You have never changed form.", "en")).toBe(" You have never changed form.");
   });
   it("translates overview location markers, shops and resting places", () => {

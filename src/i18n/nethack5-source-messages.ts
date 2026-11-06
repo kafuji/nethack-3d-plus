@@ -58,6 +58,8 @@ const bodyParts: Readonly<Record<string, string>> = {
   arm: "腕", arms: "両腕", back: "背中", body: "体", ears: "耳", eye: "目", eyes: "両目", face: "顔", finger: "指", fingers: "指",
   foot: "足", feet: "両足", hand: "手", hands: "両手", head: "頭", leg: "脚", legs: "両脚", mouth: "口", neck: "首", nose: "鼻",
   skin: "肌", stomach: "胃", throat: "喉", tongue: "舌", teeth: "歯", toes: "足の指", wings: "翼", paw: "前足", paws: "前足",
+  foreclaw: "前爪", foreclaws: "前爪", wrapping: "包帯", wrappings: "包帯", "gas cloud": "ガス雲", venom: "毒液", "the venom": "毒液",
+  swamp: "沼", "shallow sea": "浅瀬", music: "音楽", spores: "胞子", frost: "冷気", "poison gas": "毒ガス", "burning oil": "燃える油",
   claw: "爪", claws: "爪", hoof: "蹄", hooves: "蹄", tail: "尻尾", spine: "背骨", hair: "髪", scalp: "頭皮", flesh: "肉",
   blood: "血", fur: "毛皮", scales: "鱗", tentacles: "触手", fin: "ひれ", fins: "ひれ",
   zorkmid: "ゾークミド", zorkmids: "ゾークミド", "gold piece": "金貨", "gold pieces": "金貨",
@@ -111,11 +113,19 @@ export function translateMessageArgument(value: string): string {
   if (ray !== undefined) return ray;
   const body = own(bodyParts, text);
   if (body !== undefined) return body;
-  // A named ghost: "Dirk's ghost" (do_name.c rndghostname).
-  const namedGhost = /^(?:[Tt]he )?([A-Z][A-Za-z' -]*?)'s? ghost$/.exec(text);
-  if (namedGhost) return `${namedGhost[1]}の幽霊`;
+  // priest.c priestname(): "the high priestess of Moloch".
+  const titled = /^(?:[Tt]he |[Aa]n? )?(high )?(priest|priestess) of (.+)$/.exec(text);
+  if (titled) {
+    const deity = Object.prototype.hasOwnProperty.call(deityNames, titled[3]) ? deityNames[titled[3]] : titled[3];
+    return `${deity}の${titled[1] ? "高" : ""}${titled[2] === "priestess" ? "尼僧" : "僧侶"}`;
+  }
+  if (Object.prototype.hasOwnProperty.call(deityNames, text)) return deityNames[text];
   const monster = translateMonsterName(text, "ja");
   if (monster !== text) return monster;
+  if (/ ghost$/.test(text)) {
+    const named = translateMonsterName(text, "ja");
+    if (named !== text) return named;
+  }
   // A unique monster's bare name ("Death"), before the wand of the same name.
   if (/^[A-Z]/.test(text)) {
     const unique = translateMonsterName(`the ${text}`, "ja");
@@ -182,6 +192,10 @@ export function translateMessageArgument(value: string): string {
     const translated = translateMessageArgument(owner[1]);
     if (translated !== owner[1]) return translated;
   }
+  // Nothing knows this name, such as a hallucinated "The Ancient Multi-Hued
+  // Dragon": it keeps its spelling but not the English article.
+  const unknownName = /^[Tt]he ([A-Za-z][^.!?]*)$/.exec(text);
+  if (unknownName) return unknownName[1];
   return value;
 }
 
