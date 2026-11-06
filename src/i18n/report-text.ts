@@ -22,6 +22,15 @@ const labels: Readonly<Record<string, string>> = {
   "Gateway to Moloch's Sanctum.": "モロクの聖域への入口。", "Moloch's Sanctum.": "モロクの聖域。",
   "Final resting place for": "ここで最期を迎えた者",
   "NetHack Help": "NetHack ヘルプ",
+  "NetHack History": "NetHack の歴史",
+  "NetHack License": "NetHack のライセンス",
+  "Option Help": "オプションのヘルプ",
+  "Option Menu Help": "オプションメニューのヘルプ",
+  "Command Line Help": "コマンドラインのヘルプ",
+  "Command Help": "コマンドのヘルプ",
+  "Key Help": "キーのヘルプ",
+  "Wizard Help": "ウィザードモードのヘルプ",
+  "Port Help": "移植版のヘルプ",
 };
 const been: Readonly<Record<string, string>> = {
   "blind from birth": "生まれつき目が見えませんでした",
@@ -97,7 +106,19 @@ const deathCauses: Readonly<Record<string, string>> = {
   "kicking a wall": "壁を蹴ったこと", "kicking a door": "扉を蹴ったこと", "kicking a sink": "流しを蹴ったこと", "kicking an altar": "祭壇を蹴ったこと", "kicking a throne": "玉座を蹴ったこと", "kicking a fountain": "泉を蹴ったこと", "kicking a tree": "木を蹴ったこと",
 };
 
+// botl.c multi_reason: what the hero was busy with when killed.
+const helplessReasons: Readonly<Record<string, string>> = {
+  "being frightened to death": "恐怖で死にかけている", "being scared stiff": "恐怖で固まっている", "being terrified of a demon": "悪魔に怯えている", "being terrified of a ghost": "幽霊に怯えている", "being toyed with by Fate": "運命にもてあそばれている",
+  "digesting something": "何かを消化している", disrobing: "服を脱いでいる", "dragging an iron ball": "鉄球を引きずっている", "dressing up": "着替えている", "fainted from lack of food": "空腹で気絶している", "frozen by a monster's gaze": "モンスターの視線で動けなくなっている",
+  "frozen by a potion": "ポーションで動けなくなっている", "frozen by a trap": "罠で動けなくなっている", fumbling: "よろめいている", "gazing into a Magic 8-Ball (tm)": "マジック8ボール(tm)をのぞき込んでいる", "gazing into a crystal ball": "水晶玉をのぞき込んでいる", "gazing into a mirror": "鏡をのぞき込んでいる",
+  "getting stoned": "石になりつつある", "hiding from thunderstorm": "雷雨から隠れている", "jumping around": "跳ね回っている", "moving through the air": "空中を移動している", "opening a container": "入れ物を開けている", "paralyzed by a monster": "モンスターに麻痺させられている",
+  praying: "祈っている", "pretending to be a pile of gold": "金貨の山のふりをしている", "reading a book": "本を読んでいる", "scared by rattling": "ガラガラ音に怯えている", "sleeping off a magical draught": "魔法の薬で眠っている", sleeping: "眠っている", "stuck in a spider web": "クモの巣に捕まっている",
+  "taking off clothes": "服を脱いでいる", "tipping a container": "入れ物をひっくり返している", "trying to turn the monsters": "モンスターを追い払おうとしている", "unconscious from rotten food": "腐った食べ物で気絶している", vomiting: "吐いている",
+};
+
 function translateKiller(text: string): string {
+  const helpless = /^(.+), while (.+)$/.exec(text);
+  if (helpless && Object.prototype.hasOwnProperty.call(helplessReasons, helpless[2])) return `${helplessReasons[helpless[2]]}間に${translateKiller(helpless[1])}`;
   const known = Object.prototype.hasOwnProperty.call(deathCauses, text) ? deathCauses[text] : undefined;
   if (known !== undefined) return known;
   const assembled = /^(tasting|bumping into|kicking|throwing|tripping over|unwisely ate the body of|unwisely ate the brain of|unwisely tried to eat|the wrath of) (.+?)(?: (meat|barefoot|bare-handed|corpse))?$/.exec(text);
@@ -248,6 +269,19 @@ function translateChronicleEvent(event: string, locale: SupportedLocale): string
   if (m) return `経験レベル${m[1]}に上がった`;
   m = /^hit with a wielded (.+?) \((.+)\) for the first time$/.exec(event);
   if (m) return `初めて${translateInventoryItem(m[2], locale)}を構えて攻撃を当てた`;
+  m = /^entered (Plane of (?:Air|Earth|Fire|Water)|Astral Plane)$/.exec(event);
+  if (m) return `${translateGameLocation(m[1], "ja")}に入った`;
+  m = /^entered Home (\d+), the Quest$/.exec(event);
+  if (m) return `クエストの本拠地${m[1]}に入った`;
+  m = /^changed form for the first time, becoming (.+)$/.exec(event);
+  if (m) return `初めて姿を変え、${translateMonsterName(m[1], "ja")}になった`;
+  m = /^performed (?:his|her|their) first genocide \(class (.)\)$/.exec(event);
+  if (m) return `初めて抹殺を行った（分類 ${m[1]}）`;
+  m = /^genocided class (.)$/.exec(event);
+  if (m) return `分類 ${m[1]} を抹殺した`;
+  m = /^consumed animal products for the first time, by eating (.+)$/.exec(event);
+  if (m) return `初めて動物性の物を口にした（${translateInventoryItem(m[1], "ja")}）`;
+  if (event === "became literate by reading the fortune inside a cookie") return "クッキーの中のおみくじを読んで読み書きを覚えた";
   m = /^became literate by (reading|engraving|writing|deciphering) (.+)$/.exec(event);
   if (m) return `${translateMessageArgument(m[2])}を${{ reading: "読んで", engraving: "刻んで", writing: "書いて", deciphering: "解読して" }[m[1]]}読み書きを身に付けた`;
   m = /^(made (?:his|her|their) first (artifact )?wish - |wished for )(.+)$/.exec(event);

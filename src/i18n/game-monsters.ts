@@ -1,6 +1,13 @@
 import type { SupportedLocale } from "./core";
 import { lookupImportedJapaneseEntity } from "./imported-entities";
+import hallucinatedMonsters from "./data/hallucinated-monsters-ja.json";
+import { deityNames } from "./intro-story";
 import { translatePlayerRank } from "./player-title";
+
+// dat/bogusmon.txt: what a hallucinating hero sees.
+const hallucinated: Readonly<Record<string, string>> = hallucinatedMonsters;
+const own = (map: Readonly<Record<string, string>>, key: string): string | undefined =>
+  Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined;
 
 // Names are matched in their entirety against the bundled monster catalog.
 // Do not strip adjectives: "peaceful", "tame", "invisible" and others can
@@ -46,24 +53,36 @@ export function translateMonsterName(text: string, locale: SupportedLocale): str
   // do_name.c rndghostname(): "Dirk's ghost", kept apart from the article rule below.
   const ghost = /^(?:[Tt]he )?([A-Za-z][A-Za-z' -]*?)'s? ghost$/.exec(text);
   if (ghost) return `${ghost[1]}の幽霊`;
+  // bogusmon.txt's personal names have no article, nor do player monsters ("Mike the Traveler").
+  if (/^[A-Z]/.test(text) && own(hallucinated, text) !== undefined) return hallucinated[text];
+  const titled = /^(\S+) the ([A-Z].*)$/.exec(text);
+  if (titled && translatePlayerRank(titled[2], "ja") !== titled[2]) return `${translatePlayerRank(titled[2], "ja")}の${titled[1]}`;
   // A bare name may be a pet's individual name (even "dog" or "jackal").
   const match = /^(the |The |a |an |A |An |your |Your )(.+)$/.exec(text);
   if (!match) return text;
   const adjectives: Readonly<Record<string, string>> = {
-    tame: "飼いならされた", peaceful: "友好的な", invisible: "透明な", saddled: "鞍を付けた", poor: "かわいそうな",
+    renegade: "背教の", tame: "飼いならされた", peaceful: "友好的な", invisible: "透明な", saddled: "鞍を付けた", poor: "かわいそうな",
   };
   let name = match[2];
   const modifiers: string[] = [];
   for (;;) {
-    const modifier = /^(tame|peaceful|invisible|saddled|poor) (.+)$/.exec(name);
+    const modifier = /^(renegade|tame|peaceful|invisible|saddled|poor) (.+)$/.exec(name);
     if (!modifier) break;
     modifiers.push(adjectives[modifier[1]]);
     name = modifier[2];
   }
-  const translated = Object.prototype.hasOwnProperty.call(monsters, name) ? monsters[name] : lookupImportedJapaneseEntity(name);
+  // minion.c: a god's servant ("the succubus of Set").
+  const minion = /^(.+) of (.+)$/.exec(name);
+  if (minion && own(deityNames, minion[2]) !== undefined) {
+    const base = minion[1] === "priest" ? "僧侶" : minion[1] === "priestess" ? "尼僧" : own(monsters, minion[1]) ?? lookupImportedJapaneseEntity(minion[1]);
+    if (base !== undefined) return `${modifiers.join("")}${deityNames[minion[2]]}の${base}`;
+  }
+  const translated = own(monsters, name) ?? own(hallucinated, name) ?? lookupImportedJapaneseEntity(name);
   // do_name.c: a player monster is named by its rank ("the kunoichi").
   const rankName = name.replace(/(^| )([a-z])/g, (_all, gap: string, letter: string) => gap + letter.toUpperCase());
-  const rank = translated ?? translatePlayerRank(rankName, "ja");
+  // Most ranks capitalize every word, but not "Medicus ossium".
+  const firstCapital = name.charAt(0).toUpperCase() + name.slice(1);
+  const rank = translated ?? (translatePlayerRank(firstCapital, "ja") !== firstCapital ? translatePlayerRank(firstCapital, "ja") : translatePlayerRank(rankName, "ja"));
   if (rank === rankName) return text;
   return `${/^your /i.test(match[1]) ? "あなたの" : ""}${modifiers.join("")}${rank}`;
 }

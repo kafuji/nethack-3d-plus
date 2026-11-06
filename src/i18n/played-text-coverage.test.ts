@@ -43,12 +43,16 @@ function render(kind: string, text: string): string {
 
 // Kept on purpose: the weight unit, scroll labels, the player's own names and
 // option keywords, which the player has to type as they are.
-const kept = [/「[^」]*」/g, /\bAgent\d+\b/g, /^\s*\S+\s+(?:\[[mA]+\]\s+|[\w?#]+\s{2,})?(?=[^\sA-Za-z])/, /\[[^\]]*\]/g, /\baum\b/g, /「[^」]*」と書かれた/g, /（(?:名前|呼び名)：[^）]*）/g, /#\w+/g, /\b(?:call|shell|exit|SIGINT|fg|config|enter|return|cmdassist|perm_invent|autopickup|optionsfull|NetHack|Return|Enter|ESC|Unicode|DECgraphics|IBMgraphics|AmigaFont|Amiga|hack\.font|curses|Enhanced\d|Guidebook|devteam|nethack|org|www|https|number_pad|menustyle)\b/g, /\bwizard\b/g, /\bWizard\b/g, /'[^']*'/g, /\bAgent\d+\b/g, /\bElbereth\b/g, /「[^」]*」/g, /[A-Za-z' ]+の幽霊/g];
+const kept = [/「[^」]*」/g, /\bAgent\d+\b/g, /^\s*\S+\s+(?:\[[mA]+\]\s+|[\w?#]+\s{2,})?(?=[^\sA-Za-z])/, /\[[^\]]*\]/g, /\baum\b/g, /「[^」]*」と書かれた/g, /（(?:名前|呼び名)：[^）]*）/g, /#\w+/g, /\b(?:call|shell|exit|SIGINT|fg|config|enter|return|cmdassist|perm_invent|autopickup|optionsfull|NetHack|Return|Enter|ESC|Unicode|DECgraphics|IBMgraphics|AmigaFont|Amiga|hack\.font|curses|Enhanced\d|Guidebook|devteam|nethack|org|www|https|number_pad|menustyle)\b/g, /\bwizard\b/g, /\bWizard\b/g, /'[^']*'/g, /\bAgent\d+\b/g, /\bElbereth\b/g, /「[^」]*」/g, /[A-Za-z' ]+の幽霊/g, /`[^']+'/g, /\b[a-zA-Z]+_[\w]*\b/g, /\b(?:NETHACK)?OPTIONS\b/g, /\S*nethackrc\b/g, /<options>/g, /\bUTF\b/g, /\bUnix\b/g, /\([0-9a-f]{20,},branch:[^)]*\)/g, /の[A-Z][a-z]+(?=[がはへにの])/g, /\b[A-Z][a-z]{2} \d+ \d{4}\b/g];
 const optionRow = /^\s*\S+\s+\[.*\]\s*$/;
+// The list of boolean options in #optionsfull.
+const optionList = /^(?:[a-zA-Z_]+(?:, |,$|\.$)\s*)+$/;
+// A translated row of compound options: its examples are values the player types.
+const optionHelp = /^`[^']+' - .*[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u;
 
 /** Letters left from the original. */
 function isUntranslated(text: string, japanese: string): boolean {
-  if (optionRow.test(text)) return false;
+  if (debugTable.test(text) || optionRow.test(text) || optionList.test(text.trimEnd()) || optionHelp.test(japanese)) return false;
   let rest = japanese;
   for (const pattern of kept) rest = rest.replace(pattern, "");
   return /[A-Za-z]{3,}/.test(rest);
@@ -56,8 +60,11 @@ function isUntranslated(text: string, japanese: string): boolean {
 
 // insight.c shows these only in debug mode, which the bot uses to reach deep levels.
 const debugSuffix = /(?:\s*[(<]-?\d+[)>])|(?: (?:innately|intrinsically|because of .+|from your .+|due to .+|by .+ form))(?=[.;]|$)/g;
+// Reports of debug commands that are numbers and internal names rather than text:
+// #wizobjprobs, #wizborn, #wizrumorcheck, #wizwhere, #stats, #terrain and the memory map.
+const debugTable = /^\s*\d+ \/ +\d+ \(|^\s*\d+ +\d+ |object rot_|_{5,}$|^\*? ?[a-zA-Z-]+\d*: \d+|^castle: \d+ \(tune|^[.x@]+$|^. - .+ . - |^\S start=/;
 function translatesWithoutDebugSuffix(kind: string, text: string): boolean {
-  const plain = text.replace(debugSuffix, "");
+  const plain = text.replace(/\(-?\d+\)due /, "due ").replace(debugSuffix, "");
   return plain !== text && !isUntranslated(plain, render(kind, plain));
 }
 

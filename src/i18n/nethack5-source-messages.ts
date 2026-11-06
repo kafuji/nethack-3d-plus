@@ -58,7 +58,7 @@ const bodyParts: Readonly<Record<string, string>> = {
   arm: "腕", arms: "両腕", back: "背中", body: "体", ears: "耳", eye: "目", eyes: "両目", face: "顔", finger: "指", fingers: "指",
   foot: "足", feet: "両足", hand: "手", hands: "両手", head: "頭", leg: "脚", legs: "両脚", mouth: "口", neck: "首", nose: "鼻",
   skin: "肌", stomach: "胃", throat: "喉", tongue: "舌", teeth: "歯", toes: "足の指", wings: "翼", paw: "前足", paws: "前足",
-  foreclaw: "前爪", foreclaws: "前爪", wrapping: "包帯", wrappings: "包帯", "gas cloud": "ガス雲", venom: "毒液", "the venom": "毒液",
+  forelimb: "前肢", "air bubble": "気泡", cloud: "雲", maw: "口", "limitless water": "果てしない水", wand: "杖", bell: "鐘", "pick-axe": "つるはし", chain: "鎖", "a chain": "鎖", rat: "ネズミ", "a rat": "ネズミ", foreclaw: "前爪", foreclaws: "前爪", wrapping: "包帯", wrappings: "包帯", "gas cloud": "ガス雲", venom: "毒液", "the venom": "毒液",
   swamp: "沼", "shallow sea": "浅瀬", music: "音楽", spores: "胞子", frost: "冷気", "poison gas": "毒ガス", "burning oil": "燃える油",
   claw: "爪", claws: "爪", hoof: "蹄", hooves: "蹄", tail: "尻尾", spine: "背骨", hair: "髪", scalp: "頭皮", flesh: "肉",
   blood: "血", fur: "毛皮", scales: "鱗", tentacles: "触手", fin: "ひれ", fins: "ひれ",
