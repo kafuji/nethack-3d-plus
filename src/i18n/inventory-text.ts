@@ -73,7 +73,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "ring of levitation": "浮遊の指輪", "ring of free action": "自由行動の指輪", "ring of fire resistance": "火炎耐性の指輪", "ring of cold resistance": "冷気耐性の指輪", "ring of poison resistance": "毒耐性の指輪",
   "amulet of reflection": "反射の護符", "amulet of life saving": "救命の護符", "amulet of ESP": "ESPの護符",
   "Amulet of Yendor": "イェンダーの魔除け",
-  "Bell of Opening": "開門の鐘", "Candelabrum of Invocation": "招来の燭台", candelabrum: "燭台", "Book of the Dead": "死者の書",
+  "Bell of Opening": "開門の鐘", "Candelabrum of Invocation": "招来の燭台", candelabrum: "燭台", whip: "鞭", tool: "道具", bolt: "クロスボウの矢", "Book of the Dead": "死者の書",
   "sack": "袋", "oilskin sack": "油布の袋", "bag of holding": "保持の袋", "bag of tricks": "手品の袋", "large box": "大きな箱", "chest": "宝箱",
   "skeleton key": "万能鍵", "lock pick": "開錠具", "credit card": "クレジットカード", "tinning kit": "缶詰製造キット", "tin opener": "缶切り",
   "towel": "タオル", "blindfold": "目隠し", "mirror": "鏡", "magic marker": "魔法のマーカー", "stethoscope": "聴診器", "whistle": "笛", "magic whistle": "魔法の笛",
@@ -297,6 +297,12 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
     : undefined;
   const label = labelMatch ? `（${labelMatch[2] === "named" ? "名前" : "呼び名"}：${artifactName ?? labelMatch[3]}）` : "";
   if (labelMatch) item = labelMatch[1];
+  // mthrowu.c: one missile of a volley, "the 2nd elven arrow".
+  const volley = /^[Tt]he (\d+)(?:st|nd|rd|th) (.+)$/.exec(item);
+  if (volley) {
+    const missile = translateCuratedInventoryItem(volley[2], locale);
+    return missile === volley[2] ? text : `${volley[1]}本目の${missile}`;
+  }
   const quantity = /^(a|an|the|The|\d+) (.+)$/.exec(item);
   if (quantity) item = quantity[2];
   const descriptions: string[] = [];
@@ -312,6 +318,28 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   };
   takeModifiers();
   // xname(): boots and gloves come in pairs, dragon scales in sets.
+  // objnam.c: a tin names how its meat was prepared.
+  const tin = /^tins? of (?:(homemade|boiled|deep fried|broiled|candied|dried|french fried|fried|pickled|pureed|rotten|sauteed|smoked|stir fried|szechuan|soup made from|stewed) )?(.+?)(?: meat)?$/.exec(item);
+  if (tin && translateMonsterName(`the ${tin[2]}`, locale) !== `the ${tin[2]}`) {
+    const preparations: Readonly<Record<string, string>> = {
+      homemade: "自家製の", boiled: "ゆでた", "deep fried": "揚げた", broiled: "焼いた", candied: "砂糖漬けの", dried: "干した", "french fried": "フライにした", fried: "炒めた",
+      pickled: "酢漬けの", pureed: "ピューレにした", rotten: "腐った", sauteed: "ソテーにした", smoked: "燻製の", "stir fried": "炒めた", szechuan: "四川風の", "soup made from": "スープにした", stewed: "煮込んだ",
+    };
+    item = `${preparations[tin[1] ?? ""] ?? ""}${translateMonsterName(`the ${tin[2]}`, locale)}の肉の缶詰`;
+    return [...descriptions, item].join("") + statusParts.join("");
+  }
+  // objnam.c: a Hawaiian shirt's design.
+  const shirt = /^(.+?) with an? (.+) motif$/.exec(item);
+  if (shirt) {
+    const motifs: Readonly<Record<string, string>> = {
+      flamingo: "フラミンゴ", parrot: "オウム", toucan: "オオハシ", "bird of paradise": "極楽鳥", "sea turtle": "ウミガメ", "tropical fish": "熱帯魚", jellyfish: "クラゲ", "giant eel": "巨大ウナギ", "water nymph": "水のニンフ",
+      plumeria: "プルメリア", orchid: "蘭", "hibiscus flower": "ハイビスカス", "palm tree": "ヤシの木", "hula dancer": "フラダンサー", sailboat: "帆船", ukulele: "ウクレレ",
+      purple: "紫色の", yellow: "黄色の", red: "赤色の", blue: "青色の", orange: "橙色の", black: "黒色の", green: "緑色の", abstract: "抽象的な", geometric: "幾何学的な", patterned: "模様入りの", naturalistic: "自然風の",
+    };
+    const shirtName = translateCuratedInventoryItem(shirt[1], locale);
+    const motif = own(motifs, shirt[2]);
+    if (motif !== undefined && shirtName !== shirt[1]) return `${descriptions.join("")}${motif}柄の${shirtName}${statusParts.join("")}`;
+  }
   const pairMatch = /^(?:pairs?|sets?) of (.+)$/.exec(item);
   if (pairMatch) {
     item = pairMatch[1];
@@ -363,9 +391,13 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
     // These descriptions explicitly reveal the species. Translate only a
     // recognized complete species; retain unknown and player-supplied names.
     const remains = /^([^()]+?) (corpse|corpses|egg|eggs)$/.exec(item);
-    if (remains) {
-      const creature = translateMonsterName(`the ${remains[1]}`, locale);
-      const visibleCreature = creature === `the ${remains[1]}` ? remains[1] : creature;
+    // A capitalized start is a sentence ending in the word: "Name this specific egg".
+    if (remains && !/^[A-Z]|: /.test(remains[1])) {
+      // NetHack 5 names a known sex: "male jackal corpse".
+      const sex = /^(male|female) (.+)$/.exec(remains[1]);
+      const species = sex ? sex[2] : remains[1];
+      const creature = translateMonsterName(`the ${species}`, locale);
+      const visibleCreature = creature === `the ${species}` ? remains[1] : `${sex ? (sex[1] === "male" ? "雄の" : "雌の") : ""}${creature}`;
       name = `${visibleCreature}の${remains[2].startsWith("corpse") ? "死体" : "卵"}`;
     }
   }

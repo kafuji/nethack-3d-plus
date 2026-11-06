@@ -1,5 +1,6 @@
 import type { SupportedLocale } from "./core";
-import { translateCharacterLine, translateIdentityWord } from "./character-text";
+import { deityNames, translateCharacterLine, translateIdentityWord } from "./character-text";
+import { translateInventoryItem } from "./inventory-text";
 import { translateGameLocation } from "./game-location";
 import { translatePlayerRank } from "./player-title";
 import { translateMessageArgument } from "./nethack5-source-messages";
@@ -70,7 +71,7 @@ function translateOverviewFeatures(line: string): string | undefined {
     const singular = Object.prototype.hasOwnProperty.call(features, noun) ? noun : noun.endsWith("s") ? noun.slice(0, -1) : noun;
     if (!Object.prototype.hasOwnProperty.call(features, singular)) return undefined;
     const amount = /^(a|an)$/i.test(match[1]) ? "1つ" : /^some$/i.test(match[1]) ? "いくつか" : "多数";
-    translated.push(`${features[singular]}${match[3] ? `（${match[3]}に捧げられた）` : ""}が${amount}`);
+    translated.push(`${features[singular]}${match[3] ? `（${ownValue(deityNames, match[3]) ?? match[3]}に捧げられた）` : ""}が${amount}`);
   }
   return translated.length ? `${translated.join("、")}。` : undefined;
 }
@@ -78,7 +79,36 @@ function translateOverviewFeatures(line: string): string | undefined {
 // end.c done_in_by(): "a hallucinogen-distorted werejackal",
 // "an invisible chameleon imitating a jackal", "a vampire lord in bat form".
 const killerModifiers: Readonly<Record<string, string>> = { invisible: "透明な", "hallucinogen-distorted": "幻覚で歪んだ" };
+// How a character can die without a monster involved (end.c, trap.c, and others).
+const deathCauses: Readonly<Record<string, string>> = {
+  "a falling rock": "落石", "falling rock": "落石", "a falling object": "落下物", "falling object": "落下物", "falling boulder": "落石",
+  "jumping out of a bear trap": "トラバサミからの跳躍", "crunched in the head by an iron ball": "鉄球による頭部の打撃", "leg damage from being pulled out of a bear trap": "トラバサミから引き抜いた脚の傷",
+  "dragged downstairs by an iron ball": "鉄球に階段を引きずられたこと", "iron ball collision": "鉄球との衝突", "axing a hard object": "固い物を斧で叩いたこと", "squished under a boulder": "岩の下敷き",
+  "contusion from a small passage": "狭い通路での打撲", "tumbling down a flight of stairs": "階段からの転落", "falling down a mine shaft": "縦坑への転落",
+  "acidic corpse": "酸性の死体", "acidic glob": "酸性の塊", "poisonous corpse": "毒の死体", "poisonous glob": "毒の塊", "rotted glob": "腐った塊", "unrefrigerated sip of juice": "冷やしていないジュース", "sipping boiling water": "熱湯をすすったこと",
+  "psychic blast": "精神波", "fell into a chasm": "裂け目への転落", "hurt in a chasm": "裂け目での負傷", "carnivorous bag": "肉食の袋", "system shock": "システムショック", "colliding with the ceiling": "天井への衝突",
+  "quaffing a burning potion of oil": "燃えている油のポーションを飲んだこと", "propelled potion": "飛んできたポーション", "thrown potion": "投げられたポーション", "alchemic blast": "錬金術の爆発", "residual undead turning effect": "アンデッド退散の残留効果",
+  "gas cloud": "ガス雲", "cursed throne": "呪われた玉座", "electric chair": "電気椅子", "acidic chair": "酸の椅子", "sitting on an iron spike": "鉄のスパイクの上に座ったこと", "sitting in lava": "溶岩の中に座ったこと", "sitting on lava": "溶岩の上に座ったこと",
+  "exploding rune": "爆発するルーン", "riding accident": "乗馬事故", "rusting away": "錆び尽きたこと", "deliberately plunged into a pit of iron spikes": "鉄のスパイクの穴に自ら飛び込んだこと", "stepped into a pit of iron spikes": "鉄のスパイクの穴に踏み込んだこと",
+  "stumbled into a pit of iron spikes": "鉄のスパイクの穴につまずいて落ちたこと", "fell into a pit of iron spikes": "鉄のスパイクの穴への転落", "deliberately plunged into a pit": "穴に自ら飛び込んだこと", "fell into a pit": "穴への転落", "anti-magic implosion": "反魔法の内破",
+  "dangerous winds": "危険な風", "boiling water": "熱湯", "electric shock": "電撃", "closing drawbridge": "閉じる跳ね橋", "collapsing drawbridge": "崩れる跳ね橋", "exploding drawbridge": "爆発する跳ね橋", "falling drawbridge": "落ちる跳ね橋", "fell from a drawbridge": "跳ね橋からの転落",
+  "elementary physics": "初歩的な物理法則", exhaustion: "疲労", "genocidal confusion": "混乱した虐殺", "imperious order": "尊大な命令", "molten lava": "溶岩", "quick snack": "軽食", "rotten lump of royal jelly": "腐ったロイヤルゼリー", "scroll of genocide": "虐殺の巻物",
+  "self-genocide": "自己虐殺", slimicide: "スライム化", starvation: "飢え", "turned into green slime": "緑のスライムになったこと", "unsuccessful polymorph": "変化の失敗", "very rich meal": "こってりした食事", "gas spore's explosion": "ガス胞子の爆発", "a gas spore's explosion": "ガス胞子の爆発",
+  "kicking a wall": "壁を蹴ったこと", "kicking a door": "扉を蹴ったこと", "kicking a sink": "流しを蹴ったこと", "kicking an altar": "祭壇を蹴ったこと", "kicking a throne": "玉座を蹴ったこと", "kicking a fountain": "泉を蹴ったこと", "kicking a tree": "木を蹴ったこと",
+};
+
 function translateKiller(text: string): string {
+  const known = Object.prototype.hasOwnProperty.call(deathCauses, text) ? deathCauses[text] : undefined;
+  if (known !== undefined) return known;
+  const assembled = /^(tasting|bumping into|kicking|throwing|tripping over|unwisely ate the body of|unwisely ate the brain of|unwisely tried to eat|the wrath of) (.+?)(?: (meat|barefoot|bare-handed|corpse))?$/.exec(text);
+  if (assembled) {
+    const name = translateMessageArgument(assembled[2]);
+    const forms: Readonly<Record<string, string>> = {
+      tasting: `${name}の肉を味わったこと`, "bumping into": `${name}への衝突`, kicking: `${name}を蹴ったこと`, throwing: `${name}を素手で投げたこと`, "tripping over": `${name}の死体につまずいたこと`,
+      "unwisely ate the body of": `${name}の体を軽率に食べたこと`, "unwisely ate the brain of": `${name}の脳を軽率に食べたこと`, "unwisely tried to eat": `${name}を軽率に食べようとしたこと`, "the wrath of": `${name}の怒り`,
+    };
+    return forms[assembled[1]];
+  }
   const m = /^((?:the |an? )?)((?:(?:invisible|hallucinogen-distorted) )*)(.+?)(?: (imitating|disguised as|in) (.+?)( form)?)?$/.exec(text);
   if (!m || (m[4] === "in") !== Boolean(m[6])) return translateMessageArgument(text);
   const real = translateMessageArgument(`${m[1] || "a "}${m[3]}`);
@@ -206,6 +236,20 @@ function translateChronicleEvent(event: string, locale: SupportedLocale): string
   if (m) return `初めてのペット（${translateMessageArgument(m[1])}）を得た`;
   m = /^(?:ate for the first time - (.+)|ate for the first time \((.+)\)|tasted meat \((.+)\) for the first time)$/.exec(event);
   if (m) return `${m[3] ? "初めて肉を口にした" : "初めて物を食べた"}（${translateMessageArgument(m[1] ?? m[2] ?? m[3])}）`;
+  // Wishes record what was asked for and what arrived: wished for "x", got "a y".
+  m = /^(made (?:his|her|their) first (artifact )?wish - |wished for )"(.+)", got "(.+)"$/.exec(event);
+  if (m) {
+    const got = translateInventoryItem(m[4], locale);
+    return `${m[1].startsWith("made") ? `初めて${m[2] ? "アーティファクトを" : ""}願った` : "願った"}：「${m[3]}」、入手：${got}`;
+  }
+  m = /^entered level (\d+), (?:the )?(.+)$/.exec(event);
+  if (m) return `${translateGameLocation(m[2], locale)}の${m[1]}階に入った`;
+  m = /^gained experience level (\d+)$/.exec(event);
+  if (m) return `経験レベル${m[1]}に上がった`;
+  m = /^hit with a wielded (.+?) \((.+)\) for the first time$/.exec(event);
+  if (m) return `初めて${translateInventoryItem(m[2], locale)}を構えて攻撃を当てた`;
+  m = /^became literate by (reading|engraving|writing|deciphering) (.+)$/.exec(event);
+  if (m) return `${translateMessageArgument(m[2])}を${{ reading: "読んで", engraving: "刻んで", writing: "書いて", deciphering: "解読して" }[m[1]]}読み書きを身に付けた`;
   m = /^(made (?:his|her|their) first (artifact )?wish - |wished for )(.+)$/.exec(event);
   if (m) return `${m[1].startsWith("made") ? `初めて${m[2] ? "アーティファクトを" : ""}願った` : "願った"}：${m[3]}`;
   m = /^genocided (.+)$/.exec(event);

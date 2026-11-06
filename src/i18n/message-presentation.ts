@@ -59,7 +59,8 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
  * "your displaced image and misses you" as a monster name.
  */
 export function keepsEnglishRun(original: string, translated: string): boolean {
-  for (const run of translated.match(/[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){2,}/g) ?? []) {
+  // Quoted text is the game's own label or a player's words ("ZELGO MER").
+  for (const run of translated.replace(/「[^」]*」/g, "").match(/[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){2,}/g) ?? []) {
     if (original.includes(run)) return true;
   }
   return false;

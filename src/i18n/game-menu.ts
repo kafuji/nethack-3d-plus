@@ -1,5 +1,5 @@
 import type { SupportedLocale } from "./core";
-import { translateInventoryCategory, translateInventoryItem } from "./inventory-text";
+import { translateCuratedItemName, translateInventoryCategory, translateInventoryItem } from "./inventory-text";
 import { translateGamePrompt } from "./game-prompts";
 import { translateGameMessage } from "./game-messages";
 import { translateHelpMenuItem } from "./help-text";
@@ -16,10 +16,12 @@ export function translateGameMenuItem(text: string, question: string, locale: Su
   if (help !== text) return help;
   const category = translateInventoryCategory(text, locale);
   if (category !== text) return category;
-  const item = translateInventoryItem(text, locale);
-  if (item !== text) return item;
+  const named = translateCuratedItemName(text);
+  if (named !== undefined) return named;
   const prompt = translateGamePrompt(text, locale);
-  return prompt !== text ? prompt : translateGameMessage(text, locale);
+  if (prompt !== text) return prompt;
+  const message = translateGameMessage(text, locale);
+  return message !== text ? message : translateInventoryItem(text, locale);
 }
 
 /** A menu heading: an object class, a report line, or any other menu text. */

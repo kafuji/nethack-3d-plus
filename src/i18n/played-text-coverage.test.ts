@@ -5,7 +5,13 @@
 // Writes <played>-untranslated.tsv next to the input: kind, times seen, text, rendering.
 // Each string goes through the display path its kind uses in the app.
 import { expect, it, vi } from "vitest";
+import { jnethackQuestDocument } from "../plus/game-text/fallback";
+import { translateDiscoveryReport } from "./discovery-text";
+import { translateEncyclopediaEntry } from "./encyclopedia-text";
 import { translateGameMenuItem, translateMenuHeading } from "./game-menu";
+import { translateHelpDocument } from "./help-text";
+import { translateIntroStory } from "./intro-story";
+import { translateOracleDocument } from "./oracle-text";
 import { translateGamePrompt } from "./game-prompts";
 import { translateInventoryItem } from "./inventory-text";
 import { loadJapaneseDictionary } from "./load-japanese-dictionary";
@@ -28,6 +34,8 @@ function render(kind: string, text: string): string {
     }
     case "item":
       return translateInventoryItem(text, "ja");
+    case "line":
+      return presentGameMessage(translateReportLine(text, "ja"), "ja").text;
     default:
       return presentGameMessage(text, "ja").text;
   }
@@ -35,7 +43,7 @@ function render(kind: string, text: string): string {
 
 // Kept on purpose: the weight unit, scroll labels, the player's own names and
 // option keywords, which the player has to type as they are.
-const kept = [/^\s*\S+\s+(?:\[[mA]+\]\s+|[\w?#]+\s{2,})?(?=[^\sA-Za-z])/, /\[[^\]]*\]/g, /\baum\b/g, /「[^」]*」と書かれた/g, /（(?:名前|呼び名)：[^）]*）/g, /\bwizard\b/g, /\bAgent\d+\b/g, /\bElbereth\b/g, /「[^」]*」/g, /[A-Za-z' ]+の幽霊/g];
+const kept = [/「[^」]*」/g, /\bAgent\d+\b/g, /^\s*\S+\s+(?:\[[mA]+\]\s+|[\w?#]+\s{2,})?(?=[^\sA-Za-z])/, /\[[^\]]*\]/g, /\baum\b/g, /「[^」]*」と書かれた/g, /（(?:名前|呼び名)：[^）]*）/g, /#\w+/g, /\b(?:call|shell|exit|SIGINT|fg|config|enter|return|cmdassist|perm_invent|autopickup|optionsfull|NetHack|Return|Enter|ESC|Unicode|DECgraphics|IBMgraphics|AmigaFont|Amiga|hack\.font|curses|Enhanced\d|Guidebook|devteam|nethack|org|www|https|number_pad|menustyle)\b/g, /\bwizard\b/g, /\bWizard\b/g, /'[^']*'/g, /\bAgent\d+\b/g, /\bElbereth\b/g, /「[^」]*」/g, /[A-Za-z' ]+の幽霊/g];
 const optionRow = /^\s*\S+\s+\[.*\]\s*$/;
 
 /** Letters left from the original. */
@@ -44,6 +52,13 @@ function isUntranslated(text: string, japanese: string): boolean {
   let rest = japanese;
   for (const pattern of kept) rest = rest.replace(pattern, "");
   return /[A-Za-z]{3,}/.test(rest);
+}
+
+// insight.c shows these only in debug mode, which the bot uses to reach deep levels.
+const debugSuffix = /(?:\s*[(<]-?\d+[)>])|(?: (?:innately|intrinsically|because of .+|from your .+|due to .+|by .+ form))(?=[.;]|$)/g;
+function translatesWithoutDebugSuffix(kind: string, text: string): boolean {
+  const plain = text.replace(debugSuffix, "");
+  return plain !== text && !isUntranslated(plain, render(kind, plain));
 }
 
 it.skipIf(!playedFile)("reports played text that stayed in English", async () => {
@@ -57,9 +72,24 @@ it.skipIf(!playedFile)("reports played text that stayed in English", async () =>
   for (const [key, count] of played) {
     const [kind, text] = key.split("\t") as [string, string];
     if (kind === "status" || kind === "error") continue;
+    if (kind === "document") {
+      // The same order CharacterInfoDialog tries: whole documents, then each line.
+      const lines = text.split("\u0001");
+      if (translateHelpDocument(lines, "ja") ?? translateEncyclopediaEntry(lines, "ja") ?? translateDiscoveryReport(lines, "ja")
+        ?? translateOracleDocument(lines, "ja") ?? translateIntroStory(lines, "ja") ?? jnethackQuestDocument(lines)) continue;
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const japanese = render("line", line);
+        if (isUntranslated(line, japanese) && !translatesWithoutDebugSuffix("line", line)) report.push(`text\t${count}\t${line}\t${japanese === line ? "" : japanese}`);
+      }
+      continue;
+    }
     const japanese = render(kind, text);
-    if (isUntranslated(text, japanese)) report.push(`${kind}\t${count}\t${text}\t${japanese === text ? "" : japanese}`);
+    if (isUntranslated(text, japanese) && !translatesWithoutDebugSuffix(kind, text)) report.push(`${kind}\t${count}\t${text}\t${japanese === text ? "" : japanese}`);
   }
+  const unique = [...new Set(report)];
+  report.length = 0;
+  report.push(...unique);
   report.sort();
   writeFileSync(playedFile!.replace(/\.json$/, "") + "-untranslated.tsv", report.join("\n"));
   console.info(`${report.length} of ${played.length} played strings stayed in English`);

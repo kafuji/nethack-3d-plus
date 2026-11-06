@@ -3,6 +3,7 @@ import { translateGameMenuItem } from "./game-menu";
 import { translateInventoryCategory, translateInventoryItem } from "./inventory-text";
 import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { presentGameMessage } from "./message-presentation";
+import { translateReportLine } from "./report-text";
 
 const messages: ReadonlyArray<readonly [string, string]> = [
   ["Your vision seems to flatten for a moment but is normal now.", "視界が一瞬平らになったようだが、今は元に戻った。"],
@@ -38,6 +39,22 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["A board beneath you squeaks a B note loudly.", "足元の床板がBの音できしんだ。"],
   ["You don't have anything to use or apply.", "使えるものを持っていない。"],
   ["M-p     pray          pray to the gods for help", "M-p     pray          神に助けを祈る"],
+  [".       wait          rest one move while doing nothing", ".       wait          何もせず1ターン休む"],
+  ["Oops!  The Amulet of Yendor drops to the floor!", "おっと！ イェンダーの魔除けが床に落ちた！"],
+  ["You are hit by the 2nd elven arrow!", "2本目のエルフの矢が当たった！"],
+  ["You hear a lieutenant incant ZELGO MER.", "中尉が「ZELGO MER」と唱えるのが聞こえた。"],
+  ["stone (no travel path)", "石（移動経路なし）"],
+  ["The blast of gravy hits you!", "グレイビーソースの爆風があなたに当たった！"],
+  ["The priest of Moloch casts a spell!", "モロクの僧侶は呪文を唱えた！"],
+  ["(2north,3east): doorway.", "（2北、3東）：戸口"],
+  ["<17,6>   %  an uncursed apple", "<17,6> % 呪われていないリンゴ"],
+  ["Portal to The Quest: 12", "クエストへのポータル：12階"],
+  ["You have been killed twice.", "あなたは2回殺されたことがある。"],
+];
+
+const reportLines: ReadonlyArray<readonly [string, string]> = [
+  ["you, killed by a falling rock.", "あなた（落石に殺された）。"],
+  ["you, killed by kicking a wall.", "あなた（壁を蹴ったことに殺された）。"],
 ];
 
 const items: ReadonlyArray<readonly [string, string]> = [
@@ -46,6 +63,8 @@ const items: ReadonlyArray<readonly [string, string]> = [
   ["the blessed Candelabrum of Invocation (7 of 7 candles, lit)", "祝福された招来の燭台（ろうそく 7/7本、点灯中）"],
   ["a set of black dragon scales", "黒いドラゴンの鱗 1組"],
   ["an uncursed set of gold dragon scales", "呪われていない金色のドラゴンの鱗 1組"],
+  ["a male jackal corpse", "雄のジャッカルの死体"],
+  ["an uncursed tin of boiled newt meat", "呪われていないゆでたイモリの肉の缶詰"],
 ];
 
 function reportedLeaks(): void {
@@ -55,6 +74,15 @@ function reportedLeaks(): void {
 
   it.each(items)("translates the item %s", (english, japanese) => {
     expect(translateInventoryItem(english, "ja")).toBe(japanese);
+  });
+
+  it.each(reportLines)("translates the report line %s", (english, japanese) => {
+    expect(translateReportLine(english, "ja")).toBe(japanese);
+  });
+
+  it("translates a menu sentence that ends in an item name", () => {
+    expect(translateGameMenuItem("Name this specific egg", "", "ja")).toBe("この卵に名前を付ける");
+    expect(translateGameMenuItem("Just picked up: an uncursed apple", "", "ja")).toBe("直前に拾った物：呪われていないリンゴ");
   });
 
   it("translates the object menu's special rows", () => {

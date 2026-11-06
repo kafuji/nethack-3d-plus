@@ -43,6 +43,9 @@ const monsters: Readonly<Record<string, string>> = {
 /** Translate only an unmodified common monster name, preserving unknown text. */
 export function translateMonsterName(text: string, locale: SupportedLocale): string {
   if (locale !== "ja") return text;
+  // do_name.c rndghostname(): "Dirk's ghost", kept apart from the article rule below.
+  const ghost = /^(?:[Tt]he )?([A-Za-z][A-Za-z' -]*?)'s? ghost$/.exec(text);
+  if (ghost) return `${ghost[1]}の幽霊`;
   // A bare name may be a pet's individual name (even "dog" or "jackal").
   const match = /^(the |The |a |an |A |An |your |Your )(.+)$/.exec(text);
   if (!match) return text;
