@@ -148,6 +148,45 @@ describe("BackgroundMusic", () => {
     music.dispose();
   });
 
+  it("plays the Wizard's track over every mood while he is about, and a while after", () => {
+    const player = new FakePlayer();
+    let now = 0;
+    const music = new BackgroundMusic(player, () => now);
+    music.setSettings(on);
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1, dungeon: "The Dungeons of Doom" }, false);
+    expect(player.moods).toEqual([null, "calm"]);
+    music.notifyWizardPresence(true);
+    expect(music.isWizardPanic()).toBe(true);
+    expect(player.moods[player.moods.length - 1]).toBe("combat");
+    expect(player.preferences[player.preferences.length - 1]).toEqual({ calm: ["dungeon"], combat: ["wizard"] });
+    // Low health does not take over from him.
+    music.notifyPlayerStats({ hp: 1, maxHp: 10, time: 2, dungeon: "The Dungeons of Doom" }, true);
+    expect(player.moods[player.moods.length - 1]).toBe("combat");
+    // He teleports away: the panic lingers, then the usual music returns.
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 3, dungeon: "The Dungeons of Doom" }, false);
+    music.notifyWizardPresence(false);
+    now += 5000;
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 4, dungeon: "The Dungeons of Doom" }, false);
+    expect(music.isWizardPanic()).toBe(true);
+    now += 4000;
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 5, dungeon: "The Dungeons of Doom" }, false);
+    expect(music.isWizardPanic()).toBe(false);
+    expect(player.preferences[player.preferences.length - 1]).toEqual({ calm: ["dungeon"], combat: ["combat"] });
+    music.dispose();
+  });
+
+  it("keeps the Wizard's track when the region changes under him", () => {
+    const player = new FakePlayer();
+    const music = new BackgroundMusic(player, () => 0);
+    music.setSettings(on);
+    music.notifyWizardPresence(true);
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1, dungeon: "Gehennom" }, false);
+    expect(player.preferences[player.preferences.length - 1]).toEqual({ calm: ["gehennom"], combat: ["wizard"] });
+    music.reset();
+    expect(music.isWizardPanic()).toBe(false);
+    music.dispose();
+  });
+
   it("forwards status effects only when they change", () => {
     const player = new FakePlayer();
     const music = new BackgroundMusic(player, () => 0);
