@@ -40,13 +40,13 @@ class FakePlayer implements BackgroundMusicPlayer {
   }
 }
 
-const on = { soundEnabled: true, musicEnabled: true, musicVolume: 0.5 };
+const on = { soundEnabled: true, musicPack: "takachiho", musicVolume: 0.5 };
 
 describe("BackgroundMusic", () => {
   it("stays silent until stats arrive, then plays calm", () => {
     const player = new FakePlayer();
     let now = 0;
-    const music = new BackgroundMusic(player, () => now);
+    const music = new BackgroundMusic(() => player, () => now);
     music.setSettings(on);
     expect(player.moods).toEqual([null]);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1 }, false);
@@ -56,7 +56,7 @@ describe("BackgroundMusic", () => {
 
   it("goes combat on combat activity and silent on game over", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 1000);
+    const music = new BackgroundMusic(() => player, () => 1000);
     music.setSettings(on);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1 }, false);
     music.notifyCombatActivity();
@@ -65,10 +65,10 @@ describe("BackgroundMusic", () => {
     music.dispose();
   });
 
-  it("is silent when music or sound is disabled", () => {
+  it("is silent when sound is disabled", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 0);
-    music.setSettings({ ...on, musicEnabled: false });
+    const music = new BackgroundMusic(() => player, () => 0);
+    music.setSettings({ ...on, soundEnabled: false });
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1 }, true);
     expect(player.moods).toEqual([null]);
     music.setSettings(on);
@@ -76,9 +76,39 @@ describe("BackgroundMusic", () => {
     music.dispose();
   });
 
+  it("makes no player for the pack \"none\" and replaces it when the pack changes", () => {
+    const made: string[] = [];
+    const players: FakePlayer[] = [];
+    const disposed: FakePlayer[] = [];
+    const music = new BackgroundMusic((pack) => {
+      made.push(pack.id);
+      const player = new FakePlayer();
+      player.dispose = () => void disposed.push(player);
+      players.push(player);
+      return player;
+    }, () => 0);
+    music.setSettings({ ...on, musicPack: "none" });
+    music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1, dungeon: "The Gnomish Mines" }, false);
+    expect(made).toEqual([]);
+    expect(music.getMusicPack()).toBeNull();
+    music.setSettings(on);
+    expect(made).toEqual(["takachiho"]);
+    // The new player starts with the current region's tracks and plays at once.
+    expect(players[0].preferences[0]?.calm).toEqual(["mines"]);
+    expect(players[0].moods[players[0].moods.length - 1]).toBe("calm");
+    music.setSettings({ ...on, musicVolume: 0.7 });
+    expect(made).toEqual(["takachiho"]);
+    music.setSettings({ ...on, musicPack: "none" });
+    expect(disposed).toEqual([players[0]]);
+    // An ascension with no pack is silent.
+    music.notifyAscension();
+    expect(players[0].played).toEqual([]);
+    music.dispose();
+  });
+
   it("prefers regional tracks and plays a cue when entering a new branch", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 0);
+    const music = new BackgroundMusic(() => player, () => 0);
     music.setSettings(on);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1, dungeon: "The Dungeons of Doom" }, false);
     expect(music.getCurrentRegion()).toBe("dungeon");
@@ -92,7 +122,7 @@ describe("BackgroundMusic", () => {
 
   it("switches to Medusa's and the Castle's tracks inside the Dungeons of Doom", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 0);
+    const music = new BackgroundMusic(() => player, () => 0);
     music.setSettings(on);
     const doom = { hp: 10, maxHp: 10, dungeon: "The Dungeons of Doom" };
     music.notifyPlayerStats({ ...doom, time: 1 }, false);
@@ -112,7 +142,7 @@ describe("BackgroundMusic", () => {
 
   it("plays the ascension track once in place of the moods and the game-over cue", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 0);
+    const music = new BackgroundMusic(() => player, () => 0);
     music.setSettings(on);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1 }, false);
     music.notifyGameMessage("You hear a door open.");
@@ -130,8 +160,8 @@ describe("BackgroundMusic", () => {
 
   it("does not start the ascension track while music is off", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 0);
-    music.setSettings({ ...on, musicEnabled: false });
+    const music = new BackgroundMusic(() => player, () => 0);
+    music.setSettings({ ...on, musicPack: "none" });
     music.notifyAscension();
     expect(player.played).toEqual([]);
     music.dispose();
@@ -139,7 +169,7 @@ describe("BackgroundMusic", () => {
 
   it("plays the game-over cue once", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 0);
+    const music = new BackgroundMusic(() => player, () => 0);
     music.setSettings(on);
     music.notifyPlayerStats({ hp: 0, maxHp: 10, time: 9 }, false);
     music.setGameOver(true);
@@ -151,7 +181,7 @@ describe("BackgroundMusic", () => {
   it("plays the Wizard's track over every mood while he is about, and a while after", () => {
     const player = new FakePlayer();
     let now = 0;
-    const music = new BackgroundMusic(player, () => now);
+    const music = new BackgroundMusic(() => player, () => now);
     music.setSettings(on);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1, dungeon: "The Dungeons of Doom" }, false);
     expect(player.moods).toEqual([null, "calm"]);
@@ -177,7 +207,7 @@ describe("BackgroundMusic", () => {
 
   it("keeps the Wizard's track when the region changes under him", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 0);
+    const music = new BackgroundMusic(() => player, () => 0);
     music.setSettings(on);
     music.notifyWizardPresence(true);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1, dungeon: "Gehennom" }, false);
@@ -189,12 +219,13 @@ describe("BackgroundMusic", () => {
 
   it("forwards status effects only when they change", () => {
     const player = new FakePlayer();
-    const music = new BackgroundMusic(player, () => 0);
+    const music = new BackgroundMusic(() => player, () => 0);
     music.setSettings(on);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 1 }, false, ["hallucinating", "confused"]);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 2 }, false, ["confused", "hallucinating"]);
     music.notifyPlayerStats({ hp: 10, maxHp: 10, time: 3 }, false, []);
-    expect(player.effects).toEqual([["confused", "hallucinating"], []]);
+    // The first entry is the pack's new player getting the current (no) effects.
+    expect(player.effects).toEqual([[], ["confused", "hallucinating"], []]);
     music.dispose();
   });
 });

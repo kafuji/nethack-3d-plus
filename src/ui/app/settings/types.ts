@@ -24,7 +24,8 @@ export type ClientOptionSelect = {
   | "antialiasing"
   | "inventoryFixedTileSize"
   | "desktopTouchInterfaceMode"
-  | "bloodDetail";
+  | "bloodDetail"
+  | "musicPack";
   label: string;
   description: string;
   type: "select";
@@ -159,7 +160,6 @@ export type ClientOptionToggleKey =
   | "manualMobileBottomSafeZoneEnabled"
   | "showVersionNotificationsOnLaunch"
   | "soundEnabled"
-  | "musicEnabled"
   | "blockAmbientOcclusion"
   | "darkCorridorWalls367"
   | "overrideNh5DarkCorridorWallTiles"

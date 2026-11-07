@@ -15,8 +15,10 @@ const RELEASE_DELAY_MS = 1500;
 /** Plays the title screen BGM while the startup menu is visible. */
 export function useTitleMusic(dependencies: UseTitleMusicDependencies) {
   const { startupMenuVisible, clientOptions } = dependencies;
-  const { soundEnabled, musicEnabled, musicVolume } = clientOptions;
+  const { soundEnabled, musicPack, musicVolume } = clientOptions;
   const musicRef = useRef<TitleMusic | null>(null);
+  /** The pack musicRef was made for, so a pack change rebuilds it. */
+  const musicPackRef = useRef<string | null>(null);
   const releaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -25,11 +27,15 @@ export function useTitleMusic(dependencies: UseTitleMusicDependencies) {
         clearTimeout(releaseTimerRef.current);
         releaseTimerRef.current = null;
       }
-      musicRef.current ??= TitleMusic.createDefault();
+      if (musicPackRef.current !== musicPack) {
+        musicRef.current?.dispose();
+        musicRef.current = TitleMusic.createForPack(musicPack);
+        musicPackRef.current = musicPack;
+      }
     }
     const music = musicRef.current;
     if (!music) return;
-    music.setSettings({ soundEnabled, musicEnabled, musicVolume });
+    music.setSettings({ soundEnabled, musicPack, musicVolume });
     music.setActive(startupMenuVisible);
     if (!startupMenuVisible && releaseTimerRef.current === null) {
       // Let the track fade out, then free its AudioContext for the game.
@@ -37,9 +43,10 @@ export function useTitleMusic(dependencies: UseTitleMusicDependencies) {
         releaseTimerRef.current = null;
         musicRef.current?.dispose();
         musicRef.current = null;
+        musicPackRef.current = null;
       }, RELEASE_DELAY_MS);
     }
-  }, [startupMenuVisible, soundEnabled, musicEnabled, musicVolume]);
+  }, [startupMenuVisible, soundEnabled, musicPack, musicVolume]);
 
   useEffect(() => {
     if (!startupMenuVisible) return;
@@ -56,5 +63,6 @@ export function useTitleMusic(dependencies: UseTitleMusicDependencies) {
     releaseTimerRef.current = null;
     musicRef.current?.dispose();
     musicRef.current = null;
+    musicPackRef.current = null;
   }, []);
 }

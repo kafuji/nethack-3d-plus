@@ -20,7 +20,7 @@ class FakePlayer implements BackgroundMusicPlayer {
   dispose(): void {}
 }
 
-const on = { soundEnabled: true, musicEnabled: true, musicVolume: 0.5 };
+const on = { soundEnabled: true, musicPack: "takachiho", musicVolume: 0.5 };
 
 describe("TitleMusic", () => {
   it("plays only while the title screen is active", () => {
@@ -38,7 +38,7 @@ describe("TitleMusic", () => {
     const player = new FakePlayer();
     const music = new TitleMusic(player);
     music.setActive(true);
-    music.setSettings({ ...on, musicEnabled: false });
+    music.setSettings({ ...on, musicPack: "none" });
     expect(player.moods[player.moods.length - 1]).toBeNull();
     music.setSettings({ ...on, musicVolume: 0.8 });
     expect(player.moods[player.moods.length - 1]).toBe("calm");
@@ -52,9 +52,14 @@ describe("TitleMusic", () => {
     const music = new TitleMusic(player);
     music.resumeFromUserGesture();
     expect(player.resumes).toBe(0);
+    music.setSettings(on);
     music.setActive(true);
     const before = player.resumes;
     music.resumeFromUserGesture();
     expect(player.resumes).toBe(before + 1);
+  });
+
+  it("has nothing to play for the pack \"none\"", () => {
+    expect(TitleMusic.createForPack("none")).toBeNull();
   });
 });

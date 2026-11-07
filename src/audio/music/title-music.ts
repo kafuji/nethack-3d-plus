@@ -1,24 +1,23 @@
-import { createDefaultBackgroundMusicPlayer, type BackgroundMusicSettings } from "./background-music";
-import { titleMusicTrack } from "./music-library";
+import { createFileMusicPlayer, type BackgroundMusicSettings } from "./background-music";
+import { resolveMusicPack } from "./music-pack";
 import type { BackgroundMusicPlayer } from "./procedural-music-player";
 
 /**
- * Plays the title screen track while the startup menu is shown. The track
+ * Plays a music pack's title track while the startup menu is shown. The track
  * rides on the calm channel of a dedicated player, so it fades in and out
  * (and loops) the same way as in-game music.
  */
 export class TitleMusic {
-  /** Null when no title track is configured (the title screen stays silent). */
-  static createDefault(): TitleMusic | null {
-    if (!titleMusicTrack) return null;
-    return new TitleMusic(
-      createDefaultBackgroundMusicPlayer({ calm: [titleMusicTrack], combat: [], danger: [] }),
-    );
+  /** Null for "none" or a pack without a title track (the title screen stays silent). */
+  static createForPack(packId: string): TitleMusic | null {
+    const track = resolveMusicPack(packId)?.titleTrack;
+    if (!track) return null;
+    return new TitleMusic(createFileMusicPlayer({ calm: [track], combat: [], danger: [] }));
   }
 
   private settings: BackgroundMusicSettings = {
     soundEnabled: true,
-    musicEnabled: true,
+    musicPack: "",
     musicVolume: 0.5,
   };
   private active = false;
@@ -52,7 +51,7 @@ export class TitleMusic {
       !this.disposed &&
       this.active &&
       this.settings.soundEnabled &&
-      this.settings.musicEnabled &&
+      resolveMusicPack(this.settings.musicPack) !== null &&
       this.settings.musicVolume > 0
     );
   }

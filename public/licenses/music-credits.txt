@@ -5,18 +5,20 @@ All background music is original work made for NetHack 3D Plus: each piece
 was composed as a MIDI sketch (scripts/music-sketch) and produced with Suno
 under a Pro plan subscription. It is not covered by CC0.
 
-public/music/title-theme.mp3   "Labyrinth of DOOM"          scripts/music-sketch/pieces/title.mjs
-public/music/dungeon.mp3       "Dungeons of Doom"           scripts/music-sketch/pieces/dungeon.mjs
-public/music/mines.mp3         "Gnomish Mines"              scripts/music-sketch/pieces/mines.mjs
-public/music/sokoban.mp3       "Sokoban"                    scripts/music-sketch/pieces/sokoban.mjs
-public/music/quest.mp3         "The Quest"                  scripts/music-sketch/pieces/quest.mjs
-public/music/medusa.mp3        "Medusa's Island"            scripts/music-sketch/pieces/medusa.mjs
-public/music/castle.mp3        "The Castle"                 scripts/music-sketch/pieces/castle.mjs
-public/music/gehennom.mp3      "Gehennom"                   scripts/music-sketch/pieces/gehennom.mjs
-public/music/astral.mp3        "The Astral Plane"           scripts/music-sketch/pieces/astral.mjs
-public/music/combat.mp3        "Combat"                     scripts/music-sketch/pieces/combat-heavy.mjs
-public/music/combat-boss.mp3   "Boss Combat"                scripts/music-sketch/pieces/combat.mjs
-public/music/astral-combat.mp3 "Astral Combat"              scripts/music-sketch/pieces/astral-combat.mjs
-public/music/wizard.mp3        "The Wizard of Yendor"       scripts/music-sketch/pieces/wizard.mjs
-public/music/ascension.mp3     "Labyrinth of DOOM (Ascension)" scripts/music-sketch/pieces/title.mjs
-public/music/danger.mp3        "Danger"                     scripts/music-sketch/pieces/danger.mjs
+Music pack: Takachiho
+
+public/music/takachiho/title-theme.mp3     "Labyrinth of DOOM"          scripts/music-sketch/pieces/title.mjs
+public/music/takachiho/dungeon.mp3         "Dungeons of Doom"           scripts/music-sketch/pieces/dungeon.mjs
+public/music/takachiho/mines.mp3           "Gnomish Mines"              scripts/music-sketch/pieces/mines.mjs
+public/music/takachiho/sokoban.mp3         "Sokoban"                    scripts/music-sketch/pieces/sokoban.mjs
+public/music/takachiho/quest.mp3           "The Quest"                  scripts/music-sketch/pieces/quest.mjs
+public/music/takachiho/medusa.mp3          "Medusa's Island"            scripts/music-sketch/pieces/medusa.mjs
+public/music/takachiho/castle.mp3          "The Castle"                 scripts/music-sketch/pieces/castle.mjs
+public/music/takachiho/gehennom.mp3        "Gehennom"                   scripts/music-sketch/pieces/gehennom.mjs
+public/music/takachiho/astral.mp3          "The Astral Plane"           scripts/music-sketch/pieces/astral.mjs
+public/music/takachiho/combat.mp3          "Combat"                     scripts/music-sketch/pieces/combat-heavy.mjs
+public/music/takachiho/combat-boss.mp3     "Boss Combat"                scripts/music-sketch/pieces/combat.mjs
+public/music/takachiho/astral-combat.mp3   "Astral Combat"              scripts/music-sketch/pieces/astral-combat.mjs
+public/music/takachiho/wizard.mp3          "The Wizard of Yendor"       scripts/music-sketch/pieces/wizard.mjs
+public/music/takachiho/ascension.mp3       "Labyrinth of DOOM (Ascension)" scripts/music-sketch/pieces/title.mjs
+public/music/takachiho/danger.mp3          "Danger"                     scripts/music-sketch/pieces/danger.mjs

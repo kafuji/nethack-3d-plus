@@ -194,11 +194,11 @@ export class AudioHapticsPlatform {
   }
 
   syncBackgroundMusicWithClientOptions(
-    options: Pick<Nh3dClientOptions, "soundEnabled" | "musicEnabled" | "musicVolume">,
+    options: Pick<Nh3dClientOptions, "soundEnabled" | "musicPack" | "musicVolume">,
   ): void {
     this.backgroundMusic?.setSettings({
       soundEnabled: options.soundEnabled,
-      musicEnabled: options.musicEnabled,
+      musicPack: options.musicPack,
       musicVolume: options.musicVolume,
     });
   }
