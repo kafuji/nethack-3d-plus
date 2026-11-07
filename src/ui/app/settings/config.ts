@@ -231,6 +231,12 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "tilesetUseHiResTiles",
+    label: t.clientOptions.config.tilesetUseHiResTiles.label,
+    description: t.clientOptions.config.tilesetUseHiResTiles.description,
+    type: "boolean",
+  },
+  {
     key: "antialiasing",
     label: t.clientOptions.config.antialiasing.label,
     description: t.clientOptions.config.antialiasing.description,

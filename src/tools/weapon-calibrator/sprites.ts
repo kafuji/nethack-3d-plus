@@ -29,6 +29,7 @@ export async function loadAtlas(entry: Nh3dTilesetEntry) {
     tilesetAssets: { tileSourceSize: width, tileSourceHeight: height, tilesetTexture: null,
       tilesetBackgroundReferenceTilePixels: null, vultureTilesetTranslator: null,
       resolveTilesetAtlasImageSource: () => image, resolveAtlasTileIndexForRuntime: tile => tile,
+      resolveHiResTile: () => null,
       resolveTilesetBackgroundReferenceTileIndex: () => options.tilesetBackgroundTileId,
       resolveTextureAnisotropyLevel: () => 1, drawTilesetBackgroundReferenceTile: () => false },
     vultureProjection: { reprojectVultureWallTexture: unsupportedProjection,

@@ -895,6 +895,10 @@ export const en = {
           label: "Match blocks to tile aspect ratio",
           description: "Use rectangular 3D blocks when tiles are not square. Turn off to keep square blocks.",
         },
+        tilesetUseHiResTiles: {
+          label: "Use high-resolution tiles",
+          description: "NetHack 5 only. Replace tiles with high-resolution versions where they exist; other tiles keep using the selected tileset.",
+        },
         tilesetPath: {
           label: "Tileset",
           description: "Built-in and uploaded tilesets.",

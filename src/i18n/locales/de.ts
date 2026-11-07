@@ -872,6 +872,10 @@ export const deOverrides: LocaleOverrides<TranslationDictionary> = {
           label: "Blöcke an das Seitenverhältnis der Kacheln anpassen",
           description: "Verwende rechteckige 3D-Blöcke, wenn Kacheln nicht quadratisch sind. Ausschalten für quadratische Blöcke.",
         },
+        tilesetUseHiResTiles: {
+          label: "Hochauflösende Kacheln verwenden",
+          description: "Nur NetHack 5. Ersetzt Kacheln durch hochauflösende Versionen, sofern vorhanden; andere Kacheln verwenden weiterhin das gewählte Kachelset.",
+        },
         tilesetPath: {
           label: "Tileset",
           description: "Integrierte und hochgeladene Tilesets.",

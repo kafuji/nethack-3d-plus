@@ -901,6 +901,10 @@ export const ptBrOverrides = {
           label: "Ajustar blocos à proporção dos tiles",
           description: "Use blocos 3D retangulares quando os tiles não forem quadrados. Desative para manter blocos quadrados.",
         },
+        tilesetUseHiResTiles: {
+          label: "Usar blocos em alta resolução",
+          description: "Somente NetHack 5. Substitui os blocos por versões em alta resolução quando existirem; os demais continuam usando o conjunto selecionado.",
+        },
         tilesetPath: {
           label: "Conjunto de tiles",
           description: "Tilesets internos e enviados.",

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GlyphTextures, type GlyphTexturesDependencies } from "./glyph-textures";
 import { EntityBillboards, type EntityBillboardsDependencies } from "./entity-billboards";
+import type { HiResTileFrame } from "../../hires-tiles/hires-tile-pack";
 
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 
@@ -21,6 +22,7 @@ function fixture(width = 15, height: number | undefined = 25) {
     tileSourceSize: width, tileSourceHeight: height as number | undefined,
     resolveTilesetAtlasImageSource: () => atlas,
     resolveAtlasTileIndexForRuntime: vi.fn((index: number) => index),
+    resolveHiResTile: vi.fn((_index: number): HiResTileFrame | null => null),
     resolveTextureAnisotropyLevel: () => 1,
     resolveTilesetBackgroundReferenceTileIndex: () => 41,
     tilesetBackgroundReferenceTilePixels: null as Uint8ClampedArray | null,
@@ -65,6 +67,49 @@ describe("rectangular atlas extraction", () => {
     const result = f.contexts[0].putImageData.mock.calls[0][0].data;
     expect(result.length).toBe(1500);
     expect(result[result.length - 1]).toBe(0);
+    texture.dispose();
+  });
+});
+
+describe("high-resolution tile substitution", () => {
+  const hiResFrame = (index: number): HiResTileFrame => ({
+    key: `tile/${index}`, source: { id: index } as unknown as CanvasImageSource,
+    sx: 0, sy: 0, width: 128, height: 128, frames: 1, filter: "linear",
+  });
+
+  it("draws the pack file at its own size, without background removal", () => {
+    const f = fixture(32, 32);
+    f.assets.resolveHiResTile.mockImplementation(index => index === 81 ? hiResFrame(81) : null);
+    const texture = f.textures.createTileTexture(81, 1, true);
+    expect(texture.image).toMatchObject({ width: 128, height: 128 });
+    expect(f.contexts[0].drawImage).toHaveBeenCalledExactlyOnceWith(hiResFrame(81).source, 0, 0, 128, 128, 0, 0, 128, 128);
+    expect(f.contexts[0].getImageData).not.toHaveBeenCalled();
+    expect(texture.minFilter).toBe(THREE.LinearMipmapLinearFilter);
+    expect(texture.generateMipmaps).toBe(true);
+    texture.dispose();
+  });
+
+  it("cuts an atlas sprite out at atlas size before scaling it over a high-resolution floor", () => {
+    const f = fixture(32, 32);
+    f.assets.resolveHiResTile.mockImplementation(index => index === 1300 ? hiResFrame(1300) : null);
+    const texture = f.textures.createTileTexture(81, 1, false, {
+      forceBackgroundRemoval: true, floorUnderlayTileIndex: 1300,
+    });
+    expect(texture.image).toMatchObject({ width: 128, height: 128 });
+    // contexts: [0] result, [1] underlay texture, [2] atlas cell scratch
+    expect(f.contexts[1].drawImage).toHaveBeenCalledWith(hiResFrame(1300).source, 0, 0, 128, 128, 0, 0, 128, 128);
+    expect(f.contexts[2].drawImage).toHaveBeenCalledWith(f.atlas, 32, 64, 32, 32, 0, 0, 32, 32);
+    expect(f.contexts[2].getImageData).toHaveBeenCalledWith(0, 0, 32, 32);
+    expect(f.contexts[0].drawImage).toHaveBeenLastCalledWith(f.contexts[2].canvas, 0, 0, 128, 128);
+    texture.dispose();
+  });
+
+  it("keeps the background reference floor on the atlas", () => {
+    const f = fixture(32, 32);
+    f.assets.resolveHiResTile.mockImplementation(index => hiResFrame(index));
+    const texture = f.textures.createTileTexture(81, 1, false, { useBackgroundReferenceTile: true });
+    expect(texture.image).toMatchObject({ width: 32, height: 32 });
+    expect(f.assets.drawTilesetBackgroundReferenceTile).toHaveBeenCalledWith(f.contexts[0], 32, 32);
     texture.dispose();
   });
 });

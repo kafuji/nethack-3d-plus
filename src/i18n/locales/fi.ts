@@ -878,6 +878,10 @@ export const fiOverrides: LocaleOverrides<TranslationDictionary> = {
           label: "Sovita palikat ruutujen kuvasuhteeseen",
           description: "Käytä suorakulmaisia 3D-palikoita, kun ruudut eivät ole neliöitä. Poista käytöstä säilyttääksesi neliömäiset palikat.",
         },
+        tilesetUseHiResTiles: {
+          label: "Käytä korkearesoluutioisia ruutuja",
+          description: "Vain NetHack 5. Korvaa ruudut korkearesoluutioisilla versioilla, jos sellaiset on; muut ruudut käyttävät valittua ruutusarjaa.",
+        },
         tilesetPath: {
           label: "Ruutusetti",
           description: "Sisäänrakennetut ja ladatut ruutusetit.",
