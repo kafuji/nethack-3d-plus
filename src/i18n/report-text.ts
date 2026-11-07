@@ -110,7 +110,36 @@ const deathCauses: Readonly<Record<string, string>> = {
   "elementary physics": "初歩的な物理法則", exhaustion: "疲労", "genocidal confusion": "混乱した抹殺", "imperious order": "尊大な命令", "molten lava": "溶岩", "quick snack": "軽食", "rotten lump of royal jelly": "腐ったロイヤルゼリー", "scroll of genocide": "抹殺の巻物",
   "self-genocide": "自己抹殺", slimicide: "スライム化", starvation: "飢え", "turned into green slime": "緑のスライムになったこと", "unsuccessful polymorph": "変化の失敗", "very rich meal": "こってりした食事", "gas spore's explosion": "ガス胞子の爆発", "a gas spore's explosion": "ガス胞子の爆発",
   "kicking a wall": "壁を蹴ったこと", "kicking a door": "扉を蹴ったこと", "kicking a sink": "流し台を蹴ったこと", "kicking an altar": "祭壇を蹴ったこと", "kicking a throne": "玉座を蹴ったこと", "kicking a fountain": "泉を蹴ったこと", "kicking a tree": "木を蹴ったこと",
+  petrification: "石化", suffocation: "窒息", "killed while stuck in creature form": "変化した姿から戻れないまま殺されたこと",
+  "deliberately meeting Medusa's gaze": "メデューサの視線をわざと見たこと", "mildly contaminated potion": "少し汚染されたポーション",
+  "contaminated potion": "汚染されたポーション", "contaminated tap water": "汚染された水道水", "something dreadful": "何か恐ろしいもの",
 };
+// Killers that end.c prints without "killed by": "you, committed suicide."
+const unprefixedDeaths: Readonly<Record<string, string>> = {
+  "committed suicide": "自ら命を絶った", "went to heaven prematurely": "早すぎる昇天を遂げた",
+  "quit while already on Charon's boat": "カロンの舟に乗ってから冒険をやめた", "crushed to death underneath a drawbridge": "跳ね橋の下敷きになって死んだ",
+};
+// Killers that NetHack assembles with Sprintf() (apply.c, dig.c, steed.c, ...).
+const pronoun = "(?:him|her|it|them)self";
+const possessive = "(?:his|her|its|their)";
+const assembledDeaths: ReadonlyArray<readonly [RegExp, (...parts: string[]) => string]> = [
+  [/^trying to tin (.+) without gloves$/, (what) => `手袋なしで${translateMessageArgument(what)}を缶詰にしようとしたこと`],
+  [new RegExp(`^killed ${pronoun} with ${possessive} bullwhip$`), () => "自分のむちで自滅したこと"],
+  [new RegExp(`^killed ${pronoun} by breaking a wand$`), () => "杖を折って自滅したこと"],
+  [new RegExp(`^chopping off ${possessive} own (.+)$`), (part) => `自分の${translateMessageArgument(part)}を切り落としたこと`],
+  [/^(touching|wielding) (.+) bare-handed$/, (how, what) => `${translateMessageArgument(what)}を素手で${how === "touching" ? "触った" : "握った"}こと`],
+  [/^being hit by (.+)$/, (what) => `${translateMessageArgument(what)}にぶつかったこと`],
+  [new RegExp(`^caught ${pronoun} in ${possessive} own (.+)$`), (what) => `自分の${translateMessageArgument(what)}に巻き込まれたこと`],
+  [new RegExp(`^caught ${pronoun} in an? (.+)$`), (what) => `${translateMessageArgument(what)}に巻き込まれたこと`],
+  [new RegExp(`^shot ${pronoun} with a death ray$`), () => "死の光線で自滅したこと"],
+  [new RegExp(`^zapped ${pronoun} with a spell$`), () => "呪文で自滅したこと"],
+  [new RegExp(`^using a magical horn on ${pronoun}$`), () => "魔法の角笛を自分に使ったこと"],
+  [new RegExp(`^teleported out of the dungeon and fell to ${possessive} death$`), () => "ダンジョンの外へテレポートして転落死したこと"],
+  [/^slipped while mounting (.+)$/, (what) => `${translateMessageArgument(what)}に乗ろうとして滑ったこと`],
+  [/^falling off (.+)$/, (what) => `${translateMessageArgument(what)}からの落下`],
+  [/^attempting to (saddle|ride) (.+)$/, (how, what) => `${translateMessageArgument(what)}${how === "saddle" ? "に鞍をつけようとした" : "に乗ろうとした"}こと`],
+  [/^trying to help (.+) out of a pit$/, (what) => `${translateMessageArgument(what)}を落とし穴から助け出そうとしたこと`],
+];
 
 // botl.c multi_reason: what the hero was busy with when killed.
 const helplessReasons: Readonly<Record<string, string>> = {
@@ -125,8 +154,12 @@ const helplessReasons: Readonly<Record<string, string>> = {
 function translateKiller(text: string): string {
   const helpless = /^(.+), while (.+)$/.exec(text);
   if (helpless && Object.prototype.hasOwnProperty.call(helplessReasons, helpless[2])) return `${helplessReasons[helpless[2]]}間に${translateKiller(helpless[1])}`;
-  const known = Object.prototype.hasOwnProperty.call(deathCauses, text) ? deathCauses[text] : undefined;
+  const known = ownValue(deathCauses, text) ?? ownValue(deathCauses, text.replace(/^(?:an?|the) /, ""));
   if (known !== undefined) return known;
+  for (const [pattern, describe] of assembledDeaths) {
+    const m = pattern.exec(text);
+    if (m) return describe(...m.slice(1));
+  }
   const assembled = /^(tasting|bumping into|kicking|throwing|tripping over|unwisely ate the body of|unwisely ate the brain of|unwisely tried to eat|the wrath of) (.+?)(?: (meat|barefoot|bare-handed|corpse))?$/.exec(text);
   if (assembled) {
     const name = translateMessageArgument(assembled[2]);
@@ -191,7 +224,7 @@ const ownValue = (table: Readonly<Record<string, string>>, key: string): string 
 function translateEndSummary(line: string, locale: SupportedLocale): string | undefined {
   let m = /^(Goodbye|Farvel|Aloha|Sayonara) (.+) the (.+?)\.\.\.$/.exec(line);
   if (m) return `${farewells[m[1]]}、${translatePlayerRank(m[3], locale)}の${m[2]}……`;
-  m = /^You (.+?) (?:in (.+?)(?: on dungeon level (-?\d+))?|beyond the confines of the dungeon) with (\d+) points?,$/.exec(line);
+  m = /^You (dissolved in the lava|.+?) (?:in (.+?)(?: on dungeon level (-?\d+))?|beyond the confines of the dungeon) with (\d+) points?,$/.exec(line);
   if (m && ownValue(endings, m[1])) {
     const where = m[2] ? `${translateGameLocation(m[2].replace(/^the /i, ""), locale)}${m[3] ? `の地下${m[3]}階` : ""}で` : "ダンジョンの外で";
     return `あなたは${where}${endings[m[1]]}（${m[4]}ポイント）、`;
@@ -212,6 +245,14 @@ function translateEndSummary(line: string, locale: SupportedLocale): string | un
   if (m) {
     const item = translateMessageArgument(`${m[1]} ${m[2]}`);
     if (item !== `${m[1]} ${m[2]}`) return `${item}（${m[3]}ゾークミド相当）、`;
+  }
+  m = /^(\d+) worthless pieces? of colored glass,$/.exec(line);
+  if (m) return `価値のない色ガラス${m[1]}個、`;
+  // Artifacts and invocation items: "The Amulet of Yendor (worth 30000 zorkmids and 30000 points)".
+  m = /^(.+) \(worth (\d+) (.+?) and (\d+) points\)$/.exec(line);
+  if (m) {
+    const item = translateMessageArgument(m[1].replace(/^The /, "the "));
+    if (item !== m[1].replace(/^The /, "the ")) return `${item}（${m[2]}ゾークミド、${m[4]}ポイント相当）`;
   }
   m = /^Game began (\S+ \S+), ended (\S+ \S+)\.$/.exec(line);
   if (m) return `ゲーム開始 ${m[1]}、終了 ${m[2]}。`;
@@ -381,10 +422,17 @@ function translateContent(line: string, locale: SupportedLocale): string {
     const action = how[m[2]] ?? "で自滅した";
     return `${who}（${cause}${action}）${m[4] === "," ? "、" : "。"}`;
   }
+  m = /^(you|.+?), (.+?)([,.])$/.exec(line);
+  if (m && ownValue(unprefixedDeaths, m[2]) !== undefined) {
+    return `${m[1] === "you" ? "あなた" : m[1]}（${unprefixedDeaths[m[2]]}）${m[3] === "," ? "、" : "。"}`;
+  }
   m = /^(Sealed portal|Portal|Connection|One way stairs up|One way stairs down|Stairs up|Stairs down) to (.+?)(?:, level (-?\d+))?\.$/.exec(line);
   if (m) {
     const type: Readonly<Record<string, string>> = { "Sealed portal": "封印されたポータル", Portal: "ポータル", Connection: "通路", "One way stairs up": "片道の上り階段", "One way stairs down": "片道の下り階段", "Stairs up": "上り階段", "Stairs down": "下り階段" };
-    return `${translateGameLocation(m[2], locale)}${m[3] ? ` ${m[3]}階` : ""}への${type[m[1]]}。`;
+    // dungeon.c print_branch(): "Stairs down to the Gnomish Mines".
+    const place = m[2].replace(/^the (?=[A-Z])/, "");
+    const located = translateGameLocation(place, locale);
+    return `${located !== place ? located : translateGameLocation(m[2], locale)}${m[3] ? ` ${m[3]}階` : ""}への${type[m[1]]}。`;
   }
   m = /^Turn (\d+): (.+)$/.exec(line);
   if (m) return `ターン ${m[1]}：${translateGameLocation(m[2], locale)}`;

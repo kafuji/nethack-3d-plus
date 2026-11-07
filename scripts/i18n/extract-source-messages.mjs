@@ -4,8 +4,11 @@
 // toots", ...). src/i18n/source-message-coverage.test.ts runs the samples
 // through the display translation and lists those still shown in English.
 // Usage: node scripts/i18n/extract-source-messages.mjs <NetHack src dir> <out.json>
-// Static triage only: Sprintf-assembled messages are missed and guessed
-// arguments can produce nonsense samples, so review the report by hand.
+// Sprintf() formats with prose of their own are included, since they become
+// prompts, window lines and messages. An argument made only of literals
+// ("dess" or "") is a form of the sentence, and every form is checked.
+// Static triage only: guessed arguments can produce nonsense samples, so
+// review the report by hand.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
@@ -13,10 +16,12 @@ const [srcDir, outFile] = process.argv.slice(2);
 const prefixes = {
   You: "You ", Your: "Your ", You_feel: "You feel ", You_hear: "You hear ", You_see: "You see ", You_cant: "You can't ",
   You_are: "You are ", pline_The: "The ", There: "There ", pline: "", Norep: "", verbalize: "", urgent_pline: "",
-  pline_mon: "", pline_xy: "", custompline: "", com_pline: "",
+  pline_mon: "", pline_xy: "", custompline: "", com_pline: "", Sprintf: "", Snprintf: "",
 };
 // Arguments skipped before the format for some functions.
-const skipArgs = { pline_mon: 1, pline_xy: 2, custompline: 1 };
+const skipArgs = { pline_mon: 1, pline_xy: 2, custompline: 1, Sprintf: 1, Snprintf: 2 };
+// Calls that only assemble text for a later prompt, window line or message.
+const sprintfCalls = new Set(["Sprintf", "Snprintf"]);
 
 function stripComments(src) {
   let out = "";
@@ -61,7 +66,13 @@ function callArgs(src, open) {
 const literalRe = /"((?:[^"\\\n]|\\.)*)"/g;
 function literalValue(expr) {
   if (!/^\s*(?:"(?:[^"\\\n]|\\.)*"\s*)+$/.test(expr)) return null;
-  return [...expr.matchAll(literalRe)].map((m) => JSON.parse(`"${m[1].replace(/\\'/g, "'").replace(/\\([0-7]{1,3})/g, "")}"`)).join("");
+  return [...expr.matchAll(literalRe)].map((m) => {
+    try {
+      return JSON.parse(`"${m[1].replace(/\\'/g, "'").replace(/\\([0-7]{1,3})/g, "")}"`);
+    } catch {
+      return m[1].replace(/\\(.)/g, "$1"); // escapes JSON lacks, such as "\." in a path
+    }
+  }).join("");
 }
 
 const verbS = (v) => {
@@ -114,6 +125,25 @@ function resolveName(name) {
   } finally {
     resolving.delete(name);
   }
+}
+
+/**
+ * Every value of an argument made only of string literals ("dess" in
+ * `flags.female ? "dess" : ""`), or null when any branch is computed.
+ */
+function literalChoices(arg) {
+  const lit = literalValue(arg);
+  if (lit !== null) return [lit];
+  const paren = /^\((?:const char \*|char \*)\)\s*(.+)$/.exec(arg);
+  if (paren) return literalChoices(paren[1]);
+  const ternary = splitTernary(arg);
+  if (ternary) {
+    const a = literalChoices(ternary[0]);
+    const b = a && literalChoices(ternary[1]);
+    return a && b ? [...new Set([...a, ...b])] : null;
+  }
+  if (/^\(.*\)$/.test(arg) && !/^\([^()]*\)[^()]*\(/.test(arg)) return literalChoices(arg.slice(1, -1).trim());
+  return null;
 }
 
 /** Representative values for one %s argument expression. */
@@ -188,30 +218,63 @@ for (const file of readdirSync(srcDir).filter((name) => name.endsWith(".c"))) {
     if (format === null || !format.trim() || /\n/.test(format)) continue;
     const rest = args.slice(skip + 1);
     const line = src.slice(0, match.index).split("\n").length;
+    // Sprintf() builds pieces too; keep only formats with some prose of their own.
+    if (sprintfCalls.has(fn) && (format.replace(conversionRe, " ").match(/[A-Za-z]{2,}/g) ?? []).length < 2) continue;
     const convs = [...format.matchAll(conversionRe)].filter((m) => m[0] !== "%%");
     let argIndex = 0;
-    const slotFills = convs.map((c) => {
+    const slots = convs.map((c) => {
       if (c[1] === "*") argIndex++;
       const arg = rest[argIndex++] ?? "";
-      if (c[2] === "s") return fills(arg);
-      if (c[2] === "c") return [c.index + c[0].length === format.length ? "!" : "a"];
-      return ["2"];
+      if (c[2] === "s") {
+        // Literal choices are part of the sentence: each one is a form of its own.
+        const choices = literalChoices(arg);
+        return choices ? { choices } : { fills: fills(arg) };
+      }
+      if (c[2] === "c") return { fills: [c.index + c[0].length === format.length ? "!" : "a"] };
+      return { fills: ["2"] };
     });
-    const samples = new Set();
-    const total = slotFills.reduce((product, f) => product * f.length, 1);
-    const step = Math.max(1, Math.floor(total / 24));
-    for (let k = 0; k < total && samples.size < 24; k += step) {
-      let i = 0, rest = k;
-      const text = format.replace(conversionRe, (m) => {
-        if (m === "%%") return "%";
-        const f = slotFills[i++];
-        const value = f[rest % f.length];
-        rest = Math.floor(rest / f.length);
-        return value;
-      });
-      samples.add((prefixes[fn] + text).replace(/\s+$/, ""));
+    // One group of samples per combination of literal choices; a form is
+    // translated when any sample of its group is.
+    const choiceSlots = slots.filter((slot) => slot.choices);
+    const formCount = Math.min(32, choiceSlots.reduce((product, slot) => product * slot.choices.length, 1));
+    const groups = [];
+    const forms = [];
+    for (let form = 0; form < formCount; form++) {
+      let pick = form;
+      const chosen = new Map(choiceSlots.map((slot) => {
+        const value = slot.choices[pick % slot.choices.length];
+        pick = Math.floor(pick / slot.choices.length);
+        return [slot, value];
+      }));
+      const slotFills = slots.map((slot) => (slot.choices ? [chosen.get(slot)] : slot.fills));
+      const samples = new Set();
+      const total = slotFills.reduce((product, f) => product * f.length, 1);
+      const limit = Math.max(4, Math.floor(24 / formCount));
+      const step = Math.max(1, Math.floor(total / limit));
+      for (let k = 0; k < total && samples.size < limit; k += step) {
+        let i = 0, remaining = k;
+        const text = format.replace(conversionRe, (m) => {
+          if (m === "%%") return "%";
+          const f = slotFills[i++];
+          const value = f[remaining % f.length];
+          remaining = Math.floor(remaining / f.length);
+          return value;
+        });
+        samples.add((prefixes[fn] + text).replace(/\s+$/, ""));
+      }
+      groups.push([...samples]);
+      // The format with this form's literal choices written in: a dictionary key.
+      let slotIndex = 0;
+      forms.push(prefixes[fn] + format.replace(conversionRe, (m) => {
+        if (m === "%%") return m;
+        const slot = slots[slotIndex++];
+        return slot.choices ? chosen.get(slot).replace(/%/g, "%%") : m;
+      }));
     }
-    entries.push({ file, line, format: prefixes[fn] + format, args: rest.join(" ,, ").replace(/\s+/g, " ").slice(0, 300), samples: [...samples] });
+    entries.push({
+      file, line, call: fn, format: prefixes[fn] + format, args: rest.join(" ,, ").replace(/\s+/g, " ").slice(0, 300),
+      samples: [...new Set(groups.flat())], groups, forms,
+    });
   }
 }
 writeFileSync(outFile, JSON.stringify(entries, null, 1));

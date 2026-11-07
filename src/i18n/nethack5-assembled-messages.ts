@@ -617,10 +617,10 @@ export const assembledMessageTemplates: readonly Template[] = [
   // detect.c: findit() and reveal_terrain().
   [/^You reveal (.+)!$/, (list) => {
     const words = list.split(/,? and |, /).map((part) => {
-      const one = /^(?:an?|\d+) (hidden monster|secret door|trap)s?$/.exec(part);
+      const one = /^(?:an?|\d+) (hidden monster|secret door|secret corridor|trap)s?$/.exec(part);
       if (!one) return "";
       const count = /^\d+/.exec(part)?.[0];
-      const names: Readonly<Record<string, string>> = { "hidden monster": "隠れたモンスター", "secret door": "隠し扉", trap: "罠" };
+      const names: Readonly<Record<string, string>> = { "hidden monster": "隠れたモンスター", "secret door": "隠し扉", "secret corridor": "隠し通路", trap: "罠" };
       return `${names[one[1]]}${count ? `${count}個` : ""}`;
     });
     return words.every(Boolean) ? `${words.join("と")}をあらわにした！` : "";
