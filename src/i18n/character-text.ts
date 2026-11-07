@@ -30,14 +30,9 @@ const values: Readonly<Record<string, string>> = {
   Priest: "司祭", Priestess: "女司祭", Rogue: "盗賊", Ranger: "レンジャー", Samurai: "侍", Tourist: "観光客", Valkyrie: "ワルキューレ", Wizard: "魔法使い",
   "Flame Mage": "炎の魔術師", "Ice Mage": "氷の魔術師", Necromancer: "死霊術師", "Undead Slayer": "アンデッド討伐者", Yeoman: "自作農",
 };
-export const deityNames: Readonly<Record<string, string>> = {
-  Thoth: "トート", Ptah: "プタハ", Anhur: "アンフル", "Amaterasu Omikami": "天照大神", Raijin: "雷神", Susanowo: "スサノオ",
-  Tyr: "テュール", Odin: "オーディン", Loki: "ロキ", Anu: "アヌ", Ishtar: "イシュタル", Anshar: "アンシャル", Kos: "コス", Mog: "モグ", Issek: "イセク",
-  Quetzalcoatl: "ケツァルコアトル", Camaxtli: "カマックストリ", Huhetotl: "フエフエテオトル", Mitra: "ミトラ", Crom: "クロム", Set: "セト",
-  Athena: "アテナ", Hermes: "ヘルメス", Poseidon: "ポセイドン", Lugh: "ルー", Brigit: "ブリギット", "Manannan Mac Lir": "マナナン・マクリル",
-  "Shan Lai Ching": "山雷経", "Chih Sung-tzu": "赤松子", "Huan Ti": "黄帝", Mercury: "メルクリウス", Venus: "ヴィーナス", Mars: "マルス",
-  "Blind Io": "盲目のイオ", "The Lady": "淑女", Offler: "オフラー", Moloch: "モロク",
-};
+// The pantheons are named in intro-story.ts, for every text that shows them.
+import { deityNames } from "./intro-story";
+export { deityNames };
 const exactLines: Readonly<Record<string, string>> = {
   "You have just started your adventure.": "冒険を始めたばかりです。",
   "Your wallet is empty.": "財布は空です。",
@@ -186,8 +181,8 @@ function translateCharacterContent(line: string, locale: SupportedLocale): strin
         `${ending === "ません" ? "ませんでした" : ending === "ます" ? "ました" : "でした"}${detail ?? ""}。`);
     }
   }
-  let m = /^You are an? (.+?), a level (\d+) (?:(male|female|neuter) )?(\S+) (.+)\.$/.exec(line);
-  if (m) return `あなたは${translatePlayerRank(m[1], locale)}、レベル${m[2]}の${m[3] ? `${own(values, m[3])}の` : ""}${own(values, m[4])}の${own(values, m[5])}です。`;
+  let m = /^You (are|were) an? (.+?), a level (\d+) (?:(male|female|neuter) )?(\S+) (.+)\.$/.exec(line);
+  if (m) return `あなたは${translatePlayerRank(m[2], locale)}、レベル${m[3]}の${m[4] ? `${own(values, m[4])}の` : ""}${own(values, m[5])}の${own(values, m[6])}${m[1] === "are" ? "です" : "でした"}。`;
   m = /^Total elapsed playing time (?:is|was) (\d+ (?:days?|hours?|minutes?|seconds?)(?:,? (?:and )?\d+ (?:days?|hours?|minutes?|seconds?))*)\.$/.exec(line);
   if (m) {
     const units: Readonly<Record<string, string>> = { day: "日", hour: "時間", minute: "分", second: "秒" };

@@ -3,6 +3,7 @@ import { lookupImportedJapaneseEntity } from "./imported-entities";
 import hallucinatedMonsters from "./data/hallucinated-monsters-ja.json";
 import { deityNames } from "./intro-story";
 import { translatePlayerRank } from "./player-title";
+import { hallucinatedDeities, playerMonsterName } from "./proper-names";
 
 // dat/bogusmon.txt: what a hallucinating hero sees.
 const hallucinated: Readonly<Record<string, string>> = hallucinatedMonsters;
@@ -34,7 +35,7 @@ const monsters: Readonly<Record<string, string>> = {
   "High-elf": "ハイエルフ", "Hippocrates": "ヒポクラテス", "Ixoth": "イクソス", "Juiblex": "ジュイブレックス", "Keystone Kop": "キーストン・コップ",
   "King Arthur": "アーサー王", "Kop Kaptain": "コップ警部", "Kop Lieutenant": "コップ警部補", "Kop Sergeant": "コップ巡査部長",
   "Lord Carnarvon": "カーナヴォン卿", "Lord Sato": "佐藤卿", "Lord Surtur": "スルト卿", "Master Assassin": "暗殺者の頭領",
-  "Master Kaen": "カエン師", "Master of Thieves": "盗賊の頭領", "Medusa": "メデューサ", "Minion of Huhetotl": "フエフエテオトルの手下",
+  "Master Kaen": "カエン師", "Master of Thieves": "盗賊の頭領", "Medusa": "メデューサ", "Minion of Huhetotl": "ウエテオトルの手下",
   "Nalzok": "ナルゾク", "Nazgul": "ナズグル", "Neferet the Green": "緑のネフェレト", "Norn": "ノルン", "Olog-hai": "オログ＝ハイ",
   "Oracle": "神託師", "Orcus": "オルクス", "Orion": "オリオン", "Pelias": "ペリアス", "Pestilence": "疫病", "Scorpius": "スコルピウス",
   "Shaman Karnov": "シャーマン・カルノフ", "Thoth Amon": "トート・アモン", "Twoflower": "トゥーフラワー", "Vlad the Impaler": "串刺し公ヴラド",
@@ -43,8 +44,8 @@ const monsters: Readonly<Record<string, string>> = {
   "dwarf lady": "ドワーフの貴婦人", "dwarf queen": "ドワーフの女王", "elf-lady": "エルフの貴婦人", "gnome queen": "ノームの女王",
   "high priestess": "高位の女司祭", "kobold lady": "コボルドの貴婦人", "lieutenant": "中尉", "marilith": "マリリス", "nalfeshnee": "ナルフェシュニー",
   "ogre lady": "オーガの貴婦人", "ogre queen": "オーガの女王", "shimmering dragon": "きらめくドラゴン", "succubus": "サキュバス",
-  "vampire lady": "ヴァンパイアの貴婦人", "vampire lord": "ヴァンパイアの君主", "vampire mage": "ヴァンパイアの魔術師", "vorpal jabberwock": "ヴォーパル・ジャバウォック",
-  "newt": "イモリ", "gecko": "ヤモリ", "lizard": "トカゲ", "small mimic": "小さなミミック", "large mimic": "大きなミミック",
+  "vampire lady": "吸血鬼の貴婦人", "vampire lord": "吸血鬼の君主", "vampire mage": "吸血鬼の魔術師", "vorpal jabberwock": "ヴォーパル・ジャバウォック",
+  "newt": "イモリ", "gecko": "ヤモリ", "lizard": "トカゲ", "nymph": "ニンフ", "small mimic": "小さなミミック", "large mimic": "大きなミミック",
 };
 
 /** Translate only an unmodified common monster name, preserving unknown text. */
@@ -56,7 +57,9 @@ export function translateMonsterName(text: string, locale: SupportedLocale): str
   // bogusmon.txt's personal names have no article, nor do player monsters ("Mike the Traveler").
   if (/^[A-Z]/.test(text) && own(hallucinated, text) !== undefined) return hallucinated[text];
   const titled = /^(\S+) the ([A-Z].*)$/.exec(text);
-  if (titled && translatePlayerRank(titled[2], "ja") !== titled[2]) return `${translatePlayerRank(titled[2], "ja")}の${titled[1]}`;
+  if (titled && translatePlayerRank(titled[2], "ja") !== titled[2]) return `${translatePlayerRank(titled[2], "ja")}の${playerMonsterName(titled[1])}`;
+  // A unique monster has no article ("You miss Medusa.").
+  if (/^[A-Z]/.test(text) && own(monsters, text) !== undefined) return monsters[text];
   // A bare name may be a pet's individual name (even "dog" or "jackal").
   const match = /^(the |The |a |an |A |An |your |Your )(.+)$/.exec(text);
   if (!match) return text;
@@ -73,13 +76,15 @@ export function translateMonsterName(text: string, locale: SupportedLocale): str
   }
   // minion.c: a god's servant ("the succubus of Set").
   const minion = /^(.+) of (.+)$/.exec(name);
-  if (minion && own(deityNames, minion[2]) !== undefined) {
-    const base = minion[1] === "priest" ? "僧侶" : minion[1] === "priestess" ? "尼僧" : own(monsters, minion[1]) ?? lookupImportedJapaneseEntity(minion[1]);
-    if (base !== undefined) return `${modifiers.join("")}${deityNames[minion[2]]}の${base}`;
+  const deity = minion ? own(deityNames, minion[2]) ?? own(hallucinatedDeities, minion[2]) : undefined;
+  if (minion && deity !== undefined) {
+    // priest.c: "poohbah" is what a hallucinating hero takes a priest for.
+    const base = minion[1] === "priest" ? "司祭" : minion[1] === "priestess" ? "女司祭" : minion[1] === "poohbah" ? "お偉方" : own(monsters, minion[1]) ?? own(hallucinated, minion[1]) ?? lookupImportedJapaneseEntity(minion[1]);
+    if (base !== undefined) return `${modifiers.join("")}${deity}の${base}`;
   }
   const translated = own(monsters, name) ?? own(hallucinated, name) ?? lookupImportedJapaneseEntity(name);
   // do_name.c: a player monster is named by its rank ("the kunoichi").
-  const rankName = name.replace(/(^| )([a-z])/g, (_all, gap: string, letter: string) => gap + letter.toUpperCase());
+  const rankName = name.replace(/(^| )([a-z])/g, (_all, gap: string, letter: string) => gap + letter.toUpperCase()).replace(/ Of /g, " of ");
   // Most ranks capitalize every word, but not "Medicus ossium".
   const firstCapital = name.charAt(0).toUpperCase() + name.slice(1);
   const rank = translated ?? (translatePlayerRank(firstCapital, "ja") !== firstCapital ? translatePlayerRank(firstCapital, "ja") : translatePlayerRank(rankName, "ja"));

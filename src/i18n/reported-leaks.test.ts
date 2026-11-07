@@ -1,8 +1,7 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { translateGameMenuItem } from "./game-menu";
 import { translateHelpDocument } from "./help-text";
 import { translateInventoryCategory, translateInventoryItem } from "./inventory-text";
-import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { presentGameMessage } from "./message-presentation";
 import { translateReportLine } from "./report-text";
 
@@ -27,7 +26,7 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["The blinded Archon gazes toward it...", "盲目のアルコンはそれの方をにらんだ……"],
   // Found by scripts/i18n/play-bot.mjs.
   ["Something casts a spell at you!", "何かはあなたに呪文を唱えた！"],
-  ["Dirk's ghost touches you!", "Dirkの幽霊があなたに触れた！"],
+  ["Dirk's ghost touches you!", "ディルクの幽霊があなたに触れた！"],
   ["The vampire bat's bite was poisoned!", "吸血コウモリの牙には毒が塗られていた！"],
   ["Its sting was poisoned!", "その針には毒が塗られていた！"],
   ["You detect 15 unseen monsters!", "見えないモンスターを15匹探知した！"],
@@ -46,7 +45,7 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["You hear a lieutenant incant ZELGO MER.", "中尉が「ZELGO MER」と唱えるのが聞こえた。"],
   ["stone (no travel path)", "石（移動経路なし）"],
   ["The blast of gravy hits you!", "グレイビーソースの爆風があなたに当たった！"],
-  ["The priest of Moloch casts a spell!", "モロクの僧侶が呪文を唱えた！"],
+  ["The priest of Moloch casts a spell!", "モロクの司祭が呪文を唱えた！"],
   ["(2north,3east): doorway.", "（2北、3東）：戸口"],
   ["<17,6>   %  an uncursed apple", "<17,6> % 呪われていないリンゴ"],
   ["Portal to The Quest: 12", "クエストへのポータル：12階"],
@@ -65,13 +64,34 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["You turn into a female silver dragon!", "シルバードラゴンに変化した！"],
   ["The design features toucans on an abstract background.", "抽象的な背景にオオハシの柄が描かれている。"],
   ["The voice of Thoth booms out: Thou hast angered me.", "トートの声が響いた：「汝は我を怒らせた。」"],
-  ["You have 50 zorkmids credit at Asidonhopo's general store.", "Asidonhopoの雑貨店に50ゴールドの信用がある。"],
+  ["You have 50 zorkmids credit at Asidonhopo's general store.", "アシドンホポの雑貨店に50ゾークミドの信用がある。"],
   ["\"Don't Panic\"", "「あわてるな」"],
+  // Generated names, in katakana wherever they appear.
+  ["You enter Izchak's lighting store!", "イズチャクの照明店に入った！"],
+  ["You do not owe Sipaliwini anything.", "シパリウィニには何の借りもない。"],
+  ["Aothog of Aothaiakh wields a long sword!", "アオスアイアクのアオスオグがロングソードを手に持った！"],
+  ["Ai-goru of Aothaiakh is suddenly moving faster.", "アオスアイアクのアイ・ゴルウの動きは突然すばやくなった。"],
+  ["The vial crashes on Aothog of Aothaiakh's head and breaks into shards.", "ガラス瓶がアオスアイアクのアオスオグの頭に当たって割れ、破片になった。"],
+  ["Mike the Traveler hits!", "旅行者のマイクが攻撃を命中させた！"],
+  ["coyote - Hungrii Flea-Bagius", "コヨーテ - ハングリイ・フリーバギウス"],
+  ["You miss Madame.", "マダムへの攻撃は外れた。"],
+  ["peaceful Izchak", "友好的なイズチャク"],
+  // Rays, liquids and traps as a hallucinating hero sees them.
+  ["The blast of salt misses the homunculus.", "塩の爆風はホムンクルスに当たらなかった。"],
+  ["The wolf is killed by the blast of leaves!", "オオカミは木の葉の爆風で殺された！"],
+  ["You splash some mulled wine around.", "ホットワインをあたりにはね散らした。"],
+  ["box and stick trap", "箱と棒の罠"],
+  // Shop talk and other sentences the bot met.
+  ["A brass lantern, price 16 zorkmids, superb craftsmanship!", "真鍮のランタン、お値段16ゾークミド。見事な出来ばえだ！"],
+  ["The priest of Moloch hurls a potion of blindness!", "モロクの司祭が盲目のポーションを投げつけた！"],
+  ["Your help is urgently needed at Orion's camp!", "オリオンの野営地であなたの助けが緊急に必要だ！"],
+  ["Use the command #monster to spin a web.", "#monster コマンドで巣を張れる。"],
+  ["Your rear limb feels better.", "あなたの後肢は具合がよくなった。"],
   // Assembled from the source's word tables.
   ["adjust: adjust inventory letters", "adjust: 持ち物の文字を整理する"],
-  ["So, Agent, you dare return to Asidonhopo's general store?!", "Agentよ、Asidonhopoの雑貨店によくも戻って来られたな！"],
-  ["You enter Asidonhopo's general store again!", "Asidonhopoの雑貨店に再び入った！"],
-  ["You owe Asidonhopo 50 zorkmids for goods lost.", "Asidonhopoに失われた品物の代金として50ゴールドの借りがある。"],
+  ["So, Agent, you dare return to Asidonhopo's general store?!", "Agentよ、アシドンホポの雑貨店によくも戻って来られたな！"],
+  ["You enter Asidonhopo's general store again!", "アシドンホポの雑貨店に再び入った！"],
+  ["You owe Asidonhopo 50 zorkmids for goods lost.", "アシドンホポに失われた品物の代金として50ゾークミドの借りがある。"],
   ["The massive hammer hits!  Lightning strikes the jackal!", "巨大なハンマーが命中した！稲妻がジャッカルを撃った！"],
   ["Your dagger glows brown.", "あなたのダガーが茶色に光った。"],
   ["Your long sword softly glows amber and is now as good as new.", "あなたのロングソードが琥珀色に光った。新品同様になった。"],
@@ -154,7 +174,3 @@ function reportedLeaks(): void {
 
 describe("reported leaks", reportedLeaks);
 
-describe("reported leaks with the JNetHack dictionary loaded", () => {
-  beforeAll(loadJapaneseDictionary, 40000);
-  reportedLeaks();
-});

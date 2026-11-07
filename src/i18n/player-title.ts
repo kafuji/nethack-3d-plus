@@ -1,5 +1,6 @@
 import type { SupportedLocale } from "./core";
-import { jnethackStatus } from "../plus/game-text/fallback";
+// Used only at call time (game-monsters imports this module too).
+import { translateMonsterName } from "./game-monsters";
 
 // NetHack's role.c rank names, not player-supplied names or monster names.
 const ranks: Readonly<Record<string, string>> = {
@@ -37,8 +38,9 @@ export function translatePlayerTitle(name: string, locale: SupportedLocale): str
   if (locale !== "ja") return name;
   const match = /^(.+) the (.+)$/.exec(name);
   if (!match || !Object.prototype.hasOwnProperty.call(ranks, match[2])) {
-    // Polymorphed forms and unlisted ranks: try JNetHack names.
-    return jnethackStatus("title", name) ?? name;
+    // Polymorphed: "Agent the newt".
+    const form = match ? translateMonsterName(`the ${match[2]}`, locale) : undefined;
+    return match && form !== `the ${match[2]}` ? `${match[1]}（${form}）` : name;
   }
   return `${match[1]}（${translatePlayerRank(match[2], locale)}）`;
 }

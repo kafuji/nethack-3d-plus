@@ -5,6 +5,7 @@ import { translateMonsterName } from "./game-monsters";
 import { translateSpellName } from "./game-skills";
 import { deityNames } from "./character-text";
 import { colorAdjective, colorAdverb } from "./color-text";
+import { translateGameLocation } from "./game-location";
 
 // Reviewed Japanese renderings keyed by the printf format used in the NetHack
 // 5.0 source (pline/You/Your/There/... first arguments, with the implicit
@@ -54,7 +55,61 @@ for (const [format, translation] of Object.entries(entries as Record<string, str
 // Prefer the most specific format when several could match the same text.
 templates.sort((a, b) => b.literalLength - a.literalLength);
 
+// polyself.c body_part(): the words a polymorphed hero's body is described with.
+const unusualBodyParts: Readonly<Record<string, string>> = {
+  pseudopod: "仮足", "dark spot": "黒点", front: "前面", "pseudopod extension": "仮足の先", "pseudopod extremity": "仮足の末端", "pseudopod root": "仮足の根元", grasp: "把握部",
+  "cerebral area": "脳域", "lower pseudopod": "下部の仮足", surface: "表面", ripples: "さざ波", juices: "体液", sensor: "感覚器",
+  "claw tip": "爪の先", "rear claw": "後ろ爪", "rear limb": "後肢", "rear claw tip": "後ろ爪の先", wing: "翼", "wing tip": "翼の先", feathers: "羽毛", lung: "肺", bill: "くちばし",
+  foreleg: "前脚", forehoof: "前蹄", "hoof tip": "蹄の先", "rear hoof": "後ろ蹄", "rear leg": "後ろ脚", backbone: "背骨", "rear hoof tip": "後ろ蹄の先", mane: "たてがみ",
+  appendage: "付属肢", "optic nerve": "視神経", tentacle: "触手", "tentacle tip": "触手の先", "lower appendage": "下部の付属肢", "lower tentacle": "下部の触手", equator: "赤道",
+  "lower tentacle tip": "下部の触手の先", cilia: "繊毛", "life force": "生命力", retina: "網膜", "olfactory nerve": "嗅神経", interior: "内部",
+  mycelium: "菌糸体", "visual area": "視覚域", hypha: "菌糸", root: "根", strand: "菌糸束", "cap area": "傘", rhizome: "根茎", stalk: "柄", "rhizome tip": "根茎の先", gill: "えら",
+  region: "領域", "minor current": "小さな流れ", "lower current": "下部の流れ", swirl: "渦", "central core": "中心核", center: "中心", currents: "流れ", edge: "縁", "leading edge": "前縁",
+  "vestigial limb": "痕跡肢", "large scale": "大きな鱗", "large scale tip": "大きな鱗の先", "rear region": "後部", "scale gap": "鱗の隙間", length: "胴", "rear scale": "後部の鱗", "forked tongue": "二股の舌",
+  "anterior segment": "前体節", "light sensitive cell": "感光細胞", clitellum: "環帯", setae: "剛毛", "posterior segment": "後体節", segment: "体節", posterior: "後部", "posterior setae": "後部の剛毛", prostomium: "口前葉",
+  pedipalp: "触肢", tarsus: "跗節", cephalothorax: "頭胸部", abdomen: "腹部", hemolymph: "血リンパ", "book lung": "書肺", labrum: "上唇", "digestive tract": "消化管",
+  premaxillary: "前上顎骨", "pelvic axillary": "腹びれの付け根", "pelvic fin": "腹びれ", "anal fin": "尻びれ", "pectoral fin": "胸びれ", peduncle: "尾柄", gills: "えら", "dorsal fin": "背びれ", "caudal fin": "尾びれ", nostril: "鼻孔",
+  fingertip: "指先", toe: "つま先",
+};
+
+// do_name.c hliquids: what water looks like to a hallucinating hero.
+const hallucinatedLiquids: Readonly<Record<string, string>> = {
+  yoghurt: "ヨーグルト", oobleck: "ウーブレック", "clotted blood": "凝固した血", "diluted water": "薄めた水", "purified water": "精製水", "instant coffee": "インスタントコーヒー", tea: "お茶",
+  "herbal infusion": "ハーブティー", "liquid rainbow": "液状の虹", "creamy foam": "クリーミーな泡", "mulled wine": "ホットワイン", bouillon: "ブイヨン", nectar: "ネクター", grog: "グロッグ",
+  flubber: "フラバー", ketchup: "ケチャップ", "slow light": "遅い光", oil: "油", vinaigrette: "ドレッシング", "liquid crystal": "液晶", honey: "蜂蜜", "caramel sauce": "キャラメルソース", ink: "インク",
+  "aqueous humour": "眼房水", "milk substitute": "代用乳", "fruit juice": "フルーツジュース", "glowing lava": "光る溶岩", "gastric acid": "胃酸", "mineral water": "ミネラルウォーター",
+  "cough syrup": "咳止めシロップ", quicksilver: "水銀", "sweet vitriol": "甘い硫酸", "grey goo": "グレイ・グー", "pink slime": "ピンクのスライム", "cosmic latte": "コズミック・ラテ",
+  "bone oil": "骨油", custard: "カスタード", lard: "ラード", vinegar: "酢", creosote: "クレオソート",
+};
+
+// trap.c halu_trapnames: the traps a hallucinating hero thinks are there.
+export const hallucinatedTraps: Readonly<Record<string, string>> = {
+  "bottomless pit": "底なし穴", "polymorphism trap": "変化の罠", "devil teleporter": "悪魔の転送装置", "falling boulder trap": "落石の罠", "anti-anti-magic field": "反反魔法の領域", "weeping gas trap": "催涙ガスの罠",
+  "queasy board": "吐き気のする床板", "electrified web": "電気の巣", "owlbear trap": "アウルベアの罠", "sand mine": "砂の地雷", "vacillating triangle": "揺れ動く三角形",
+  "death trap": "死の罠", "disintegration trap": "分解の罠", "ice trap": "氷の罠", "monochrome trap": "白黒の罠", "axeblade trap": "斧刃の罠", "pool of boiling oil": "煮えたぎる油の池", "pool of quicksand": "流砂の池",
+  "field of caltrops": "まきびしの原", "buzzsaw trap": "丸のこの罠", "spiked floor": "とげの床", "revolving wall": "回転する壁", "uneven floor": "でこぼこの床", "finger trap": "指の罠", "jack-in-a-box": "びっくり箱", "yellow snow": "黄色い雪",
+  "booby trap": "ブービートラップ", "rat trap": "ネズミ捕り", "poisoned nail": "毒の釘", snare: "くくり罠", whirlpool: "渦潮", "trip wire": "仕掛け線", "roach motel (tm)": "ゴキブリホイホイ（商標）",
+  "negative space": "負の空間", "tensor field": "テンソル場", singularity: "特異点", "imperial fleet": "帝国艦隊", "black hole": "ブラックホール", "thermal detonator": "熱爆弾", "event horizon": "事象の地平線", "entoptic phenomenon": "内視現象",
+  "sweet-smelling gas vent": "甘い香りのガス孔", "phone booth": "電話ボックス", "exploding runes": "爆発するルーン", "never-ending elevator": "止まらないエレベーター", "slime pit": "スライムの穴", "warp zone": "ワープゾーン", "illusory floor": "幻の床",
+  "pile of poo": "うんちの山", "honey trap": "ハニートラップ", "tourist trap": "観光客向けの罠", "banana peel": "バナナの皮", "garden rake": "熊手", "whoopie cushion": "ブーブークッション", "box and stick trap": "箱と棒の罠",
+  "fly trap": "ハエ取り", "legal trap": "法の罠", "pit of snakes": "蛇の穴", "pollywog trap": "おたまじゃくしの罠", "slippery slope": "滑りやすい坂", "thirst trap": "渇きの罠", suntrap: "日だまり",
+};
+
+const otherNouns: Readonly<Record<string, string>> = {
+  "The razor-sharp blade": "かみそりのような刃", "razor-sharp blade": "かみそりのような刃",
+  "tower of flame": "火柱", "an air bubble": "気泡", "mid air": "空中", "molten lava": "溶岩", "desired location": "目的の場所", "the buried ball": "埋まった鉄球",
+  vapor: "蒸気", explosion: "爆発", door: "扉", mortal: "人間", creature: "生き物", wall: "壁", "the wall": "壁", "the stone": "石", weapon: "武器", "your weapon": "あなたの武器",
+  food: "食べ物", pie: "パイ", "the pie": "パイ", venom: "毒液", "the venom": "毒液", candelabra: "燭台", sword: "剣", sky: "空", "Some food": "食べ物",
+  "expanse above": "頭上の空間", "the expanse above": "頭上の空間", "rock cavern": "洞窟の天井", "the rock cavern": "洞窟の天井", "water above": "頭上の水", "the water above": "頭上の水",
+  "an insect": "昆虫", insects: "昆虫", "a snake": "ヘビ", snakes: "ヘビ",
+};
+
 const bodyParts: Readonly<Record<string, string>> = {
+  ...unusualBodyParts,
+  ...hallucinatedTraps,
+  ...hallucinatedLiquids,
+  ...Object.fromEntries(Object.entries(hallucinatedLiquids).map(([liquid, shown]) => [`deep ${liquid}`, `深い${shown}`])),
+  ...otherNouns,
   arm: "腕", arms: "両腕", back: "背中", body: "体", ears: "耳", eye: "目", eyes: "両目", face: "顔", finger: "指", fingers: "指",
   foot: "足", feet: "両足", hand: "手", hands: "両手", head: "頭", leg: "脚", legs: "両脚", mouth: "口", neck: "首", nose: "鼻",
   skin: "肌", stomach: "胃", throat: "喉", tongue: "舌", teeth: "歯", toes: "足の指", wings: "翼", paw: "前足", paws: "前足",
@@ -113,11 +168,16 @@ export function translateMessageArgument(value: string): string {
   if (ray !== undefined) return ray;
   const body = own(bodyParts, text);
   if (body !== undefined) return body;
+  const sided = /^(left|right) (.+)$/.exec(text);
+  if (sided && own(bodyParts, sided[2]) !== undefined) return `${sided[1] === "left" ? "左" : "右"}${bodyParts[sided[2]]}`;
+  // cmd.c: what #terrain and the look-around command call a room.
+  const room = /^an? (?:square )?(\d+) by (\d+) (room|area)$/.exec(text);
+  if (room) return `${room[1]}×${room[2]}の${room[3] === "room" ? "部屋" : "区域"}`;
   // priest.c priestname(): "the high priestess of Moloch".
   const titled = /^(?:[Tt]he |[Aa]n? )?(high )?(priest|priestess) of (.+)$/.exec(text);
   if (titled) {
     const deity = Object.prototype.hasOwnProperty.call(deityNames, titled[3]) ? deityNames[titled[3]] : titled[3];
-    return `${deity}の${titled[1] ? "高" : ""}${titled[2] === "priestess" ? "尼僧" : "僧侶"}`;
+    return `${deity}の${titled[1] ? (titled[2] === "priestess" ? "高位の" : "高") : ""}${titled[2] === "priestess" ? "女司祭" : "司祭"}`;
   }
   if (Object.prototype.hasOwnProperty.call(deityNames, text)) return deityNames[text];
   const monster = translateMonsterName(text, "ja");
@@ -130,6 +190,24 @@ export function translateMessageArgument(value: string): string {
   if (/^[A-Z]/.test(text)) {
     const unique = translateMonsterName(`the ${text}`, "ja");
     if (unique !== `the ${text}`) return unique;
+    // read.c: a species as a brand name, "Magic Marker(TM) Water Moccasin Red Ink Marker Pen".
+    const branded = translateMonsterName(`the ${text.toLowerCase()}`, "ja");
+    if (branded !== `the ${text.toLowerCase()}`) return branded;
+    // A dungeon branch: "You were in the Dungeons of Doom, on level 1."
+    const branch = translateGameLocation(text, "ja");
+    if (branch !== text) return branch;
+  }
+  if (/^the [A-Z]/.test(text)) {
+    const branch = translateGameLocation(text.replace(/^the /, ""), "ja");
+    if (branch !== text.replace(/^the /, "")) return branch;
+  }
+  // A species without an article: "Creating doppelganger instead; force shopkeeper?"
+  if (/^[a-z][a-z -]+$/.test(text)) {
+    const species = translateMonsterName(`the ${text}`, "ja");
+    if (species !== `the ${text}`) return species;
+    // hcolor(): "You see brown streaks on the stone."
+    const color = colorAdjective(text);
+    if (color !== undefined) return color.replace(/色の$/, "色");
   }
   // makemon.c: "2 jackals suddenly appear next to you!"
   const counted = /^(\d+) (.+)$/.exec(text);
@@ -139,6 +217,14 @@ export function translateMessageArgument(value: string): string {
       plural.replace(/es$/, ""), plural.replace(/s$/, ""), plural]) {
       const name = translateMonsterName(`a ${singular}`, "ja");
       if (name !== `a ${singular}`) return `${name}${counted[1]}匹`;
+    }
+  }
+  // A species named in the plural: "Wiped out all dwarves."
+  if (/^[a-z][a-z -]*s$/.test(text)) {
+    for (const singular of [text.replace(/ies$/, "y"), text.replace(/ves$/, "f"), text.replace(/men$/, "man"), text.replace(/es$/, ""), text.replace(/s$/, "")]) {
+      if (singular === text) continue;
+      const name = translateMonsterName(`the ${singular}`, "ja");
+      if (name !== `the ${singular}`) return name;
     }
   }
   const yours = /^(?:your|Your) (.+)$/.exec(text);

@@ -20,10 +20,6 @@ it.skipIf(!samplesFile)("reports source messages without a Japanese rendering", 
     writeFileSync: (path: string, data: string) => void;
   }>("node:fs");
   setCurrentLocale("ja");
-  const gameText = await import("../plus/game-text/index");
-  gameText.ensureGameTextTranslatorLoaded();
-  // Let the lazily imported JNetHack dictionary finish loading.
-  await new Promise((resolve) => setTimeout(resolve, 3000));
   const { presentGameMessage } = await import("./message-presentation");
   const entries = JSON.parse(readFileSync(samplesFile!, "utf8")) as {
     file: string; line: number; format: string; samples: string[];

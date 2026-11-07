@@ -6,11 +6,11 @@ import { deityNames } from "./intro-story";
 // map state. A doorway is not an inventory item and may have no door at all.
 const features: Readonly<Record<string, string>> = {
   doorway: "戸口", "open doorway": "開いた戸口", "doorless doorway": "扉のない戸口",
-  door: "ドア", "open door": "開いたドア", "closed door": "閉じたドア", "broken door": "壊れたドア",
+  door: "扉", "open door": "開いた扉", "closed door": "閉じた扉", "broken door": "壊れた扉",
   "staircase up": "上り階段", "staircase down": "下り階段", "stairway up": "上り階段", "stairway down": "下り階段",
   "staircase up out of the dungeon": "ダンジョンの外へ続く上り階段",
   "ladder up": "上りはしご", "ladder down": "下りはしご", "up staircase": "上り階段", "down staircase": "下り階段",
-  fountain: "噴水", sink: "流し", throne: "玉座", grave: "墓", altar: "祭壇", tree: "木", "iron bars": "鉄格子",
+  fountain: "泉", sink: "流し台", throne: "玉座", grave: "墓", altar: "祭壇", tree: "木", "iron bars": "鉄格子",
   "pool of water": "水たまり", pool: "水たまり", moat: "堀", water: "水", lava: "溶岩", ice: "氷",
   "floor of a room": "部屋の床", "room floor": "部屋の床", corridor: "通路", "dark corridor": "暗い通路", "secret corridor": "隠し通路",
   "magic portal": "魔法のポータル", "bear trap": "トラバサミ", "pit": "落とし穴", "spiked pit": "針のある落とし穴",
