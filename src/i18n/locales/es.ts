@@ -841,6 +841,10 @@ export const esOverrides = {
                   label: "Ajustar bloques a la proporción de las baldosas",
                   description: "Usa bloques 3D rectangulares cuando las baldosas no sean cuadradas. Desactívalo para mantener bloques cuadrados.",
                 },
+                tilesetUseHiResTiles: {
+                  label: "Usar casillas de alta resolución",
+                  description: "Solo NetHack 5. Sustituye las casillas por versiones de alta resolución cuando existen; el resto sigue usando el conjunto seleccionado.",
+                },
                 tilesetPath: {
                     label: "Conjunto de mosaicos",
                     description: "Conjuntos de mosaicos integrados y cargados.",

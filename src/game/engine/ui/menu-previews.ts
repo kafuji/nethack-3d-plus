@@ -25,6 +25,7 @@ export interface MenuPreviewsDependencies {
   readonly tilesetAssets: Pick<
     TilesetAssets,
     "resolveAtlasTileIndexForRuntime"
+    | "resolveHiResTile"
     | "resolveRuntimeVersion"
     | "resolveTilesetAtlasImageSource"
     | "shouldUseVultureTiles"
@@ -72,6 +73,52 @@ export class MenuPreviews {
     return items.map((item) => this.normalizeMenuItemForUi(item));
   }
 
+  /** Menus otherwise draw 32px icons from the atlas; pack tiles replace them. */
+  resolveHiResMenuItemTilePreviewDataUrl(
+    item: Record<string, unknown>,
+  ): string | null {
+    if (item.isCategory === true || item.isTileApplicable === false) {
+      return null;
+    }
+    const tileIndex = this.resolveNonNegativeMenuInteger(item.tileIndex);
+    const tile =
+      tileIndex === null
+        ? null
+        : this.dependencies.tilesetAssets.resolveHiResTile(tileIndex);
+    if (!tile || typeof document === "undefined") {
+      return null;
+    }
+    const previewSize = Math.min(128, tile.width);
+    const cacheKey = `hires|${tile.key}|s:${previewSize}`;
+    const cached = this.menuTilePreviewDataUrlCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = previewSize;
+    canvas.height = previewSize;
+    const context = canvas.getContext("2d");
+    if (!context) {
+      return null;
+    }
+    context.imageSmoothingEnabled = tile.filter === "linear";
+    context.imageSmoothingQuality = "high";
+    context.drawImage(
+      tile.source,
+      tile.sx,
+      tile.sy,
+      tile.width,
+      tile.height,
+      0,
+      0,
+      previewSize,
+      previewSize,
+    );
+    const dataUrl = canvas.toDataURL("image/png");
+    this.menuTilePreviewDataUrlCache.set(cacheKey, dataUrl);
+    return dataUrl;
+  }
+
   normalizeMenuItemForUi(item: unknown): any {
     if (!item || typeof item !== "object") {
       return item;
@@ -90,6 +137,10 @@ export class MenuPreviews {
   resolveMenuItemTilePreviewDataUrl(
     item: Record<string, unknown>,
   ): string | null {
+    const hiResPreview = this.resolveHiResMenuItemTilePreviewDataUrl(item);
+    if (hiResPreview) {
+      return hiResPreview;
+    }
     if (
       !this.dependencies.tilesetAssets.shouldUseVultureTiles() ||
       !this.dependencies.tilesetAssets.vultureTilesetTranslator ||

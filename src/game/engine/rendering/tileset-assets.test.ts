@@ -135,3 +135,24 @@ describe("rectangular atlas loading", () => {
     expect(drawImage).toHaveBeenCalledTimes(firstChunk);
   });
 });
+
+describe("high-resolution tiles", () => {
+  it.each([
+    ["5.0", "tiles", true, "assets/5.0/PixelHack.png", true],
+    ["5.0", "tiles", false, "assets/5.0/PixelHack.png", false],
+    ["3.6.7", "tiles", true, "assets/3.6/Nevanda.png", false],
+    ["5.0", "ascii", true, "assets/5.0/PixelHack.png", false],
+    ["5.0", "tiles", true, "vulture:assets/vulture/win/vulture/gamedata", false],
+  ] as const)("runtime %s, mode %s, option %s, %s -> active %s", (runtimeVersion, tilesetMode, tilesetUseHiResTiles, tilesetPath, active) => {
+    const clientOptions = { tilesetMode, tilesetUseHiResTiles, tilesetPath } as Nh3dClientOptions;
+    const assets = new TilesetAssets({
+      engineState: { characterCreationConfig: { runtimeVersion }, clientOptions, disposed: false },
+    } as unknown as TilesetAssetsDependencies);
+    const frame = { key: "mon/giant_ant_male" };
+    assets.hiResTilePack = { getTile: vi.fn(() => frame), dispose: vi.fn() } as never;
+    expect(assets.isHiResTilesActive()).toBe(active);
+    expect(assets.resolveHiResTile(0)).toBe(active ? frame : null);
+    assets.syncHiResTilePack();
+    expect(assets.hiResTilePack !== null).toBe(active);
+  });
+});
