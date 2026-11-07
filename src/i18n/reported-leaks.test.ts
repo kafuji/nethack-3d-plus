@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { translateGameMenuItem } from "./game-menu";
+import { translateGamePrompt } from "./game-prompts";
 import { translateHelpDocument } from "./help-text";
 import { translateInventoryCategory, translateInventoryItem } from "./inventory-text";
 import { presentGameMessage } from "./message-presentation";
@@ -102,6 +103,33 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["The fiery blade burns the jackal!", "炎の刃がジャッカルを焼いた！"],
   ["You consume smoked newt.", "燻製のイモリの肉を食べた。"],
   ["There is a chest here.  Check it for traps?", "ここに宝箱がある。罠を調べますか？"],
+  // Left in English once JNetHack's translation was no longer used.
+  ["You ascend to the status of Demigod...", "あなたは昇天し、半神の地位に上った…"],
+  ["You ascend to the status of Demigoddess...", "あなたは昇天し、半女神の地位に上った…"],
+  ["You reveal 2 secret corridors!", "隠し通路2個をあらわにした！"],
+  ["You fail to unleash something.", "何かのリードを外し損ねた。"],
+  ["The Key feels very warm!", "鍵はとても温かい！"],
+  ["You hear a voice say, \"They're dead, Jim.\"", "「死んでいるよ、ジム」という声が聞こえた。"],
+  ["\"Hello stranger, who are you?\" -", "「やあ、見知らぬ人よ、お前は誰だ？」 -"],
+];
+
+// Each line as a text window shows it: report rendering, then message rendering.
+const windowLines: ReadonlyArray<readonly [string, string]> = [
+  ["      Completed quest for Lord Sato.", "      佐藤卿のクエストを達成した。"],
+  ["      Stairs down to the Gnomish Mines.", "      ノームの鉱山への下り階段。"],
+  ["      The castle (play C D E F G to open or close drawbridge).", "      城（「C D E F G」を奏でると跳ね橋が開閉する）。"],
+  ["You dissolved in the lava in Gehennom on dungeon level 40 with 2 points,", "あなたはゲヘナの地下40階で溶岩に溶けた（2ポイント）、"],
+  ["       3 worthless pieces of colored glass,", "       価値のない色ガラス3個、"],
+  ["The Amulet of Yendor (worth 30000 zorkmids and 30000 points)", "イェンダーの魔除け（30000ゾークミド、30000ポイント相当）"],
+  ["Extinct species:", "絶滅した種族："],
+  ["You aggravated monsters.", "モンスターを刺激していました。"],
+  ["you, crushed to death underneath a drawbridge.", "あなた（跳ね橋の下敷きになって死んだ）。"],
+  ["you, killed by touching a cockatrice corpse bare-handed.", "あなた（コカトリスの死体を素手で触ったことに殺された）。"],
+];
+
+const prompts: ReadonlyArray<readonly [string, string]> = [
+  ["Do you want a list of extinct species?", "絶滅した種族の一覧を見ますか？"],
+  ["Do you want a list of species genocided and extinct?", "抹殺または絶滅した種族の一覧を見ますか？"],
 ];
 
 const reportLines: ReadonlyArray<readonly [string, string]> = [
@@ -132,6 +160,14 @@ function reportedLeaks(): void {
 
   it.each(reportLines)("translates the report line %s", (english, japanese) => {
     expect(translateReportLine(english, "ja")).toBe(japanese);
+  });
+
+  it.each(windowLines)("translates the window line %s", (english, japanese) => {
+    expect(presentGameMessage(translateReportLine(english, "ja"), "ja").text).toBe(japanese);
+  });
+
+  it.each(prompts)("translates the prompt %s", (english, japanese) => {
+    expect(translateGamePrompt(english, "ja")).toBe(japanese);
   });
 
   it.each([

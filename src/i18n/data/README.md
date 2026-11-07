@@ -87,6 +87,13 @@ the C expressions, so some listed samples are nonsense; review it by hand and
 add renderings for real messages to `nethack5-source-ja.json`. A format key may
 spell out a runtime verb (`"%s toots."` for `pline("%s.", Tobjnam(obj, "toot"))`).
 
+Messages that `Sprintf()` assembles for prompts, window lines and later
+`pline()` calls are included when the format has prose of its own. An argument
+made only of string literals (`flags.female ? "dess" : ""`) makes a separate
+form of the sentence, and every form must have a Japanese sample. The last
+column of the report lists the failing forms with those literals written in,
+ready to use as dictionary keys ("You ascend to the status of Demigoddess...").
+
 ## Rumors and oracles
 
 `oracles-rumors-ja.json` pairs the rumors (`dat/rumors.tru`, `dat/rumors.fal`)
