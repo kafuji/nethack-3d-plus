@@ -113,6 +113,21 @@ const exactLines: Readonly<Record<string, string>> = {
   "You are unlucky.": "運が悪いです。", "You are very unlucky.": "運がとても悪いです。", "You are extremely unlucky.": "運が極めて悪いです。",
   "You have extra luck.": "運に追加の恩恵があります。", "You have reduced luck.": "運に不利な影響があります。",
   "Bad luck does not time out for you.": "悪運は時間が経っても戻りません。", "Good luck does not time out for you.": "幸運は時間が経っても失われません。",
+  // Final disclosure: insight.c gives these their own past tense.
+  "Bad luck did not time out for you.": "悪運は時間が経っても戻りませんでした。", "Good luck did not time out for you.": "幸運は時間が経っても失われませんでした。",
+  "You aggravated monsters.": "モンスターを刺激していました。", "You caused conflict.": "周囲に争いを引き起こしていました。",
+  "You regenerated.": "体力が再生していました。", "You took reduced poison gas damage.": "毒ガスから受けるダメージが減っていました。",
+  "You resisted hallucinations.": "幻覚への耐性がありました。", "Your life would have been saved.": "命を救われるはずでした。",
+  "You hunger rapidly.": "すぐにお腹が空きます。", "You hungered rapidly.": "すぐにお腹が空いていました。",
+  "You fumble.": "よろめきがちです。", "You fumbled.": "よろめきがちでした。",
+  "You fall asleep uncontrollably.": "抑えようもなく眠り込んでしまいます。", "You fell asleep uncontrollably.": "抑えようもなく眠り込んでしまっていました。",
+  "You did not wear any armor.": "防具を一切着けていませんでした。",
+  "You are levitating, at will.": "自分の意志で浮遊しています。", "You are buried.": "埋まっています。", "You can see.": "目が見えます。",
+  "You can not change from your current form.": "今の姿から変わることができません。",
+  "It is the midnight hour.": "真夜中です。", "It was the midnight hour.": "真夜中でした。",
+  "You would see invisible when not blind.": "目が見えれば透明なものが見えます。", "You would have seen invisible when not blind.": "目が見えていれば透明なものが見えたはずでした。",
+  "You would have seen invisible if not blind.": "目が見えていれば透明なものが見えたはずでした。",
+  "You could be clairvoyant.": "千里眼になれます。", "You could have been clairvoyant.": "千里眼になれたはずでした。",
 };
 const skillLevels: Readonly<Record<string, string>> = {
   no: "なし", unskilled: "未熟練", basic: "基本", skilled: "熟練", expert: "専門家", master: "達人", "grand master": "大達人", "grand-master": "大達人",
