@@ -167,12 +167,15 @@ export const defaultMusicLibrary: MusicLibrary = {
  * Played once when the player ascends. A Suno Cover of the title theme (style:
  * Symphony and Metal, fanfare, glorious, epic, dramatic, grand finale), not a
  * sketch of its own. It ends with a fade, so it does not need to loop.
+ *
+ * Deliberately about 6 dB louder than the other tracks. The file peaks at -5.7 dB
+ * and the music volume adds up to 1.6 dB, so this trim stays below clipping.
  */
 export const ascensionMusicTrack: MusicTrack = {
   id: "ascension",
   path: "music/ascension.mp3",
   loop: "crossfade",
-  gainDb: -2.5,
+  gainDb: 3,
   title: "Labyrinth of DOOM (Ascension)",
   ...originalWork,
   source: "scripts/music-sketch/pieces/title.mjs",

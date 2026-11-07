@@ -17,6 +17,7 @@ import { piece as gehennom } from "./pieces/gehennom.mjs";
 import { piece as astral } from "./pieces/astral.mjs";
 import { piece as astralCombat } from "./pieces/astral-combat.mjs";
 import { piece as ascension } from "./pieces/ascension.mjs";
+import { piece as wizard } from "./pieces/wizard.mjs";
 import { excerpt, humanize } from "./arrange.mjs";
 import { pitchName, sheetNotes } from "./sheet.mjs";
 
@@ -43,7 +44,7 @@ test("encodes the tempo from bpm", () => {
   assert.equal(midi.readUIntBE(tempo + 3, 3), 500000);
 });
 
-for (const sketch of [piece, dungeon, mines, combat, combatHeavy, danger, sokoban, quest, medusa, castle, gehennom, astral, astralCombat, ascension]) {
+for (const sketch of [piece, dungeon, mines, combat, combatHeavy, danger, sokoban, quest, medusa, castle, gehennom, astral, astralCombat, ascension, wizard]) {
   test(`${sketch.id} sketch fills its declared number of bars`, () => {
     const end = pieceEndBeat(sketch);
     const barBeats = sketch.beatsPerBar;
@@ -66,7 +67,7 @@ test("realize places, augments, inverts and doubles a motif", () => {
 });
 
 test("every piece's sections stay inside its bars, in order", () => {
-  for (const sketch of [piece, dungeon, mines, combat, combatHeavy, danger, sokoban, quest, medusa, castle, gehennom, astral, astralCombat, ascension]) {
+  for (const sketch of [piece, dungeon, mines, combat, combatHeavy, danger, sokoban, quest, medusa, castle, gehennom, astral, astralCombat, ascension, wizard]) {
     let next = 1;
     for (const section of sketch.sections) {
       assert.equal(section.bars[0], next, `${sketch.id} ${section.name}`);
