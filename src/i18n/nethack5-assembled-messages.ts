@@ -1,11 +1,13 @@
+import { colorAdjective } from "./color-text";
 import { hawaiianDesigns, translateInventoryCategory, translateInventoryItem } from "./inventory-text";
 import { translateMonsterName } from "./game-monsters";
 import { deityNames } from "./intro-story";
 import { translateSkillLegend, translateSkillName, translateSpellName } from "./game-skills";
-import { lookupNethack5SourceExact, rayNames, translateMessageArgument as arg } from "./nethack5-source-messages";
+import { lookupNethack5SourceExact, rayNames, translateMessageArgument as arg, hallucinatedTraps } from "./nethack5-source-messages";
 import { translateGroundObject } from "./game-ground";
 import { translateGameLocation } from "./game-location";
 import { translatePlayerRank } from "./player-title";
+import { questPlaces } from "./proper-names";
 // Only called at run time, after both modules have loaded.
 import { presentGameMessage } from "./message-presentation";
 
@@ -153,7 +155,7 @@ const playerVerbs: Readonly<Record<string, string>> = {
 // Occupation text from set_occupation(); used by "You stop/continue ...".
 const occupations: Readonly<Record<string, string>> = {
   "eating non-food": "食べ物でない物を食べる", "opening the tin": "缶詰を開ける", studying: "勉強する", engraving: "文字を刻む",
-  "forcing the lock": "錠をこじ開ける", "picking the lock": "錠を外す", "unlocking the door": "ドアの鍵を開ける", "locking the door": "ドアに鍵をかける",
+  "forcing the lock": "錠をこじ開ける", "picking the lock": "錠を外す", "unlocking the door": "扉の鍵を開ける", "locking the door": "扉に鍵をかける",
   "unlocking the chest": "宝箱の鍵を開ける", "locking the chest": "宝箱に鍵をかける", "unlocking the box": "箱の鍵を開ける", "locking the box": "箱に鍵をかける",
   digging: "掘る", chopping: "木を切る", searching: "探す", waiting: "待つ", resting: "休む", "taking off your armor": "防具を脱ぐ",
   "setting the beartrap": "トラバサミを仕掛ける", "setting the land mine": "地雷を仕掛ける", "wiping off your face": "顔をぬぐう",
@@ -186,6 +188,8 @@ const simpleArmor: Readonly<Record<string, string>> = {
 };
 // What autodescribe and #terrain name: a feature, a monster, an object or a sentence.
 const describePlace = (what: string): string => {
+  const embedded = /^(.+?) embedded in stone$/.exec(what);
+  if (embedded) return `石に埋まった${thing(embedded[1].replace(/^some /, ""))}`;
   const chained = /^(.+?) called (\S+), chained to a heavy iron ball$/.exec(what);
   if (chained) return `${heroDescription(chained[1])}（${chained[2]}）、重い鉄球につながれている`;
   const exact = lookupNethack5SourceExact(what);
@@ -234,7 +238,7 @@ const mmVerbs: Readonly<Record<string, string>> = {
 
 const surfaces: Readonly<Record<string, string>> = {
   floor: "床", ground: "地面", ice: "氷", dust: "ほこり", bridge: "橋", headstone: "墓石", altar: "祭壇", stairs: "階段", doorway: "戸口",
-  fountain: "噴水", water: "水", lava: "溶岩", air: "空中", "air bubble": "気泡", cloud: "雲", wall: "壁", bottom: "底", maw: "胃袋", husk: "抜け殻",
+  fountain: "泉", water: "水", lava: "溶岩", air: "空中", "air bubble": "気泡", cloud: "雲", wall: "壁", bottom: "底", maw: "胃袋", husk: "抜け殻",
 };
 const surface = (text: string): string => own(surfaces, text) ?? arg(text);
 // Engraving verbs (engrave.c doengrave_ctx_verb): [past action, prompt verb].
@@ -296,10 +300,11 @@ const heroRoles: Readonly<Record<string, string>> = {
 // "human samurai called Kafujinho", "doorway". Unknown text stays English.
 const lookDescription = (text: string): string | undefined => {
   const called = /^(.+?) (called|named) (.+)$/.exec(text);
-  const base = called ? called[1] : text;
+  const base = (called ? called[1] : text).replace(/^an? /, "");
   let name: string | undefined;
   const hero = /^(\S+) (\S+)$/.exec(base);
   if (hero && own(heroRaces, hero[1]) && own(heroRoles, hero[2])) name = `${heroRaces[hero[1]]}の${heroRoles[hero[2]]}`;
+  if (name === undefined && called && own(heroRoles, base)) name = heroRoles[base];
   if (name === undefined) {
     const monster = translateMonsterName(`the ${base}`, "ja");
     if (monster !== `the ${base}`) name = monster;
@@ -309,7 +314,7 @@ const lookDescription = (text: string): string | undefined => {
     if (ground !== base) name = ground;
   }
   if (name === undefined) return undefined;
-  return called ? `${called[3]}という${name}` : name;
+  return called ? `${translateMonsterName(called[3], "ja")}という${name}` : name;
 };
 
 // hcolor() results (see color-text.ts for hallucinatory colors).
@@ -523,8 +528,10 @@ export const assembledMessageTemplates: readonly Template[] = [
   }],
   // spell.c: a row of the spell menu.
   [/^(.+?)\s+(\d+)\s+(attack|healing|divination|enchantment|clerical|escape|matter)\s+(\d+%)\s*(.*)$/, (spell, level, school, fail, retention) => {
-    const schools: Readonly<Record<string, string>> = { attack: "攻撃", healing: "回復", divination: "予知", enchantment: "付呪", clerical: "僧侶", escape: "脱出", matter: "物質" };
-    return `${spellName(spell)}　レベル${level}　${schools[school]}　失敗率${fail}${retention ? `　保持率${retention === "(gone)" ? "（失効）" : retention}` : ""}`;
+    const schools: Readonly<Record<string, string>> = { attack: "攻撃", healing: "回復", divination: "探知", enchantment: "付呪", clerical: "聖職", escape: "脱出", matter: "物質" };
+    // A debug-mode list adds a column with the turns left.
+    const [kept, turns] = retention.split(/\s+/);
+    return `${spellName(spell)}　レベル${level}　${schools[school]}　失敗率${fail}${kept ? `　保持率${kept === "(gone)" ? "（失効）" : kept}` : ""}${turns ? `　残り${turns}ターン` : ""}`;
   }],
   // Samurai's item names, with the ordinary name in brackets (o_init.c).
   [/^(\* )?((?:pair of )?(?:potion of )?\S+) \[([^\]]+)\](?: \(([^()]+)\))?$/, (star, name, base, look) => {
@@ -777,8 +784,8 @@ export const assembledMessageTemplates: readonly Template[] = [
   // shk.c: returning to a shop, credit and the list price.
   [/^So, (.+?), you dare return to (\S+)'s (.+?)\?!$/, (name, keeper, shop) => `${name}よ、${keeper}の${shopType(shop)}によくも戻って来られたな！`],
   [/^The atmosphere at (\S+)'s (.+?) seems unwelcoming\.$/, (keeper, shop) => `${keeper}の${shopType(shop)}の雰囲気は歓迎的ではないようだ。`],
-  [/^You have (\d+) (zorkmids?|gold pieces?) credit at (\S+)'s (.+?)\.$/, (amount, _unit, keeper, shop) => `${keeper}の${shopType(shop)}に${amount}ゴールドの信用がある。`],
-  [/^The list price of (.+?) is (\d+) (?:zorkmids?|gold pieces?)( each)?\.$/, (what, amount, each) => `${thing(what)}の定価は${each ? "1個" : ""}${amount}ゴールドだ。`],
+  [/^You have (\d+) (zorkmids?|gold pieces?) credit at (\S+)'s (.+?)\.$/, (amount, _unit, keeper, shop) => `${keeper}の${shopType(shop)}に${amount}ゾークミドの信用がある。`],
+  [/^The list price of (.+?) is (\d+) (?:zorkmids?|gold pieces?)( each)?\.$/, (what, amount, each) => `${thing(what)}の定価は${each ? "1個" : ""}${amount}ゾークミドだ。`],
   // spell.c: the #spells menu.
   [/^Reordering spells; swap '(.)' with$/, (letter) => `呪文の並べ替え：「${letter}」と入れ替える呪文`],
   // getpos.c: the coordinate help.
@@ -806,12 +813,7 @@ export const assembledMessageTemplates: readonly Template[] = [
   [/^Your alignment (is|was) (-?\d+)\.$/, (tense, value) => `あなたの属性値は${value}${tense === "is" ? "だ" : "だった"}。`],
   [/^You are currently in (.+) form\.$/, (form) => `あなたは今${arg(`the ${form}`)}の姿だ。`],
   [/^You are actually an? (.+?), a level (\d+) (.+)\.$/, (rank, level, who) => `あなたの正体は${translatePlayerRank(rank, "ja")}、レベル${level}の${heroDescription(who)}だ。`],
-  [/^You feel like a new (man|woman|elf|dwarf|gnome|orc|human)!$/, (who) => {
-    const kinds: Readonly<Record<string, string>> = { man: "男", woman: "女", elf: "エルフ", dwarf: "ドワーフ", gnome: "ノーム", orc: "オーク", human: "人間" };
-    return `新しい${kinds[who]}になった気分だ！`;
-  }],
   // dokick.c and friends: hallucinated or polymorphed forms read as names.
-  [/^What kinds of thing do you want to (drop|take off)\? (\[.*\])$/, (verb, letters) => `どの種類の物を${verb === "drop" ? "置き" : "脱ぎ"}ますか？ ${letters}`],
   [/^There is (.+?) here, tip it onto the (.+)\?$/, (item, place) => `ここに${thing(item)}がある。${place === "floor" ? "床" : place === "ground" ? "地面" : describePlace(place)}に中身を出しますか？`],
   [/^There is (.+?) here; force its lock\?$/, (item) => `ここに${thing(item)}がある。鍵をこじ開けますか？`],
   [/^Check (.+?) for a trap\?$/, (item) => `${thing(item)}に罠がないか調べますか？`],
@@ -828,7 +830,6 @@ export const assembledMessageTemplates: readonly Template[] = [
   [/^(.+?) scratches your (left|right) (boot|shoe)!$/, (who, side) => `${arg(who)}があなたの${side === "left" ? "左" : "右"}の靴を引っかいた！`],
   [/^You cannot release your (.+?) to take off (.+)\.$/, (weapon, armor) => `${thing(weapon)}を手放せないので${thing(armor)}を脱げない。`],
   [/^You cannot drop something welded to your (hand|hands)\.$/, () => "手に貼りついたものは置けない。"],
-  [/^Your help is urgently needed at (.+)!$/, (place) => `${translateGameLocation(place, "ja") !== place ? translateGameLocation(place, "ja") : arg(place)}であなたの助けが緊急に必要だ！`],
   [/^What do you want to rub (.+?) on\? (\[.*\])$/, (item, letters) => `${thing(item)}を何にこすりつけますか？ ${letters}`],
   [/^The blast of (.+?) vanishes into the aether!$/, (what) => `${breathName(what)}の爆風は虚空に消えた！`],
   [/^(?:Your )?(wet|moist) towel \((\d+)\) gets wetter\.$/, (state, count) => `${state === "wet" ? "濡れた" : "湿った"}タオル（${count}）はさらに濡れた。`],
@@ -1303,6 +1304,117 @@ const statusAndWhistleTemplates: readonly Template[] = [
   [/^((?:Two|Three|Four|Several|Many) creatures shift locations|.+? (?:shifts location|appears|disappears))((?:,? and |, ).+)?\.$/,
     (first, rest) => whistleMessage(first + (rest ?? ""))],
   // Added last: more general shapes, which must not take a sentence from those above.
+  [/^(.+?) is in (extraordinary|remarkable|fine|good|poor) health for a statue\.$/, (what, how) => {
+    const states: Readonly<Record<string, string>> = { extraordinary: "並外れて良好", remarkable: "驚くほど良好", fine: "良好", good: "良好", poor: "不良" };
+    return `${thing(what)}は石像にしては${states[how]}な状態だ。`;
+  }],
+  [/^(.+?) (?:has|have) shattered!$/, (what) => `${thing(what)}は粉々に砕けた！`],
+  [/^The magic-absorbing blade (\S+) (.+)!$/, (_verb, who) => `魔力を吸う刃が${who === "you" ? "あなた" : arg(who)}の魔力を奪った！`],
+  [/^(.+?) slices through (.+?)(?:'s)? (\S+)\.$/, (blade, who, part) => `${thing(blade)}が${who === "your" ? "あなた" : arg(who)}の${arg(part)}を切り裂いた。`],
+  // dbridge.c.
+  [/^(.+?) (?:is|are) crushed underneath the drawbridge\.$/, (who) => `${arg(who)}は跳ね橋の下敷きになって潰された。`],
+  [/^(.+?) (?:is|are) crushed by the falling portcullis!$/, (who) => `${arg(who)}は落ちてきた落とし格子に潰された！`],
+  [/^(.+?) disappears? behind the drawbridge\.$/, (who) => `${arg(who)}は跳ね橋の向こうに消えた。`],
+  [/^(.+?) (?:is|are) blown apart by flying debris\.$/, (who) => `${arg(who)}は飛び散る破片で吹き飛ばされた。`],
+  [/^(.+?) gets? into some heavy metal!$/, (who) => `${arg(who)}はヘビーメタルにはまった！`],
+  // do.c, do_wear.c.
+  [/^(.+?) tumbles? into (.+?) pit\.$/, (what, who) => `${thing(what)}が${who === "the" || who === "a" ? "" : `${arg(who.replace(/'s?$/, ""))}の`}穴に転がり落ちた。`],
+  [/^You (manage to squeeze|squeeze|jump|fly|float|swim|slither|hop|crawl|climb) (down|through) the (hole|trap door)\.$/, (how, _way, what) => `${what === "hole" ? "穴" : "落とし扉"}${how.includes("squeeze") ? "になんとか体を押し込んだ" : "に入った"}。`],
+  [/^(.+?) fits? very tightly\.$/, (what) => `${thing(what)}はとてもきつい。`],
+  [/^You continue (disrobing|taking off your armor|putting on your armor)\.$/, (what) => (what === "putting on your armor" ? "防具を着け続けた。" : "服を脱ぎ続けた。")],
+  [/^You can't take that off without taking off your (.+?) first\.$/, (what) => `先に${thing(what)}を外さないと脱げない。`],
+  [/^You can't take that off; it's embedded\.$/, () => "体に埋まっているので外せない。"],
+  // hack.c.
+  [/^You and (.+?) are (chained to the|stuck in the) (.+)\.$/, (steed, how, what) => `あなたと${arg(steed)}は${arg(what === "buried ball" ? "the buried ball" : what)}${how === "chained to the" ? "につながれている" : "にはまっている"}。`],
+  [/^(.+?) is stuck in the (.+)\.$/, (who, what) => `${arg(who)}は${arg(what)}にはまっている。`],
+  // pickup.c.
+  [/^Without limbs, you cannot (.+) anything\.$/, (verb) => {
+    const verbs: Readonly<Record<string, string>> = { loot: "物色する", tip: "ひっくり返す", open: "開ける", pick: "拾う" };
+    return `手足がないので${own(verbs, verb) ?? "それをする"}ことはできない。`;
+  }],
+  [/^You (\S+) under your heavy load\.\s+Movement is very hard\.$/, () => "重い荷物によろめいた。移動がとても困難だ。"],
+  [/^You (\S+) under your load\.\s+Movement is still very hard\.$/, () => "荷物によろめいた。移動はまだとても困難だ。"],
+  [/^The web (ignites and |fries and |freezes, shatters and )?is swept away!$/, (how) => {
+    const ways: Readonly<Record<string, string>> = { "ignites and ": "燃え上がって", "fries and ": "焼け焦げて", "freezes, shatters and ": "凍って砕け、" };
+    return `蜘蛛の巣は${how ? ways[how] : ""}押し流された！`;
+  }],
+  // timeout.c.
+  [/^(?:Unfortunately, |Yes, you do\.\s+)(.+?) (?:has|have) been genocided\.\.\.$/, (what) => `残念ながら、${arg(`the ${what.toLowerCase()}`)}は抹殺された……`],
+  [/^(Its|Their) (\S+) (seems|sounds) like "(.+?)(\.|!|)"$/, (whose, _cry, _how, word) => {
+    const words: Readonly<Record<string, string>> = { mommy: "ママ", daddy: "パパ", mom: "ママ", dad: "パパ", mama: "ママ", dada: "パパ" };
+    return `${whose === "Its" ? "その" : "それらの"}鳴き声は「${own(words, word.toLowerCase()) ?? word}」のように聞こえた。`;
+  }],
+  [/^(.+?) (slips?|slides?) (on|off) the ice\.$/, (who, _how, where) => `${who === "You" ? "あなた" : arg(who)}は氷${where === "on" ? "の上で" : "から"}滑った。`],
+  // trap.c.
+  [/^A (.+?) erupts from the (.+?) under (.+)!$/, (fire, where, who) => `${arg(who)}の下の${arg(where)}から${arg(fire)}が噴き上がった！`],
+  [/^You see an? (.+?) erupt from the (.+)!$/, (fire, where) => `${arg(where)}から${arg(fire)}が噴き上がるのが見えた！`],
+  [/^A (.+?) (?:bursts|erupts) from (.+)!$/, (fire, where) => `${thing(where)}から${arg(fire)}が噴き上がった！`],
+  [/^You carefully (.+?) into the pit\.$/, () => "慎重に穴へ降りた。"],
+  [/^You (.+?) (a|your) spider web!$/, (_how, whose) => `${whose === "your" ? "自分の" : ""}蜘蛛の巣にかかった！`],
+  [/^You find yourself (in the midst of|on top of|in|on) (.+)\.$/, (where, what) => `気がつくと${arg(what)}${where === "in the midst of" || where === "in" ? "の中" : "の上"}にいた。`],
+  [/^(Your|The|A) bear trap opens\.$/, (whose) => `${whose === "Your" ? "あなたの" : ""}トラバサミが開いた。`],
+  [/^You (and .+? )?don't budge\.$/, (steed) => `あなた${steed ? `と${arg(steed.slice(4, -1))}` : ""}はびくともしない。`],
+  [/^(.+?) tries to (?:steal|snatch|grab|take) (your )?(.+?) but gives up\.$/, (who, your, item) => `${arg(who)}は${your ? "あなたの" : ""}${thing(item)}を盗もうとしたが、あきらめた。`],
+  [/^(Your |The |.+?'s )?candelabrum's flames? (?:die|dies)\.$/, () => "燭台の炎が消えた。"],
+  [/^True to her word, the Oracle (.+?):\s*$/, () => "約束どおり、神託師は告げた："],
+  [/^But since (?:his|her|its|their) shop has been robbed recently,$/, () => "しかし店は最近強盗に遭っているので、"],
+  [/^you (partially )?compensate (.+?) for (?:his|her|its|their) losses\.$/, (partly, who) => `${arg(who)}の損失を${partly ? "一部" : ""}補償した。`],
+  // mkobj.c: a shopkeeper charging for an altered item.
+  [/^You (cancel|drain|uncharge|unbless|uncurse|disenchant|degrade|dilute|erase|burn|neutralize|fix|fire|rot|rust|corrode) (.+), you pay for (?:it|them)!$/, (verb, item) => {
+    const verbs: Readonly<Record<string, string>> = { cancel: "無効化", drain: "吸収", uncharge: "充電切れに", unbless: "祝福を解除", uncurse: "呪いを解除", disenchant: "魔力を除去", degrade: "劣化", dilute: "希釈", erase: "消去", burn: "焼損", neutralize: "中和", fix: "修復", fire: "焼損", rot: "腐敗", rust: "錆びつかせ", corrode: "腐食" };
+    return `${thing(item.replace(/^(?:that|those) /, ""))}を${verbs[verb]}したのだから、代金を払ってもらうよ！`;
+  }],
+  [/^The blood floods the altar, which vanishes in (?:an? )?(.+?) cloud!$/, (color) => `血が祭壇に溢れ、${colorAdjective(color) ?? color}雲となって消えていった！`],
+  // shk.c: a shopkeeper praising the goods.
+  [/^(.+?), price (\d+) (zorkmids?)(, a real bargain\.|, an excellent choice\.|, finest quality\.|, superb craftsmanship!|, painstakingly developed!|, gourmets' delight!|, one of a kind!|\.)$/, (item, price, _unit, praise) => {
+    const praises: Readonly<Record<string, string>> = { ", a real bargain.": "掘り出し物だよ。", ", an excellent choice.": "いい選択だ。", ", finest quality.": "最高品質だ。", ", superb craftsmanship!": "見事な出来ばえだ！", ", painstakingly developed!": "苦心の作だ！", ", gourmets' delight!": "美食家も大喜びだ！", ", one of a kind!": "世界に一つだけだ！", ".": "" };
+    return `${thing(item)}、お値段${price}ゾークミド。${praises[praise]}`;
+  }],
+  [/^(.+?), (\d+) zorkmids? each$/, (item, price) => `${thing(item)}、1個${price}ゾークミド`],
+  [/^(.+?) suddenly drops from the (.+)!$/, (who, where) => `${arg(who)}が${arg(where)}から突然落ちてきた！`],
+  [/^(.+?) strikes the (.+)\.$/, (what, where) => `${thing(what)}が${arg(where)}に当たった。`],
+  [/^The entire (astral plane|plane|sanctum|puzzle|tower|dungeon) is shaking around you!$/, (where) => {
+    const places: Readonly<Record<string, string>> = { "astral plane": "アストラル界", plane: "この次元界", sanctum: "聖所", puzzle: "このパズル", tower: "塔", dungeon: "ダンジョン" };
+    return `${places[where]}全体があなたの周りで揺れている！`;
+  }],
+  [/^(.+?) shrinks out of (?:his|her|its|their) (.+)!$/, (who, item) => `${arg(who)}は体が縮んで${thing(item)}から抜け出た！`],
+  [/^The (.+?) crashes on (its|his|her|their) (.+?) and breaks into shards\.$/, (what, _whose, part) => `${arg(what)}がその${arg(part)}に当たって割れ、破片になった。`],
+  [/^The (.+?) crashes on (.+?)'s (.+?) and breaks into shards\.$/, (what, who, part) => `${arg(what)}が${arg(who)}の${arg(part)}に当たって割れ、破片になった。`],
+  [/^(.+?) acts as though (?:he|she|it|they) (?:has|have) got a (severe )?headache\.$/, (who, severe) => `${arg(who)}は${severe ? "ひどい" : ""}頭痛がするかのようにふるまった。`],
+  [/^You find you must release your (.+)!$/, (item) => `${thing(item)}を手放さざるを得なくなった！`],
+  [/^(.+?) snatches (.+)!$/, (who, item) => `${arg(who)}が${thing(item)}を奪い取った！`],
+  [/^(.+?) <(-?\d+)>\.$/, (plain, number) => {
+    const shown = lookupNethack5SourceExact(`${plain}.`);
+    return shown === undefined ? "" : `${shown}（${number}）`;
+  }],
+  [/^([a-z][a-z (),-]*)$/, (name) => own(hallucinatedTraps, name) ?? ""],
+  [/^You hear someone summoning something, and (.+?) appears?\.$/, (what) => `誰かが何かを召喚する音が聞こえ、${arg(what)}が現れた。`],
+  [/^You splash some (.+?) around\.$/, (liquid) => `${arg(liquid)}をあたりにはね散らした。`],
+  [/^You avoid (?:stepping|walking|flying|floating|swimming|slithering|hopping|crawling|rolling|moving) into the (.+)\.$/, (where) => `${arg(where)}に足を踏み入れないようにした。`],
+  [/^Since your weapon is welded to your (.+?), you cannot (.+?) (?:that|this|your) (.+)\.$/, (_part, _verb, tool) => `武器が手から離れないため、その${thing(tool)}を振るうことはできません。`],
+  [/^'([a-z_]+)' changed to (?:"(.+)"|(\d+))\.$/, (option, text, number) => `'${option}' を「${text ?? number}」に変更した。`],
+  [/^New ([a-z_]+): (\[.*\])(?: \((.+)\))?$/, (option, letters, current) => `${option} の新しい値：${letters}${current ? `（現在：${current === "all" ? "すべて" : current}）` : ""}`],
+  [/^The Elemental Planes: levels (-?\d+) to (-?\d+), entrance on (-?\d+)$/, (from, to, entrance) => `精霊界：${from}階から${to}階、入口は${entrance}階`],
+  // pager.c: the state a look at a monster adds after its name.
+  [/^(.+?), can't move \(paralyzed or sleeping or busy\)$/, (who) => `${arg(`the ${who}`)}（動けない：麻痺、睡眠、または行動中）`],
+  // mon.c: a vampire that was killed in another shape.
+  [/^The seemingly dead (.+?) suddenly (reconstitutes|transforms) and rises as (.+)!$/, (who, how, what) => `死んだと思われた${arg(`the ${who}`)}が突然${how === "reconstitutes" ? "再生し" : "姿を変え"}、${arg(what)}として蘇った！`],
+  // A capitalized name standing alone: "Medusa", "peaceful Archon".
+  [/^(?:(peaceful) )?([A-Z][A-Za-z-]*(?: [A-Za-z-]+)*)$/, (attitude, name) => {
+    const shown = translateMonsterName(`the ${name}`, "ja");
+    return shown === `the ${name}` ? "" : `${attitude ? "友好的な" : ""}${shown}`;
+  }],
+  [/^peaceful ([ァ-ヶー・の]+)$/, (name) => `友好的な${name}`],
+  [/^some (.+?) corpses$/, (what) => `${arg(`the ${what}`)}の死体`],
+  // An item shown as a line of its own: "a ring.", "l - 2 scrolls labeled FOO".
+  [/^(an? .+?|\d+ .+?)(\.\.\.|\.)$/, (item, stop) => {
+    const shown = translateInventoryItem(item, "ja");
+    return shown === item ? "" : `${shown}${stop === "." ? "。" : "……"}`;
+  }],
+  [/^([a-zA-Z$#]) - (.+)$/, (letter, item) => {
+    const shown = translateInventoryItem(item, "ja");
+    return shown === item ? "" : `${letter} - ${shown}`;
+  }],
   // cmd.c: a row of the extended command menu, "adjust: adjust inventory letters".
   [/^([#?]|[a-z][a-z0-9_-]*): (.+)$/, (command, description) => {
     const translated = lookupNethack5SourceExact(description) ?? lookupNethack5SourceExact(`${description}.`);
@@ -1328,13 +1440,13 @@ const statusAndWhistleTemplates: readonly Template[] = [
   // shk.c: rows of a bill and of the sell menu.
   [/^(.+), (\d+) (?:zorkmids?|gold pieces?)$/, (item, price) => {
     const shown = thing(item);
-    return shown === item ? "" : `${shown}（${price}ゴールド）`;
+    return shown === item ? "" : `${shown}（${price}ゾークミド）`;
   }],
   [/^(.+), no charge$/, (item) => {
     const shown = thing(item);
     return shown === item ? "" : `${shown}（無料）`;
   }],
-  [/^(\d+) Zm, (.+)$/, (price, item) => `${price}ゴールド、${thing(item)}`],
+  [/^(\d+) Zm, (.+)$/, (price, item) => `${price}ゾークミド、${thing(item)}`],
   [/^Besides, you don't have enough to interest (?:him|her|it|them)\.$/, () => "それに、相手の気を引くほどの持ち合わせがない。"],
   [/^Moreover, you seem to have no (money|gold|valuables)\.$/, () => "しかも、お金を持っていないようだ。"],
   [/^(\S+) mentions how much (?:he|she|it|they) dislikes? non-paying customers\.$/, (keeper) => `${keeper}は、代金を払わない客がどれほど嫌いかを口にした。`],
@@ -1353,7 +1465,8 @@ const statusAndWhistleTemplates: readonly Template[] = [
   [/^(.+?) stole (.+)\.$/, (who, item) => `${arg(who)}は${thing(item)}を盗んだ。`],
   [/^\((\S+)\): You remember (?:that|this) as (.+)\.$/, (where, what) => `（${where.replace(/north/g, "北").replace(/south/g, "南").replace(/east/g, "東").replace(/west/g, "西")}）：${arg(what)}だったと覚えている。`],
   [/^You remember (?:that|this) as an? (square|irregularly shaped|rectangular) (\d+) by (\d+) (room|area)\.$/, (shape, w, h, kind) => `${w}×${h}の${shape === "square" ? "正方形の" : shape === "rectangular" ? "長方形の" : "不規則な形の"}${kind === "room" ? "部屋" : "区域"}だったと覚えている。`],
-  [/^(.+?) - (Hungrii Flea-Bagius|Grotesques Appetitus|Eatibus Anythingus|Famishus-Famishus|Canis latrans|Evereadii Eatibus|Eternalii Famishiis)$/, (who, latin) => `${arg(`the ${who}`)} - ${latin}`],
+  // Followed by a mock Latin name, which withJapaneseProperNames then replaces.
+  [/^(coyote) - (.+)$/, (who, latin) => `${arg(`the ${who}`)} - ${latin}`],
   [/^An? (ultraviolet|infrared|bluish-orange|reddish-green|dark white|light black|sky blue-pink|pinkish-cyan|indigo-chartreuse|salty|sweet|sour|bitter|umami|striped|spiral|swirly|plaid|checkered|argyle|paisley|blotchy|guernsey-spotted|polka-dotted|square|round|triangular|cabernet|sangria|fuchsia|wisteria|lemon-lime|strawberry-banana|peppermint|romantic|incandescent|octarine|excitingly dull|mauve|electric|neon|fluorescent|phosphorescent|translucent|opaque|psychedelic|iridescent|rainbow-colored|polychromatic|colorless|colorless green|dancing|singing|loving|loudy|noisy|clattery|silent|apocyan|infra-pink|opalescent|violant|tuneless|viridian|aureolin|cinnabar|purpurin|gamboge|madder|bistre|ecru|fulvous|tekhelet|selective yellow) glow surrounds you\.$/, (color) => `${hallucinatedColors[color]}光があなたを包んだ。`],
   [/^(Portal to|Stair to|Ladder to) (.+)$/, (kind, branch) => {
     const located = translateGameLocation(branch, "ja");
@@ -1365,7 +1478,7 @@ const statusAndWhistleTemplates: readonly Template[] = [
   }],
   [/^(.+?) named (.+?) \(for sale, (\d+) (?:zorkmids?|gold pieces?)\)$/, (item, name, price) => {
     const shown = thing(item);
-    return shown === item ? "" : `${shown}「${name}」（売り物、${price}ゴールド）`;
+    return shown === item ? "" : `${shown}「${name}」（売り物、${price}ゾークミド）`;
   }],
   // shk.c: entering, paying and owing.
   [/^So, (.+?), you dare return to (\S+?)(?:'s?)? (.+?)\?!$/, (name, keeper, shop) => `${name}よ、${keeper}の${shopType(shop)}によくも戻って来られたな！`],
@@ -1379,22 +1492,22 @@ const statusAndWhistleTemplates: readonly Template[] = [
   [/^(.+?) nods( appreciatively)? at you for shopping in (?:his|her|its|their) (.+?)[!.]$/, (keeper, warm, shop) => `${arg(keeper)}は${shopType(shop)}での買い物に${warm ? "感謝して" : ""}うなずいた。`],
   [/^You owe (\S+) (\d+) (?:zorkmids?|gold pieces?) for (burying merchandise|objects destroyed|goods lost)\.$/, (keeper, amount, why) => {
     const reasons: Readonly<Record<string, string>> = { "burying merchandise": "商品を埋めた代金", "objects destroyed": "壊した品物の代金", "goods lost": "失われた品物の代金" };
-    return `${keeper}に${reasons[why]}として${amount}ゴールドの借りがある。`;
+    return `${keeper}に${reasons[why]}として${amount}ゾークミドの借りがある。`;
   }],
   [/^But since (?:his|her|its|their) shop has been robbed recently,$/, () => "しかし、最近店が強盗に遭ったので、"],
-  [/^(\S+) takes the (\d+) (?:zorkmids?|gold pieces?) (you )?owed (.+)\.$/, (keeper, amount) => `${keeper}は借りの${amount}ゴールドを受け取った。`],
+  [/^(\S+) takes the (\d+) (?:zorkmids?|gold pieces?) (you )?owed (.+)\.$/, (keeper, amount) => `${keeper}は借りの${amount}ゾークミドを受け取った。`],
   [/^Satisfied, (\S+) suddenly disappears!$/, (keeper) => `満足した${keeper}は突然姿を消した！`],
   [/^(.+?) quickly snatches some gold from (between|beneath) (.+)!$/, (who) => `${arg(who)}は素早く金貨を奪った！`],
   [/^(.+?) curses (?:his|her|its|their|him|her|it|them)(?:self)? inability to grab your backpack!$/, (who) => `${arg(who)}はあなたの背負い袋をつかめないことを呪った！`],
   [/^(.+?) (leaps|hops|flies|floats|slithers|lurches|swims|moves|rushes)(?:,)? and (grabs|snatches) your backpack!$/, (who) => `${arg(who)}は飛びかかってあなたの背負い袋をつかんだ！`],
   [/^(.+?) (grabs|snatches) your backpack!$/, (who) => `${arg(who)}はあなたの背負い袋をつかんだ！`],
-  [/^The (.+?) established (\d+) (?:zorkmids?|gold pieces?) credit\.$/, (item, amount) => `${thing(item)}で${amount}ゴールドの信用が付いた。`],
+  [/^The (.+?) established (\d+) (?:zorkmids?|gold pieces?) credit\.$/, (item, amount) => `${thing(item)}で${amount}ゾークミドの信用が付いた。`],
   [/^Your displaced image doesn't fool (\S+)!$/, (keeper) => `${keeper}はあなたの幻影にだまされない！`],
   [/^Your invisibility does not fool (\S+)!$/, (keeper) => `${keeper}は透明なあなたにだまされない！`],
   [/^Mollified, (\S+) accepts your restitution\.$/, (keeper) => `${keeper}は機嫌を直し、あなたの賠償を受け入れた。`],
   [/^(\S+) is after blood, not gold!$/, (keeper) => `${keeper}が求めているのは金ではなく血だ！`],
   [/^But (\S+) is as angry as ever\.$/, (keeper) => `しかし、${keeper}は相変わらず怒っている。`],
-  [/^You give (\S+) the (\d+) gold pieces? (?:he|she|it|they) asked for\.$/, (keeper, amount) => `${keeper}に求められた${amount}ゴールドを渡した。`],
+  [/^You give (\S+) the (\d+) gold pieces? (?:he|she|it|they) asked for\.$/, (keeper, amount) => `${keeper}に求められた金貨${amount}枚を渡した。`],
   [/^You give (\S+) all your( openly kept)? gold\.$/, (keeper) => `${keeper}に金貨をすべて渡した。`],
   [/^(\S+) (?:says|whispers|mumbles|mutters|shouts|screams|yells|rumbles|grumbles) "You be careful with my (.+)!"$/, (keeper, item) => `${keeper}が言った。「${arg(item)}の扱いには気をつけろ！」`],
   [/^(\S+) looks apprehensive about your wielding (?:his|her|its|their) (.+)\.$/, (keeper, item) => `${keeper}は、あなたが自分の${thing(item)}を構えているのを不安そうに見ている。`],
@@ -1470,7 +1583,7 @@ const statusAndWhistleTemplates: readonly Template[] = [
     return `${moods[what]}気分だ。`;
   }],
   // do.c: holes and pits.
-  [/^(A|The) boulder (\w+) into the pit( with you)?\.$/, (_a, _verb, you) => `岩が${you ? "あなたごと" : ""}落とし穴に落ちた。`],
+  [/^(A|The) boulder (\w+) into the pit( with you)?\.$/, (_a, _verb, you) => `大岩が${you ? "あなたごと" : ""}落とし穴に落ちた。`],
   [/^(.+?) (?:tumbles?|falls?) into (?:the|your|a) pit\.$/, (item) => `${thing(item)}が落とし穴に転がり落ちた。`],
   [/^The (.+?) flow seems (less|great)er now\.$/, (water, how) => `${arg(water)}の流れが${how === "less" ? "弱まった" : "強まった"}ようだ。`],
   [/^For some reason, you cannot (\w+)( any of)? the stones?!$/, (verb) => `なぜか石を${verb === "drop" ? "置く" : verb === "throw" ? "投げる" : "手放す"}ことができない！`],
@@ -1495,7 +1608,7 @@ const statusAndWhistleTemplates: readonly Template[] = [
   [/^(You|.+?) (?:fall|falls|plunge|plunges|crash|crashes) through the ice\.$/, (who) => `${who === "You" ? "あなた" : arg(who)}は氷を割って落ちた。`],
   [/^Egads!\s+(.+?) bites? your (.+)!$/, (what, part) => `なんてこった！ ${thing(what)}が${limb(part)}に噛みついた！`],
   // hack.c: pets, the chain and traps while riding.
-  [/^You (\w+) over a boulder here\.$/, () => "ここにある岩を乗り越えた。"],
+  [/^You (\w+) over a boulder here\.$/, () => "ここにある大岩を乗り越えた。"],
   [/^You and (.+?) are (stuck in the|chained to the|caught in a|stuck to the) (.+)\.$/, (steed, _how, what) => `あなたと${arg(steed)}は${lookupNethack5SourceExact(what) ?? arg(what)}に捕まっている。`],
   [/^(.+?) is (stuck in the|chained to the|caught in a|stuck to the) (.+)\.$/, (steed, _how, what) => `${arg(steed)}は${lookupNethack5SourceExact(what) ?? arg(what)}に捕まっている。`],
   [/^You avoid (\w+) into the (.+)\.$/, (_verb, where) => `${describePlace(where)}に踏み込まないようにした。`],
@@ -1540,7 +1653,7 @@ const statusAndWhistleTemplates: readonly Template[] = [
   // read.c: reading what is worn.
   [/^(That|Your) shirt is obscured by (?:your |a |an |the )?(.+)\.$/, (_whose, cover) => `シャツは${thing(cover)}に隠れている。`],
   [/^(There is writing|You feel lettering) on the (.+?)\.\s+It reads:\s+(.+)\.$/, (how, item, text) => `${thing(item)}に${how === "There is writing" ? "文字が書かれている" : "文字を感じる"}：${text}`],
-  [/^(.+?) of boulders materializes? (around|above) you!$/, (what, where) => `岩の${/^A/.test(what) ? "雨" : "山"}があなたの${where === "around" ? "周り" : "頭上"}に現れた！`],
+  [/^(.+?) of boulders materializes? (around|above) you!$/, (what, where) => `大岩の${/^A/.test(what) ? "雨" : "山"}があなたの${where === "around" ? "周り" : "頭上"}に現れた！`],
   [/^True to her word, the Oracle (offhandedly |casually |nonchalantly )?(?:says|whispers|mumbles|mutters|intones|shouts|rumbles|grumbles):\s*$/, () => "約束どおり、神託師はこう言った："],
   // spell.c: dangerous books.
   [/^The book (explodes|radiates explosive energy|glows|.+?), but you are unharmed!$/, () => "本が爆発したが、無傷だった！"],
@@ -1606,7 +1719,7 @@ const statusAndWhistleTemplates: readonly Template[] = [
 
 /** Translate an assembled message, or return undefined. */
 export function translateLookDescriptionMessage(message: string): string | undefined {
-  if (!/^[a-z][a-z' -]*(?: (?:called|named) .+)?$/.test(message)) return undefined;
+  if (!/^[a-z][a-z' -]*(?: (?:called|named) .+)?$/.test(message) && !/^[A-Z][A-Za-z-]+ (?:called|named) .+$/.test(message)) return undefined;
   return lookDescription(message);
 }
 
@@ -1637,7 +1750,33 @@ const hallucinatedBreaths: Readonly<Record<string, string>> = {
 const breathName = (what: string): string => own(hallucinatedBreaths, what) ?? arg(what);
 
 // Run before the general templates, whose "The <missile> hits <target>" would otherwise take these.
+const realBlasts = "(?!missiles\\b|fire\\b|frost\\b|sleep gas\\b|disintegration\\b|lightning\\b|poison gas\\b|acid\\b)";
+const blastName = (what: string): string => own(hallucinatedBreaths, what) ?? what;
 const earlyTemplates: ReadonlyArray<readonly [RegExp, (...parts: string[]) => string]> = [
+  // zap.c: a hallucinating hero sees rays of anything at all.
+  [new RegExp(`^The blast of ${realBlasts}(.+?) bounces!$`), (what) => `${blastName(what)}の爆風が跳ね返った！`],
+  [new RegExp(`^The blast of ${realBlasts}(.+?) misses (.+)\\.$`), (what, who) => `${blastName(what)}の爆風は${arg(who)}に当たらなかった。`],
+  [new RegExp(`^The blast of ${realBlasts}(.+?) hits (.+)\\.$`), (what, who) => `${blastName(what)}の爆風が${who === "it" ? "それ" : arg(who)}に当たった。`],
+  [new RegExp(`^(.+?) is killed by the blast of ${realBlasts}(.+)!$`), (who, what) => `${arg(who)}は${blastName(what)}の爆風で殺された！`],
+  [/^(.+?) hits (.+?) but passes harmlessly through (?:it|him|her|them)\.$/, (what, who) => `${thing(what)}は${arg(who)}に当たったが、すり抜けた。`],
+  [/^You are hit by a falling (.+)!$/, (what) => `落ちてきた${arg(`the ${what}`)}に当たった！`],
+  [/^You feel like a new (man|woman|elf|dwarf|gnome|orc|human)!$/, (who) => {
+    const kinds: Readonly<Record<string, string>> = { man: "男", woman: "女", elf: "エルフ", dwarf: "ドワーフ", gnome: "ノーム", orc: "オーク", human: "人間" };
+    return `新しい${kinds[who]}になった気分だ！`;
+  }],
+  [/^Your help is urgently needed at (.+)!$/, (home) => `${own(questPlaces, home) ?? arg(home)}であなたの助けが緊急に必要だ！`],
+  [/^(.+?), asleep(?:, in a cloud of (.+))?$/, (who, cloud) => `${arg(`the ${who}`)}（眠っている${cloud ? `、${arg(cloud)}の雲の中` : ""}）`],
+  [/^Choose (a color|attribute) for when title is '(.+)':$/, (what, title) => `称号が「${title}」のときの${what === "attribute" ? "属性" : "色"}を選んでください：`],
+  [/^Choose (a color|attribute) for conditions (.+):$/, (what, condition) => {
+    const conditions: Readonly<Record<string, string>> = { Stone: "石化", Slime: "粘液化", Strngl: "窒息", FoodPois: "食中毒", TermIll: "不治の病", Blind: "盲目", Deaf: "聴覚喪失", Stun: "朦朧", Conf: "混乱", Hallu: "幻覚", Lev: "浮遊", Fly: "飛行", Ride: "騎乗", Bare: "素手", Busy: "行動中", Elbere: "エルベレス", Glow: "発光", Grab: "つかまれ", Held: "拘束", IceSlp: "氷で滑る", Inlava: "溶岩の中", Parlyz: "麻痺", Slp: "睡眠", Slip: "滑りやすい", Submrg: "水没", Tether: "つながれ", Trap: "罠", Unconc: "気絶", Woozy: "ふらつき", Wither: "衰弱" };
+    return `状態「${own(conditions, condition) ?? condition}」のときの${what === "attribute" ? "属性" : "色"}を選んでください：`;
+  }],
+  // The letters offered can include "? ", which looks like the end of a sentence.
+  [/^What kinds of thing do you want to (drop|take off)\? (\[.*\])$/, (verb, letters) => `どの種類の物を${verb === "drop" ? "置き" : "脱ぎ"}ますか？ ${letters}`],
+  [/^(.+?) shines (brilliantly|brightly|faintly|softly) in (.+?)'s (\S+)!$/, (item, how, who, part) => {
+    const ways: Readonly<Record<string, string>> = { brilliantly: "まばゆく", brightly: "明るく", faintly: "かすかに", softly: "やわらかく" };
+    return `${thing(item.replace(/^The /, "the "))}は${arg(who.replace(/^The /, "the "))}の${arg(part)}の中で${ways[how]}輝いた！`;
+  }],
   [/^(.+?) \(invalid target\) \(no travel path\)$/, (what) => `${describePlace(what)}（対象にできない）（移動経路なし）`],
   // getpos.c: autodescribe with a compass offset, "(2north,3east): doorway."
   [/^\(([^()]*?(?:north|south|east|west)[^()]*)\): (.+?)\.?$/, (offset, what) => {
@@ -1663,7 +1802,7 @@ export function translateAssembledMessage(message: string): string | undefined {
     const result = render(...match.slice(1));
     if (result) return result;
   }
-  // Last: a look description can reach the JNetHack item fallback, which would
-  // otherwise take any lowercase sentence it knows ahead of the templates above.
+  // Last: a look description would otherwise take any lowercase sentence that
+  // names an item ahead of the templates above.
   return translateLookDescriptionMessage(message);
 }

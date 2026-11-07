@@ -9,11 +9,11 @@ describe("tile context display", () => {
     expect(translateTileContextAction("pickup", "quick", "Pick Up", "en")).toBe("Pick Up");
   });
   it("translates fallback and recognized look titles without guessing unknown details", () => {
-    expect(translateTileContextTitle("Target: door (scanning...)", "ja")).toBe("対象: ドア（調査中...）");
+    expect(translateTileContextTitle("Target: door (scanning...)", "ja")).toBe("対象: 扉（調査中...）");
     expect(translateTileContextTitle(": staircase down", "ja")).toBe(": 下り階段");
     expect(translateTileContextTitle(": a doorway", "ja")).toBe(": 戸口");
     expect(translateTileContextTitle("You see here a goblin corpse.", "ja")).toBe("ここにゴブリンの死体がある。");
-    expect(translateTileContextTitle("+ - closed door", "ja")).toBe("+ - 閉じたドア");
+    expect(translateTileContextTitle("+ - closed door", "ja")).toBe("+ - 閉じた扉");
     expect(translateTileContextTitle(": a goblin | : unknown named object", "ja")).toBe(": ゴブリン | : unknown named object");
     expect(translateTileContextTitle("Target: door", "en")).toBe("Target: door");
     expect(translateTileContextTitle(": peaceful goblin", "ja")).toBe(": peaceful goblin");

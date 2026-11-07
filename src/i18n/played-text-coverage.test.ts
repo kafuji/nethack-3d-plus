@@ -5,7 +5,6 @@
 // Writes <played>-untranslated.tsv next to the input: kind, times seen, text, rendering.
 // Each string goes through the display path its kind uses in the app.
 import { expect, it, vi } from "vitest";
-import { jnethackQuestDocument } from "../plus/game-text/fallback";
 import { translateDiscoveryReport } from "./discovery-text";
 import { translateEncyclopediaEntry } from "./encyclopedia-text";
 import { translateGameMenuItem, translateMenuHeading } from "./game-menu";
@@ -14,8 +13,8 @@ import { translateIntroStory } from "./intro-story";
 import { translateOracleDocument } from "./oracle-text";
 import { translateGamePrompt } from "./game-prompts";
 import { translateInventoryItem } from "./inventory-text";
-import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { presentGameMessage } from "./message-presentation";
+import { translateQuestDocument } from "./quest-text";
 import { translateReportLine } from "./report-text";
 
 // Vitest exposes the process environment as import.meta.env.
@@ -43,7 +42,7 @@ function render(kind: string, text: string): string {
 
 // Kept on purpose: the weight unit, scroll labels, the player's own names and
 // option keywords, which the player has to type as they are.
-const kept = [/「[^」]*」/g, /\bAgent\d+\b/g, /^\s*\S+\s+(?:\[[mA]+\]\s+|[\w?#]+\s{2,})?(?=[^\sA-Za-z])/, /\[[^\]]*\]/g, /\baum\b/g, /「[^」]*」と書かれた/g, /（(?:名前|呼び名)：[^）]*）/g, /#\w+/g, /\b(?:call|shell|exit|SIGINT|fg|config|enter|return|cmdassist|perm_invent|autopickup|optionsfull|NetHack|Return|Enter|ESC|Unicode|DECgraphics|IBMgraphics|AmigaFont|Amiga|hack\.font|curses|Enhanced\d|Guidebook|devteam|nethack|org|www|https|number_pad|menustyle)\b/g, /\bwizard\b/g, /\bWizard\b/g, /'[^']*'/g, /\bAgent\d+\b/g, /\bElbereth\b/g, /「[^」]*」/g, /[A-Za-z' ]+の幽霊/g, /`[^']+'/g, /\b[a-zA-Z]+_[\w]*\b/g, /\b(?:NETHACK)?OPTIONS\b/g, /\S*nethackrc\b/g, /<options>/g, /\bUTF\b/g, /『[^』]*』/g, /\b(?:lua|NHUUID|seen|des)\b/g, /\bUnix\b/g, /\([0-9a-f]{20,},branch:[^)]*\)/g, /の[A-Z][a-z]+(?=[がはへにの])/g, /\b[A-Z][a-z]{2} \d+ \d{4}\b/g];
+const kept = [/「[^」]*」/g, /\bAgent\d+\b/g, /^\s*\S+\s+(?:\[[mA]+\]\s+|[\w?#]+\s{2,})?(?=[^\sA-Za-z])/, /\[[^\]]*\]/g, /\baum\b/g, /「[^」]*」と書かれた/g, /（(?:名前|呼び名)：[^）]*）/g, /#\w+/g, /\b(?:call|shell|exit|SIGINT|fg|config|enter|return|cmdassist|perm_invent|autopickup|optionsfull|NetHack|Return|Enter|ESC|Unicode|DECgraphics|IBMgraphics|AmigaFont|Amiga|hack\.font|curses|Enhanced\d|Guidebook|devteam|nethack|org|www|https|number_pad|menustyle)\b/g, /\bwizard\b/g, /\bWizard\b/g, /'[^']*'/g, /\bAgent\d+\b/g, /\bElbereth\b/g, /「[^」]*」/g, /[A-Za-z' ]+の幽霊/g, /`[^']+'/g, /\b[a-zA-Z]+_[\w]*\b/g, /\b(?:NETHACK)?OPTIONS\b/g, /\S*nethackrc\b/g, /<options>/g, /\bUTF\b/g, /『[^』]*』/g, /\b(?:lua|Lua|NHUUID|seen|des)\b/g, /\{ [0-9a-f-]+ \}/g, /\bUnix\b/g, /\([0-9a-f]{20,},branch:[^)]*\)/g, /\b[A-Z][a-z]{2} \d+ \d{4}\b/g];
 const optionRow = /^\s*\S+\s+\[.*\]\s*$/;
 // The list of boolean options in #optionsfull.
 const optionList = /^(?:[a-zA-Z_]+(?:, |,$|\.$)\s*)+$/;
@@ -62,7 +61,7 @@ function isUntranslated(text: string, japanese: string): boolean {
 const debugSuffix = /(?:\s*[(<]-?\d+[)>])|(?: (?:innately|intrinsically|because of .+|from your .+|due to .+|by .+ form))(?=[.;]|$)/g;
 // Reports of debug commands that are numbers and internal names rather than text:
 // #wizobjprobs, #wizborn, #wizrumorcheck, #wizwhere, #stats, #terrain and the memory map.
-const debugTable = /^\s*\d+ \/ +\d+ \(|^\s*\d+ +\d+ |object rot_|_{5,}$|^\*? ?[a-zA-Z-]+\d*: \d+|^castle: \d+ \(tune|^[.x@]+$|^. - .+ . - |^\S start=/;
+const debugTable = /^\s*\d+ \/ +\d+ \(|^\s*\d+ +\d+ |object rot_|_{5,}$|^\*? ?[a-zA-Z-]+\d*: -?\d+|^\s*castle: \d+ \(tune|^[.x@#0-9f]+$|^\s*. - .+ . - |^\s*. - [a-z/ -]+$|^\S start=|^\s*<\d+,\d+>|@\[\d+,|, (?:base )?size |^\s*count\s+bytes|^Timeout for |^Mobile light|mons pending|^died born|^level number out of|^already have amulet|calculated: |^F \d+ "|^#wizcustom|^config_error_add|glyph identifier|base-36|^\s*<(?:none|empty)>|^\s*wizload|^object type names|^\s*peaceful \S+ to \d|__$|^condition\/|^Rogue[A-Z]/;
 function translatesWithoutDebugSuffix(kind: string, text: string): boolean {
   const plain = text.replace(/\(-?\d+\)due /, "due ").replace(debugSuffix, "");
   return plain !== text && !isUntranslated(plain, render(kind, plain));
@@ -73,7 +72,6 @@ it.skipIf(!playedFile)("reports played text that stayed in English", async () =>
     readFileSync: (path: string, encoding: "utf8") => string;
     writeFileSync: (path: string, data: string) => void;
   }>("node:fs");
-  await loadJapaneseDictionary();
   const played = JSON.parse(readFileSync(playedFile!, "utf8")) as [string, number][];
   const report: string[] = [];
   for (const [key, count] of played) {
@@ -83,7 +81,7 @@ it.skipIf(!playedFile)("reports played text that stayed in English", async () =>
       // The same order CharacterInfoDialog tries: whole documents, then each line.
       const lines = text.split("\u0001");
       if (translateHelpDocument(lines, "ja") ?? translateEncyclopediaEntry(lines, "ja") ?? translateDiscoveryReport(lines, "ja")
-        ?? translateOracleDocument(lines, "ja") ?? translateIntroStory(lines, "ja") ?? jnethackQuestDocument(lines)) continue;
+        ?? translateOracleDocument(lines, "ja") ?? translateIntroStory(lines, "ja") ?? translateQuestDocument(lines)) continue;
       for (const line of lines) {
         if (!line.trim()) continue;
         const japanese = render("line", line);

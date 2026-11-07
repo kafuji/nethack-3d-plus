@@ -4,7 +4,7 @@ import { presentGameMessage } from "./message-presentation";
 describe("message translation precedence", () => {
   it("prefers the project's translations and keeps other locales intact", () => {
     expect(presentGameMessage("The door opens.", "ja"))
-      .toEqual({ text: "ドアが開いた。", isReferenceTranslation: false });
+      .toEqual({ text: "扉が開いた。", isReferenceTranslation: false });
     expect(presentGameMessage("It's a wall.", "en"))
       .toEqual({ text: "It's a wall.", isReferenceTranslation: false });
   });

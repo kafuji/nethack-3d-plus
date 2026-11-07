@@ -8,7 +8,6 @@ import { expect, it, vi } from "vitest";
 import { translateGameMenuItem } from "./game-menu";
 import { translateGamePrompt } from "./game-prompts";
 import { translateInventoryItem } from "./inventory-text";
-import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { presentGameMessage } from "./message-presentation";
 import { translateReportLine } from "./report-text";
 
@@ -81,7 +80,6 @@ it.skipIf(!stringsFile)("reports game strings without a Japanese rendering", asy
     readFileSync: (path: string, encoding: "utf8") => string;
     writeFileSync: (path: string, data: string) => void;
   }>("node:fs");
-  await loadJapaneseDictionary();
   const entries = JSON.parse(readFileSync(stringsFile!, "utf8")) as { text: string; kind: string; call?: string; at: string[] }[];
   const report: string[] = [];
   for (const entry of entries) {

@@ -11,13 +11,13 @@ describe("game message presentation", () => {
     expect(translateGameMessage('You read: "Move around with h j k l".', "ja"))
       .toBe("「h j k l で移動します」と読んだ。");
     expect(translateGameMessage('You read: "Close the door with \'c\'".', "ja"))
-      .toBe("「'c' でドアを閉めます」と読んだ。");
+      .toBe("「'c' で扉を閉めます」と読んだ。");
     expect(translateGameMessage('You read: "Note: Outside the tutorial, Ctrl-key combinations are shown prefixed with a caret, like \'^D\'".', "ja"))
       .toBe("「注：チュートリアルの外では、Ctrl キーとの組み合わせを '^D' のように表示します」と読んだ。");
     expect(translateGameMessage('You feel the words: "Pick up items with \',\'".', "ja"))
       .toBe("「',' でアイテムを拾います」の文字を指で感じた。");
     expect(translateGameMessage('You read: "Open the door by moving into it".', "ja"))
-      .toBe("「ドアに向かって移動すると開きます」と読んだ。");
+      .toBe("「扉に向かって移動すると開きます」と読んだ。");
     expect(translateGameMessage('You read: "Elbereth".', "ja"))
       .toBe('You read: "Elbereth".');
     expect(translateGameMessage('You read: "Close the door with \'c\'".', "en"))
@@ -25,9 +25,9 @@ describe("game message presentation", () => {
   });
   it("translates known messages and preserves surrounding whitespace", () => {
     expect(translateGameMessage("Eating that is instantly fatal.", "ja")).toContain("即死");
-    expect(translateGameMessage("  The door opens.  ", "ja")).toBe("  ドアが開いた。  ");
+    expect(translateGameMessage("  The door opens.  ", "ja")).toBe("  扉が開いた。  ");
     expect(translateGameMessage("You descend the stairs.", "ja")).toBe("階段を下りた。");
-    expect(translateGameMessage("You see no door there.", "ja")).toBe("そこにドアは見当たらない。");
+    expect(translateGameMessage("You see no door there.", "ja")).toBe("そこに扉は見当たらない。");
   });
 
   it("keeps variable names and numbers in supported templates", () => {
@@ -104,12 +104,12 @@ describe("game message presentation", () => {
       .toBe("ここにはa mysterious objectがある。");
     expect(translateGameMessage("You are suddenly moving much faster.", "ja"))
       .toBe("急に体がずっと速く動くようになった。");
-    expect(translateGameMessage("The door unlocks!", "ja")).toBe("ドアの鍵が開いた！");
+    expect(translateGameMessage("The door unlocks!", "ja")).toBe("扉の鍵が開いた！");
     expect(translateGameMessage("A boulder blocks your path.", "ja")).toBe("大岩が行く手をふさいでいる。");
     expect(translateGameMessage("Your limbs are stiffening.", "ja")).toBe("手足がこわばってきた。");
     expect(translateGameMessage("A trap door opens up under you!", "ja")).toBe("足元に落とし戸が開いた！");
     expect(translateGameMessage("You're not carrying anything to be identified.", "ja"))
-      .toBe("鑑定できるものを持っていない。");
+      .toBe("識別できるものを持っていない。");
     expect(translateGameMessage("You finish your prayer.", "ja")).toBe("祈りを終えた。");
   });
 

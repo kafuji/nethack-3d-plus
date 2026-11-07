@@ -1,3 +1,4 @@
+import { hallucinatedDeities } from "./proper-names";
 import type { SupportedLocale } from "./core";
 import { translatePlayerRank } from "./player-title";
 
@@ -8,13 +9,14 @@ const introduction = /^It is written in the Book of (.+?): After the Creation, t
 
 // Names and starting ranks from the bundled NetHack 3.6.7 role definitions.
 export const deityNames: Readonly<Record<string, string>> = {
+  ...hallucinatedDeities,
   Quetzalcoatl: "ケツァルコアトル", Camaxtli: "カマシュトリ", Huhetotl: "ウエテオトル",
   Mitra: "ミトラ", Crom: "クロム", Set: "セト", Anu: "アヌ", Ishtar: "イシュタル", Anshar: "アンシャル",
   Athena: "アテナ", Hermes: "ヘルメス", Poseidon: "ポセイドン", Lugh: "ルー", Brigit: "ブリギッド",
-  "Manannan Mac Lir": "マナナン・マク・リル", "Shan Lai Ching": "シャン・ライ・チン",
-  "Chih Sung-tzu": "チー・スンツー", "Huan Ti": "ホアン・ティ", Issek: "イセク", Mog: "モグ", Kos: "コス",
+  "Manannan Mac Lir": "マナナン・マク・リル", "Shan Lai Ching": "山雷精",
+  "Chih Sung-tzu": "赤松子", "Huan Ti": "黄帝", Issek: "イセク", Mog: "モグ", Kos: "コス",
   Mercury: "メルクリウス", Venus: "ウェヌス", Mars: "マルス", "Amaterasu Omikami": "天照大神",
-  Raijin: "雷神", Susanowo: "スサノオ", "Blind Io": "盲目のイオ", "The Lady": "貴婦人", Offler: "オフラー",
+  Raijin: "雷神", Susanowo: "須佐之男", "Blind Io": "盲目のイオ", "The Lady": "貴婦人", Offler: "オフラー",
   Tyr: "テュール", Odin: "オーディン", Loki: "ロキ", Ptah: "プタハ", Thoth: "トート", Anhur: "アンフル",
   Moloch: "モロク", "Moloch, Lord of the Underworld": "冥界の主モロク",
 };

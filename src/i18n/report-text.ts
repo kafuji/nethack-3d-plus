@@ -1,3 +1,4 @@
+import { withJapaneseProperNames } from "./proper-names";
 import type { SupportedLocale } from "./core";
 import { deityNames, translateCharacterLine, translateIdentityWord } from "./character-text";
 import { translateInventoryItem } from "./inventory-text";
@@ -6,10 +7,13 @@ import { translatePlayerRank } from "./player-title";
 import { translateMessageArgument } from "./nethack5-source-messages";
 import { translateMonsterName } from "./game-monsters";
 import { lookupImportedJapaneseEntity } from "./imported-entities";
+import { translateDisclosureLine } from "./disclosure-text";
 
 // NetHack 5's conduct and achievement reports are assembled from fragments
 // in insight.c. Only match complete known lines; preserve names and annotations.
 const labels: Readonly<Record<string, string>> = {
+  "You are more charismatic.": "魅力が増している。",
+  "You hunger rapidly.": "空腹になりやすい。",
   "Voluntary challenges:": "自主的な挑戦：", "Achievements:": "達成事項：", "Achievement:": "達成事項：",
   "Character rerolling was not enabled.": "キャラクターの能力値の振り直しは無効でした。",
   "Your character was not rerolled.": "キャラクターの能力値を振り直しませんでした。",
@@ -50,18 +54,18 @@ const achievements: Readonly<Record<string, string>> = {
   "followed a strict vegan diet": "完全菜食を守りました",
   "used no wishes": "願いを一度も使いませんでした",
   "entered the Gnomish Mines": "ノームの鉱山に入りました", "entered Minetown": "鉱山町に入りました",
-  "entered a shop": "店に入りました", "entered a temple": "寺院に入りました",
+  "entered a shop": "店に入りました", "entered a temple": "神殿に入りました",
   "consulted the Oracle of Delphi": "デルフィの神託を受けました", "read from a Discworld novel": "ディスクワールドの小説を読みました",
   "entered Sokoban": "倉庫番に入りました", "completed Sokoban": "倉庫番を攻略しました",
   "completed the Gnomish Mines": "ノームの鉱山を攻略しました", "entered the Big Room": "大部屋に入りました",
   "defeated Medusa": "メデューサを倒しました", "learned the tune to open and close the Castle's drawbridge": "城の跳ね橋を開閉する旋律を覚えました",
   "entered Gehennom": "ゲヘナに入りました", "gained access to Moloch's Sanctum": "モロクの聖域への道を開きました",
-  "reached the Elemental Planes": "元素界に到達しました", "reached the Astral Plane": "アストラル界に到達しました",
+  "reached the Elemental Planes": "精霊界に到達しました", "reached the Astral Plane": "アストラル界に到達しました",
 };
 const elapsed = (value: string): string => value === "once" ? "1回" : value === "twice" ? "2回" : value === "thrice" ? "3回" : `${value.replace(/ times$/, "")}回`;
 const present = (table: Readonly<Record<string, string>>, value: string): string | undefined => Object.prototype.hasOwnProperty.call(table, value) ? `${table[value]}。` : undefined;
 const features: Readonly<Record<string, string>> = {
-  shop: "店", temple: "寺院", altar: "祭壇", throne: "玉座", fountain: "泉", sink: "流し", grave: "墓", tree: "木",
+  shop: "店", temple: "神殿", altar: "祭壇", throne: "玉座", fountain: "泉", sink: "流し台", grave: "墓", tree: "木",
   "general store": "雑貨店", "untended shop": "店主のいない店", "armor shop": "防具店", "scroll shop": "巻物店", "potion shop": "ポーション店",
   "weapon shop": "武器店", "food shop": "食料品店", "ring shop": "指輪店", "wand shop": "杖店", "hardware store": "金物屋", "tool shop": "道具屋",
   bookstore: "本屋", "health food store": "健康食品店", "vegetarian food shop": "菜食料理店", "lighting store": "照明店", "lighting shop": "照明店",
@@ -92,9 +96,9 @@ const killerModifiers: Readonly<Record<string, string>> = { invisible: "透明�
 const deathCauses: Readonly<Record<string, string>> = {
   overexertion: "過労",
   "an unsuccessful polymorph": "変化の失敗",
-  "a falling rock": "落石", "falling rock": "落石", "a falling object": "落下物", "falling object": "落下物", "falling boulder": "落石",
+  "a falling rock": "落石", "falling rock": "落石", "a falling object": "落下物", "falling object": "落下物", "falling boulder": "落ちてきた大岩",
   "jumping out of a bear trap": "トラバサミからの跳躍", "crunched in the head by an iron ball": "鉄球による頭部の打撃", "leg damage from being pulled out of a bear trap": "トラバサミから引き抜いた脚の傷",
-  "dragged downstairs by an iron ball": "鉄球に階段を引きずられたこと", "iron ball collision": "鉄球との衝突", "axing a hard object": "固い物を斧で叩いたこと", "squished under a boulder": "岩の下敷き",
+  "dragged downstairs by an iron ball": "鉄球に階段を引きずられたこと", "iron ball collision": "鉄球との衝突", "axing a hard object": "固い物を斧で叩いたこと", "squished under a boulder": "大岩の下敷き",
   "contusion from a small passage": "狭い通路での打撲", "tumbling down a flight of stairs": "階段からの転落", "falling down a mine shaft": "縦坑への転落",
   "acidic corpse": "酸性の死体", "acidic glob": "酸性の塊", "poisonous corpse": "毒の死体", "poisonous glob": "毒の塊", "rotted glob": "腐った塊", "unrefrigerated sip of juice": "冷やしていないジュース", "sipping boiling water": "熱湯をすすったこと",
   "psychic blast": "精神波", "fell into a chasm": "裂け目への転落", "hurt in a chasm": "裂け目での負傷", "carnivorous bag": "肉食の袋", "system shock": "システムショック", "colliding with the ceiling": "天井への衝突",
@@ -103,9 +107,9 @@ const deathCauses: Readonly<Record<string, string>> = {
   "exploding rune": "爆発するルーン", "riding accident": "乗馬事故", "rusting away": "錆び尽きたこと", "deliberately plunged into a pit of iron spikes": "鉄のスパイクの穴に自ら飛び込んだこと", "stepped into a pit of iron spikes": "鉄のスパイクの穴に踏み込んだこと",
   "stumbled into a pit of iron spikes": "鉄のスパイクの穴につまずいて落ちたこと", "fell into a pit of iron spikes": "鉄のスパイクの穴への転落", "deliberately plunged into a pit": "穴に自ら飛び込んだこと", "fell into a pit": "穴への転落", "anti-magic implosion": "反魔法の内破",
   "dangerous winds": "危険な風", "boiling water": "熱湯", "electric shock": "電撃", "closing drawbridge": "閉じる跳ね橋", "collapsing drawbridge": "崩れる跳ね橋", "exploding drawbridge": "爆発する跳ね橋", "falling drawbridge": "落ちる跳ね橋", "fell from a drawbridge": "跳ね橋からの転落",
-  "elementary physics": "初歩的な物理法則", exhaustion: "疲労", "genocidal confusion": "混乱した虐殺", "imperious order": "尊大な命令", "molten lava": "溶岩", "quick snack": "軽食", "rotten lump of royal jelly": "腐ったロイヤルゼリー", "scroll of genocide": "虐殺の巻物",
-  "self-genocide": "自己虐殺", slimicide: "スライム化", starvation: "飢え", "turned into green slime": "緑のスライムになったこと", "unsuccessful polymorph": "変化の失敗", "very rich meal": "こってりした食事", "gas spore's explosion": "ガス胞子の爆発", "a gas spore's explosion": "ガス胞子の爆発",
-  "kicking a wall": "壁を蹴ったこと", "kicking a door": "扉を蹴ったこと", "kicking a sink": "流しを蹴ったこと", "kicking an altar": "祭壇を蹴ったこと", "kicking a throne": "玉座を蹴ったこと", "kicking a fountain": "泉を蹴ったこと", "kicking a tree": "木を蹴ったこと",
+  "elementary physics": "初歩的な物理法則", exhaustion: "疲労", "genocidal confusion": "混乱した抹殺", "imperious order": "尊大な命令", "molten lava": "溶岩", "quick snack": "軽食", "rotten lump of royal jelly": "腐ったロイヤルゼリー", "scroll of genocide": "抹殺の巻物",
+  "self-genocide": "自己抹殺", slimicide: "スライム化", starvation: "飢え", "turned into green slime": "緑のスライムになったこと", "unsuccessful polymorph": "変化の失敗", "very rich meal": "こってりした食事", "gas spore's explosion": "ガス胞子の爆発", "a gas spore's explosion": "ガス胞子の爆発",
+  "kicking a wall": "壁を蹴ったこと", "kicking a door": "扉を蹴ったこと", "kicking a sink": "流し台を蹴ったこと", "kicking an altar": "祭壇を蹴ったこと", "kicking a throne": "玉座を蹴ったこと", "kicking a fountain": "泉を蹴ったこと", "kicking a tree": "木を蹴ったこと",
 };
 
 // botl.c multi_reason: what the hero was busy with when killed.
@@ -231,11 +235,11 @@ const chronicleAchievements: Readonly<Record<string, string>> = {
   "acquired the Bell of Opening": "開門の鐘を手に入れた", "entered Gehennom": "ゲヘナに入った",
   "acquired the Candelabrum of Invocation": "招来の燭台を手に入れた", "acquired the Book of the Dead": "死者の書を手に入れた",
   "performed the invocation": "儀式を執り行った", "acquired The Amulet of Yendor": "イェンダーの魔除けを手に入れた",
-  "entered the Elemental Planes": "元素界に入った", "entered the Astral Plane": "アストラル界に入った", ascended: "昇天した",
+  "entered the Elemental Planes": "精霊界に入った", "entered the Astral Plane": "アストラル界に入った", ascended: "昇天した",
   "acquired the Mines' End luckstone": "鉱山の底の幸運の石を手に入れた", "acquired the Sokoban bag of holding": "倉庫番の賞品の魔法の袋を手に入れた",
   "acquired the Sokoban amulet of reflection": "倉庫番の賞品の反射の護符を手に入れた", "killed Medusa": "メデューサを倒した",
   "entered the Gnomish Mines": "ノームの鉱山に入った", "reached Mine Town": "鉱山町に着いた", "entered a shop": "店に入った",
-  "entered a temple": "寺院に入った", "consulted the Oracle": "神託を受けた", "read a Discworld novel": "ディスクワールドの小説を読んだ",
+  "entered a temple": "神殿に入った", "consulted the Oracle": "神託を受けた", "read a Discworld novel": "ディスクワールドの小説を読んだ",
   "entered Sokoban": "倉庫番に入った", "entered the Bigroom": "大部屋に入った", "killed for the first time": "初めて生き物を殺した",
   "declined to make a wish": "願いを断った", "declined to perform genocide": "抹殺を断った", "lost all experience": "経験をすべて失った",
   "rejected atheism with a prayer": "祈りによって無神論を捨てた", "rejected atheism by turning undead": "アンデッド退散によって無神論を捨てた",
@@ -301,7 +305,23 @@ function translateChronicleEvent(event: string, locale: SupportedLocale): string
   return undefined;
 }
 
+// insight.c: debug mode adds where an attribute comes from.
+const attributeSources: ReadonlyArray<readonly [RegExp, (source: string) => string]> = [
+  [/^(.+?) because of (.+)\.$/, (source) => `${translateInventoryItem(source.replace(/^your /, ""), "ja")}のおかげ`],
+  [/^(.+?) by (.+)\.$/, (source) => `${translateInventoryItem(source.replace(/^your /, ""), "ja")}のおかげ`],
+  [/^(.+?) from your creature form\.$/, () => "変化した姿のおかげ"],
+  [/^(.+?) due to your lycanthropy\.$/, () => "獣化のせい"],
+];
+
 function translateContent(line: string, locale: SupportedLocale): string {
+  for (const [pattern, describe] of attributeSources) {
+    const m = pattern.exec(line);
+    if (!m) continue;
+    const plain = translateContent(`${m[1]}.`, locale);
+    if (plain === `${m[1]}.`) continue;
+    const source = describe(m[2]);
+    return /[A-Za-z]{3,}/.test(source.replace(/のおかげ$/, "")) ? plain : plain.replace(/(。?)$/, `（${source}）$1`);
+  }
   const exact = present(labels, line);
   // Labels already contain their own punctuation (or intentionally none).
   if (exact !== undefined) return labels[line];
@@ -387,7 +407,8 @@ function translateContent(line: string, locale: SupportedLocale): string {
     const header = lookupImportedJapaneseEntity(line[0].toLowerCase() + line.slice(1));
     if (header !== undefined) return header;
   }
-  return translateCharacterLine(line, locale);
+  const character = translateCharacterLine(line, locale);
+  return character !== line ? character : translateDisclosureLine(line) ?? line;
 }
 
 /** Presentation only; names, punctuation not understood, and input remain intact. */
@@ -395,6 +416,6 @@ export function translateReportLine(line: string, locale: SupportedLocale): stri
   if (locale !== "ja") return line;
   return line.replace(/[^\r\n]+/g, (part) => {
     const m = /^([ \t]*)(.*?)([ \t]*)$/.exec(part);
-    return !m || !m[2] ? part : `${m[1]}${translateContent(m[2], locale)}${m[3]}`;
+    return !m || !m[2] ? part : `${m[1]}${withJapaneseProperNames(translateContent(m[2], locale))}${m[3]}`;
   });
 }

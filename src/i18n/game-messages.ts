@@ -1,3 +1,4 @@
+import { withJapaneseProperNames, withKatakanaNames } from "./proper-names";
 import type { SupportedLocale } from "./core";
 import { translateInventoryCategory, translateInventoryItem } from "./inventory-text";
 import { translateMonsterName } from "./game-monsters";
@@ -16,7 +17,7 @@ const japaneseMessages: Readonly<Record<string, string>> = {
   "A curse upon thee for sitting upon this most holy throne!": "この神聖なる玉座に座るとは、呪われるがよい！",
   "A little goes a long way.": "少しでも長持ちする。",
   "A splash tetra you are not.": "あなたはスプラッシュテトラではない。",
-  "A tangled mass of plumbing remains below the sink.": "流しの下には絡み合った配管が残っている。",
+  "A tangled mass of plumbing remains below the sink.": "流し台の下には絡み合った配管が残っている。",
   "A throne.": "玉座。",
   "Are you waiting to get hit?": "殴られるのを待っているのか？",
   "Do chunks miss?": "破片は外れるか？",
@@ -133,7 +134,7 @@ const japaneseMessages: Readonly<Record<string, string>> = {
   "What you perform is quite far from music...": "あなたの演奏は音楽とはほど遠い……。",
   "What's going on here?": "ここで何が起きている？",
   "Where are your ball and chain?": "鉄球と鎖はどこだ？",
-  "Where is shopdoor?": "店のドアが見つかりません。",
+  "Where is shopdoor?": "店の扉が見つかりません。",
   "Which commands autocomplete?": "どのコマンドを自動補完しますか？",
   "Which intrinsics?": "どの生得能力ですか？",
   "You are surrounded by twisty little passages, all alike.": "似たような曲がりくねった細い通路に囲まれている。",
@@ -164,36 +165,36 @@ const japaneseMessages: Readonly<Record<string, string>> = {
   "You've got to be kidding!": "冗談だろう！",
   "Your rind escaped intact.": "皮は無事だった。",
   "Your stomach acid melts straight through the ice!": "胃酸が氷を溶かして突き抜けた！",
-  "The door opens.": "ドアが開いた。",
-  "The door closes.": "ドアが閉まった。",
-  "The door resists!": "ドアはびくともしない！",
-  "The door is locked.": "ドアには鍵がかかっている。",
-  "The door is already open.": "ドアはすでに開いている。",
-  "The door is already closed.": "ドアはすでに閉まっている。",
-  "You see no door there.": "そこにドアは見当たらない。",
-  "The door unlocks!": "ドアの鍵が開いた！",
-  "The door locks!": "ドアに鍵がかかった！",
-  "The door crashes open!": "ドアが勢いよく開いた！",
-  "The door splinters!": "ドアが砕け散った！",
-  "The door disintegrates!": "ドアが消滅した！",
-  "The door freezes and shatters!": "ドアが凍りついて砕け散った！",
-  "The door is consumed in flames!": "ドアが炎に包まれて燃え尽きた！",
-  "The door swings shut, and locks!": "ドアが閉まり、鍵がかかった！",
-  "The broken door reassembles and locks!": "壊れたドアが元に戻り、鍵がかかった！",
-  "You break through the door.": "ドアを破って通り抜けた。",
+  "The door opens.": "扉が開いた。",
+  "The door closes.": "扉が閉まった。",
+  "The door resists!": "扉はびくともしない！",
+  "The door is locked.": "扉には鍵がかかっている。",
+  "The door is already open.": "扉はすでに開いている。",
+  "The door is already closed.": "扉はすでに閉まっている。",
+  "You see no door there.": "そこに扉は見当たらない。",
+  "The door unlocks!": "扉の鍵が開いた！",
+  "The door locks!": "扉に鍵がかかった！",
+  "The door crashes open!": "扉が勢いよく開いた！",
+  "The door splinters!": "扉が砕け散った！",
+  "The door disintegrates!": "扉が消滅した！",
+  "The door freezes and shatters!": "扉が凍りついて砕け散った！",
+  "The door is consumed in flames!": "扉が炎に包まれて燃え尽きた！",
+  "The door swings shut, and locks!": "扉が閉まり、鍵がかかった！",
+  "The broken door reassembles and locks!": "壊れた扉が元に戻り、鍵がかかった！",
+  "You break through the door.": "扉を破って通り抜けた。",
   "You break through a secret door!": "隠し扉を破って通り抜けた！",
-  "A door appears in the wall!": "壁にドアが現れた！",
-  "You're too small to pull the door open.": "体が小さすぎてドアを引いて開けられない。",
-  "You're too small to push the door closed.": "体が小さすぎてドアを押して閉められない。",
+  "A door appears in the wall!": "壁に扉が現れた！",
+  "You're too small to pull the door open.": "体が小さすぎて扉を引いて開けられない。",
+  "You're too small to push the door closed.": "体が小さすぎて扉を押して閉められない。",
   "It won't come off the hinges.": "蝶番から外れない。",
-  "As you kick the door, it crashes open!": "ドアを蹴ると、勢いよく開いた！",
-  "As you kick the door, it shatters to pieces!": "ドアを蹴ると、粉々に砕け散った！",
+  "As you kick the door, it crashes open!": "扉を蹴ると、勢いよく開いた！",
+  "As you kick the door, it shatters to pieces!": "扉を蹴ると、粉々に砕け散った！",
   "You descend the stairs.": "階段を下りた。",
   "You climb up the stairs.": "階段を上った。",
   "You can't go down here.": "ここでは下りられない。",
   "You can't go up here.": "ここでは上れない。",
-  "You hear a door open.": "ドアが開く音が聞こえた。",
-  "You hear a door close.": "ドアが閉まる音が聞こえた。",
+  "You hear a door open.": "扉が開く音が聞こえた。",
+  "You hear a door close.": "扉が閉まる音が聞こえた。",
   "You hear someone counting money.": "誰かがお金を数える音が聞こえた。",
   "You hear the footsteps of a guard on patrol.": "巡回中の見張りの足音が聞こえた。",
   "You hear a slow drip.": "水滴がゆっくり落ちる音が聞こえた。",
@@ -312,7 +313,7 @@ const japaneseMessages: Readonly<Record<string, string>> = {
   "That feels like a boulder.": "大岩のような感触だ。",
   "As you read the scroll, it disappears.": "巻物を読むと、それは消えた。",
   "A ball and chain appears, then falls away.": "鉄球と鎖が現れたが、すぐに外れた。",
-  "A cloud of dust springs up and assembles itself into a door!": "砂ぼこりが舞い上がり、集まってドアになった！",
+  "A cloud of dust springs up and assembles itself into a door!": "砂ぼこりが舞い上がり、集まって扉になった！",
   "A feeling of loss comes over you.": "何かを失ったような気がする。",
   "A few ice cubes drop from the wand.": "杖からいくつかの氷のかけらが落ちた。",
   "A greasy liquid sprays all over you!": "油っぽい液体を全身に浴びた！",
@@ -346,7 +347,7 @@ const japaneseMessages: Readonly<Record<string, string>> = {
   "Suddenly you are transparent, but there!": "突然、体が透けたが、そこにいる！",
   "Suddenly you wake up!": "突然、目が覚めた！",
   "Suddenly, a section of the wall closes up!": "突然、壁の一部が閉じた！",
-  "Suddenly, the shop door reappears!": "突然、店のドアが再び現れた！",
+  "Suddenly, the shop door reappears!": "突然、店の扉が再び現れた！",
   "That debt is partially offset by your credit.": "その借金の一部はあなたの預け金と相殺された。",
   "That drawbridge is up!": "その跳ね橋は上がっている！",
   "That was probably a bad idea...": "それはまずい考えだったかもしれない……。",
@@ -363,9 +364,9 @@ const japaneseMessages: Readonly<Record<string, string>> = {
   "There's not enough room to kick in here.": "ここでは蹴る場所が足りない。",
   "This bottle turns out to be empty.": "この瓶は空だった。",
   "This calls for swimming, not jumping!": "ここでは飛ぶのではなく泳ぐ必要がある！",
-  "This door is broken.": "このドアは壊れている。",
-  "This door is safely open.": "このドアは安全に開いている。",
-  "This door was not trapped.": "このドアには罠はなかった。",
+  "This door is broken.": "この扉は壊れている。",
+  "This door is safely open.": "この扉は安全に開いている。",
+  "This door was not trapped.": "この扉には罠はなかった。",
   "This is a scroll of fire!": "これは炎の巻物だ！",
   "This is a vault teleport, usable once only.": "これは一度だけ使える金庫へのテレポートだ。",
   "This leash is not attached to that creature.": "この首ひもはその生き物につながっていない。",
@@ -376,7 +377,7 @@ const japaneseMessages: Readonly<Record<string, string>> = {
   "You've fallen, and you can't get up.": "倒れてしまい、起き上がれない。",
   "You've got the glop off.": "べたべたしたものを取り除いた。",
   "For some reason, you feel your presence is known.": "なぜか自分の存在が知られているような気がする。",
-  "You're not carrying anything to be identified.": "鑑定できるものを持っていない。",
+  "You're not carrying anything to be identified.": "識別できるものを持っていない。",
   "You have hidden gold.": "隠し持っている金貨がある。",
   "You still have hidden gold.  Drop it now.": "まだ金貨を隠し持っている。今すぐ置きなさい。",
   "You're too strained to do that.": "荷物が重すぎてそれはできない。",
@@ -404,7 +405,7 @@ const japaneseMessages: Readonly<Record<string, string>> = {
   "You succeed in cutting away some rock.": "岩を削ることに成功した。",
   "The boulder falls apart.": "大岩が砕けた。",
   "The statue shatters.": "石像が砕けた。",
-  "Ouch!  You bump into a door.": "いたっ！ ドアにぶつかった。",
+  "Ouch!  You bump into a door.": "いたっ！ 扉にぶつかった。",
   "Your limbs are getting oozy.": "手足がどろどろになってきた。",
   "Your skin begins to peel away.": "皮膚が剥がれ始めた。",
   "Your skin feels warm for a moment.": "一瞬、肌が温かく感じた。",
@@ -564,10 +565,10 @@ function translateWelcomeBackIdentity(identity: string): string {
 // or damaged engravings that do not match are left unchanged.
 const tutorialEngravings: Readonly<Record<string, string>> = {
   "Some actions may require multiple tries before succeeding": "行動によっては成功するまで何度か試す必要があります",
-  "Open the door by moving into it": "ドアに向かって移動すると開きます",
+  "Open the door by moving into it": "扉に向かって移動すると開きます",
   "You can leave the tutorial via the magic portal.": "魔法のポータルからチュートリアルを出られます。",
   "Wrong secret": "違う隠し場所",
-  "Behind this door is a dark corridor": "このドアの先には暗い通路があります",
+  "Behind this door is a dark corridor": "この扉の先には暗い通路があります",
   "There are four traps next to you! Search for them.": "隣に罠が4つあります！ 探索して見つけてください。",
   "Hit monsters by walking into them.": "モンスターに向かって移動すると攻撃します。",
   "Now you know the very basics. You can leave the tutorial via the magic portal.": "これで基本操作を覚えました。魔法のポータルからチュートリアルを出られます。",
@@ -590,8 +591,8 @@ const tutorialKeyPatterns: readonly [RegExp, (key: string) => string][] = [
   [/^Move diagonally with (.+)$/, (key) => `${key} で斜めに移動します`],
   [/^Note: Outside the tutorial, Ctrl-key combinations are shown prefixed with a caret, like '\^([^'\n]+)'$/, (key) => `注：チュートリアルの外では、Ctrl キーとの組み合わせを '^${key}' のように表示します`],
   [/^Knights can jump with '([^'\n]+)'$/, (key) => `騎士は '${key}' でジャンプできます`],
-  [/^Close the door with '([^'\n]+)'$/, (key) => `'${key}' でドアを閉めます`],
-  [/^This door is locked\. Kick it with '([^'\n]+)'$/, (key) => `このドアには鍵がかかっています。'${key}' で蹴ってください`],
+  [/^Close the door with '([^'\n]+)'$/, (key) => `'${key}' で扉を閉めます`],
+  [/^This door is locked\. Kick it with '([^'\n]+)'$/, (key) => `この扉には鍵がかかっています。'${key}' で蹴ってください`],
   [/^Look around the map with '([^'\n]+)', press ESC when you're done$/, (key) => `'${key}' で周囲を調べ、終わったら ESC を押します`],
   [/^Use '([^'\n]+)' to search for secret doors$/, (key) => `'${key}' で隠し扉を探索します`],
   [/^Some traps can be disabled with '([^'\n]+)'$/, (key) => `一部の罠は '${key}' で解除できます`],
@@ -616,6 +617,7 @@ const tutorialKeyPatterns: readonly [RegExp, (key: string) => string][] = [
   [/^Put on accessories with '([^'\n]+)'$/, (key) => `'${key}' で装飾品を身に着けます`],
   [/^Remove accessories with '([^'\n]+)'$/, (key) => `'${key}' で装飾品を外します`],
   [/^Use '([^'\n]+)' to go down the stairs$/, (key) => `'${key}' で階段を下ります`],
+  [/^Use '([^'\n]+)' to go up the stairs$/, (key) => `'${key}' で階段を上ります`],
   [/^Pick up the spellbook with '([^'\n]+)'$/, (key) => `'${key}' で魔法書を拾います`],
   [/^Read the spellbook with '([^'\n]+)'$/, (key) => `'${key}' で魔法書を読みます`],
   [/^Use '([^'\n]+)' to cast a spell$/, (key) => `'${key}' で呪文を唱えます`],
@@ -682,7 +684,7 @@ const monsterActions: Readonly<Record<string, string>> = {
   "looks much better.": "の具合がずっと良くなったようだ。", "looks puzzled for a moment.": "は一瞬戸惑ったようだ。",
   "looks rather ill.": "はかなり具合が悪そうだ。", "looks uneasy.": "は落ち着かない様子だ。",
   "looks unharmed.": "は無傷のようだ。", "looks very angry.": "はとても怒っているようだ。",
-  "looks wide awake.": "はすっかり目が覚めたようだ。", "opens a door.": "がドアを開けた。",
+  "looks wide awake.": "はすっかり目が覚めたようだ。", "opens a door.": "が扉を開けた。",
   "pretends to be friendly.": "は友好的なふりをしている。", "seems disoriented.": "は方向感覚を失っているようだ。",
   "seems famished.": "はひどく空腹のようだ。", "seems healthier.": "は健康になったようだ。",
   "seems healthy enough.": "は十分健康そうだ。", "seems disoriented for a moment.": "は一瞬方向感覚を失ったようだ。",
@@ -885,9 +887,20 @@ function leastEnglish(original: string, candidates: ReadonlyArray<() => string |
   return best;
 }
 
+const latinLetters = (text: string): number => text.match(/[A-Za-z]/g)?.length ?? 0;
+
 /** Translate for presentation only; unsupported text and locales remain English. */
 export function translateGameMessage(message: string, locale: SupportedLocale): string {
   if (locale !== "ja" || !message.trim()) return message;
+  const shown = withJapaneseProperNames(translateMessageText(message, locale));
+  const named = withKatakanaNames(message);
+  if (named === message || latinLetters(shown) === 0) return shown;
+  // Patterns that expect a monster's name may not take "X of Y" as a subject.
+  const retried = withJapaneseProperNames(translateMessageText(named, locale));
+  return latinLetters(retried) < latinLetters(shown) ? retried : shown;
+}
+
+function translateMessageText(message: string, locale: SupportedLocale): string {
   const match = /^(\s*)(.*?)(\s*)$/s.exec(message);
   if (!match) return message;
   const [, leading, content, trailing] = match;

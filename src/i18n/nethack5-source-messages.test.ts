@@ -9,7 +9,7 @@ describe("NetHack 5 source message translations", () => {
   it("translates exact messages and fills recognized arguments", () => {
     expect(translateGameMessage("You find a hidden door.", "ja")).toBe("隠し扉を見つけた。");
     expect(translateGameMessage("The iron ball falls on your head.", "ja")).toBe("鉄球があなたの頭に落ちてきた。");
-    expect(translateGameMessage("You owe Asidonhopo 23 zorkmids.", "ja")).toBe("Asidonhopoに23 ゾークミドの借りがある。");
+    expect(translateGameMessage("You owe Asidonhopo 23 zorkmids.", "ja")).toBe("アシドンホポに23 ゾークミドの借りがある。");
     expect(translateGameMessage("Your leash chokes your little dog to death!", "ja")).toBe("リードであなたの子犬を絞め殺してしまった！");
     expect(translateGameMessage("Welcome back to experience level 4.", "ja")).toBe("経験レベルが4になった。");
     expect(translateGameMessage("You are already wearing a leather cloak!", "ja")).toBe("すでに革のクロークを身に着けている！");

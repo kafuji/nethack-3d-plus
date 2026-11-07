@@ -1,6 +1,6 @@
 // quest.lua "synopsis" lines, which NetHack puts in the message history
-// (^P) as "[...]" after a quest text window. JNetHack has no translation of
-// them. The English is the synopsis without its brackets; the Japanese uses
+// (^P) as "[...]" after a quest text window. The English is the synopsis
+// without its brackets; the Japanese uses
 // the same quest codes, and only codes the English sets without a pronoun
 // modifier (%n for "%nC", never for "%ni" alone).
 export const questSynopses: ReadonlyArray<readonly [string, string]> = [

@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { GameTextTranslator, type GameTextData } from "./translator";
-import data from "./data/jnethack.generated.json";
+import questData from "./data/quest-texts-ja.json";
+import { presentGameMessage } from "./message-presentation";
+import { translateQuestDocument, translateQuestMessage } from "./quest-text";
 import { questSynopses } from "./quest-synopses";
 
-const translator = new GameTextTranslator(data as unknown as GameTextData);
+const texts = questData.texts as [string, string][];
 
 // Samurai values for the quest.lua substitution codes.
 const samurai: Readonly<Record<string, string>> = {
@@ -30,6 +31,18 @@ function fill(text: string): string {
 }
 
 describe("quest texts", () => {
+  it("has one translation for each text", () => {
+    expect(new Set(texts.map(([english]) => english)).size).toBe(texts.length);
+  });
+
+  it("translates every quest text for the Samurai without leftover codes or English", () => {
+    for (const [english] of texts) {
+      const japanese = translateQuestDocument(fill(english).split("\n"));
+      expect(japanese, english.slice(0, 60)).toBeDefined();
+      expect(japanese!.replace(/Kafujinho/g, ""), english.slice(0, 60)).not.toMatch(/%[A-Za-z]|[A-Za-z]{2,}/);
+    }
+  });
+
   it("matches texts with lowercase code modifiers such as %Ra", () => {
     const lines = [
       "\"Kafujinho-san, you have learned well and honored your family.",
@@ -37,40 +50,32 @@ describe("quest texts", () => {
       "Go and seek out teachers.  Learn what they have learned.  When you",
       "are ready, return to me.\"",
     ];
-    const japanese = translator.translateQuestDocument(lines)?.join("");
+    const japanese = translateQuestDocument(lines);
     expect(japanese).toContain("足利尊氏");
     expect(japanese).toContain("領主");
     expect(japanese!.replace(/Kafujinho/g, "")).not.toMatch(/[A-Za-z]{2,}/);
   });
 
-  it("translates every JNetHack quest text for the Samurai without leftover codes", () => {
-    for (const [english] of (data as unknown as GameTextData).questTexts ?? []) {
-      if (english.startsWith("[")) continue;
-      const japanese = translator.translateQuestDocument(fill(english).split("\n"));
-      expect(japanese, english.slice(0, 60)).not.toBeNull();
-      expect(japanese!.join(""), english.slice(0, 60)).not.toMatch(/%[A-Za-z]/);
-    }
-  });
-
   it("splits a pronoun code from the name before it", () => {
     const text = "As soon as Lord Sato sees the Tsurugi of Muramasa he summons his\nroshis.";
-    const japanese = translator.translateQuestDocument(text.split("\n"));
-    expect(japanese?.join("") ?? "").not.toMatch(/the |Tsurugi/);
+    expect(translateQuestDocument(text.split("\n")) ?? "").not.toMatch(/the |Tsurugi/);
   });
 
   it("translates the message-history synopsis of each quest text", () => {
     for (const [english] of questSynopses) {
       const line = `[${fill(english)}]`;
-      const japanese = translator.translate(line);
+      const japanese = presentGameMessage(line, "ja").text;
       expect(japanese, line).toMatch(/^\[.*\]$/);
       expect(japanese.replace(/Kafujinho/g, ""), line).not.toMatch(/[A-Za-z]{2,}/);
     }
-    expect(translator.translate("[\"I require a Ryoshu to defeat Ashikaga Takauji.  Return when you are ready.\"]"))
+    expect(translateQuestMessage("[\"I require a Ryoshu to defeat Ashikaga Takauji.  Return when you are ready.\"]"))
       .toBe("[「足利尊氏を倒すには領主の力が必要だ。準備ができたら戻ってこい。」]");
   });
 
-  it("names quest artifacts and the Ranger the way the curated tables do", () => {
-    const japanese = translator.translate("[You feel the power of the Longbow of Diana flowing through your hands.]");
-    expect(japanese).toBe("[ディアナの長弓の力が両手に流れ込むのを感じる。]");
+  it("names quest artifacts and places the way the other tables do", () => {
+    expect(translateQuestMessage("[You feel the power of the Longbow of Diana flowing through your hands.]"))
+      .toBe("[ディアナの長弓の力が両手に流れ込むのを感じる。]");
+    expect(translateQuestMessage("[You arrive at the Castle of the Taro Clan, but all is not well.]"))
+      .toBe("[太郎一族の城に着いたが、どうも様子がおかしい。]");
   });
 });

@@ -22,7 +22,7 @@ describe("trial save location labels", () => {
     expect(describeJa(-3, "Elemental Planes", 3)).toBe("火の界");
     expect(describeJa(-4, "Elemental Planes", 2)).toBe("水の界");
     expect(describeJa(-5, "Elemental Planes", 1)).toBe("アストラル界");
-    expect(describeJa(-1, "Elemental Planes", null)).toBe("元素界");
+    expect(describeJa(-1, "Elemental Planes", null)).toBe("精霊界");
   });
 
   it("has nothing to show without a location", () => {

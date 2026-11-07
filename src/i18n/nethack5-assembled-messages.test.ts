@@ -1,7 +1,6 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { translateGameMessage } from "./game-messages";
 import { translateGamePrompt } from "./game-prompts";
-import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { translateStatusBadgeLabel } from "./status-text";
 
 const ja = (message: string): string => translateGameMessage(message, "ja");
@@ -22,7 +21,7 @@ describe("assembled NetHack 5 messages", () => {
 
   it("translates shops, item lines and the restore greeting", () => {
     expect(ja("Hello, Kafujinho!  Welcome again to Asidonhopo's general store!"))
-      .toBe("こんにちは、Kafujinho！ Asidonhopoの雑貨店へまたようこそ！");
+      .toBe("こんにちは、Kafujinho！ アシドンホポの雑貨店へまたようこそ！");
     expect(ja("\"For you, good sir; only 78 zorkmids for this shrieker corpse.\""))
       .toBe("「お客様には、このシュリーカーの死体がたったの 78 ゾークミドです」");
     expect(ja("a green gem (for sale, 3750 zorkmids)")).toBe("緑色の宝石（売り物、3750 ゾークミド）");
@@ -54,7 +53,7 @@ describe("assembled NetHack 5 messages", () => {
 
   it("translates quoted speech, piles and globs", () => {
     expect(ja("\"Irasshaimase, Kafujinho!  Welcome again to Kittamagh's second-hand bookstore!\""))
-      .toBe("「いらっしゃいませ、Kafujinho！ Kittamaghの古本屋へまたようこそ！」");
+      .toBe("「いらっしゃいませ、Kafujinho！ キタマーの古本屋へまたようこそ！」");
     expect(ja("This food really hits the spot!")).toBe("この食べ物は本当においしい！");
     expect(ja("You hear rumbling nearby.")).toBe("近くでゴロゴロという音が聞こえた。");
     expect(ja("There are several objects here.")).toBe("ここには物が数個ある。");
@@ -97,14 +96,3 @@ describe("assembled NetHack 5 messages", () => {
   });
 });
 
-describe("assembled messages with the JNetHack dictionary loaded", () => {
-  beforeAll(loadJapaneseDictionary, 40000);
-
-  it("keeps a curated template ahead of the dictionary", () => {
-    expect(ja("stash one item into the large box")).toBe("大きな箱に1つしまう");
-  });
-
-  it("takes a counted missile's name from the dictionary, which reads better in a sentence", () => {
-    expect(ja("The 2 arrows miss the newt.")).toBe("2本の矢はイモリに当たらなかった。");
-  });
-});

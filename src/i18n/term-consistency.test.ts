@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { translateInventoryItem, translateMenuItemText } from "./inventory-text";
 import { translateSpellName } from "./game-skills";
-import { GameTextTranslator, type GameTextData } from "../plus/game-text/translator";
-import { curatedNames } from "../plus/game-text/curated-names";
-import data from "../plus/game-text/data/jnethack.generated.json";
+import { presentGameMessage } from "./message-presentation";
 
 describe("itemized billing menu", () => {
   it.each([
@@ -32,16 +30,15 @@ describe("spell, spellbook and wand names agree", () => {
   });
 });
 
-describe("JNetHack tier uses the curated names and terms", () => {
-  const translator = new GameTextTranslator(data as unknown as GameTextData, curatedNames);
+describe("messages use the curated names and terms", () => {
 
   it.each([
     ["a - a bag of holding", "a - 保持の袋"],
-    ["b - an uncursed wand of striking (0:5)", "b - 呪われていない衝撃の杖(0:5)"],
+    ["b - an uncursed wand of striking (0:5)", "b - 呪われていない衝撃の杖 (0:5)"],
     ["d - a ruby potion", "d - ルビー色のポーション"],
     ["j - a spellbook of force bolt", "j - 衝撃の魔法書"],
   ])("names %s", (english, japanese) => {
-    expect(translator.translateItemText(english)).toBe(japanese);
+    expect(translateMenuItemText(english, "ja")).toBe(japanese);
   });
 
   it.each([
@@ -52,6 +49,6 @@ describe("JNetHack tier uses the curated names and terms", () => {
     ["You undergo a freakish metamorphosis.", "変化"],
     ["There is a teleportation trap here.", "テレポートの罠"],
   ])("words %s with the curated term", (english, term) => {
-    expect(translator.translate(english)).toContain(term);
+    expect(presentGameMessage(english, "ja").text).toContain(term);
   });
 });
