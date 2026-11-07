@@ -81,21 +81,5 @@ export function resolveMusicRegion(
   return "dungeon";
 }
 
+/** Track ids per mood; each music pack gives one per region (MusicPack.regionTracks). */
 export type TrackPreference = Partial<Record<MusicMood, readonly string[]>>;
-
-/**
- * Track ids per mood for each region. A mood listed here plays only these
- * tracks (in order) while in the region; unlisted moods use the whole library.
- * The faster boss-combat piece is kept for the deep and dangerous places.
- */
-export const regionTrackPreferences: Readonly<Record<MusicRegion, TrackPreference>> = {
-  dungeon: { calm: ["dungeon"], combat: ["combat"] },
-  medusa: { calm: ["medusa"], combat: ["combat"] },
-  castle: { calm: ["castle"], combat: ["combat-boss"] },
-  mines: { calm: ["mines"], combat: ["combat"] },
-  sokoban: { calm: ["sokoban"], combat: ["combat"] },
-  quest: { calm: ["quest"], combat: ["combat"] },
-  ludios: { calm: ["dungeon"], combat: ["combat-boss"] },
-  gehennom: { calm: ["gehennom"], combat: ["combat-boss"] },
-  endgame: { calm: ["astral"], combat: ["astral-combat"] },
-};

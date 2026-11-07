@@ -1,4 +1,5 @@
 import { constrainFpsModeForTilesetMode } from "../../../game/client-option-constraints";
+import { normalizeMusicPackId } from "../../../audio/music/music-pack";
 import { resolveSupportedLocale } from "../../../i18n/core";
 import { t } from "../shared/translations";
 import { OptionLabelWithInfo } from "./OptionLabelWithInfo";
@@ -142,6 +143,10 @@ export function ClientOptionSelectControl({
                   ? event.target.value
                   : "nethack-3d",
               );
+              return;
+            }
+            if (option.key === "musicPack") {
+              updateClientOptionDraft(option.key, normalizeMusicPackId(event.target.value));
               return;
             }
             if (option.key === "minimapColorMode") {

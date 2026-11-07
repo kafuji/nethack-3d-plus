@@ -797,10 +797,13 @@ export const zhCnOverrides = {
           },
         },
         groupSound: "声音",
-        musicEnabled: {
-          label: "背景音乐",
+        musicPack: {
+          label: "使用 BGM 包",
           description:
-            "播放随情境（平静、战斗、危险）变化的背景音乐。需要启用声音。",
+            "要播放的背景音乐组。音乐会随情境（平静、战斗、危险）和地点变化。选择“无”则不播放音乐。需要启用声音。",
+          options: {
+            none: "无",
+          },
         },
         musicVolume: {
           label: "音乐音量",

@@ -5,10 +5,17 @@ export { MusicDirector } from "./music-director";
 export type { MusicMood } from "./music-director";
 export { ProceduralMusicPlayer } from "./procedural-music-player";
 export { FileMusicPlayer } from "./file-music-player";
-export { ascensionMusicTrack, defaultMusicLibrary, titleMusicTrack } from "./music-library";
 export type { MusicLibrary, MusicTrack } from "./music-library";
+export {
+  defaultMusicPackId,
+  musicPacks,
+  normalizeMusicPackId,
+  NO_MUSIC_PACK_ID,
+  resolveMusicPack,
+} from "./music-pack";
+export type { MusicPack } from "./music-pack";
 export type { BackgroundMusicPlayer } from "./procedural-music-player";
-export { resolveMusicRegion, regionTrackPreferences } from "./music-region";
+export { resolveMusicRegion } from "./music-region";
 export type { MusicRegion, TrackPreference } from "./music-region";
 export type { MusicStinger } from "./stingers";
 export { resolveMusicEffectProfile } from "./status-effects";

@@ -1062,10 +1062,13 @@ export const en = {
           description:
             "Turn FMOD audio on or off. Disabling reduces audio processing overhead on lower-end devices.",
         },
-        musicEnabled: {
-          label: "Background music",
+        musicPack: {
+          label: "Use BGM pack",
           description:
-            "Play background music that changes with the situation (calm, combat, danger). Requires sound to be enabled.",
+            "The set of background music to play. It changes with the situation (calm, combat, danger) and the place. Choose None for no music. Requires sound to be enabled.",
+          options: {
+            none: "None",
+          },
         },
         musicVolume: {
           label: "Music volume",

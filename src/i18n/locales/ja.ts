@@ -1011,10 +1011,13 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "FMOD オーディオのオン/オフを切り替えます。無効にすると低性能デバイスでの音声処理負荷を軽減できます。",
         },
-        musicEnabled: {
-          label: "BGM を有効化",
+        musicPack: {
+          label: "BGM パックを使用",
           description:
-            "状況（平常・戦闘・ピンチ）に応じて変わる BGM を再生します。サウンドが有効なときのみ鳴ります。",
+            "再生する BGM のセットです。状況（平常・戦闘・ピンチ）や場所に応じて曲が変わります。「なし」を選ぶと BGM を再生しません。サウンドが有効なときのみ鳴ります。",
+          options: {
+            none: "なし",
+          },
         },
         musicVolume: {
           label: "BGM 音量",
