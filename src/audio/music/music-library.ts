@@ -148,6 +148,18 @@ export const defaultMusicLibrary: MusicLibrary = {
       ...originalWork,
       source: "scripts/music-sketch/pieces/astral-combat.mjs",
     },
+    {
+      // Only while the Wizard of Yendor is in view (see background-music.ts);
+      // every region names its own combat tracks, so it never plays otherwise.
+      id: "wizard",
+      path: "music/wizard.mp3",
+      loop: "crossfade",
+      crossfadeSec: 1,
+      gainDb: -4,
+      title: "The Wizard of Yendor",
+      ...originalWork,
+      source: "scripts/music-sketch/pieces/wizard.mjs",
+    },
   ],
   danger: [
     {

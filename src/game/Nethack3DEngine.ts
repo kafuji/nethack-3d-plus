@@ -186,6 +186,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
    *   __nh3dMusic.auto()   // back to situation-driven music
    *   __nh3dMusic.mood()   // mood the director currently wants
    *   __nh3dMusic.ascend() // play the ascension track
+   *   __nh3dMusic.wizard(true | false) // pretend the Wizard of Yendor is on the map
    */
   private exposeBackgroundMusicDebugHandle(): void {
     if (typeof window === "undefined") return;
@@ -195,6 +196,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
       auto: () => music.setPreviewMood(undefined),
       mood: () => music.getCurrentMood(),
       ascend: () => music.notifyAscension(),
+      wizard: (inView: boolean) => music.notifyWizardPresence(inView),
     };
   }
 
@@ -787,6 +789,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.engineState.uiAdapter.setInventory(this.systems.promptDialogs.buildInventoryDialogState());
     this.systems.playerStatus.statusConditionMask = 0;
     this.systems.playerStatus.playerStats.conditionMask = 0;
+    this.systems.audioHapticsPlatform.clearBackgroundMusicMapTiles();
     this.systems.audioHapticsPlatform.backgroundMusic?.reset();
     this.systems.playerStatus.resetPlayerStatusDeltaTracking();
     this.systems.darkCorridorInference.pendingBoulderPushDarkCorridorInference = null;
@@ -880,6 +883,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
         this.systems.levelTerrainCache.capturePendingLevelTransitionTile(data);
         this.systems.levelTerrainCache.maybeFinalizePendingLevelCacheTransition("tile");
         this.systems.combatAttribution.tryResolvePendingCharacterDamage(data);
+        this.systems.audioHapticsPlatform.notifyBackgroundMusicMapTile(data);
         this.systems.tileUpdates.enqueueTileUpdate(data);
         break;
 
@@ -890,6 +894,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           for (const tile of data.tiles) {
             this.systems.runtimeEntityTracking.updateRuntimeMonsterTrackingFromTile(tile);
             this.systems.combatAttribution.tryResolvePendingCharacterDamage(tile);
+            this.systems.audioHapticsPlatform.notifyBackgroundMusicMapTile(tile);
             this.systems.tileUpdates.enqueueTileUpdate(tile);
           }
         }
@@ -1444,6 +1449,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
         console.log("🧹 Clearing 3D scene for level transition");
         this.systems.levelTerrainCache.persistActiveLevelTerrainCache();
         this.systems.levelTerrainCache.beginPendingLevelCacheTransition();
+        this.systems.audioHapticsPlatform.clearBackgroundMusicMapTiles();
         this.clearScene();
         this.systems.tileUpdates.pendingPlayerTileRefreshOnNextPosition = true;
         if (data.message) {

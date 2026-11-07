@@ -35,6 +35,14 @@ const EVALUATE_INTERVAL_MS = 250;
  */
 const ASCENSION_MESSAGE = /invisible choir sings|^\s*ascended\b/i;
 
+/** Played in place of every mood while the Wizard of Yendor is about. */
+export const WIZARD_TRACK_ID = "wizard";
+/**
+ * He teleports away to heal and comes straight back, so the panic outlasts
+ * his last sighting a little instead of cutting out at every blink.
+ */
+export const WIZARD_LINGER_MS = 8000;
+
 function resolvePublicAssetUrl(path: string): string {
   const normalizedPath = String(path || "").replace(/^\/+/, "");
   const rawBase =
@@ -70,6 +78,9 @@ export class BackgroundMusic {
   private ascended = false;
   private previewMood: MusicMood | null | undefined = undefined;
   private region: MusicRegion | null = null;
+  private wizardInView = false;
+  private wizardLastSeenAt = Number.NEGATIVE_INFINITY;
+  private wizardPanic = false;
   private statusEffectsKey = "";
   private evaluateTimer: ReturnType<typeof setInterval> | null = null;
   private disposed = false;
@@ -118,11 +129,36 @@ export class BackgroundMusic {
     return this.region;
   }
 
+  /** Whether the Wizard of Yendor is on the map right now. */
+  notifyWizardPresence(inView: boolean): void {
+    if (inView === this.wizardInView) return;
+    this.wizardInView = inView;
+    // Count the linger from when he leaves the map.
+    if (!inView) this.wizardLastSeenAt = this.now();
+    this.evaluate();
+  }
+
+  isWizardPanic(): boolean {
+    return this.wizardPanic;
+  }
+
+  private applyTrackPreference(): void {
+    const regional = this.region ? regionTrackPreferences[this.region] : {};
+    this.player.setTrackPreference?.(this.wizardPanic ? { ...regional, combat: [WIZARD_TRACK_ID] } : regional);
+  }
+
+  private updateWizardPanic(): void {
+    const panic = this.wizardInView || this.now() - this.wizardLastSeenAt < WIZARD_LINGER_MS;
+    if (panic === this.wizardPanic) return;
+    this.wizardPanic = panic;
+    this.applyTrackPreference();
+  }
+
   private updateRegion(region: MusicRegion): void {
     if (region === this.region) return;
     const entering = this.region !== null;
     this.region = region;
-    this.player.setTrackPreference?.(regionTrackPreferences[region]);
+    this.applyTrackPreference();
     // A small fanfare when walking into a new branch or special level (not on
     // game start).
     if (entering && region !== "dungeon" && this.isEnabled() && !this.gameOver) {
@@ -168,6 +204,9 @@ export class BackgroundMusic {
     this.ascended = false;
     this.player.stopOnce?.();
     this.region = null;
+    this.wizardInView = false;
+    this.wizardLastSeenAt = Number.NEGATIVE_INFINITY;
+    this.wizardPanic = false;
     this.setStatusEffects([]);
     this.player.setMood(null);
   }
@@ -217,7 +256,9 @@ export class BackgroundMusic {
       turn: this.stats.time,
       dangerCondition: this.dangerCondition,
     });
-    this.player.setMood(mood);
+    // The Wizard's track rides on the combat channel and outranks every mood.
+    this.updateWizardPanic();
+    this.player.setMood(this.wizardPanic ? "combat" : mood);
     this.ensureTimer();
   }
 
