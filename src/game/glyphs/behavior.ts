@@ -198,6 +198,11 @@ export function isLitFloorCmapGlyph(glyph: number): "room" | "corridor" | null {
   return null;
 }
 
+/** Room floor shown as remembered or unlit (S_darkroom); the same index in every runtime. */
+export function isDarkRoomFloorCmapGlyph(glyph: number): boolean {
+  return getCmapIndex(glyph, null) === 20;
+}
+
 /** Molten lava (and NetHack 5's wall of lava), which glows. */
 export function isLavaCmapGlyph(glyph: number): boolean {
   const cmapIndex = getCmapIndex(glyph, null);

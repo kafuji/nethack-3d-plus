@@ -111,16 +111,33 @@ export interface LitRoom {
   readonly maxY: number;
 }
 
+export interface LightReachCenter {
+  readonly x: number;
+  readonly y: number;
+  /** NetHack light radius in tiles. */
+  readonly radius: number;
+}
+
+function isWithinAnyLight(x: number, y: number, centers: readonly LightReachCenter[]): boolean {
+  for (const center of centers) {
+    const reach = center.radius + 0.5;
+    if ((x - center.x) ** 2 + (y - center.y) ** 2 <= reach * reach) return true;
+  }
+  return false;
+}
+
 /**
  * Lit rooms on screen: 4-connected groups of lit room floor, as bounding
- * rectangles. In a dark room the game shows the squares next to the hero as
- * lit floor, so groups that never leave the hero's 3x3 are not rooms.
+ * rectangles. In a dark room the game shows floor lit by a light source
+ * (the hero's own sight of adjacent squares, a carried lamp, a glowing
+ * monster) as lit floor too, so a group that stays within those lights'
+ * reach is not a room.
  */
 export function findLitRooms(
   litRoomCells: Uint8Array,
   columns: number,
   rows: number,
-  player: { x: number; y: number } | null,
+  lights: readonly LightReachCenter[],
 ): LitRoom[] {
   const seen = new Uint8Array(columns * rows);
   const rooms: LitRoom[] = [];
@@ -128,7 +145,7 @@ export function findLitRooms(
   for (let start = 0; start < litRoomCells.length; start++) {
     if (!litRoomCells[start] || seen[start]) continue;
     let minX = columns, minY = rows, maxX = -1, maxY = -1;
-    let leavesPlayer = player === null;
+    let leavesLights = false;
     seen[start] = 1;
     stack.push(start);
     while (stack.length > 0) {
@@ -137,7 +154,7 @@ export function findLitRooms(
       const y = (index - x) / columns;
       minX = Math.min(minX, x); maxX = Math.max(maxX, x);
       minY = Math.min(minY, y); maxY = Math.max(maxY, y);
-      if (player && Math.max(Math.abs(x - player.x), Math.abs(y - player.y)) > 1) leavesPlayer = true;
+      if (!leavesLights && !isWithinAnyLight(x, y, lights)) leavesLights = true;
       const neighbours = [
         x > 0 ? index - 1 : -1,
         x < columns - 1 ? index + 1 : -1,
@@ -151,7 +168,7 @@ export function findLitRooms(
         }
       }
     }
-    if (leavesPlayer) rooms.push({ minX, minY, maxX, maxY });
+    if (leavesLights) rooms.push({ minX, minY, maxX, maxY });
   }
   return rooms;
 }
@@ -403,7 +420,14 @@ export class LightField {
       target[i + 2] = tuning.ambient * AMBIENT_TINT[2];
       target[i + 3] = 0;
     }
-    this.rooms = findLitRooms(this.litRoom, columns, rows, player);
+    // The hero always sees the squares next to them, even without a light.
+    const lightCenters: LightReachCenter[] = player
+      ? [{ x: player.x, y: player.y, radius: Math.max(1, this.carriedLight?.radius ?? 1) }]
+      : [];
+    for (const glow of this.glows) {
+      if (glow.light !== LAVA_GLOW) lightCenters.push({ x: glow.x, y: glow.y, radius: 1 });
+    }
+    this.rooms = findLitRooms(this.litRoom, columns, rows, lightCenters);
 
     const isMagicLit = (x: number, y: number) =>
       this.magicLightZones.some((zone) => (x - zone.x) ** 2 + (y - zone.y) ** 2 <= zone.radius * zone.radius);

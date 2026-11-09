@@ -54,10 +54,22 @@ describe("lit rooms and light reach", () => {
   it("finds lit rooms as rectangles and ignores the lit squares around a hero in a dark room", () => {
     const room: Array<[number, number]> = [];
     for (let y = 2; y <= 4; y++) for (let x = 2; x <= 6; x++) if (!(x === 4 && y === 3)) room.push([x, y]);
-    expect(findLitRooms(grid(room), columns, rows, { x: 4, y: 3 })).toEqual([{ minX: 2, minY: 2, maxX: 6, maxY: 4 }]);
+    expect(findLitRooms(grid(room), columns, rows, [{ x: 4, y: 3, radius: 1 }])).toEqual([{ minX: 2, minY: 2, maxX: 6, maxY: 4 }]);
 
     const darkRoomPatch: Array<[number, number]> = [[8, 5], [9, 5], [10, 5], [8, 6], [10, 6]];
-    expect(findLitRooms(grid(darkRoomPatch), columns, rows, { x: 9, y: 6 })).toEqual([]);
+    expect(findLitRooms(grid(darkRoomPatch), columns, rows, [{ x: 9, y: 6, radius: 1 }])).toEqual([]);
+  });
+
+  it("ignores floor lit by a carried candle or a glowing monster in a dark room", () => {
+    // Radius-2 candle light around (5, 4).
+    const candlePatch: Array<[number, number]> = [];
+    for (let y = 2; y <= 6; y++) for (let x = 3; x <= 7; x++) {
+      if ((x - 5) ** 2 + (y - 4) ** 2 <= 5 && !(x === 5 && y === 4)) candlePatch.push([x, y]);
+    }
+    expect(findLitRooms(grid(candlePatch), columns, rows, [{ x: 5, y: 4, radius: 1 }])).toHaveLength(1);
+    expect(findLitRooms(grid(candlePatch), columns, rows, [{ x: 5, y: 4, radius: 2 }])).toEqual([]);
+    const lightPatch: Array<[number, number]> = [[1, 1], [2, 1], [1, 2]];
+    expect(findLitRooms(grid(lightPatch), columns, rows, [{ x: 9, y: 6, radius: 1 }, { x: 1, y: 1, radius: 1 }])).toEqual([]);
   });
 
   it("reaches cells in a straight clear line, including the wall that stops it", () => {

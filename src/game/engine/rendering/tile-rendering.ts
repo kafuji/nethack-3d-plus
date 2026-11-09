@@ -6,6 +6,7 @@ import {
   getDefaultDarkFloorGlyph,
   getDefaultFloorGlyph,
   getOpenDoorGlyphFrom,
+  isDarkRoomFloorCmapGlyph,
   isDoorwayCmapGlyph,
   isSinkCmapGlyph
 } from "../../glyphs/behavior";
@@ -23,6 +24,7 @@ import type { TileFaceTextureRotationDebug } from "../diagnostics/tile-face-text
 import type { GlyphTextures } from "./glyph-textures";
 import type { LevelTerrainCache } from "../world/level-terrain-cache";
 import type { Lighting } from "./lighting";
+import type { LightField } from "./light-field";
 import type { Minimap } from "../ui/minimap";
 import type { MovementInput } from "../input/movement-input";
 import type { PlayerMovement } from "../world/player-movement";
@@ -85,6 +87,10 @@ export interface TileRenderingDependencies {
   readonly lighting: Pick<
     Lighting,
     "markLightingDirty"
+  >;
+  readonly lightField: Pick<
+    LightField,
+    "isActive"
   >;
   readonly minimap: Pick<
     Minimap,
@@ -810,6 +816,18 @@ export class TileRendering {
         };
       }
       tileTextColor = this.dependencies.glyphTextures.asciiFriendlyGlyphTextColor;
+    }
+    // With world lighting on, remembered dark-room floor uses the room floor
+    // tile and the lighting alone decides how dark it looks. The game marks
+    // only the squares the hero currently sees lit, so the dark tile would
+    // otherwise leave a patchwork of wherever the hero last stood.
+    if (
+      this.dependencies.lightField.isActive() &&
+      isDarkRoomFloorCmapGlyph(renderBehavior.effective.glyph)
+    ) {
+      renderBehavior = this.dependencies.worldClassification.resolveNormalRoomFloorBehavior();
+      tileGlyphChar = renderBehavior.glyphChar;
+      tileTextColor = renderBehavior.textColor;
     }
     const useTerrainTiles = usesTerrainTiles(
       this.dependencies.engineState.clientOptions, renderBehavior.isWall, renderBehavior.materialKind,

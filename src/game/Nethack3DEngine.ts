@@ -532,6 +532,8 @@ class Nethack3DEngine implements Nethack3DEngineController {
     const fpsFovChanged = previous.fpsFov !== normalized.fpsFov;
     const lightingEnabledChanged =
       previous.lightingEnabled !== normalized.lightingEnabled;
+    const dynamicLightingChanged =
+      previous.dynamicLighting !== normalized.dynamicLighting;
     const fpsFlattenEntityBillboardsChanged =
       previous.fpsFlattenEntityBillboards !==
       normalized.fpsFlattenEntityBillboards;
@@ -636,6 +638,10 @@ class Nethack3DEngine implements Nethack3DEngineController {
     if (lightingEnabledChanged) {
       this.systems.lighting.configureBaseLightingForPlayMode();
       this.systems.lighting.markLightingDirty();
+    }
+    if ((lightingEnabledChanged || dynamicLightingChanged) && !playModeChanged) {
+      // Remembered dark-room floor is drawn differently while world lighting is on.
+      this.systems.tileUpdates.refreshTilesFromStateCache();
     }
     if (minimapChanged) {
       this.systems.minimap.updateMinimapVisibility();

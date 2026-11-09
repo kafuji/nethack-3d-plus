@@ -509,6 +509,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get worldClassification() { return worldClassification; },
   });
   const tileRendering: TileRendering = new TileRendering({
+    get lightField() { return lightField; },
     get darkCorridorInference() { return darkCorridorInference; },
     get engineState() { return engineState; },
     get entityBillboards() { return entityBillboards; },
