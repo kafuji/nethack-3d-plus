@@ -1,0 +1,812 @@
+{
+  "label": "Dungeon level 1: room and corridor terrain, doors, stairs and room features",
+  "work": "../../../.hires-tmp/terrain",
+  "pack": "../../../public/assets/hires/pixelhack-hd",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "medium",
+  "size": 256,
+  "style": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: muted earthy palette, believable weathered stone, oak and iron, painterly but precise. Shapes must stay readable when the image is shrunk to 64 pixels.",
+  "rules": {
+    "texture": "A square game texture, orthographic: no perspective, no vanishing point, no horizon. Strong value contrast for a small, high-resolution game tile: light falls evenly from straight above, with no gradient, vignette or darker corners across the image, but deep ambient occlusion: every joint, gap and crack sinks into dark, almost black shadow, and the raised faces are lit, so each stone, plank or clod reads with a crisp dark outline. No text, no border, no frame.",
+    "overlay": "A game decal seen from directly above, looking straight down, orthographic. It lies flat on a floor that is not shown: everything that is not part of the object is fully transparent. Flat, even light, no cast shadow beyond the object. No text, no border.",
+    "billboard": "A single free-standing object for a game sprite, seen from the front and a little above (three-quarter view), centred, standing upright with its base on the bottom edge of the image and filling most of the width. Soft light from the upper left. Fully transparent background: no floor, no ground plane, no cast shadow, no text."
+  },
+  "items": [
+    {
+      "name": "floor",
+      "kind": "texture",
+      "prompt": "Dungeon room floor seen from directly above: exactly four large square flagstones in a 2 by 2 grid filling the image, weathered grey-brown limestone with worn, slightly rounded edges, faint cracks, chips and scuffs. The joints between them are deep, narrow and dark, almost black. The joints run straight through the centre, one horizontal and one vertical, and along all four edges of the image, half a joint wide at each edge, so identical copies laid side by side make one continuous floor.",
+      "outputs": [
+        {
+          "key": [
+            "floor_of_a_room",
+            "no_door"
+          ],
+          "tint": 0.86
+        },
+        {
+          "key": "dark_part_of_a_room",
+          "tint": [
+            0.36,
+            0.38,
+            0.43
+          ]
+        }
+      ],
+      "relief": {
+        "bevel": 0.8,
+        "depth": 8,
+        "cavity": 1.5,
+        "contrast": 0.3
+      }
+    },
+    {
+      "name": "corridor",
+      "kind": "texture",
+      "prompt": "Dungeon corridor floor seen from directly above: rough, uneven packed earth and trampled grey-brown gravel with half-buried broken stones and pebbles and a few flat rocks, each stone sitting in its own dark shadowed hollow. Darker and rougher than a room floor. Detail spread evenly over the whole image with nothing large or distinctive, so it can repeat seamlessly.",
+      "seamless": 0.12,
+      "outputs": [
+        {
+          "key": "corridor",
+          "tint": 0.85
+        },
+        {
+          "key": "lit_corridor",
+          "tint": 1.05
+        }
+      ],
+      "relief": {
+        "bevel": 0.8,
+        "depth": 8,
+        "cavity": 1.5,
+        "contrast": 0.3
+      }
+    },
+    {
+      "name": "stone",
+      "kind": "texture",
+      "prompt": "Solid undug bedrock seen from directly above: rough, fractured very dark grey-brown rock with natural cracks and a few faint mineral veins. Detail spread evenly, nothing large or distinctive, uniform brightness, so it can repeat seamlessly.",
+      "seamless": 0.12,
+      "outputs": [
+        {
+          "key": "stone"
+        }
+      ],
+      "relief": {
+        "bevel": 0.9,
+        "depth": 8,
+        "cavity": 2,
+        "contrast": 0.35
+      }
+    },
+    {
+      "name": "wall",
+      "kind": "texture",
+      "prompt": "A dungeon wall seen straight on: roughly dressed grey-brown stone blocks laid in exactly three horizontal courses, each course one third of the image high, with dark recessed mortar joints along the top and bottom edges of the image. In every course a vertical joint falls exactly on the left edge and on the right edge of the image, with one or two more joints inside the course, staggered between courses. Each block bulges slightly, lit on its face and falling into shadow at its edges; the joints are deep and nearly black. Chipped block edges, damp staining, a few small patches of moss.",
+      "outputs": [
+        {
+          "key": [
+            "main_walls_horizontal",
+            "main_walls_tlcorn",
+            "main_walls_trcorn",
+            "main_walls_blcorn",
+            "main_walls_brcorn",
+            "main_walls_cross_wall",
+            "main_walls_tuwall",
+            "main_walls_tdwall",
+            "main_walls_tlwall",
+            "main_walls_trwall"
+          ]
+        },
+        {
+          "key": "main_walls_vertical",
+          "rotate": 90
+        }
+      ],
+      "relief": {
+        "bevel": 0.8,
+        "depth": 8,
+        "cavity": 1.5,
+        "contrast": 0.3
+      },
+      "pick": 2
+    },
+    {
+      "name": "door",
+      "kind": "texture",
+      "ref": "wall",
+      "refNote": "Image 1 is a wall of this dungeon; match its palette and painting style.",
+      "prompt": "A heavy dungeon door seen straight on, filling the entire square edge to edge with no wall or frame around it: vertical dark oak planks, two black iron strap hinges running across, rows of iron studs, an iron ring pull at the middle of the right side, worn, scratched and darkened by age.",
+      "outputs": [
+        {
+          "key": [
+            "horizontal_closed_door",
+            "vertical_closed_door"
+          ]
+        }
+      ],
+      "relief": {
+        "bevel": 0.7,
+        "depth": 6,
+        "cavity": 1.5,
+        "contrast": 0.25
+      }
+    },
+    {
+      "name": "open_door",
+      "kind": "overlay",
+      "ref": "door",
+      "refNote": "Image 1 is the face of the door, for material and colour only.",
+      "prompt": "This same door standing wide open, seen from directly above, looking straight down onto its top edge. From above only the door's thick top edge shows: one long, narrow oak beam, about one eighth of the image wide, running the full height of the image hard against the left edge, with black iron hinge straps wrapped around it near both ends. Nothing else is painted: the rest of the image is fully transparent.",
+      "outputs": [
+        {
+          "key": "horizontal_open_door"
+        },
+        {
+          "key": "vertical_open_door",
+          "rotate": 90
+        }
+      ],
+      "outline": 1.2
+    },
+    {
+      "name": "stairs_down",
+      "kind": "overlay",
+      "ref": [
+        "px_stairs_down",
+        "stairs_up#2"
+      ],
+      "refNote": "Image 1 is the pixel-art down staircase from the tileset this art replaces: keep its idea and composition, but paint it as realistic, hand-painted game art and ignore the blocky pixels. Image 2 is the matching up staircase already painted for this dungeon: use exactly its honey-orange oak, red-brown shadows, iron nails and painting style.",
+      "prompt": "A square stairwell opening seen from directly above, looking straight down into it, filling most of the image: a frame of dark, heavy timber beams around the edge, and inside it a flight of honey-orange oak steps descending away into deep darkness, each tread lit warm on top with a dark shadowed riser below, the lowest steps fading into black. Nothing outside the timber frame is painted: everything outside it is fully transparent.",
+      "fit": {
+        "width": 1,
+        "height": 1
+      },
+      "outputs": [
+        {
+          "key": [
+            "staircase_down",
+            "branch_staircase_down"
+          ]
+        }
+      ],
+      "outline": 1.2
+    },
+    {
+      "name": "stairs_up",
+      "kind": "billboard",
+      "ref": "px_stairs_up",
+      "refNote": "Image 1 is the pixel-art up staircase from the tileset this art replaces. Keep its idea, silhouette and colours, but paint it as realistic, hand-painted game art; ignore its square background and the blocky pixels.",
+      "prompt": "A free-standing flight of sturdy wooden steps, seen from the front and slightly from the side: one solid stepped block rising from the lower left to the upper right in five steps, its highest step simply ending at the top, with nothing above or beyond it: no door, no archway, no opening, no hatch and no light source. Warm honey-orange oak treads lit from above, darker red-brown risers and sides in shadow, iron nails and worn edges. It must stand out clearly against a grey stone floor.",
+      "outline": 1.6,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.08
+      },
+      "outputs": [
+        {
+          "key": [
+            "staircase_up",
+            "branch_staircase_up"
+          ]
+        }
+      ],
+      "pick": 2
+    },
+    {
+      "name": "fountain",
+      "kind": "billboard",
+      "prompt": "A round stone fountain: a wide, carved basin of weathered grey stone full of clear water, a short central pillar spouting a small arc of water that splashes back into the basin, green-brown water stains and a little moss on the stone.",
+      "outputs": [
+        {
+          "key": "fountain"
+        }
+      ],
+      "outline": 1.6,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.08
+      }
+    },
+    {
+      "name": "sink",
+      "kind": "billboard",
+      "ref": "fountain",
+      "refNote": "Image 1 is a fountain from the same dungeon; match its stone, palette and painting style.",
+      "prompt": "A kitchen sink as found in a medieval dungeon keep: a rectangular carved stone basin on a stout stone pedestal, a cast-iron hand-pump spout curving over it, a puddle of water in the bottom of the basin.",
+      "outputs": [
+        {
+          "key": "sink"
+        }
+      ],
+      "outline": 1.6,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.08
+      }
+    },
+    {
+      "name": "altar",
+      "kind": "billboard",
+      "ref": "fountain",
+      "refNote": "Image 1 is a fountain from the same dungeon; match its stone, palette and painting style.",
+      "prompt": "A bare stone altar: a massive rectangular block of carved grey stone on a low stepped plinth, the top worn smooth, faint carved bands around it, old wax drips on one corner. No cloth, no candles, no symbol.",
+      "outputs": [
+        {
+          "key": [
+            "unaligned_altar",
+            "other_altar"
+          ]
+        }
+      ],
+      "outline": 1.6,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.08
+      }
+    },
+    {
+      "name": "altar_lawful",
+      "kind": "billboard",
+      "ref": "altar",
+      "refNote": "Image 1 is an altar. Keep its shape, size, angle and position exactly; only add what is described.",
+      "prompt": "Dress this altar for a lawful god: a clean white linen cloth with gold-embroidered edges draped over the top, a small golden sun emblem on the front of the cloth, two lit candles in brass holders.",
+      "outputs": [
+        {
+          "key": "lawful_altar"
+        }
+      ],
+      "outline": 1.6,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.08
+      }
+    },
+    {
+      "name": "altar_neutral",
+      "kind": "billboard",
+      "ref": "altar",
+      "refNote": "Image 1 is an altar. Keep its shape, size, angle and position exactly; only add what is described.",
+      "prompt": "Dress this altar for a neutral god: a plain undyed grey-green cloth draped over the top, a simple bronze balance-scale emblem on the front, a shallow clay offering bowl and one lit candle.",
+      "outputs": [
+        {
+          "key": "neutral_altar"
+        }
+      ],
+      "outline": 1.6,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.08
+      }
+    },
+    {
+      "name": "altar_chaotic",
+      "kind": "billboard",
+      "ref": "altar",
+      "refNote": "Image 1 is an altar. Keep its shape, size, angle and position exactly; only add what is described.",
+      "prompt": "Dress this altar for a chaotic god: a ragged black cloth with dark red stains draped over the top, a crude horned emblem daubed in red on the front, a guttering black candle and a cracked skull.",
+      "outputs": [
+        {
+          "key": "chaotic_altar"
+        }
+      ],
+      "outline": 1.6,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.08
+      }
+    },
+    {
+      "name": "grave",
+      "kind": "billboard",
+      "ref": "fountain",
+      "refNote": "Image 1 is a fountain from the same dungeon; match its stone, palette and painting style.",
+      "prompt": "A grave: a weathered, round-topped headstone, slightly tilted, with a worn carved inscription too faint to read, standing behind a low mound of dark earth with a few dry weeds.",
+      "outputs": [
+        {
+          "key": "grave"
+        }
+      ],
+      "outline": 1.6,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.08
+      }
+    },
+    {
+      "name": "engraving",
+      "kind": "overlay",
+      "ref": "floor",
+      "refNote": "Image 1 is the floor of this dungeon, for scale and colour only; do not paint the floor.",
+      "prompt": "Only the scratches of an engraving: a few short lines of crude, illegible runes scratched into stone with a dagger point, thin pale grey-white scratch marks spread over the middle of the image, about two thirds of its width. Paint nothing but the scratch marks themselves; everything else is fully transparent.",
+      "outputs": [
+        {
+          "key": "engraving_in_a_room",
+          "under": "floor",
+          "tint": 0.86
+        },
+        {
+          "key": "engraving_in_a_corridor",
+          "under": "corridor",
+          "tint": 0.85
+        }
+      ],
+      "opacity": 0.6
+    },
+    {
+      "name": "trap_plate",
+      "trap": true,
+      "kind": "overlay",
+      "ref": "floor",
+      "refNote": "Image 1 is the floor of this dungeon, for scale, palette and painting style only; do not paint the floor.",
+      "prompt": "A square trap trigger plate set into a dungeon floor, seen from directly above, centred and about four fifths of the image wide: a slab of darker, smoother blue-grey slate inside a thin frame of cut stone, sitting very slightly proud, with a dark shadowed seam all round so it reads clearly as a separate, suspicious plate. Its face is blank. Everything outside the plate's frame is fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outputs": []
+    },
+    {
+      "name": "arrow_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_arrow_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: an arrow, shaft and fletching, inlaid diagonally in dull iron. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "arrow_trap"
+        }
+      ]
+    },
+    {
+      "name": "dart_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_dart_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a short throwing dart with a barbed tip and feathered tail, inlaid diagonally in dull iron. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "dart_trap"
+        }
+      ]
+    },
+    {
+      "name": "falling_rock_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_falling_rock_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a falling rock with three short motion lines above it, carved and filled with dark grit. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "falling_rock_trap"
+        }
+      ]
+    },
+    {
+      "name": "squeaky_board",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_squeaky_board"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a coiled spring rising from a short board, carved in pale relief. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "squeaky_board"
+        }
+      ]
+    },
+    {
+      "name": "bear_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_bear_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: an open set of toothed iron jaws, inlaid in dark iron. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "bear_trap"
+        }
+      ]
+    },
+    {
+      "name": "land_mine",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_land_mine"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a low domed mine with a small pressure cap, carved in relief and darkened with soot. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "land_mine"
+        }
+      ]
+    },
+    {
+      "name": "rolling_boulder_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_rolling_boulder_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a round boulder with a horizontal band of motion lines, carved in relief. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "rolling_boulder_trap"
+        }
+      ]
+    },
+    {
+      "name": "sleeping_gas_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_sleeping_gas_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: three drops of drifting violet vapour, inlaid in faded violet enamel. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "sleeping_gas_trap"
+        }
+      ]
+    },
+    {
+      "name": "rust_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_rust_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: three falling water drops, the stone around them stained rust orange. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "rust_trap"
+        }
+      ]
+    },
+    {
+      "name": "fire_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_fire_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a tongue of flame, inlaid in red and orange enamel and slightly scorched around it. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "fire_trap"
+        }
+      ]
+    },
+    {
+      "name": "teleportation_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_teleportation_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a diamond made of two arrows pointing left and right, inlaid in faintly glowing pale blue. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "teleportation_trap"
+        }
+      ]
+    },
+    {
+      "name": "level_teleporter",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_level_teleporter"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a diamond made of two arrows pointing up and down, inlaid in faintly glowing pale violet. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "level_teleporter"
+        }
+      ]
+    },
+    {
+      "name": "statue_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_statue_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a small weathered stone statuette of a cloaked, hooded figure standing on a tiny plinth, carved in high relief out of the plate in pale stone, with a soft shadow on the plate. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "statue_trap"
+        }
+      ]
+    },
+    {
+      "name": "magic_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_magic_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a five-pointed star, inlaid in faintly glowing pale gold. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "magic_trap"
+        }
+      ]
+    },
+    {
+      "name": "anti_magic_field",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_anti_magic_field"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: an inverted five-pointed star, inlaid in dull dark iron with a cold grey sheen. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "anti_magic_field"
+        }
+      ]
+    },
+    {
+      "name": "polymorph_trap",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "trap_plate",
+        "px_polymorph_trap"
+      ],
+      "refNote": "Image 1 is a blank trap plate from this dungeon: keep its stone, size, shape, angle and position exactly. Image 2 is the pixel-art tile this replaces, showing which symbol the trap carries; paint that idea as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "The same plate, now carrying a symbol in its centre: a single arrow pointing up through a swirl, inlaid in shimmering green and violet. Keep everything outside the plate fully transparent.",
+      "fit": {
+        "width": 0.84,
+        "height": 0.84
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "polymorph_trap"
+        }
+      ]
+    },
+    {
+      "name": "pit",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "floor",
+        "px_pit"
+      ],
+      "refNote": "Image 1 is the floor of this dungeon, for scale, palette and painting style only; do not paint the floor. Image 2 is the pixel-art tile this replaces: keep its idea and composition, but paint it as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "A square pit dug into the floor, seen from directly above and filling most of the image: rough earthen and stone walls falling away into a dark bottom, loose rubble at its foot, the rim of broken flagstones around it. Everything around it is fully transparent.",
+      "fit": {
+        "width": 0.96,
+        "height": 0.96
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "pit"
+        }
+      ]
+    },
+    {
+      "name": "spiked_pit",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "floor",
+        "px_spiked_pit"
+      ],
+      "refNote": "Image 1 is the floor of this dungeon, for scale, palette and painting style only; do not paint the floor. Image 2 is the pixel-art tile this replaces: keep its idea and composition, but paint it as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "A square pit dug into the floor, seen from directly above and filling most of the image: rough earthen and stone walls falling away into darkness, with sharpened iron stakes pointing up from its bottom, the rim of broken flagstones around it. Everything around it is fully transparent.",
+      "fit": {
+        "width": 0.96,
+        "height": 0.96
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "spiked_pit"
+        }
+      ]
+    },
+    {
+      "name": "hole",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "floor",
+        "px_hole"
+      ],
+      "refNote": "Image 1 is the floor of this dungeon, for scale, palette and painting style only; do not paint the floor. Image 2 is the pixel-art tile this replaces: keep its idea and composition, but paint it as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "A ragged hole broken through the floor, seen from directly above: cracked and broken flagstones around a jagged opening into pitch-black emptiness, a few loose chips at its edge. Everything around it is fully transparent.",
+      "fit": {
+        "width": 0.9,
+        "height": 0.9
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "hole"
+        }
+      ]
+    },
+    {
+      "name": "trap_door",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "floor",
+        "px_trap_door"
+      ],
+      "refNote": "Image 1 is the floor of this dungeon, for scale, palette and painting style only; do not paint the floor. Image 2 is the pixel-art tile this replaces: keep its idea and composition, but paint it as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "An open trap door in the floor, seen from directly above: a square hatch frame of heavy honey-orange oak with iron corner plates, the hatch swung open, and a black square void inside the frame. Everything around it is fully transparent.",
+      "fit": {
+        "width": 0.96,
+        "height": 0.96
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "trap_door"
+        }
+      ]
+    },
+    {
+      "name": "magic_portal",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "floor",
+        "px_magic_portal"
+      ],
+      "refNote": "Image 1 is the floor of this dungeon, for scale, palette and painting style only; do not paint the floor. Image 2 is the pixel-art tile this replaces: keep its idea and composition, but paint it as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "A magic portal on the floor, seen from directly above: a swirling vortex of bright magenta and white light spiralling into its centre, glowing softly. Everything around it is fully transparent.",
+      "fit": {
+        "width": 0.96,
+        "height": 0.96
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "magic_portal"
+        }
+      ]
+    },
+    {
+      "name": "web",
+      "trap": true,
+      "kind": "overlay",
+      "ref": [
+        "floor",
+        "px_web"
+      ],
+      "refNote": "Image 1 is the floor of this dungeon, for scale, palette and painting style only; do not paint the floor. Image 2 is the pixel-art tile this replaces: keep its idea and composition, but paint it as realistic, hand-painted art and ignore its blocky pixels and background.",
+      "prompt": "A large spider web stretched across the floor, seen from directly above: thick, pale, dusty silk strands radiating from the centre with spiral threads, slightly torn. Everything around it is fully transparent.",
+      "fit": {
+        "width": 0.96,
+        "height": 0.96
+      },
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "web"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,597 @@
+{
+  "label": "Object icons other than weapons. See README.md in this folder.",
+  "work": "../../../.hires-tmp/objects",
+  "pack": "../../../public/assets/hires/pixelhack-hd",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "medium",
+  "size": 256,
+  "style": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.",
+  "rules": {
+    "item": "A single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame."
+  },
+  "items": [
+    {
+      "name": "plate_mail",
+      "kind": "item",
+      "ref": "px_plate_mail",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "Plate mail: a full suit of polished steel plate armour, breastplate with a central ridge, layered pauldrons and tassets, riveted edges and dark leather straps with brass buckles.",
+      "fit": {
+        "matchRef": "px_plate_mail"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/plate_mail"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ruby__conflict",
+      "kind": "item",
+      "ref": "px_ruby__conflict",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A ruby ring: a plain polished gold band set with one deep-red faceted ruby that catches a bright highlight.",
+      "fit": {
+        "matchRef": "px_ruby__conflict"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/ruby__conflict"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "circular__amulet_of_esp",
+      "kind": "item",
+      "ref": "px_circular__amulet_of_esp",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A circular amulet: a round pendant of dark iron framing a smooth grey-blue stone disc, hanging from a braided golden-brown cord.",
+      "fit": {
+        "matchRef": "px_circular__amulet_of_esp"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/circular__amulet_of_esp"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bag",
+      "kind": "item",
+      "ref": "px_bag__sack",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A plain bag: a rough, plump brown burlap sack tied shut at the neck with twine, the cloth gathered into folds. It must look ordinary: the same picture is used for the sack, the oilskin sack, the bag of holding and the bag of tricks.",
+      "fit": {
+        "matchRef": "px_bag__sack"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/bag__sack",
+            "obj/bag__oilskin_sack",
+            "obj/bag__bag_of_holding",
+            "obj/bag__bag_of_tricks"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "food_ration",
+      "kind": "item",
+      "ref": "px_food_ration",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A food ration: a thick, crusty brown loaf of travel bread beside a small glass bottle with a cork, as in image 1.",
+      "fit": {
+        "matchRef": "px_food_ration"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/food_ration"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "potion",
+      "kind": "item",
+      "ref": "px_purple_red__healing",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A potion: a round-bellied clear glass flask with a narrow neck and a brown cork, half full of liquid, glass highlights and reflections on its sides. The liquid is the colour key. The colour key: paint that part in flat, pure vivid magenta (#FF00FF) with ordinary light and shade on it. It will be recoloured later, so nothing else in the picture may be magenta, pink, purple or red.",
+      "fit": {
+        "matchRef": "px_purple_red__healing"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/ruby__gain_ability",
+          "recolor": "#a3142a"
+        },
+        {
+          "key": "obj/pink__restore_ability",
+          "recolor": "#f08cb0"
+        },
+        {
+          "key": "obj/orange__confusion",
+          "recolor": "#e8701a"
+        },
+        {
+          "key": "obj/yellow__blindness",
+          "recolor": "#e8c41c"
+        },
+        {
+          "key": "obj/emerald__paralysis",
+          "recolor": "#1f9e4a"
+        },
+        {
+          "key": "obj/dark_green__speed",
+          "recolor": "#1e5a2c"
+        },
+        {
+          "key": "obj/cyan__levitation",
+          "recolor": "#1fbcc8"
+        },
+        {
+          "key": "obj/sky_blue__hallucination",
+          "recolor": "#70b4ec"
+        },
+        {
+          "key": "obj/brilliant_blue__invisibility",
+          "recolor": "#1c50e0"
+        },
+        {
+          "key": "obj/magenta__see_invisible",
+          "recolor": "#c41fa6"
+        },
+        {
+          "key": "obj/purple_red__healing",
+          "recolor": "#9c1f58"
+        },
+        {
+          "key": "obj/puce__extra_healing",
+          "recolor": "#8a4a5c"
+        },
+        {
+          "key": "obj/black__full_healing",
+          "recolor": "#1e1b22"
+        },
+        {
+          "key": "obj/golden__polymorph",
+          "recolor": "#d9a520"
+        },
+        {
+          "key": "obj/brown__booze",
+          "recolor": "#6b4022"
+        },
+        {
+          "key": "obj/white__acid",
+          "recolor": "#eceae4"
+        },
+        {
+          "key": "obj/dark__fruit_juice",
+          "recolor": "#2c2232"
+        }
+      ]
+    },
+    {
+      "name": "scroll",
+      "kind": "item",
+      "ref": "px_zelgo_mer__enchant_armor",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A rolled scroll: a sheet of cream parchment with both ends curled into rolls, half open to show faint brown handwritten lines and a small sigil. It must look the same for every unidentified scroll label.",
+      "fit": {
+        "matchRef": "px_zelgo_mer__enchant_armor"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/zelgo_mer__enchant_armor",
+            "obj/juyed_awk_yacc__destroy_armor",
+            "obj/nr_9__confuse_monster",
+            "obj/xixaxa_xoxaxa_xuxaxa__scare_monster",
+            "obj/pratyavayah__remove_curse",
+            "obj/daiyen_fooels__enchant_weapon",
+            "obj/lep_gex_ven_zea__create_monster",
+            "obj/prirutsenie__taming",
+            "obj/elbib_yloh__genocide",
+            "obj/verr_yed_horre__light",
+            "obj/venzar_borgavve__teleportation",
+            "obj/tharr__gold_detection",
+            "obj/yum_yum__food_detection",
+            "obj/kernod_wel__identify",
+            "obj/elam_ebow__magic_mapping",
+            "obj/duam_xnaht__amnesia",
+            "obj/andova_begarin__fire",
+            "obj/kirje__earth",
+            "obj/ve_forbryderne__punishment",
+            "obj/hackem_muche__charging",
+            "obj/velox_neb__stinking_cloud",
+            "obj/foobie_bletch",
+            "obj/temov",
+            "obj/garven_deh",
+            "obj/read_me",
+            "obj/etaoin_shrdlu",
+            "obj/lorem_ipsum",
+            "obj/fnord",
+            "obj/ko_bate",
+            "obj/abra_ka_dabra",
+            "obj/ashpd_sodalg",
+            "obj/zlorfik",
+            "obj/gnik_sisi_vle",
+            "obj/hapax_legomenon",
+            "obj/eiris_sazun_idisi",
+            "obj/phol_ende_wodan",
+            "obj/ghoti",
+            "obj/mapiro_mahama_diromat",
+            "obj/vas_corp_bet_mani",
+            "obj/xor_ota",
+            "obj/strc_prst_skrz_krk"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "spellbook",
+      "kind": "item",
+      "ref": "px_red__force_bolt",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A closed spellbook: a thick, heavy tome lying as in image 1, the cover leather tooled with a border, a raised spine and cream page edges, small brass corner fittings. The cover leather is the colour key. The colour key: paint that part in flat, pure vivid magenta (#FF00FF) with ordinary light and shade on it. It will be recoloured later, so nothing else in the picture may be magenta, pink, purple or red.",
+      "fit": {
+        "matchRef": "px_red__force_bolt"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/white__healing",
+          "recolor": "#e4e0d4"
+        },
+        {
+          "key": "obj/pink__knock",
+          "recolor": "#e48ca8"
+        },
+        {
+          "key": "obj/red__force_bolt",
+          "recolor": "#b3202a"
+        },
+        {
+          "key": "obj/orange__confuse_monster",
+          "recolor": "#d9661c"
+        },
+        {
+          "key": "obj/yellow__cure_blindness",
+          "recolor": "#d8b81c"
+        },
+        {
+          "key": "obj/light_green__slow_monster",
+          "recolor": "#7cc45a"
+        },
+        {
+          "key": "obj/dark_green__wizard_lock",
+          "recolor": "#24572e"
+        },
+        {
+          "key": "obj/turquoise__create_monster",
+          "recolor": "#2fb5a6"
+        },
+        {
+          "key": "obj/cyan__detect_food",
+          "recolor": "#22a8c4"
+        },
+        {
+          "key": "obj/light_blue__cause_fear",
+          "recolor": "#7fb2e3"
+        },
+        {
+          "key": "obj/dark_blue__clairvoyance",
+          "recolor": "#1f3577"
+        },
+        {
+          "key": "obj/indigo__cure_sickness",
+          "recolor": "#3b2a85"
+        },
+        {
+          "key": "obj/magenta__charm_monster",
+          "recolor": "#b52394"
+        },
+        {
+          "key": "obj/purple__haste_self",
+          "recolor": "#6a2a8a"
+        },
+        {
+          "key": "obj/violet__detect_unseen",
+          "recolor": "#8e5bc4"
+        },
+        {
+          "key": "obj/tan__levitation",
+          "recolor": "#c4a77a"
+        },
+        {
+          "key": "obj/light_brown__restore_ability",
+          "recolor": "#9c6b3e"
+        },
+        {
+          "key": "obj/dark_brown__invisibility",
+          "recolor": "#4f3020"
+        },
+        {
+          "key": "obj/gray__detect_treasure",
+          "recolor": "#7d7d80"
+        }
+      ]
+    },
+    {
+      "name": "oak__nothing",
+      "kind": "item",
+      "ref": "px_oak__nothing",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An oak wand: a straight, slender rod of warm brown oak with visible grain, slightly thicker at the base, plain and unadorned.",
+      "fit": {
+        "matchRef": "px_oak__nothing"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/oak__nothing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gold_piece",
+      "kind": "item",
+      "ref": "px_gold_piece",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A small heap of gold coins: thick, worn gold pieces stacked and spilling, bright edges and stamped faces.",
+      "fit": {
+        "matchRef": "px_gold_piece"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/gold_piece"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gem",
+      "kind": "item",
+      "ref": "px_red__ruby",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A cut gemstone: a single brilliant faceted gem with sharp facets, bright sparkle highlights and a darker core. The whole gem is the colour key. The colour key: paint that part in flat, pure vivid magenta (#FF00FF) with ordinary light and shade on it. It will be recoloured later, so nothing else in the picture may be magenta, pink, purple or red. It is used for every precious stone and every piece of worthless glass of each colour, so it must not look like any particular gem.",
+      "fit": {
+        "matchRef": "px_red__ruby"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/white__dilithium_crystal",
+          "recolor": "#eef2f5"
+        },
+        {
+          "key": "obj/white__diamond",
+          "recolor": "#eef2f5"
+        },
+        {
+          "key": "obj/red__ruby",
+          "recolor": "#c8102e"
+        },
+        {
+          "key": "obj/orange__jacinth",
+          "recolor": "#e8701a"
+        },
+        {
+          "key": "obj/blue__sapphire",
+          "recolor": "#1f4fd0"
+        },
+        {
+          "key": "obj/black__black_opal",
+          "recolor": "#1c1c22"
+        },
+        {
+          "key": "obj/green__emerald",
+          "recolor": "#1f9e50"
+        },
+        {
+          "key": "obj/green__turquoise",
+          "recolor": "#1f9e50"
+        },
+        {
+          "key": "obj/yellow__citrine",
+          "recolor": "#e8cc22"
+        },
+        {
+          "key": "obj/green__aquamarine",
+          "recolor": "#1f9e50"
+        },
+        {
+          "key": "obj/yellowish_brown__amber",
+          "recolor": "#b8862a"
+        },
+        {
+          "key": "obj/yellowish_brown__topaz",
+          "recolor": "#b8862a"
+        },
+        {
+          "key": "obj/black__jet",
+          "recolor": "#1c1c22"
+        },
+        {
+          "key": "obj/white__opal",
+          "recolor": "#eef2f5"
+        },
+        {
+          "key": "obj/yellow__chrysoberyl",
+          "recolor": "#e8cc22"
+        },
+        {
+          "key": "obj/red__garnet",
+          "recolor": "#c8102e"
+        },
+        {
+          "key": "obj/violet__amethyst",
+          "recolor": "#8a3fc8"
+        },
+        {
+          "key": "obj/red__jasper",
+          "recolor": "#c8102e"
+        },
+        {
+          "key": "obj/violet__fluorite",
+          "recolor": "#8a3fc8"
+        },
+        {
+          "key": "obj/black__obsidian",
+          "recolor": "#1c1c22"
+        },
+        {
+          "key": "obj/orange__agate",
+          "recolor": "#e8701a"
+        },
+        {
+          "key": "obj/green__jade",
+          "recolor": "#1f9e50"
+        },
+        {
+          "key": "obj/white__worthless_piece_of_white_glass",
+          "recolor": "#eef2f5"
+        },
+        {
+          "key": "obj/blue__worthless_piece_of_blue_glass",
+          "recolor": "#1f4fd0"
+        },
+        {
+          "key": "obj/red__worthless_piece_of_red_glass",
+          "recolor": "#c8102e"
+        },
+        {
+          "key": "obj/yellowish_brown__worthless_piece_of_yellowish_brown_glass",
+          "recolor": "#b8862a"
+        },
+        {
+          "key": "obj/orange__worthless_piece_of_orange_glass",
+          "recolor": "#e8701a"
+        },
+        {
+          "key": "obj/yellow__worthless_piece_of_yellow_glass",
+          "recolor": "#e8cc22"
+        },
+        {
+          "key": "obj/black__worthless_piece_of_black_glass",
+          "recolor": "#1c1c22"
+        },
+        {
+          "key": "obj/green__worthless_piece_of_green_glass",
+          "recolor": "#1f9e50"
+        },
+        {
+          "key": "obj/violet__worthless_piece_of_violet_glass",
+          "recolor": "#8a3fc8"
+        }
+      ]
+    },
+    {
+      "name": "boulder",
+      "kind": "item",
+      "ref": "px_boulder",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A boulder: a huge, roughly round grey-brown stone, weathered and pitted, with lichen in its cracks.",
+      "fit": {
+        "matchRef": "px_boulder"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/boulder"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "strange_object",
+      "kind": "item",
+      "ref": "px_strange_object",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its placement, orientation, angle, view and proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A strange object: a small wooden treasure chest with iron bands and a lock, as in image 1, but something is subtly wrong with it.",
+      "fit": {
+        "matchRef": "px_strange_object"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "obj/strange_object",
+            "obj/strange__generic_strange"
+          ]
+        }
+      ]
+    }
+  ]
+}

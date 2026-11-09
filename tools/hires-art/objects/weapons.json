@@ -1,0 +1,1436 @@
+{
+  "label": "Starting weapons: first high-resolution object icons",
+  "work": "../../../.hires-tmp/objects",
+  "pack": "../../../public/assets/hires/pixelhack-hd",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "medium",
+  "size": 256,
+  "style": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable steel, wood, leather and lacquer, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each weapon must be told apart from similar weapons at a glance by its silhouette and colours.",
+  "rules": {
+    "item": "A single object for a game inventory icon, lying diagonally across the frame exactly as in image 1, seen flat from the side with no perspective. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame."
+  },
+  "items": [
+    {
+      "name": "long_sword",
+      "kind": "item",
+      "ref": "px_long_sword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A European long sword: a long, straight, double-edged bright steel blade with a dark fuller running down its middle and a sharp point, a wide straight cross-guard of blackened iron, a brown leather-wrapped grip and a round iron pommel.",
+      "fit": {
+        "matchRef": "px_long_sword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/long_sword"
+        }
+      ]
+    },
+    {
+      "name": "club",
+      "kind": "item",
+      "ref": "px_club",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A crude wooden club: a heavy, knotted cudgel of dark oak, thick and rough at the striking end with knots and splits, tapering to a narrower handle wrapped with a strip of worn leather. Only wood and leather, no metal.",
+      "fit": {
+        "matchRef": "px_club"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/club"
+        }
+      ]
+    },
+    {
+      "name": "mace",
+      "kind": "item",
+      "ref": "px_mace",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A flanged mace: a short iron shaft with a leather-wrapped grip and a heavy dark-iron head of six sharp, flat flanges, with a small spike on top. Dark iron, clearly a metal weapon with a spiky head.",
+      "fit": {
+        "matchRef": "px_mace"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/mace"
+        }
+      ]
+    },
+    {
+      "name": "katana",
+      "kind": "item",
+      "ref": "px_samurai_sword__katana",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A Japanese katana: a gently curved, single-edged blade with a bright wavy temper line along its edge, a small round black-and-gold tsuba guard, and a long two-handed hilt wrapped in black silk cord in a diamond pattern over white rayskin, with a gold pommel cap.",
+      "fit": {
+        "matchRef": "px_samurai_sword__katana"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/samurai_sword__katana"
+        }
+      ]
+    },
+    {
+      "name": "short_sword",
+      "kind": "item",
+      "ref": "px_short_sword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A western short sword, like a Roman gladius: a short, broad, straight double-edged steel blade with a long tapering point, a heavy rounded bronze guard, a ribbed bone-white grip and a large round bronze pommel. Clearly shorter and broader than a long sword, longer than a dagger, and set apart from both by its warm bronze fittings.",
+      "fit": {
+        "matchRef": "px_short_sword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/short_sword"
+        }
+      ]
+    },
+    {
+      "name": "dagger",
+      "kind": "item",
+      "ref": "px_dagger",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A plain dagger: a short, straight, double-edged leaf-shaped steel blade, a small simple iron cross-guard, a wooden grip bound with cord and a small round pommel.",
+      "fit": {
+        "matchRef": "px_dagger"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/dagger"
+        }
+      ]
+    },
+    {
+      "name": "yumi",
+      "kind": "item",
+      "ref": "px_long_bow__yumi",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A Japanese yumi longbow: a very long, slender, asymmetric bow of black-lacquered bamboo with red lacquer bands and rattan bindings, the grip set well below the middle, and a taut pale string.",
+      "fit": {
+        "matchRef": "px_long_bow__yumi"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/long_bow__yumi"
+        }
+      ],
+      "pick": 2
+    },
+    {
+      "name": "elven_bow",
+      "kind": "item",
+      "ref": "px_runed_bow__elven_bow",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An elven bow: a graceful recurve bow of pale silver-white wood with elegant swept tips, fine glowing green runes carved along its limbs, a grip wrapped in green leather, and a fine silver string.",
+      "fit": {
+        "matchRef": "px_runed_bow__elven_bow"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/runed_bow__elven_bow"
+        }
+      ],
+      "pick": 2
+    },
+    {
+      "name": "arrow",
+      "kind": "item",
+      "ref": "px_arrow",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A plain arrow: a straight wooden shaft, a simple leaf-shaped iron head and grey-brown goose fletching.",
+      "fit": {
+        "matchRef": "px_arrow"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/arrow"
+        }
+      ]
+    },
+    {
+      "name": "runed_arrow__elven_arrow",
+      "kind": "item",
+      "ref": "px_runed_arrow__elven_arrow",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An elven arrow: a slender pale shaft, a long narrow leaf-blade head and white swan fletching. Elven make: pale silver-white steel and pale ash wood, slender and graceful lines, fine green leaf-vine engravings and faintly glowing green runes, green leather.",
+      "fit": {
+        "matchRef": "px_runed_arrow__elven_arrow"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/runed_arrow__elven_arrow"
+        }
+      ]
+    },
+    {
+      "name": "crude_arrow__orcish_arrow",
+      "kind": "item",
+      "ref": "px_crude_arrow__orcish_arrow",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An orcish arrow: a crooked dark shaft, a barbed black iron head and ragged black crow fletching. Orcish make: crude, rough-forged blackened iron with rust and jagged nicks, crooked shapes, bound with grimy rags, rawhide and bone.",
+      "fit": {
+        "matchRef": "px_crude_arrow__orcish_arrow"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/crude_arrow__orcish_arrow"
+        }
+      ]
+    },
+    {
+      "name": "silver_arrow",
+      "kind": "item",
+      "ref": "px_silver_arrow",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A silver arrow: a straight dark shaft with a gleaming silver head and white fletching. Made of real silver: bright, cool white-silver metal, mirror-polished with delicate filigree, clearly paler and shinier than steel.",
+      "fit": {
+        "matchRef": "px_silver_arrow"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/silver_arrow"
+        }
+      ]
+    },
+    {
+      "name": "bamboo_arrow__ya",
+      "kind": "item",
+      "ref": "px_bamboo_arrow__ya",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A Japanese ya arrow: a long natural bamboo shaft with nodes, a flat-bladed steel head and black-and-white hawk fletching.",
+      "fit": {
+        "matchRef": "px_bamboo_arrow__ya"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/bamboo_arrow__ya"
+        }
+      ]
+    },
+    {
+      "name": "crossbow_bolt",
+      "kind": "item",
+      "ref": "px_crossbow_bolt",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A crossbow bolt: short and thick, a stubby square-pointed iron head and stiff leather vanes.",
+      "fit": {
+        "matchRef": "px_crossbow_bolt"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/crossbow_bolt"
+        }
+      ]
+    },
+    {
+      "name": "dart",
+      "kind": "item",
+      "ref": "px_dart",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A throwing dart: a short weighted steel spike with a small round body and three red feather flights.",
+      "fit": {
+        "matchRef": "px_dart"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/dart"
+        }
+      ]
+    },
+    {
+      "name": "throwing_star__shuriken",
+      "kind": "item",
+      "ref": "px_throwing_star__shuriken",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A Japanese shuriken throwing star: a flat dark-steel four-pointed star with a hole in its centre and sharp bright edges.",
+      "fit": {
+        "matchRef": "px_throwing_star__shuriken"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/throwing_star__shuriken"
+        }
+      ]
+    },
+    {
+      "name": "boomerang",
+      "kind": "item",
+      "ref": "px_boomerang",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A wooden boomerang: a flat, smooth bent wing of polished brown hardwood with painted ochre dot patterns.",
+      "fit": {
+        "matchRef": "px_boomerang"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/boomerang"
+        }
+      ]
+    },
+    {
+      "name": "spear",
+      "kind": "item",
+      "ref": "px_spear",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A plain spear: a long ash-wood shaft with a leaf-shaped steel head bound on with leather.",
+      "fit": {
+        "matchRef": "px_spear"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/spear"
+        }
+      ]
+    },
+    {
+      "name": "runed_spear__elven_spear",
+      "kind": "item",
+      "ref": "px_runed_spear__elven_spear",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An elven spear: a long, slender, very sharp leaf-shaped head on a pale shaft. Elven make: pale silver-white steel and pale ash wood, slender and graceful lines, fine green leaf-vine engravings and faintly glowing green runes, green leather.",
+      "fit": {
+        "matchRef": "px_runed_spear__elven_spear"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/runed_spear__elven_spear"
+        }
+      ]
+    },
+    {
+      "name": "crude_spear__orcish_spear",
+      "kind": "item",
+      "ref": "px_crude_spear__orcish_spear",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An orcish spear: a crooked dark shaft with a jagged, barbed black iron head lashed on with rawhide. Orcish make: crude, rough-forged blackened iron with rust and jagged nicks, crooked shapes, bound with grimy rags, rawhide and bone.",
+      "fit": {
+        "matchRef": "px_crude_spear__orcish_spear"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/crude_spear__orcish_spear"
+        }
+      ]
+    },
+    {
+      "name": "stout_spear__dwarvish_spear",
+      "kind": "item",
+      "ref": "px_stout_spear__dwarvish_spear",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A dwarvish spear: a short, thick shaft with a broad, heavy steel head and a bronze collar. Dwarvish make: heavy, broad and squat, dark steel with bronze fittings and angular geometric knotwork.",
+      "fit": {
+        "matchRef": "px_stout_spear__dwarvish_spear"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/stout_spear__dwarvish_spear"
+        }
+      ]
+    },
+    {
+      "name": "silver_spear",
+      "kind": "item",
+      "ref": "px_silver_spear",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A silver spear: a long dark shaft with a gleaming silver leaf head and silver collar. Made of real silver: bright, cool white-silver metal, mirror-polished with delicate filigree, clearly paler and shinier than steel.",
+      "fit": {
+        "matchRef": "px_silver_spear"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/silver_spear"
+        }
+      ]
+    },
+    {
+      "name": "throwing_spear__javelin",
+      "kind": "item",
+      "ref": "px_throwing_spear__javelin",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A javelin: a light, thin throwing spear with a long slim iron point and a cord-wrapped grip at its balance point.",
+      "fit": {
+        "matchRef": "px_throwing_spear__javelin"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/throwing_spear__javelin"
+        }
+      ]
+    },
+    {
+      "name": "trident",
+      "kind": "item",
+      "ref": "px_trident",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A trident: a long dark shaft topped with three straight, barbed steel prongs.",
+      "fit": {
+        "matchRef": "px_trident"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/trident"
+        }
+      ]
+    },
+    {
+      "name": "runed_dagger__elven_dagger",
+      "kind": "item",
+      "ref": "px_runed_dagger__elven_dagger",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An elven dagger: a slim, slightly curved leaf blade with a swept guard shaped like leaves. Elven make: pale silver-white steel and pale ash wood, slender and graceful lines, fine green leaf-vine engravings and faintly glowing green runes, green leather.",
+      "fit": {
+        "matchRef": "px_runed_dagger__elven_dagger"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/runed_dagger__elven_dagger"
+        }
+      ]
+    },
+    {
+      "name": "crude_dagger__orcish_dagger",
+      "kind": "item",
+      "ref": "px_crude_dagger__orcish_dagger",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An orcish dagger: a crude, jagged, notched black iron blade with a rag-wrapped bone grip. Orcish make: crude, rough-forged blackened iron with rust and jagged nicks, crooked shapes, bound with grimy rags, rawhide and bone.",
+      "fit": {
+        "matchRef": "px_crude_dagger__orcish_dagger"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/crude_dagger__orcish_dagger"
+        }
+      ]
+    },
+    {
+      "name": "silver_dagger",
+      "kind": "item",
+      "ref": "px_silver_dagger",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A silver dagger: a straight double-edged blade, cross-guard and pommel all of gleaming silver, with a black grip. Made of real silver: bright, cool white-silver metal, mirror-polished with delicate filigree, clearly paler and shinier than steel.",
+      "fit": {
+        "matchRef": "px_silver_dagger"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/silver_dagger"
+        }
+      ]
+    },
+    {
+      "name": "athame",
+      "kind": "item",
+      "ref": "px_athame",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A ritual athame: a black-handled double-edged dagger with a dark blade etched with occult symbols and a small crescent-moon pommel.",
+      "fit": {
+        "matchRef": "px_athame"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/athame"
+        }
+      ]
+    },
+    {
+      "name": "scalpel",
+      "kind": "item",
+      "ref": "px_scalpel",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A surgeon's scalpel: a small, thin, flat steel handle with a tiny curved bright blade. Very small and clinical.",
+      "fit": {
+        "matchRef": "px_scalpel"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/scalpel"
+        }
+      ]
+    },
+    {
+      "name": "knife",
+      "kind": "item",
+      "ref": "px_knife",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A plain utility knife: a single-edged steel blade with a straight back and a simple wooden handle with two rivets.",
+      "fit": {
+        "matchRef": "px_knife"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/knife"
+        }
+      ]
+    },
+    {
+      "name": "stiletto",
+      "kind": "item",
+      "ref": "px_stiletto",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A stiletto: a very thin, needle-like triangular steel blade, a small cross-guard and a slim black grip.",
+      "fit": {
+        "matchRef": "px_stiletto"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/stiletto"
+        }
+      ]
+    },
+    {
+      "name": "worm_tooth",
+      "kind": "item",
+      "ref": "px_worm_tooth",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A worm tooth: a long, curved, milky-white fang from a giant worm, slightly translucent, its root rough and stained.",
+      "fit": {
+        "matchRef": "px_worm_tooth"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/worm_tooth"
+        }
+      ]
+    },
+    {
+      "name": "crysknife",
+      "kind": "item",
+      "ref": "px_crysknife",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A crysknife: a curved, milky-white crystalline blade made from a worm's tooth, translucent and gleaming, with a wrapped grip.",
+      "fit": {
+        "matchRef": "px_crysknife"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/crysknife"
+        }
+      ]
+    },
+    {
+      "name": "axe",
+      "kind": "item",
+      "ref": "px_axe",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A plain axe: a wooden haft with a single wedge-shaped iron axe head.",
+      "fit": {
+        "matchRef": "px_axe"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/axe"
+        }
+      ]
+    },
+    {
+      "name": "double_headed_axe__battle_axe",
+      "kind": "item",
+      "ref": "px_double_headed_axe__battle_axe",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A battle axe: a long haft with a large double-bladed steel head, two crescent blades back to back.",
+      "fit": {
+        "matchRef": "px_double_headed_axe__battle_axe"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/double_headed_axe__battle_axe"
+        }
+      ]
+    },
+    {
+      "name": "runed_short_sword__elven_short_sword",
+      "kind": "item",
+      "ref": "px_runed_short_sword__elven_short_sword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An elven short sword: a short, slightly leaf-shaped blade with a swept leaf guard. Elven make: pale silver-white steel and pale ash wood, slender and graceful lines, fine green leaf-vine engravings and faintly glowing green runes, green leather.",
+      "fit": {
+        "matchRef": "px_runed_short_sword__elven_short_sword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/runed_short_sword__elven_short_sword"
+        }
+      ]
+    },
+    {
+      "name": "crude_short_sword__orcish_short_sword",
+      "kind": "item",
+      "ref": "px_crude_short_sword__orcish_short_sword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An orcish short sword: a short, crude, jagged cleaver-like black iron blade. Orcish make: crude, rough-forged blackened iron with rust and jagged nicks, crooked shapes, bound with grimy rags, rawhide and bone.",
+      "fit": {
+        "matchRef": "px_crude_short_sword__orcish_short_sword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/crude_short_sword__orcish_short_sword"
+        }
+      ]
+    },
+    {
+      "name": "broad_short_sword__dwarvish_short_sword",
+      "kind": "item",
+      "ref": "px_broad_short_sword__dwarvish_short_sword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A dwarvish short sword: a short, very broad, thick straight blade with a heavy bronze guard. Dwarvish make: heavy, broad and squat, dark steel with bronze fittings and angular geometric knotwork.",
+      "fit": {
+        "matchRef": "px_broad_short_sword__dwarvish_short_sword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/broad_short_sword__dwarvish_short_sword"
+        }
+      ]
+    },
+    {
+      "name": "curved_sword__scimitar",
+      "kind": "item",
+      "ref": "px_curved_sword__scimitar",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A scimitar: a strongly curved single-edged steel blade widening toward the tip, a short brass guard and a dark grip.",
+      "fit": {
+        "matchRef": "px_curved_sword__scimitar"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/curved_sword__scimitar"
+        }
+      ]
+    },
+    {
+      "name": "silver_saber",
+      "kind": "item",
+      "ref": "px_silver_saber",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A silver saber: a slightly curved, slender blade with an elegant swept basket hilt, all gleaming silver. Made of real silver: bright, cool white-silver metal, mirror-polished with delicate filigree, clearly paler and shinier than steel.",
+      "fit": {
+        "matchRef": "px_silver_saber"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/silver_saber"
+        }
+      ]
+    },
+    {
+      "name": "broadsword",
+      "kind": "item",
+      "ref": "px_broadsword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A broadsword: a wide, straight double-edged steel blade with a broad iron cross-guard and a leather grip.",
+      "fit": {
+        "matchRef": "px_broadsword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/broadsword"
+        }
+      ]
+    },
+    {
+      "name": "runed_broadsword__elven_broadsword",
+      "kind": "item",
+      "ref": "px_runed_broadsword__elven_broadsword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An elven broadsword: a wide, straight blade with a flowing leaf-shaped guard. Elven make: pale silver-white steel and pale ash wood, slender and graceful lines, fine green leaf-vine engravings and faintly glowing green runes, green leather.",
+      "fit": {
+        "matchRef": "px_runed_broadsword__elven_broadsword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/runed_broadsword__elven_broadsword"
+        }
+      ]
+    },
+    {
+      "name": "two_handed_sword",
+      "kind": "item",
+      "ref": "px_two_handed_sword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A two-handed greatsword: a very long, wide straight steel blade, a long cross-guard with side rings and a very long two-handed leather grip.",
+      "fit": {
+        "matchRef": "px_two_handed_sword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/two_handed_sword"
+        }
+      ]
+    },
+    {
+      "name": "long_samurai_sword__tsurugi",
+      "kind": "item",
+      "ref": "px_long_samurai_sword__tsurugi",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A Japanese tsurugi: a long, perfectly straight, double-edged ancient blade with a central ridge, a simple bronze guard and a long hilt with gold fittings.",
+      "fit": {
+        "matchRef": "px_long_samurai_sword__tsurugi"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/long_samurai_sword__tsurugi"
+        }
+      ]
+    },
+    {
+      "name": "runed_broadsword__runesword",
+      "kind": "item",
+      "ref": "px_runed_broadsword__runesword",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A runesword: a wide, straight blade of black steel covered in glowing blood-red runes, with a spiked black guard. Sinister and dark.",
+      "fit": {
+        "matchRef": "px_runed_broadsword__runesword"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/runed_broadsword__runesword"
+        }
+      ]
+    },
+    {
+      "name": "vulgar_polearm__partisan",
+      "kind": "item",
+      "ref": "px_vulgar_polearm__partisan",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A partisan: a long shaft topped by a long, broad spear blade with two small curved side wings at its base.",
+      "fit": {
+        "matchRef": "px_vulgar_polearm__partisan"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/vulgar_polearm__partisan"
+        }
+      ]
+    },
+    {
+      "name": "hilted_polearm__ranseur",
+      "kind": "item",
+      "ref": "px_hilted_polearm__ranseur",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A ranseur: a long shaft topped by a long central spike with two sharp, upward-angled side prongs like a cross-guard.",
+      "fit": {
+        "matchRef": "px_hilted_polearm__ranseur"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/hilted_polearm__ranseur"
+        }
+      ]
+    },
+    {
+      "name": "forked_polearm__spetum",
+      "kind": "item",
+      "ref": "px_forked_polearm__spetum",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A spetum: a long shaft topped by a long central blade with two shorter blades angled forward like a fork.",
+      "fit": {
+        "matchRef": "px_forked_polearm__spetum"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/forked_polearm__spetum"
+        }
+      ]
+    },
+    {
+      "name": "single_edged_polearm__glaive",
+      "kind": "item",
+      "ref": "px_single_edged_polearm__glaive",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A glaive: a long shaft topped by a single long, curved, knife-like blade.",
+      "fit": {
+        "matchRef": "px_single_edged_polearm__glaive"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/single_edged_polearm__glaive"
+        }
+      ]
+    },
+    {
+      "name": "angled_poleaxe__halberd",
+      "kind": "item",
+      "ref": "px_angled_poleaxe__halberd",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A halberd: a long shaft topped by a spike, with a broad axe blade on one side and a hook on the other.",
+      "fit": {
+        "matchRef": "px_angled_poleaxe__halberd"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/angled_poleaxe__halberd"
+        }
+      ]
+    },
+    {
+      "name": "long_poleaxe__bardiche",
+      "kind": "item",
+      "ref": "px_long_poleaxe__bardiche",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A bardiche: a long shaft with a very long, crescent-shaped axe blade fastened along its upper end.",
+      "fit": {
+        "matchRef": "px_long_poleaxe__bardiche"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/long_poleaxe__bardiche"
+        }
+      ]
+    },
+    {
+      "name": "pole_cleaver__voulge",
+      "kind": "item",
+      "ref": "px_pole_cleaver__voulge",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A voulge: a long shaft topped by a tall, narrow, cleaver-like chopping blade with a sharp point.",
+      "fit": {
+        "matchRef": "px_pole_cleaver__voulge"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/pole_cleaver__voulge"
+        }
+      ]
+    },
+    {
+      "name": "pole_sickle__fauchard",
+      "kind": "item",
+      "ref": "px_pole_sickle__fauchard",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A fauchard: a long shaft topped by a curved, sickle-like blade with its cutting edge on the inner curve.",
+      "fit": {
+        "matchRef": "px_pole_sickle__fauchard"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/pole_sickle__fauchard"
+        }
+      ]
+    },
+    {
+      "name": "pruning_hook__guisarme",
+      "kind": "item",
+      "ref": "px_pruning_hook__guisarme",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A guisarme: a long shaft topped by a curved, hooked blade like a pruning hook.",
+      "fit": {
+        "matchRef": "px_pruning_hook__guisarme"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/pruning_hook__guisarme"
+        }
+      ]
+    },
+    {
+      "name": "hooked_polearm__bill_guisarme",
+      "kind": "item",
+      "ref": "px_hooked_polearm__bill_guisarme",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A bill-guisarme: a long shaft topped by a hooked blade with a forward spike and a rear spike.",
+      "fit": {
+        "matchRef": "px_hooked_polearm__bill_guisarme"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/hooked_polearm__bill_guisarme"
+        }
+      ]
+    },
+    {
+      "name": "pronged_polearm__lucern_hammer",
+      "kind": "item",
+      "ref": "px_pronged_polearm__lucern_hammer",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A lucern hammer: a long shaft topped by a three-pronged hammer head, a long top spike and a curved back spike.",
+      "fit": {
+        "matchRef": "px_pronged_polearm__lucern_hammer"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/pronged_polearm__lucern_hammer"
+        }
+      ]
+    },
+    {
+      "name": "beaked_polearm__bec_de_corbin",
+      "kind": "item",
+      "ref": "px_beaked_polearm__bec_de_corbin",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A bec de corbin: a long shaft topped by a heavy, curved, crow-beak spike with a small hammer face behind it.",
+      "fit": {
+        "matchRef": "px_beaked_polearm__bec_de_corbin"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/beaked_polearm__bec_de_corbin"
+        }
+      ]
+    },
+    {
+      "name": "broad_pick__dwarvish_mattock",
+      "kind": "item",
+      "ref": "px_broad_pick__dwarvish_mattock",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A dwarvish mattock: a long, heavy haft with a huge broad pick-and-adze head. Dwarvish make: heavy, broad and squat, dark steel with bronze fittings and angular geometric knotwork.",
+      "fit": {
+        "matchRef": "px_broad_pick__dwarvish_mattock"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/broad_pick__dwarvish_mattock"
+        }
+      ]
+    },
+    {
+      "name": "lance",
+      "kind": "item",
+      "ref": "px_lance",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A knight's lance: a very long, tapering wooden lance painted in red and white spirals, a large cone-shaped steel hand guard and a small steel tip.",
+      "fit": {
+        "matchRef": "px_lance"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/lance"
+        }
+      ]
+    },
+    {
+      "name": "silver_mace",
+      "kind": "item",
+      "ref": "px_silver_mace",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A silver mace: a flanged mace whose head and shaft are gleaming silver, with a black grip. Made of real silver: bright, cool white-silver metal, mirror-polished with delicate filigree, clearly paler and shinier than steel.",
+      "fit": {
+        "matchRef": "px_silver_mace"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/silver_mace"
+        }
+      ]
+    },
+    {
+      "name": "morning_star",
+      "kind": "item",
+      "ref": "px_morning_star",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A morning star: a wooden haft topped by a round iron ball covered in long sharp spikes.",
+      "fit": {
+        "matchRef": "px_morning_star"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/morning_star"
+        }
+      ]
+    },
+    {
+      "name": "war_hammer",
+      "kind": "item",
+      "ref": "px_war_hammer",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A war hammer: a short iron-shod haft with a heavy square steel hammer head on one side and a spike on the other.",
+      "fit": {
+        "matchRef": "px_war_hammer"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/war_hammer"
+        }
+      ]
+    },
+    {
+      "name": "rubber_hose",
+      "kind": "item",
+      "ref": "px_rubber_hose",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A length of rubber hose: a floppy, curved tube of dull black-red rubber with a brass coupling at one end. Comically mundane.",
+      "fit": {
+        "matchRef": "px_rubber_hose"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/rubber_hose"
+        }
+      ]
+    },
+    {
+      "name": "staff__quarterstaff",
+      "kind": "item",
+      "ref": "px_staff__quarterstaff",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A quarterstaff: a long, plain, straight wooden staff of polished dark wood with iron-capped ends.",
+      "fit": {
+        "matchRef": "px_staff__quarterstaff"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/staff__quarterstaff"
+        }
+      ]
+    },
+    {
+      "name": "thonged_club__aklys",
+      "kind": "item",
+      "ref": "px_thonged_club__aklys",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An aklys: a short, thick wooden throwing club with a long leather thong tied to its handle and looped loosely.",
+      "fit": {
+        "matchRef": "px_thonged_club__aklys"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/thonged_club__aklys"
+        }
+      ]
+    },
+    {
+      "name": "flail",
+      "kind": "item",
+      "ref": "px_flail",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A flail: a wooden handle with a short iron chain ending in a spiked iron ball.",
+      "fit": {
+        "matchRef": "px_flail"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/flail"
+        }
+      ]
+    },
+    {
+      "name": "bullwhip",
+      "kind": "item",
+      "ref": "px_bullwhip",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A bullwhip: a long, coiled, braided brown leather whip with a short stiff handle.",
+      "fit": {
+        "matchRef": "px_bullwhip"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/bullwhip"
+        }
+      ]
+    },
+    {
+      "name": "bow",
+      "kind": "item",
+      "ref": "px_bow",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A plain short bow: a simple curved wooden self bow of brown yew with a leather grip and a plain string.",
+      "fit": {
+        "matchRef": "px_bow"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/bow"
+        }
+      ]
+    },
+    {
+      "name": "crude_bow__orcish_bow",
+      "kind": "item",
+      "ref": "px_crude_bow__orcish_bow",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "An orcish bow: a crude, crooked, uneven bow of dark wood and horn, crudely lashed with rawhide, with a frayed string. Orcish make: crude, rough-forged blackened iron with rust and jagged nicks, crooked shapes, bound with grimy rags, rawhide and bone.",
+      "fit": {
+        "matchRef": "px_crude_bow__orcish_bow"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/crude_bow__orcish_bow"
+        }
+      ]
+    },
+    {
+      "name": "sling",
+      "kind": "item",
+      "ref": "px_sling",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A sling: a long leather cord with a small leather pouch in the middle, holding a round stone, the cords trailing loosely.",
+      "fit": {
+        "matchRef": "px_sling"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/sling"
+        }
+      ]
+    },
+    {
+      "name": "crossbow",
+      "kind": "item",
+      "ref": "px_crossbow",
+      "refNote": "Image 1 is the pixel-art icon this art replaces. Keep exactly its orientation and direction (which end points where), its angle and its proportions; paint it as realistic, hand-painted art and ignore the blocky pixels.",
+      "prompt": "A crossbow: a wooden stock with a short, thick steel bow across its front, a taut cord and a trigger lever underneath.",
+      "fit": {
+        "matchRef": "px_crossbow"
+      },
+      "outline": 1.4,
+      "relief": {
+        "contrast": 0.2,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": "obj/crossbow"
+        }
+      ]
+    }
+  ]
+}
