@@ -29,6 +29,14 @@ import { observedMenuItems } from "../automation/observed-menu";
 import { ObservedInventory } from "../automation/observed-inventory";
 import { ObservedNumberPad } from "../automation/observed-number-pad";
 import { ObservedStatus } from "../automation/observed-status";
+import {
+  DEFAULT_EXPLORED_MASK_TUNING,
+  type ExploredMaskTuning,
+} from "./engine/rendering/explored-mask";
+import {
+  DEFAULT_LIGHT_FIELD_TUNING,
+  type LightFieldTuning,
+} from "./engine/rendering/light-field";
 
 /** Main engine composition, ordered lifecycle, and public UI controller. */
 class Nethack3DEngine implements Nethack3DEngineController {
@@ -90,6 +98,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.audioHapticsPlatform.backgroundMusic = new BackgroundMusic();
     this.systems.audioHapticsPlatform.syncBackgroundMusicWithClientOptions(this.systems.engineState.clientOptions);
     this.exposeBackgroundMusicDebugHandle();
+    this.exposeExploredMaskDebugHandle();
     this.systems.audioHapticsPlatform.messageSoundHooks = new MessageSoundHooks({
       isSoundEnabled: () => this.systems.engineState.clientOptions.soundEnabled,
       onCombatActivity: () => this.systems.audioHapticsPlatform.backgroundMusic?.notifyCombatActivity(),
@@ -197,6 +206,34 @@ class Nethack3DEngine implements Nethack3DEngineController {
       mood: () => music.getCurrentMood(),
       ascend: () => music.notifyAscension(),
       wizard: (inView: boolean) => music.notifyWizardPresence(inView),
+    };
+  }
+
+  /**
+   * Devtools helper for tuning the explored-area fade:
+   *   __nh3dExploredMask.get()                         // current tuning
+   *   __nh3dExploredMask.set({ blurTiles: 0.3 })       // blur, fade, noise, reveal time
+   *   __nh3dExploredMask.reset()                       // back to defaults
+   */
+  private exposeExploredMaskDebugHandle(): void {
+    if (typeof window === "undefined") return;
+    const mask = this.systems.exploredMask;
+    (window as unknown as Record<string, unknown>).__nh3dExploredMask = {
+      get: () => ({ ...mask.tuning }),
+      set: (tuning: Partial<ExploredMaskTuning>) => mask.setTuning(tuning),
+      reset: () => mask.setTuning(DEFAULT_EXPLORED_MASK_TUNING),
+    };
+    /**
+     * Devtools helper for tuning room and carried-light lighting:
+     *   __nh3dLightField.get() / set({ ambient: 0.6 }) / reset()
+     *   __nh3dLightField.state()  // detected rooms and carried light
+     */
+    const lights = this.systems.lightField;
+    (window as unknown as Record<string, unknown>).__nh3dLightField = {
+      get: () => ({ ...lights.tuning }),
+      set: (tuning: Partial<LightFieldTuning>) => lights.setTuning(tuning),
+      reset: () => lights.setTuning(DEFAULT_LIGHT_FIELD_TUNING),
+      state: () => ({ active: lights.isActive(), rooms: lights.rooms, carriedLight: lights.carriedLight }),
     };
   }
 
@@ -491,9 +528,12 @@ class Nethack3DEngine implements Nethack3DEngineController {
     const wasUsingVultureTiles = this.systems.tilesetAssets.isVultureTilesActive(previous);
     const isUsingVultureTiles = this.systems.tilesetAssets.isVultureTilesActive(normalized);
     const playModeChanged = previous.fpsMode !== normalized.fpsMode;
+    const roundedWallsChanged = previous.roundedWalls !== normalized.roundedWalls;
     const fpsFovChanged = previous.fpsFov !== normalized.fpsFov;
     const lightingEnabledChanged =
       previous.lightingEnabled !== normalized.lightingEnabled;
+    const dynamicLightingChanged =
+      previous.dynamicLighting !== normalized.dynamicLighting;
     const fpsFlattenEntityBillboardsChanged =
       previous.fpsFlattenEntityBillboards !==
       normalized.fpsFlattenEntityBillboards;
@@ -598,6 +638,10 @@ class Nethack3DEngine implements Nethack3DEngineController {
     if (lightingEnabledChanged) {
       this.systems.lighting.configureBaseLightingForPlayMode();
       this.systems.lighting.markLightingDirty();
+    }
+    if ((lightingEnabledChanged || dynamicLightingChanged) && !playModeChanged) {
+      // Remembered dark-room floor is drawn differently while world lighting is on.
+      this.systems.tileUpdates.refreshTilesFromStateCache();
     }
     if (minimapChanged) {
       this.systems.minimap.updateMinimapVisibility();
@@ -710,6 +754,12 @@ class Nethack3DEngine implements Nethack3DEngineController {
     }
     if (!isUsingVultureTiles) {
       this.systems.tileContextActions.clearVultureMouseHoverHighlight();
+    }
+    if (roundedWallsChanged && !playModeChanged) {
+      // Wall shapes, corner floor fills and the AO around them all change.
+      this.systems.floorOcclusion.clearFloorBlockAmbientOcclusion();
+      this.systems.wallGeometry.clearFpsWallChamferFloorMeshes();
+      this.systems.tileUpdates.refreshTilesFromStateCache();
     }
     if (!this.systems.wallGeometry.shouldUseChamferedWallGeometry()) {
       this.systems.wallGeometry.clearFpsWallChamferFloorMeshes();
@@ -1189,6 +1239,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
         }
         this.systems.combatAttribution.captureDamageFromMessage(data.text);
+        this.systems.lightField.captureMessage(data.text);
         this.systems.audioHapticsPlatform.backgroundMusic?.notifyGameMessage(data.text);
         this.systems.engineMessages.addGameMessage(data.text);
         break;
@@ -1213,6 +1264,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
         }
         this.systems.combatAttribution.captureDamageFromMessage(data.text);
+        this.systems.lightField.captureMessage(data.text);
         this.systems.audioHapticsPlatform.backgroundMusic?.notifyGameMessage(data.text);
         this.systems.engineMessages.addGameMessage(data.text);
         break;
@@ -1576,6 +1628,8 @@ class Nethack3DEngine implements Nethack3DEngineController {
       this.systems.renderPipeline.scene.remove(mesh);
     });
     this.systems.tileRendering.tileMap.clear();
+    this.systems.exploredMask.reset();
+    this.systems.lightField.reset();
     this.systems.floorOcclusion.clearFloorBlockAmbientOcclusion();
     this.systems.wallGeometry.fpsWallChamferFloorMeshes.forEach((mesh) => {
       this.systems.renderPipeline.scene.remove(mesh);
@@ -1756,6 +1810,8 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.audioHapticsPlatform.backgroundMusic?.dispose();
     if (typeof window !== "undefined") {
       delete (window as unknown as Record<string, unknown>).__nh3dMusic;
+      delete (window as unknown as Record<string, unknown>).__nh3dExploredMask;
+      delete (window as unknown as Record<string, unknown>).__nh3dLightField;
     }
     this.systems.audioHapticsPlatform.clearPendingIncomingDamageRumble();
     this.systems.audioHapticsPlatform.webHaptics?.destroy();
@@ -1819,6 +1875,8 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.vultureProjectionDebug.vultureDoorProjectionRotationButtons = {};
     this.systems.vultureProjectionDebug.vultureWallProjectionDebugDrag = null;
 
+    this.systems.exploredMask.dispose();
+    this.systems.lightField.dispose();
     this.systems.renderPipeline.disposeAntialiasingPipeline();
     this.systems.renderPipeline.renderer.domElement.remove();
     this.systems.renderPipeline.renderer.forceContextLoss();
@@ -1907,6 +1965,11 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.vultureWalls.updateVultureDoorPlaneRenderOrdering();
     this.systems.vultureWalls.updateIronBarsWallPlaneVisibility();
     this.systems.tileUpdates.flushPendingDarkCorridorInference();
+    // After all tile changes for this frame, so the mask matches what is drawn.
+    this.systems.exploredMask.update(timeMs);
+    // After updateLightingCenter, which places the hero's light.
+    this.systems.lightField.update(timeMs);
+    this.systems.lighting.setWorldTime(timeMs);
     this.systems.camera.compensateTerminalWorldSpriteAspect();
     const xrCamera = this.systems.webXrPresentation.prepareRender();
     if (xrCamera) {

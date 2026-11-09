@@ -2,6 +2,7 @@ import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import * as THREE from "three";
 
 import { QuestSceneExport, type QuestSceneExportDependencies } from "./quest-scene-export-system";
+import { createWorldShadingUniforms } from "./world-shading";
 import { normalizeNh3dClientOptions } from "../../ui-types";
 import { sendQuestScene } from "../../../quest/native/bridge";
 
@@ -28,12 +29,12 @@ function fixture(start = true) {
       deps.camera.playModeCameraTransitionActive = true;
     }) },
     engineState: { clientOptions: normalizeNh3dClientOptions(), characterCreationConfig: { mode: "create", playMode: "normal" }, playMode: "normal" },
-    lighting: { vignetteUniforms: {
-      uLightingCenter: { value: new THREE.Vector3() }, uLightingRadius: { value: 20 },
-      uFalloffPower: { value: 1 }, uMaxDarkAlpha: { value: 1 }, uIsFpsMode: { value: false },
-      uBloodGroundStrength: { value: 1 }, uBloodGroundSpecularReferenceStrength: { value: 1 },
-      uWorldTileScaleX: { value: 1 }, uFaceShade: { value: new THREE.Vector4(1, 1, 1, 1) },
-    } },
+    lighting: { vignetteUniforms: Object.assign(createWorldShadingUniforms({
+      maxDarkAlpha: 1, bloodGroundStrength: 1, bloodGroundSpecularReferenceStrength: 1,
+    }), {
+      uLightingRadius: { value: 20 }, uFalloffPower: { value: 1 },
+      uFaceShade: { value: new THREE.Vector4(1, 1, 1, 1) },
+    }) },
     playerMovement: { playerPos: { x: 5, y: 8 } },
     renderPipeline: { scene: new THREE.Scene() },
     terminalRendering: { isTerminalDisplayMode: vi.fn(() => false) },

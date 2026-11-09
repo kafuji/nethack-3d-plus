@@ -223,7 +223,7 @@ export class PlayerWeaponOverlay {
         depthWrite: false,
         toneMapped: false,
       });
-      this.dependencies.lighting.patchMaterialForVignette(material);
+      this.dependencies.lighting.patchMaterialForVignette(material, { entity: true });
       const sprite = new THREE.Sprite(material);
       sprite.name = `player-weapon-${slot}`;
       this.dependencies.renderPipeline.scene.add(sprite);

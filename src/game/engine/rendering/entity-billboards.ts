@@ -426,7 +426,7 @@ export class EntityBillboards {
         alphaTest,
         toneMapped: false,
       });
-      this.dependencies.lighting.patchMaterialForVignette(material);
+      this.dependencies.lighting.patchMaterialForVignette(material, { entity: true });
       backdrop = new THREE.Sprite(material);
       backdrop.center.set(0.5, 0);
       backdrop.renderOrder = this.vultureFlattenedBillboardRenderOrder;
@@ -501,7 +501,7 @@ export class EntityBillboards {
       });
       proxyMaterial.opacity = spriteMaterial.opacity;
       proxyMaterial.color.copy(spriteMaterial.color);
-      this.dependencies.lighting.patchMaterialForVignette(proxyMaterial);
+      this.dependencies.lighting.patchMaterialForVignette(proxyMaterial, { entity: true });
       proxy = new THREE.Mesh(
         this.fpsPitchLockedBillboardGeometry,
         proxyMaterial,
@@ -573,7 +573,7 @@ export class EntityBillboards {
       });
       proxyMaterial.opacity = spriteMaterial.opacity;
       proxyMaterial.color.copy(spriteMaterial.color);
-      this.dependencies.lighting.patchMaterialForVignette(proxyMaterial);
+      this.dependencies.lighting.patchMaterialForVignette(proxyMaterial, { entity: true });
       proxy = new THREE.Mesh(
         this.fpsPitchLockedBillboardGeometry,
         proxyMaterial,
@@ -903,7 +903,7 @@ export class EntityBillboards {
         depthTest: true,
         toneMapped: false,
       });
-      this.dependencies.lighting.patchMaterialForVignette(material);
+      this.dependencies.lighting.patchMaterialForVignette(material, { entity: true });
       shadow = new THREE.Mesh(geometry, material);
       shadow.renderOrder = 905;
       this.entityBlobShadows.set(key, shadow);
@@ -1000,7 +1000,7 @@ export class EntityBillboards {
       });
 
       // Patch the monster/loot billboard to add vignette lighting
-      this.dependencies.lighting.patchMaterialForVignette(material);
+      this.dependencies.lighting.patchMaterialForVignette(material, { entity: true });
 
       sprite = new THREE.Sprite(material);
       sprite.renderOrder = spriteRenderOrder;

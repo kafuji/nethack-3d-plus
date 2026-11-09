@@ -893,6 +893,21 @@ export const deOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Aktiviert dynamische Szenenbeleuchtung und Abdunkelung des Dungeons. Deaktivieren f\u00fcr flacheres, stets beleuchtetes Rendering.",
         },
+        dynamicLighting: {
+          label: "Raum- und Lichtquellenbeleuchtung",
+          description:
+            "Beleuchtete Räume leuchten von ihren Ecken aus, und getragene Lampen, Kerzen und Laternen erhellen mit flackernder Flamme, was du sehen kannst. Erinnerte und unbeleuchtete Bereiche bleiben dunkel. Benötigt Beleuchtung.",
+        },
+        smoothExploredEdges: {
+          label: "Weiche Erkundungsränder",
+          description:
+            "Lässt die Ränder erkundeter Bereiche weich in die Dunkelheit übergehen, statt an eckigen Kachelgrenzen zu enden.",
+        },
+        roundedWalls: {
+          label: "Abgerundete Wände",
+          description:
+            "Rundet Wandecken ab, an denen man diagonal vorbeigehen kann: einzelne Wände werden zu Säulen und diagonale Lücken werden sichtbar. Wände neben Türen bleiben eckig.",
+        },
         blockAmbientOcclusion: {
           label: "Ambient Occlusion",
           description:

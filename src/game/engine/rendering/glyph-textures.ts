@@ -216,7 +216,7 @@ export class GlyphTextures {
       });
 
       // Patch the newly created overlay material
-      this.dependencies.lighting.patchMaterialForVignette(materialClone, { faceShade: true });
+      this.dependencies.lighting.patchMaterialForVignette(materialClone, { faceShade: true, liquid: true });
 
       overlay = {
         texture: null,

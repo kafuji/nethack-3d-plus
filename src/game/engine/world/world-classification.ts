@@ -760,6 +760,21 @@ export class WorldClassification {
     };
   }
 
+  /**
+   * Terrain that lies flat on the floor (down stairs, doorways, traps and
+   * similar features). The player's own floor tile keeps drawing it from the
+   * under-player cache, so it needs no camera-facing copy behind the player;
+   * only items, statues and raised specials get one.
+   */
+  isFlatTerrainFeatureUnderPlayer(behavior: TileBehaviorResult): boolean {
+    return (
+      this.shouldRenderFlatFeatureUnderPlayer(behavior) &&
+      behavior.resolved.kind !== "statue" &&
+      !this.isLootLikeBehavior(behavior) &&
+      !this.shouldUseRaisedSpecialTileBillboardInTiles(behavior)
+    );
+  }
+
   shouldRenderFlatFeatureUnderPlayer(
     behavior: TileBehaviorResult,
   ): boolean {

@@ -922,6 +922,21 @@ export const ptBrOverrides = {
           description:
             "Ativa iluminação dinâmica da cena e escurecimento da masmorra. Desative para uma renderização plana e sempre iluminada.",
         },
+        dynamicLighting: {
+          label: "Iluminação de salas e fontes de luz",
+          description:
+            "Salas iluminadas brilham a partir dos cantos, e lâmpadas, velas e lanternas que você carrega iluminam o que você vê com uma chama tremeluzente. Áreas lembradas ou sem luz ficam na penumbra. Requer Iluminação.",
+        },
+        smoothExploredEdges: {
+          label: "Bordas exploradas suaves",
+          description:
+            "Faz as bordas das áreas exploradas se dissolverem na escuridão em vez de terminarem em bordas quadradas de blocos.",
+        },
+        roundedWalls: {
+          label: "Paredes arredondadas",
+          description:
+            "Arredonda os cantos de paredes que podem ser contornados na diagonal: paredes isoladas viram colunas e as passagens diagonais ficam visíveis. Paredes ao lado de portas continuam quadradas.",
+        },
         blockAmbientOcclusion: {
           label: "Oclusão de ambiente",
           description:

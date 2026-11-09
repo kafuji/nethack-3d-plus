@@ -185,6 +185,33 @@ export function getOpenDoorGlyphFrom(glyph: number): number | null {
   return null;
 }
 
+/**
+ * Floor the hero currently sees lit: room floor (S_room) or a lit corridor
+ * (S_litcorr). Remembered or unlit floor shows as S_darkroom / S_corr.
+ * NetHack 5 inserts S_engroom before the corridors, moving S_litcorr to 23.
+ */
+export function isLitFloorCmapGlyph(glyph: number): "room" | "corridor" | null {
+  const cmapIndex = getCmapIndex(glyph, null);
+  if (cmapIndex === 19) return "room";
+  const litCorridor = getActiveGlyphCatalogVersion() === "5.0" ? 23 : 22;
+  if (cmapIndex === litCorridor) return "corridor";
+  return null;
+}
+
+/** Room floor shown as remembered or unlit (S_darkroom); the same index in every runtime. */
+export function isDarkRoomFloorCmapGlyph(glyph: number): boolean {
+  return getCmapIndex(glyph, null) === 20;
+}
+
+/** Molten lava (and NetHack 5's wall of lava), which glows. */
+export function isLavaCmapGlyph(glyph: number): boolean {
+  const cmapIndex = getCmapIndex(glyph, null);
+  if (cmapIndex === null) return false;
+  return getActiveGlyphCatalogVersion() === "5.0"
+    ? cmapIndex === 40 || cmapIndex === 41
+    : cmapIndex === 34;
+}
+
 export function isDarkCorridorCmapGlyph(glyph: number): boolean {
   return getCmapIndex(glyph, null) === 21;
 }
@@ -198,6 +225,11 @@ export function isDoorwayCmapGlyph(glyph: number): boolean {
     cmapIndex === 15 || // closed vertical door
     cmapIndex === 16 // closed horizontal door
   );
+}
+
+/** A doorway with no door, or a broken one (both show as S_ndoor); diagonal moves through it are allowed. */
+export function isDoorlessDoorwayCmapGlyph(glyph: number): boolean {
+  return getCmapIndex(glyph, null) === 12;
 }
 
 export function isVerticalDoorCmapGlyph(glyph: number): boolean {

@@ -931,6 +931,21 @@ export const fr = {
           description:
             "Active l'eclairage dynamique de la scene et l'assombrissement du donjon. Desactivez pour un rendu plus plat et toujours eclaire.",
         },
+        dynamicLighting: {
+          label: "Eclairage des salles et des sources de lumiere",
+          description:
+            "Les salles eclairees rayonnent depuis leurs coins, et les lampes, bougies et lanternes que vous portez eclairent ce que vous voyez d'une flamme vacillante. Les zones memorisees ou sombres restent tamisees. Necessite l'eclairage.",
+        },
+        smoothExploredEdges: {
+          label: "Bords explores adoucis",
+          description:
+            "Fond les bords des zones explorees dans l'obscurite au lieu de les arreter sur des bords de cases carres.",
+        },
+        roundedWalls: {
+          label: "Murs arrondis",
+          description:
+            "Arrondit les coins de mur que l'on peut contourner en diagonale : les murs isoles deviennent des colonnes et les passages en diagonale apparaissent. Les murs a cote des portes restent carres.",
+        },
         blockAmbientOcclusion: {
           label: "Occlusion ambiante",
           description:

@@ -302,6 +302,12 @@ export type Nh3dClientOptions = {
   fpsLookSensitivityY: number;
   fpsWasdKeyboardMovementEnabled: boolean;
   lightingEnabled: boolean;
+  /** Fade the edge of explored areas into the unexplored void. */
+  smoothExploredEdges: boolean;
+  /** Round off wall corners that a diagonal step can pass, in every camera mode. */
+  roundedWalls: boolean;
+  /** Light lit rooms and the hero's carried light sources (needs lightingEnabled). */
+  dynamicLighting: boolean;
   fpsFlattenEntityBillboards: boolean;
   showItemsUnderPlayerInOverheadTilesMode: boolean;
   controllerEnabled: boolean;
@@ -469,6 +475,9 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   fpsLookSensitivityY: isMobile.matches ? 1.5 : 1,
   fpsWasdKeyboardMovementEnabled: true,
   lightingEnabled: true,
+  smoothExploredEdges: true,
+  roundedWalls: true,
+  dynamicLighting: true,
   fpsFlattenEntityBillboards: false,
   showItemsUnderPlayerInOverheadTilesMode: true,
   controllerEnabled: false,
@@ -1201,6 +1210,18 @@ export function normalizeNh3dClientOptions(
       typeof overrides?.lightingEnabled === "boolean"
         ? overrides.lightingEnabled
         : defaultNh3dClientOptions.lightingEnabled,
+    smoothExploredEdges:
+      typeof overrides?.smoothExploredEdges === "boolean"
+        ? overrides.smoothExploredEdges
+        : defaultNh3dClientOptions.smoothExploredEdges,
+    roundedWalls:
+      typeof overrides?.roundedWalls === "boolean"
+        ? overrides.roundedWalls
+        : defaultNh3dClientOptions.roundedWalls,
+    dynamicLighting:
+      typeof overrides?.dynamicLighting === "boolean"
+        ? overrides.dynamicLighting
+        : defaultNh3dClientOptions.dynamicLighting,
     fpsFlattenEntityBillboards:
       typeof overrides?.fpsFlattenEntityBillboards === "boolean"
         ? overrides.fpsFlattenEntityBillboards

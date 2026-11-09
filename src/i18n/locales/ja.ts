@@ -879,6 +879,21 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "動的なシーン照明とダンジョンの暗さ表現を有効にします。無効にすると常時明るい平坦な描画になります。",
         },
+        dynamicLighting: {
+          label: "部屋と光源のライティング",
+          description:
+            "明るい部屋は四隅から照らされ、持っているランプ・ろうそく・ランタンが見える範囲を揺らめく光で照らします。記憶だけの場所や暗い場所は薄暗くなります。「ライティング」が必要です。",
+        },
+        smoothExploredEdges: {
+          label: "探索範囲の境界をぼかす",
+          description:
+            "探索済みの範囲の端を四角いタイルの境目で切らず、暗闇へなめらかに溶け込ませます。",
+        },
+        roundedWalls: {
+          label: "丸みのある壁",
+          description:
+            "斜めに通り抜けられる壁の角を丸めます。孤立した壁は円柱になり、斜めの隙間が見えるようになります。扉の隣の壁は四角いままです。",
+        },
         blockAmbientOcclusion: {
           label: "アンビエントオクルージョン",
           description:

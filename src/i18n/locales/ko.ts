@@ -903,6 +903,21 @@ export const ko = {
           description:
             "동적 장면 조명과 던전 어둡게 하기를 활성화합니다. 끄면 항상 밝은 평면 렌더링이 됩니다.",
         },
+        dynamicLighting: {
+          label: "방과 광원 조명",
+          description:
+            "밝은 방은 네 모서리에서 빛나고, 들고 있는 램프·양초·랜턴이 보이는 곳을 일렁이는 불빛으로 비춥니다. 기억만 하는 곳과 어두운 곳은 어둑하게 남습니다. 조명이 필요합니다.",
+        },
+        smoothExploredEdges: {
+          label: "탐색 경계 부드럽게",
+          description:
+            "탐색한 영역의 가장자리를 네모난 타일 경계로 끊지 않고 어둠 속으로 부드럽게 녹아들게 합니다.",
+        },
+        roundedWalls: {
+          label: "둥근 벽",
+          description:
+            "대각선으로 지나갈 수 있는 벽 모서리를 둥글게 만듭니다. 홀로 선 벽은 기둥이 되고 대각선 틈이 보입니다. 문 옆의 벽은 네모난 채로 남습니다.",
+        },
         blockAmbientOcclusion: {
           label: "앰비언트 오클루전",
           description:

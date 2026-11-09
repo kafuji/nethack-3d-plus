@@ -861,6 +861,21 @@ export const esOverrides = {
                     label: "Iluminaci\u00F3n",
                     description: "Habilite la iluminaci\u00F3n din\u00E1mica de la escena y el oscurecimiento de las mazmorras. Desact\u00EDvelo para obtener una representaci\u00F3n m\u00E1s plana y siempre iluminada.",
                 },
+                dynamicLighting: {
+                    label: "Iluminación de salas y fuentes de luz",
+                    description:
+                      "Las salas iluminadas brillan desde sus esquinas, y las lámparas, velas y linternas que llevas iluminan lo que puedes ver con una llama parpadeante. Las zonas recordadas o sin luz quedan en penumbra. Requiere Iluminación.",
+                },
+                smoothExploredEdges: {
+                    label: "Bordes explorados suaves",
+                    description:
+                      "Difumina los bordes de las zonas exploradas hacia la oscuridad en lugar de cortarlos en los bordes cuadrados de las casillas.",
+                },
+                roundedWalls: {
+                    label: "Paredes redondeadas",
+                    description:
+                      "Redondea las esquinas de las paredes que se pueden sortear en diagonal: las paredes sueltas se vuelven columnas y se ven los huecos diagonales. Las paredes junto a puertas siguen siendo cuadradas.",
+                },
                 blockAmbientOcclusion: {
                     label: "Oclusi\u00F3n ambiental",
                     description: "Agrega un sutil sombreado de contacto entre los bloques de piso y pared.",

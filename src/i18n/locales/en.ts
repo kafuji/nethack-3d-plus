@@ -916,6 +916,21 @@ export const en = {
           description:
             "Enable dynamic scene lighting and dungeon darkening. Turn off for flatter always-lit rendering.",
         },
+        dynamicLighting: {
+          label: "Room and light-source lighting",
+          description:
+            "Lit rooms glow from their corners, and lamps, candles and lanterns you carry light what you can see, with a flickering flame. Remembered and unlit areas stay dim. Needs Lighting.",
+        },
+        smoothExploredEdges: {
+          label: "Soft explored edges",
+          description:
+            "Fade the edges of explored areas into darkness instead of ending them on square tile borders.",
+        },
+        roundedWalls: {
+          label: "Rounded walls",
+          description:
+            "Round off wall corners you can step past diagonally: lone walls become columns and diagonal gaps show. Walls beside doors stay square.",
+        },
         blockAmbientOcclusion: {
           label: "Ambient occlusion",
           description:

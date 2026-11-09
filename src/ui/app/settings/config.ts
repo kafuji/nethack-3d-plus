@@ -260,6 +260,24 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "dynamicLighting",
+    label: t.clientOptions.config.dynamicLighting.label,
+    description: t.clientOptions.config.dynamicLighting.description,
+    type: "boolean",
+  },
+  {
+    key: "smoothExploredEdges",
+    label: t.clientOptions.config.smoothExploredEdges.label,
+    description: t.clientOptions.config.smoothExploredEdges.description,
+    type: "boolean",
+  },
+  {
+    key: "roundedWalls",
+    label: t.clientOptions.config.roundedWalls.label,
+    description: t.clientOptions.config.roundedWalls.description,
+    type: "boolean",
+  },
+  {
     key: "blockAmbientOcclusion",
     label: t.clientOptions.config.blockAmbientOcclusion.label,
     description: t.clientOptions.config.blockAmbientOcclusion.description,

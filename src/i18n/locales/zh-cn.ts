@@ -668,6 +668,21 @@ export const zhCnOverrides = {
           label: "光照",
           description: "启用动态场景光照和地城变暗效果。关闭后会使用始终明亮的平面渲染。",
         },
+        dynamicLighting: {
+          label: "房间与光源照明",
+          description:
+            "明亮的房间从四角照亮，携带的灯、蜡烛和提灯会以摇曳的火光照亮视野内的区域。仅存于记忆或无光的区域保持昏暗。需要开启光照。",
+        },
+        smoothExploredEdges: {
+          label: "柔化探索边界",
+          description:
+            "让已探索区域的边缘平滑地融入黑暗，而不是止于方形格子边界。",
+        },
+        roundedWalls: {
+          label: "圆角墙壁",
+          description:
+            "将可以斜向通过的墙角变圆：孤立的墙变成柱子，斜向缝隙清晰可见。门旁边的墙保持方形。",
+        },
         blockAmbientOcclusion: {
           label: "环境光遮蔽",
           description: "为地面和墙体方块之间添加细微的接触阴影。",

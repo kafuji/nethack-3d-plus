@@ -6,6 +6,7 @@ import {
   getDefaultDarkFloorGlyph,
   getDefaultFloorGlyph,
   getOpenDoorGlyphFrom,
+  isDarkRoomFloorCmapGlyph,
   isDoorwayCmapGlyph,
   isSinkCmapGlyph
 } from "../../glyphs/behavior";
@@ -23,6 +24,7 @@ import type { TileFaceTextureRotationDebug } from "../diagnostics/tile-face-text
 import type { GlyphTextures } from "./glyph-textures";
 import type { LevelTerrainCache } from "../world/level-terrain-cache";
 import type { Lighting } from "./lighting";
+import type { LightField } from "./light-field";
 import type { Minimap } from "../ui/minimap";
 import type { MovementInput } from "../input/movement-input";
 import type { PlayerMovement } from "../world/player-movement";
@@ -46,7 +48,7 @@ export interface TileRenderingDependencies {
     | "removeInferredDarkCorridorTile"
     | "resolveInferredDarkCorridorWallSolidColorGridDarknessPercent"
     | "resolveInferredDarkCorridorWallSolidColorGridEnabled"
-    | "resolveInferredDarkCorridorWallSolidColorHex"
+    | "resolveInferredDarkCorridorWallSolidColorHexForTile"
     | "resolveInferredDarkCorridorWallTileTextureIndex"
   >;
   readonly engineState: Pick<
@@ -85,6 +87,10 @@ export interface TileRenderingDependencies {
   readonly lighting: Pick<
     Lighting,
     "markLightingDirty"
+  >;
+  readonly lightField: Pick<
+    LightField,
+    "isActive"
   >;
   readonly minimap: Pick<
     Minimap,
@@ -174,6 +180,7 @@ export interface TileRenderingDependencies {
     | "isAltarOrTombstoneLikeBehavior"
     | "isDamageFlashableBehavior"
     | "isDisallowedSpecialDotFloorBehavior"
+    | "isFlatTerrainFeatureUnderPlayer"
     | "isLootLikeBehavior"
     | "isMonsterLikeBehavior"
     | "isOpenDoorFloorBehavior"
@@ -810,6 +817,18 @@ export class TileRendering {
       }
       tileTextColor = this.dependencies.glyphTextures.asciiFriendlyGlyphTextColor;
     }
+    // With world lighting on, remembered dark-room floor uses the room floor
+    // tile and the lighting alone decides how dark it looks. The game marks
+    // only the squares the hero currently sees lit, so the dark tile would
+    // otherwise leave a patchwork of wherever the hero last stood.
+    if (
+      this.dependencies.lightField.isActive() &&
+      isDarkRoomFloorCmapGlyph(renderBehavior.effective.glyph)
+    ) {
+      renderBehavior = this.dependencies.worldClassification.resolveNormalRoomFloorBehavior();
+      tileGlyphChar = renderBehavior.glyphChar;
+      tileTextColor = renderBehavior.textColor;
+    }
     const useTerrainTiles = usesTerrainTiles(
       this.dependencies.engineState.clientOptions, renderBehavior.isWall, renderBehavior.materialKind,
     );
@@ -935,6 +954,8 @@ export class TileRendering {
     mesh.userData.tileX = x;
     mesh.userData.tileY = y;
     mesh.userData.isInferredDarkCorridorWall = isInferredDarkCorridorWall;
+    // Blank stone drawn only as a dark filler; the explored mask ignores it.
+    mesh.userData.isVoidFill = shouldFlattenVoidOrUnknownTile;
     mesh.userData.useDarkCorridorWallCompatibility =
       darkCorridorWallCompatibilityActive;
     mesh.userData.isWall = renderBehavior.isWall;
@@ -977,16 +998,11 @@ export class TileRendering {
         renderBehavior.effective.tileIndex,
         darkCorridorWallCompatibilityActive,
       );
-    // The solid colour stands in for rock that has no art of its own. A
-    // high-resolution pack paints that rock (other/stone), so show it.
-    const hiResPackPaintsDarkCorridorWall =
-      darkCorridorWallCompatibilityActive &&
-      useTerrainTiles &&
-      this.dependencies.tilesetAssets.resolveHiResTile(tileTextureIndex) !== null;
-    const inferredDarkWallSolidColorHex = hiResPackPaintsDarkCorridorWall
-      ? null
-      : this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorHex(
+    const inferredDarkWallSolidColorHex =
+      this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorHexForTile(
         darkCorridorWallCompatibilityActive,
+        tileTextureIndex,
+        useTerrainTiles,
       );
     const inferredDarkWallSolidColorGridEnabled =
       this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorGridEnabled(
@@ -1210,6 +1226,12 @@ export class TileRendering {
         // player. Other candidates (such as actual loot) remain eligible.
         if (this.dependencies.tilesetAssets.shouldUseVultureTiles() &&
             isDoorwayCmapGlyph(floorBehavior.effective.glyph)) {
+          continue;
+        }
+        // Flat terrain (down stairs, doorways, traps) is already drawn by the
+        // player's floor tile; standing it up behind the player shows the
+        // whole floor tile as a card.
+        if (this.dependencies.worldClassification.isFlatTerrainFeatureUnderPlayer(floorBehavior)) {
           continue;
         }
         const shouldRenderAsPlayerUnderlay =
