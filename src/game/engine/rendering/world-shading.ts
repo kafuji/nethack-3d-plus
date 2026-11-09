@@ -141,6 +141,54 @@ function lightFieldGlsl(useSurfaceNormal: boolean): string {
 `;
 }
 
+/**
+ * Moving liquid surfaces. Water ripples (the texture wobbles a little and
+ * catches small glints); lava churns more slowly and pulses brighter. The
+ * kind is a per-material uniform (0 none, 1 water, 2 lava) so a tile overlay
+ * can change kind without recompiling; time is shared. Positions are world
+ * coordinates so neighbouring tiles move together.
+ */
+export type LiquidSurfaceKind = 0 | 1 | 2;
+
+const LIQUID_PREFIX_GLSL = `
+        uniform float uLiquid;
+        uniform float uWorldTime;
+`;
+
+const LIQUID_MAP_FRAGMENT_GLSL = `
+        #ifdef USE_MAP
+          vec2 liquidUv = vMapUv;
+          if (uLiquid > 0.5) {
+            float liquidSpeed = uLiquid > 1.5 ? 0.35 : 0.9;
+            float liquidTime = uWorldTime * liquidSpeed;
+            vec2 liquidPoint = vWorldPos.xy;
+            vec2 liquidOffset = vec2(
+              sin(liquidPoint.y * 5.3 + liquidTime * 2.1) + sin((liquidPoint.x + liquidPoint.y) * 3.9 - liquidTime * 1.4),
+              cos(liquidPoint.x * 4.7 - liquidTime * 1.8) + sin((liquidPoint.x - liquidPoint.y) * 3.3 + liquidTime * 1.2)
+            ) * (uLiquid > 1.5 ? 0.009 : 0.006);
+            liquidUv += liquidOffset;
+          }
+          vec4 sampledDiffuseColor = texture2D( map, liquidUv );
+          #ifdef DECODE_VIDEO_TEXTURE
+            sampledDiffuseColor = sRGBTransferEOTF( sampledDiffuseColor );
+          #endif
+          diffuseColor *= sampledDiffuseColor;
+          if (uLiquid > 0.5 && uLiquid < 1.5) {
+            float liquidGlint = sin(vWorldPos.x * 8.3 + uWorldTime * 1.9) * sin(vWorldPos.y * 7.1 - uWorldTime * 1.6);
+            diffuseColor.rgb += pow(max(liquidGlint, 0.0), 6.0) * 0.12;
+          } else if (uLiquid > 1.5) {
+            float liquidPulse = 0.5 + 0.5 * sin(uWorldTime * 1.1 + vWorldPos.x * 1.7 + vWorldPos.y * 2.3);
+            diffuseColor.rgb *= 1.0 + 0.15 * liquidPulse;
+          }
+        #endif
+`;
+
+/** Set which liquid a material patched with `liquid: true` shows. */
+export function setLiquidSurface(material: THREE.Material, kind: LiquidSurfaceKind): void {
+  const uniform = material.userData?.nh3dLiquid as { value: number } | undefined;
+  if (uniform) uniform.value = kind;
+}
+
 export interface WorldShadingInitialValues {
   readonly maxDarkAlpha: number;
   readonly bloodGroundStrength: number;
@@ -179,6 +227,8 @@ export function createWorldShadingUniforms(initial: WorldShadingInitialValues) {
     uLightParams: { value: new THREE.Vector4(1.35, 0.6, 2, 0) },
     /** Remembered terrain: (saturation, RGB tint). */
     uMemoryLook: { value: new THREE.Vector4(1, 1, 1, 1) },
+    /** Seconds; drives moving liquid surfaces. */
+    uWorldTime: { value: 0 },
   };
 }
 
@@ -201,6 +251,11 @@ export interface WorldShadingPatchOptions {
    * always treated as entities.
    */
   entity?: boolean;
+  /**
+   * The material may show water or lava; pick which with setLiquidSurface.
+   * For tile overlays only (not combined with the blood-ground options).
+   */
+  liquid?: boolean;
 }
 
 /**
@@ -240,9 +295,16 @@ export class WorldShading {
     const exploredMask = terrain;
     const exploredMaskKeySuffix = exploredMask ? "_explored_mask_v1" : "";
     const lightNormalKeySuffix = terrain ? "_light_normal" : "";
+    const liquid =
+      options.liquid === true && !bloodGroundDiscardEmptyTexels && !bloodGroundSpecularEffectTexelSize;
+    const liquidUniform = liquid
+      ? ((material.userData.nh3dLiquid as { value: number } | undefined) ?? { value: 0 })
+      : null;
+    if (liquidUniform) material.userData.nh3dLiquid = liquidUniform;
+    const liquidKeySuffix = liquid ? "_liquid_v1" : "";
     // Force Three.js to compile a unique shader for this patch
     material.customProgramCacheKey = () =>
-      `vignette_patch_v11${shaderKeySuffix}${bloodGroundGuardKeySuffix}${faceShadeKeySuffix}${exploredMaskKeySuffix}${lightNormalKeySuffix}`;
+      `vignette_patch_v11${shaderKeySuffix}${bloodGroundGuardKeySuffix}${faceShadeKeySuffix}${exploredMaskKeySuffix}${lightNormalKeySuffix}${liquidKeySuffix}`;
 
     material.onBeforeCompile = (shader) => {
       // Bind our class-level uniforms to this specific shader
@@ -266,6 +328,14 @@ export class WorldShading {
       shader.uniforms.uPlayerLightRadius = this.uniforms.uPlayerLightRadius;
       shader.uniforms.uLightParams = this.uniforms.uLightParams;
       shader.uniforms.uMemoryLook = this.uniforms.uMemoryLook;
+      if (liquidUniform) {
+        shader.uniforms.uLiquid = liquidUniform;
+        shader.uniforms.uWorldTime = this.uniforms.uWorldTime;
+        shader.fragmentShader = shader.fragmentShader.replace(
+          "#include <map_fragment>",
+          LIQUID_MAP_FRAGMENT_GLSL,
+        );
+      }
       if (exploredMask) {
         shader.uniforms.uExploredMask = this.uniforms.uExploredMask;
         shader.uniforms.uExploredMaskEnabled = this.uniforms.uExploredMaskEnabled;
@@ -802,6 +872,7 @@ export class WorldShading {
         varying vec3 vWorldPos;
         ${bloodGroundSpecularPrefix}
         ${LIGHT_FIELD_PREFIX_GLSL}
+        ${liquid ? LIQUID_PREFIX_GLSL : ""}
         ${exploredMask ? EXPLORED_MASK_PREFIX_GLSL : ""}
         ${shader.fragmentShader}
       `.replace(

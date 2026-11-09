@@ -4,6 +4,7 @@ import { TILE_SIZE } from "../../constants";
 import {
   classifyTileBehavior,
   getOpenDoorGlyphFrom,
+  isLavaCmapGlyph,
   isVerticalDoorCmapGlyph
 } from "../../glyphs/behavior";
 import type { TileMaterialKind } from "../../glyphs";
@@ -27,6 +28,7 @@ import type { VultureWalls } from "./vulture-walls";
 import type { WallGeometry } from "./wall-geometry";
 import type { WallOverlays } from "./wall-overlays";
 import type { WorldClassification } from "../world/world-classification";
+import { setLiquidSurface } from "./world-shading";
 
 export interface TileMaterialsDependencies {
   readonly camera: Pick<
@@ -225,6 +227,15 @@ export class TileMaterials {
       typeof mesh.userData?.materialKind === "string"
         ? (mesh.userData.materialKind as TileMaterialKind)
         : null;
+    // Pools, moats and lava get a moving surface; everything else is still.
+    setLiquidSurface(
+      overlay.material,
+      tileTextureMaterialKind !== "water" || isWall
+        ? 0
+        : tileTextureSourceGlyph !== null && isLavaCmapGlyph(tileTextureSourceGlyph)
+          ? 2
+          : 1,
+    );
     const tileTextureX =
       typeof mesh.userData?.tileX === "number" &&
       Number.isFinite(mesh.userData.tileX)

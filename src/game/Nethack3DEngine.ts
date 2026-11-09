@@ -1969,6 +1969,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.exploredMask.update(timeMs);
     // After updateLightingCenter, which places the hero's light.
     this.systems.lightField.update(timeMs);
+    this.systems.lighting.setWorldTime(timeMs);
     this.systems.camera.compensateTerminalWorldSpriteAspect();
     const xrCamera = this.systems.webXrPresentation.prepareRender();
     if (xrCamera) {

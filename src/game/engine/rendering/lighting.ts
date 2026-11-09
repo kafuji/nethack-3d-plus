@@ -227,6 +227,11 @@ export class Lighting {
     return this.worldShading.uniforms;
   }
 
+  /** Frame time for animated shading such as water and lava surfaces. */
+  setWorldTime(timeMs: number): void {
+    this.worldShading.uniforms.uWorldTime.value = timeMs / 1000;
+  }
+
   patchMaterialForVignette(
     material: THREE.Material,
     options: WorldShadingPatchOptions = {},
