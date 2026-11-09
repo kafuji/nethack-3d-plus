@@ -879,6 +879,11 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "動的なシーン照明とダンジョンの暗さ表現を有効にします。無効にすると常時明るい平坦な描画になります。",
         },
+        smoothExploredEdges: {
+          label: "探索範囲の境界をぼかす",
+          description:
+            "探索済みの範囲の端を四角いタイルの境目で切らず、暗闇へなめらかに溶け込ませます。",
+        },
         blockAmbientOcclusion: {
           label: "アンビエントオクルージョン",
           description:

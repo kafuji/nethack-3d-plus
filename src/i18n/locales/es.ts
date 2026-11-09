@@ -861,6 +861,11 @@ export const esOverrides = {
                     label: "Iluminaci\u00F3n",
                     description: "Habilite la iluminaci\u00F3n din\u00E1mica de la escena y el oscurecimiento de las mazmorras. Desact\u00EDvelo para obtener una representaci\u00F3n m\u00E1s plana y siempre iluminada.",
                 },
+                smoothExploredEdges: {
+                    label: "Bordes explorados suaves",
+                    description:
+                      "Difumina los bordes de las zonas exploradas hacia la oscuridad en lugar de cortarlos en los bordes cuadrados de las casillas.",
+                },
                 blockAmbientOcclusion: {
                     label: "Oclusi\u00F3n ambiental",
                     description: "Agrega un sutil sombreado de contacto entre los bloques de piso y pared.",

@@ -893,6 +893,11 @@ export const deOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Aktiviert dynamische Szenenbeleuchtung und Abdunkelung des Dungeons. Deaktivieren f\u00fcr flacheres, stets beleuchtetes Rendering.",
         },
+        smoothExploredEdges: {
+          label: "Weiche Erkundungsränder",
+          description:
+            "Lässt die Ränder erkundeter Bereiche weich in die Dunkelheit übergehen, statt an eckigen Kachelgrenzen zu enden.",
+        },
         blockAmbientOcclusion: {
           label: "Ambient Occlusion",
           description:

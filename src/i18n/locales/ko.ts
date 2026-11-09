@@ -903,6 +903,11 @@ export const ko = {
           description:
             "동적 장면 조명과 던전 어둡게 하기를 활성화합니다. 끄면 항상 밝은 평면 렌더링이 됩니다.",
         },
+        smoothExploredEdges: {
+          label: "탐색 경계 부드럽게",
+          description:
+            "탐색한 영역의 가장자리를 네모난 타일 경계로 끊지 않고 어둠 속으로 부드럽게 녹아들게 합니다.",
+        },
         blockAmbientOcclusion: {
           label: "앰비언트 오클루전",
           description:

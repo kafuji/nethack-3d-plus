@@ -302,6 +302,8 @@ export type Nh3dClientOptions = {
   fpsLookSensitivityY: number;
   fpsWasdKeyboardMovementEnabled: boolean;
   lightingEnabled: boolean;
+  /** Fade the edge of explored areas into the unexplored void. */
+  smoothExploredEdges: boolean;
   fpsFlattenEntityBillboards: boolean;
   showItemsUnderPlayerInOverheadTilesMode: boolean;
   controllerEnabled: boolean;
@@ -469,6 +471,7 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   fpsLookSensitivityY: isMobile.matches ? 1.5 : 1,
   fpsWasdKeyboardMovementEnabled: true,
   lightingEnabled: true,
+  smoothExploredEdges: true,
   fpsFlattenEntityBillboards: false,
   showItemsUnderPlayerInOverheadTilesMode: true,
   controllerEnabled: false,
@@ -1201,6 +1204,10 @@ export function normalizeNh3dClientOptions(
       typeof overrides?.lightingEnabled === "boolean"
         ? overrides.lightingEnabled
         : defaultNh3dClientOptions.lightingEnabled,
+    smoothExploredEdges:
+      typeof overrides?.smoothExploredEdges === "boolean"
+        ? overrides.smoothExploredEdges
+        : defaultNh3dClientOptions.smoothExploredEdges,
     fpsFlattenEntityBillboards:
       typeof overrides?.fpsFlattenEntityBillboards === "boolean"
         ? overrides.fpsFlattenEntityBillboards

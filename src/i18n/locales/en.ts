@@ -916,6 +916,11 @@ export const en = {
           description:
             "Enable dynamic scene lighting and dungeon darkening. Turn off for flatter always-lit rendering.",
         },
+        smoothExploredEdges: {
+          label: "Soft explored edges",
+          description:
+            "Fade the edges of explored areas into darkness instead of ending them on square tile borders.",
+        },
         blockAmbientOcclusion: {
           label: "Ambient occlusion",
           description:

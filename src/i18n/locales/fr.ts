@@ -931,6 +931,11 @@ export const fr = {
           description:
             "Active l'eclairage dynamique de la scene et l'assombrissement du donjon. Desactivez pour un rendu plus plat et toujours eclaire.",
         },
+        smoothExploredEdges: {
+          label: "Bords explores adoucis",
+          description:
+            "Fond les bords des zones explorees dans l'obscurite au lieu de les arreter sur des bords de cases carres.",
+        },
         blockAmbientOcclusion: {
           label: "Occlusion ambiante",
           description:

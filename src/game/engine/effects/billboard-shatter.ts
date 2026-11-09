@@ -848,7 +848,7 @@ export class BillboardShatter {
         toneMapped: false,
       });
       material.opacity = 0.98;
-      this.dependencies.lighting.patchMaterialForVignette(material);
+      this.dependencies.lighting.patchMaterialForVignette(material, { entity: true });
 
       const geometry = new THREE.PlaneGeometry(1, 1);
       const shardMesh = new THREE.Mesh(geometry, material);

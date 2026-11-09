@@ -260,6 +260,12 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "smoothExploredEdges",
+    label: t.clientOptions.config.smoothExploredEdges.label,
+    description: t.clientOptions.config.smoothExploredEdges.description,
+    type: "boolean",
+  },
+  {
     key: "blockAmbientOcclusion",
     label: t.clientOptions.config.blockAmbientOcclusion.label,
     description: t.clientOptions.config.blockAmbientOcclusion.description,

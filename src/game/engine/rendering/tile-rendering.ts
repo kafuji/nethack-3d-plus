@@ -935,6 +935,8 @@ export class TileRendering {
     mesh.userData.tileX = x;
     mesh.userData.tileY = y;
     mesh.userData.isInferredDarkCorridorWall = isInferredDarkCorridorWall;
+    // Blank stone drawn only as a dark filler; the explored mask ignores it.
+    mesh.userData.isVoidFill = shouldFlattenVoidOrUnknownTile;
     mesh.userData.useDarkCorridorWallCompatibility =
       darkCorridorWallCompatibilityActive;
     mesh.userData.isWall = renderBehavior.isWall;

@@ -899,6 +899,11 @@ export const fiOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Ota käyttöön dynaaminen kohtausvalaistus ja luolaston tummennus. Poista käytöstä saadaksesi tasaisemman aina valaistun renderöinnin.",
         },
+        smoothExploredEdges: {
+          label: "Pehmeät tutkitun alueen reunat",
+          description:
+            "Häivyttää tutkittujen alueiden reunat pimeyteen sen sijaan, että ne päättyisivät kulmikkaisiin ruutujen rajoihin.",
+        },
         blockAmbientOcclusion: {
           label: "Ympäristön varjostus",
           description:

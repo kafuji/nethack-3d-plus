@@ -922,6 +922,11 @@ export const ptBrOverrides = {
           description:
             "Ativa iluminação dinâmica da cena e escurecimento da masmorra. Desative para uma renderização plana e sempre iluminada.",
         },
+        smoothExploredEdges: {
+          label: "Bordas exploradas suaves",
+          description:
+            "Faz as bordas das áreas exploradas se dissolverem na escuridão em vez de terminarem em bordas quadradas de blocos.",
+        },
         blockAmbientOcclusion: {
           label: "Oclusão de ambiente",
           description:

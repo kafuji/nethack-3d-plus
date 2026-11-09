@@ -668,6 +668,11 @@ export const zhCnOverrides = {
           label: "光照",
           description: "启用动态场景光照和地城变暗效果。关闭后会使用始终明亮的平面渲染。",
         },
+        smoothExploredEdges: {
+          label: "柔化探索边界",
+          description:
+            "让已探索区域的边缘平滑地融入黑暗，而不是止于方形格子边界。",
+        },
         blockAmbientOcclusion: {
           label: "环境光遮蔽",
           description: "为地面和墙体方块之间添加细微的接触阴影。",

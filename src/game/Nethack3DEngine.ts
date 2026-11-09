@@ -29,6 +29,10 @@ import { observedMenuItems } from "../automation/observed-menu";
 import { ObservedInventory } from "../automation/observed-inventory";
 import { ObservedNumberPad } from "../automation/observed-number-pad";
 import { ObservedStatus } from "../automation/observed-status";
+import {
+  DEFAULT_EXPLORED_MASK_TUNING,
+  type ExploredMaskTuning,
+} from "./engine/rendering/explored-mask";
 
 /** Main engine composition, ordered lifecycle, and public UI controller. */
 class Nethack3DEngine implements Nethack3DEngineController {
@@ -90,6 +94,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.audioHapticsPlatform.backgroundMusic = new BackgroundMusic();
     this.systems.audioHapticsPlatform.syncBackgroundMusicWithClientOptions(this.systems.engineState.clientOptions);
     this.exposeBackgroundMusicDebugHandle();
+    this.exposeExploredMaskDebugHandle();
     this.systems.audioHapticsPlatform.messageSoundHooks = new MessageSoundHooks({
       isSoundEnabled: () => this.systems.engineState.clientOptions.soundEnabled,
       onCombatActivity: () => this.systems.audioHapticsPlatform.backgroundMusic?.notifyCombatActivity(),
@@ -197,6 +202,22 @@ class Nethack3DEngine implements Nethack3DEngineController {
       mood: () => music.getCurrentMood(),
       ascend: () => music.notifyAscension(),
       wizard: (inView: boolean) => music.notifyWizardPresence(inView),
+    };
+  }
+
+  /**
+   * Devtools helper for tuning the explored-area fade:
+   *   __nh3dExploredMask.get()                         // current tuning
+   *   __nh3dExploredMask.set({ blurTiles: 0.3 })       // blur, fade, noise, reveal time
+   *   __nh3dExploredMask.reset()                       // back to defaults
+   */
+  private exposeExploredMaskDebugHandle(): void {
+    if (typeof window === "undefined") return;
+    const mask = this.systems.exploredMask;
+    (window as unknown as Record<string, unknown>).__nh3dExploredMask = {
+      get: () => ({ ...mask.tuning }),
+      set: (tuning: Partial<ExploredMaskTuning>) => mask.setTuning(tuning),
+      reset: () => mask.setTuning(DEFAULT_EXPLORED_MASK_TUNING),
     };
   }
 
@@ -1576,6 +1597,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
       this.systems.renderPipeline.scene.remove(mesh);
     });
     this.systems.tileRendering.tileMap.clear();
+    this.systems.exploredMask.reset();
     this.systems.floorOcclusion.clearFloorBlockAmbientOcclusion();
     this.systems.wallGeometry.fpsWallChamferFloorMeshes.forEach((mesh) => {
       this.systems.renderPipeline.scene.remove(mesh);
@@ -1756,6 +1778,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.audioHapticsPlatform.backgroundMusic?.dispose();
     if (typeof window !== "undefined") {
       delete (window as unknown as Record<string, unknown>).__nh3dMusic;
+      delete (window as unknown as Record<string, unknown>).__nh3dExploredMask;
     }
     this.systems.audioHapticsPlatform.clearPendingIncomingDamageRumble();
     this.systems.audioHapticsPlatform.webHaptics?.destroy();
@@ -1819,6 +1842,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.vultureProjectionDebug.vultureDoorProjectionRotationButtons = {};
     this.systems.vultureProjectionDebug.vultureWallProjectionDebugDrag = null;
 
+    this.systems.exploredMask.dispose();
     this.systems.renderPipeline.disposeAntialiasingPipeline();
     this.systems.renderPipeline.renderer.domElement.remove();
     this.systems.renderPipeline.renderer.forceContextLoss();
@@ -1907,6 +1931,8 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.vultureWalls.updateVultureDoorPlaneRenderOrdering();
     this.systems.vultureWalls.updateIronBarsWallPlaneVisibility();
     this.systems.tileUpdates.flushPendingDarkCorridorInference();
+    // After all tile changes for this frame, so the mask matches what is drawn.
+    this.systems.exploredMask.update(timeMs);
     this.systems.camera.compensateTerminalWorldSpriteAspect();
     const xrCamera = this.systems.webXrPresentation.prepareRender();
     if (xrCamera) {
