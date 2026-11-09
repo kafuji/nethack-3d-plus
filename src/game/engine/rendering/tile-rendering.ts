@@ -174,6 +174,7 @@ export interface TileRenderingDependencies {
     | "isAltarOrTombstoneLikeBehavior"
     | "isDamageFlashableBehavior"
     | "isDisallowedSpecialDotFloorBehavior"
+    | "isFlatTerrainFeatureUnderPlayer"
     | "isLootLikeBehavior"
     | "isMonsterLikeBehavior"
     | "isOpenDoorFloorBehavior"
@@ -1212,6 +1213,12 @@ export class TileRendering {
         // player. Other candidates (such as actual loot) remain eligible.
         if (this.dependencies.tilesetAssets.shouldUseVultureTiles() &&
             isDoorwayCmapGlyph(floorBehavior.effective.glyph)) {
+          continue;
+        }
+        // Flat terrain (down stairs, doorways, traps) is already drawn by the
+        // player's floor tile; standing it up behind the player shows the
+        // whole floor tile as a card.
+        if (this.dependencies.worldClassification.isFlatTerrainFeatureUnderPlayer(floorBehavior)) {
           continue;
         }
         const shouldRenderAsPlayerUnderlay =
