@@ -1013,7 +1013,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
         // item from the inventory snapshot, so keep it current.
         if (
           (this.systems.movementInput.isFpsMode() ||
-            this.systems.entityBillboards.resolvePlayerHeldWeaponOverlayBillboardKey() !== null) &&
+            this.systems.playerWeaponOverlay.isActive()) &&
           !this.systems.promptDialogs.pendingStartupInventoryRefresh
         ) {
           this.systems.promptDialogs.queueSilentInventoryRefresh("inventory-updated-signal");
@@ -1175,6 +1175,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
         this.systems.worldClassification.capturePlayerTileTerrainInvalidationFromMessage(data.text);
         this.systems.tileContextActions.captureFpsCrosshairGlanceMessage(data.text);
         this.systems.combatAttribution.captureFpsHeldWeaponSwipeFromCombatMessage(data.text);
+        this.systems.combatAttribution.capturePlayerWeaponSwingFromCombatMessage(data.text);
         {
           const playerKillHandled = this.systems.combatAttribution.captureMonsterDefeatFromMessage(
             data.text,
@@ -1198,6 +1199,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
         this.systems.worldClassification.capturePlayerTileTerrainInvalidationFromMessage(data.text);
         this.systems.tileContextActions.captureFpsCrosshairGlanceMessage(data.text);
         this.systems.combatAttribution.captureFpsHeldWeaponSwipeFromCombatMessage(data.text);
+        this.systems.combatAttribution.capturePlayerWeaponSwingFromCombatMessage(data.text);
         {
           const playerKillHandled = this.systems.combatAttribution.captureMonsterDefeatFromMessage(
             data.text,
@@ -1829,6 +1831,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.wallOverlays.vultureInvisibleSurfaceMaterial.dispose();
     this.systems.entityBillboards.fpsPitchLockedBillboardGeometry.dispose();
     this.systems.heldWeapon.fpsHeldWeaponGeometry.dispose();
+    this.systems.playerWeaponOverlay.dispose();
     Object.values(this.systems.tileMaterials.materials).forEach((material) => material.dispose());
   }
 
@@ -1872,8 +1875,9 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.promptDialogs.maybeRequestPendingStartupInventoryRefresh();
     this.systems.promptDialogs.maybeRequestQueuedSilentInventoryRefresh();
     this.systems.heldWeapon.syncFpsHeldWeaponSprite(deltaSeconds);
-    this.systems.entityBillboards.syncPlayerHeldWeaponOverlay();
     this.systems.entityBillboards.updateMonsterBillboardPitchLockState();
+    // After movement transitions so the weapons follow the animated player.
+    this.systems.playerWeaponOverlay.sync();
     this.systems.directionPrompts.syncDirectionPromptOverlayVisibility();
     this.systems.directionPrompts.directionPromptOverlay?.update(
       this.systems.camera.getActiveCamera(),

@@ -19,6 +19,8 @@ import type { HeldWeapon } from "../rendering/held-weapon";
 import type { Minimap } from "../ui/minimap";
 import type { MovementInput } from "../input/movement-input";
 import type { PlayerMovement } from "./player-movement";
+import type { PlayerWeaponOverlay } from "../rendering/player-weapon-overlay";
+import { isPlayerWeaponSwingMessage } from "../rendering/player-weapon-swing";
 import type { RuntimeEntityTracking } from "./runtime-entity-tracking";
 import type { TileRendering } from "../rendering/tile-rendering";
 import type { WorldClassification } from "./world-classification";
@@ -104,6 +106,11 @@ export interface CombatAttributionDependencies {
     PlayerMovement,
     "hasSeenPlayerPosition"
     | "playerPos"
+  >;
+  readonly playerWeaponOverlay: Pick<
+    PlayerWeaponOverlay,
+    "isActive"
+    | "playSwing"
   >;
   readonly runtimeEntityTracking: Pick<
     RuntimeEntityTracking,
@@ -353,6 +360,45 @@ export class CombatAttribution {
     }
 
     this.suppressNextFpsHeldWeaponMissedAttackMessageSound = isMissMessage;
+  }
+
+  /**
+   * Swing the overhead weapon sprite for the hero's own melee blows. The
+   * target comes from the attack input (pointer or direction); blows aimed
+   * further than an adjacent tile (thrown or fired kills) do not swing.
+   */
+  capturePlayerWeaponSwingFromCombatMessage(messageLike: unknown): void {
+    if (
+      typeof messageLike !== "string" ||
+      this.dependencies.movementInput.isFpsMode() ||
+      !this.dependencies.playerWeaponOverlay.isActive() ||
+      !isPlayerWeaponSwingMessage(messageLike)
+    ) {
+      return;
+    }
+    const nowMs = Date.now();
+    const origin = this.dependencies.playerMovement.playerPos;
+    let delta: { dx: number; dy: number } | null = null;
+    const pointerTarget = this.getRecentPointerAttackTarget(nowMs);
+    if (pointerTarget) {
+      delta = { dx: pointerTarget.x - origin.x, dy: pointerTarget.y - origin.y };
+    } else {
+      const context = this.getRecentDirectionalAttackContext(nowMs);
+      if (context) {
+        const target = this.findDirectionalMonsterTarget(context);
+        if (
+          target &&
+          Math.max(Math.abs(target.x - context.originX), Math.abs(target.y - context.originY)) > 1
+        ) {
+          return;
+        }
+        delta = { dx: context.dx, dy: context.dy };
+      }
+    }
+    if (delta && Math.max(Math.abs(delta.dx), Math.abs(delta.dy)) > 1) {
+      return;
+    }
+    this.dependencies.playerWeaponOverlay.playSwing(delta);
   }
 
   consumeFpsHeldWeaponMissedAttackMessageSoundSuppression(
