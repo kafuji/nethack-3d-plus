@@ -1,0 +1,74 @@
+{
+  "label": "Non-player characters (shopkeepers, priests, watchmen...) in the player-character style. NPCs face the left side of the picture.",
+  "work": "../../../.hires-tmp/characters",
+  "pack": "../../../public/assets/hires/pixelhack-hd",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "medium",
+  "size": 256,
+  "style": "Hand-painted dark-fantasy game character, painterly and believable in its materials, but designed above all as a bold, iconic game piece that reads at 48 pixels: large, simple masses of saturated colour, very few small details, clear light and dark separation between head, torso, legs and gear, the role's signature clothing and armour unmistakable. Warm key light from the upper left and a cool rim light along the right edges.",
+  "rules": {
+    "item": "One full-body figure. Image 1 is the pixel-art sprite this art replaces: keep its pose, stance and gestures, and the figure always faces the left side of the picture: a three-quarter view with the body and face turned toward the viewer's left. Use stylized, chunky game proportions: a big head about one quarter of the height, a sturdy body, big hands and feet. Paint it as hand-painted art and ignore the blocky pixels. Fully transparent background: no ground, no cast shadow, no text, no frame."
+  },
+  "items": [
+    {
+      "name": "shopkeeper_male",
+      "ref": "pxm_shopkeeper_male",
+      "kind": "item",
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "prompt": "A shopkeeper, a man: a stout, broad-bellied merchant with a shaved head under a small brown felt cap, a thick black moustache and shrewd, greedy eyes, a white linen shirt with rolled-up sleeves, a heavy brown leather apron stained from work, a coin purse and a ring of keys at his belt. One hand raised in a welcoming, sales-pitch gesture. Friendly but not to be crossed.",
+      "fit": {
+        "matchRef": "pxm_shopkeeper_male",
+        "anchor": "bottom"
+      },
+      "outputs": [
+        {
+          "key": "mon/shopkeeper_male"
+        }
+      ]
+    },
+    {
+      "name": "shopkeeper_female",
+      "ref": "pxm_shopkeeper_female",
+      "kind": "item",
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "prompt": "A shopkeeper, a woman: a stout, sturdy merchant with dark hair tied up under a brown kerchief, sharp, calculating eyes and a confident smile, a white linen blouse with rolled-up sleeves, a heavy brown leather apron stained from work, a coin purse and a ring of keys at her belt. One hand raised in a welcoming, sales-pitch gesture. Friendly but not to be crossed.",
+      "fit": {
+        "matchRef": "pxm_shopkeeper_female",
+        "anchor": "bottom"
+      },
+      "outputs": [
+        {
+          "key": "mon/shopkeeper_female"
+        }
+      ]
+    }
+  ]
+}

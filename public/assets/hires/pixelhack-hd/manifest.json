@@ -18,26 +18,26 @@
     },
     "mon/archeologist_female": {
       "file": "mon/archeologist_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/archeologist_male": {
       "file": "mon/archeologist_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/barbarian_female": {
       "file": "mon/barbarian_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/barbarian_male": {
       "file": "mon/barbarian_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/brown_mold_female": {
@@ -54,14 +54,14 @@
     },
     "mon/cave_dweller_female": {
       "file": "mon/cave_dweller_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/cave_dweller_male": {
       "file": "mon/cave_dweller_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/cave_spider_female": {
@@ -90,14 +90,14 @@
     },
     "mon/cleric_female": {
       "file": "mon/cleric_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/cleric_male": {
       "file": "mon/cleric_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/coyote_female": {
@@ -282,14 +282,14 @@
     },
     "mon/healer_female": {
       "file": "mon/healer_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/healer_male": {
       "file": "mon/healer_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/hill_orc_female": {
@@ -420,8 +420,8 @@
     },
     "mon/knight_female": {
       "file": "mon/knight_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/knight_male": {
@@ -540,14 +540,14 @@
     },
     "mon/monk_female": {
       "file": "mon/monk_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/monk_male": {
       "file": "mon/monk_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/newt_female": {
@@ -576,14 +576,14 @@
     },
     "mon/ranger_female": {
       "file": "mon/ranger_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/ranger_male": {
       "file": "mon/ranger_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/red_mold_female": {
@@ -600,26 +600,26 @@
     },
     "mon/rogue_female": {
       "file": "mon/rogue_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/rogue_male": {
       "file": "mon/rogue_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/samurai_female": {
       "file": "mon/samurai_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/samurai_male": {
       "file": "mon/samurai_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/sewer_rat_female": {
@@ -632,6 +632,18 @@
       "file": "mon/sewer_rat_male.png",
       "width": 128,
       "height": 128,
+      "frames": 1
+    },
+    "mon/shopkeeper_female": {
+      "file": "mon/shopkeeper_female.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "mon/shopkeeper_male": {
+      "file": "mon/shopkeeper_male.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/shrieker_female": {
@@ -648,20 +660,20 @@
     },
     "mon/tourist_female": {
       "file": "mon/tourist_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/tourist_male": {
       "file": "mon/tourist_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/valkyrie_female": {
       "file": "mon/valkyrie_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/valkyrie_male": {
@@ -720,14 +732,14 @@
     },
     "mon/wizard_female": {
       "file": "mon/wizard_female.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/wizard_male": {
       "file": "mon/wizard_male.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "mon/yellow_light_female": {
@@ -760,6 +772,30 @@
       "height": 256,
       "frames": 1
     },
+    "obj/agate__levitation": {
+      "file": "obj/agate__levitation.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/amulet__generic_amulet": {
+      "file": "obj/amulet__generic_amulet.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/amulet_of_yendor__amulet_of_yendor": {
+      "file": "obj/amulet_of_yendor__amulet_of_yendor.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/amulet_of_yendor__cheap_plastic_imitation_of_the_amulet_of_yendor": {
+      "file": "obj/amulet_of_yendor__cheap_plastic_imitation_of_the_amulet_of_yendor.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/andova_begarin__fire": {
       "file": "obj/andova_begarin__fire.png",
       "width": 256,
@@ -774,8 +810,20 @@
     },
     "obj/apple": {
       "file": "obj/apple.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/apron__alchemy_smock": {
+      "file": "obj/apron__alchemy_smock.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/armor__generic_armor": {
+      "file": "obj/armor__generic_armor.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/arrow": {
@@ -826,14 +874,44 @@
       "height": 256,
       "frames": 1
     },
+    "obj/balsa__secret_door_detection": {
+      "file": "obj/balsa__secret_door_detection.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/bamboo_arrow__ya": {
       "file": "obj/bamboo_arrow__ya.png",
       "width": 256,
       "height": 256,
       "frames": 1
     },
+    "obj/banana": {
+      "file": "obj/banana.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/banded_mail": {
+      "file": "obj/banded_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/beaked_polearm__bec_de_corbin": {
       "file": "obj/beaked_polearm__bec_de_corbin.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/beartrap": {
+      "file": "obj/beartrap.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/bell": {
+      "file": "obj/bell.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -868,6 +946,30 @@
       "height": 256,
       "frames": 1
     },
+    "obj/black_dragon_scale_mail": {
+      "file": "obj/black_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/black_dragon_scales": {
+      "file": "obj/black_dragon_scales.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/black_onyx__protection": {
+      "file": "obj/black_onyx__protection.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/blindfold": {
+      "file": "obj/blindfold.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/blue__sapphire": {
       "file": "obj/blue__sapphire.png",
       "width": 256,
@@ -876,6 +978,24 @@
     },
     "obj/blue__worthless_piece_of_blue_glass": {
       "file": "obj/blue__worthless_piece_of_blue_glass.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/blue_and_green_shield__elven_shield": {
+      "file": "obj/blue_and_green_shield__elven_shield.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/blue_dragon_scale_mail": {
+      "file": "obj/blue_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/blue_dragon_scales": {
+      "file": "obj/blue_dragon_scales.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -894,6 +1014,24 @@
     },
     "obj/bow": {
       "file": "obj/bow.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/brass__cold_resistance": {
+      "file": "obj/brass__cold_resistance.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/brass__speed_monster": {
+      "file": "obj/brass__speed_monster.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/brass_lantern": {
+      "file": "obj/brass_lantern.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -922,8 +1060,44 @@
       "height": 256,
       "frames": 1
     },
+    "obj/bronze__identify": {
+      "file": "obj/bronze__identify.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/bronze__sustain_ability": {
+      "file": "obj/bronze__sustain_ability.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/bronze_plate_mail": {
+      "file": "obj/bronze_plate_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/brown__booze": {
       "file": "obj/brown__booze.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/bubbly__monster_detection": {
+      "file": "obj/bubbly__monster_detection.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/buckled_boots__kicking_boots": {
+      "file": "obj/buckled_boots__kicking_boots.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/bugle": {
+      "file": "obj/bugle.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -934,20 +1108,98 @@
       "height": 256,
       "frames": 1
     },
+    "obj/c_ration": {
+      "file": "obj/c_ration.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/can_of_grease": {
+      "file": "obj/can_of_grease.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/candelabrum__candelabrum_of_invocation": {
+      "file": "obj/candelabrum__candelabrum_of_invocation.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/candle__tallow_candle": {
+      "file": "obj/candle__tallow_candle.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/candle__wax_candle": {
+      "file": "obj/candle__wax_candle.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/candy_bar": {
+      "file": "obj/candy_bar.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/carrot": {
       "file": "obj/carrot.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/chain_mail": {
+      "file": "obj/chain_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/checkered__chain_lightning": {
+      "file": "obj/checkered__chain_lightning.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/chest": {
       "file": "obj/chest.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/circular__amulet_of_esp": {
       "file": "obj/circular__amulet_of_esp.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/clay__increase_accuracy": {
+      "file": "obj/clay__increase_accuracy.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/clear__water": {
+      "file": "obj/clear__water.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/cloth__light": {
+      "file": "obj/cloth__light.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/cloudy__gain_energy": {
+      "file": "obj/cloudy__gain_energy.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/clove_of_garlic": {
+      "file": "obj/clove_of_garlic.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -958,22 +1210,94 @@
       "height": 256,
       "frames": 1
     },
+    "obj/coarse_mantelet__orcish_cloak": {
+      "file": "obj/coarse_mantelet__orcish_cloak.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/coin__generic_coin": {
+      "file": "obj/coin__generic_coin.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/combat_boots__speed_boots": {
+      "file": "obj/combat_boots__speed_boots.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/concave__amulet_of_unchanging": {
+      "file": "obj/concave__amulet_of_unchanging.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/conical_hat__cornuthaum": {
+      "file": "obj/conical_hat__cornuthaum.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/conical_hat__dunce_cap": {
+      "file": "obj/conical_hat__dunce_cap.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/copper__shock_resistance": {
+      "file": "obj/copper__shock_resistance.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/copper__turn_undead": {
+      "file": "obj/copper__turn_undead.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/copper__undead_turning": {
+      "file": "obj/copper__undead_turning.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/coral__increase_damage": {
+      "file": "obj/coral__increase_damage.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/corpse": {
       "file": "obj/corpse.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/cram_ration": {
       "file": "obj/cram_ration.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/cream_pie": {
+      "file": "obj/cream_pie.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/credit_card": {
       "file": "obj/credit_card.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/crested_helmet__helm_of_opposite_alignment": {
+      "file": "obj/crested_helmet__helm_of_opposite_alignment.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/crossbow": {
@@ -1000,6 +1324,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/crude_chain_mail__orcish_chain_mail": {
+      "file": "obj/crude_chain_mail__orcish_chain_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/crude_dagger__orcish_dagger": {
       "file": "obj/crude_dagger__orcish_dagger.png",
       "width": 256,
@@ -1008,8 +1338,8 @@
     },
     "obj/crude_ring_mail__orcish_ring_mail": {
       "file": "obj/crude_ring_mail__orcish_ring_mail.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/crude_short_sword__orcish_short_sword": {
@@ -1026,6 +1356,30 @@
     },
     "obj/crysknife": {
       "file": "obj/crysknife.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/crystal__enlightenment": {
+      "file": "obj/crystal__enlightenment.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/crystal_helmet__helm_of_brilliance": {
+      "file": "obj/crystal_helmet__helm_of_brilliance.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/crystal_plate_mail": {
+      "file": "obj/crystal_plate_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/cubical__amulet_of_flying": {
+      "file": "obj/cubical__amulet_of_flying.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1096,8 +1450,38 @@
       "height": 256,
       "frames": 1
     },
+    "obj/dented_pot": {
+      "file": "obj/dented_pot.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/diamond__warning": {
+      "file": "obj/diamond__warning.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/dog_eared__cone_of_cold": {
+      "file": "obj/dog_eared__cone_of_cold.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/double_headed_axe__battle_axe": {
       "file": "obj/double_headed_axe__battle_axe.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/drum__drum_of_earthquake": {
+      "file": "obj/drum__drum_of_earthquake.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/drum__leather_drum": {
+      "file": "obj/drum__leather_drum.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1108,10 +1492,40 @@
       "height": 256,
       "frames": 1
     },
+    "obj/dull__protection": {
+      "file": "obj/dull__protection.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/dusty__magic_mapping": {
+      "file": "obj/dusty__magic_mapping.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/dwarvish_mithril_coat": {
+      "file": "obj/dwarvish_mithril_coat.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/ebony__striking": {
+      "file": "obj/ebony__striking.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/effervescent__sleeping": {
+      "file": "obj/effervescent__sleeping.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/egg": {
       "file": "obj/egg.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/eiris_sazun_idisi": {
@@ -1132,8 +1546,32 @@
       "height": 256,
       "frames": 1
     },
+    "obj/elven_mithril_coat": {
+      "file": "obj/elven_mithril_coat.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/emerald__paralysis": {
       "file": "obj/emerald__paralysis.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/emerald__polymorph_control": {
+      "file": "obj/emerald__polymorph_control.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/engagement__see_invisible": {
+      "file": "obj/engagement__see_invisible.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/enormous_meatball": {
+      "file": "obj/enormous_meatball.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1144,20 +1582,68 @@
       "height": 256,
       "frames": 1
     },
+    "obj/etched_helmet__helm_of_caution": {
+      "file": "obj/etched_helmet__helm_of_caution.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/eucalyptus_leaf": {
+      "file": "obj/eucalyptus_leaf.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/expensive_camera": {
       "file": "obj/expensive_camera.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/faded_pall__elven_cloak": {
+      "file": "obj/faded_pall__elven_cloak.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/fedora": {
       "file": "obj/fedora.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/fencing_gloves__gauntlets_of_dexterity": {
+      "file": "obj/fencing_gloves__gauntlets_of_dexterity.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/figurine": {
+      "file": "obj/figurine.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/fizzy__sickness": {
+      "file": "obj/fizzy__sickness.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/flail": {
       "file": "obj/flail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/flute__magic_flute": {
+      "file": "obj/flute__magic_flute.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/flute__wooden_flute": {
+      "file": "obj/flute__wooden_flute.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1170,6 +1656,12 @@
     },
     "obj/foobie_bletch": {
       "file": "obj/foobie_bletch.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/food__generic_food": {
+      "file": "obj/food__generic_food.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1188,12 +1680,18 @@
     },
     "obj/fortune_cookie": {
       "file": "obj/fortune_cookie.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/garven_deh": {
       "file": "obj/garven_deh.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gem__generic_gem": {
+      "file": "obj/gem__generic_gem.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1204,8 +1702,74 @@
       "height": 256,
       "frames": 1
     },
+    "obj/glass__light": {
+      "file": "obj/glass__light.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/glass_orb__crystal_ball": {
+      "file": "obj/glass_orb__crystal_ball.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/glittering__create_familiar": {
+      "file": "obj/glittering__create_familiar.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/glob_of_black_pudding": {
+      "file": "obj/glob_of_black_pudding.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/glob_of_brown_pudding": {
+      "file": "obj/glob_of_brown_pudding.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/glob_of_gray_ooze": {
+      "file": "obj/glob_of_gray_ooze.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/glob_of_green_slime": {
+      "file": "obj/glob_of_green_slime.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/gnik_sisi_vle": {
       "file": "obj/gnik_sisi_vle.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gold__teleport_away": {
+      "file": "obj/gold__teleport_away.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gold__teleport_control": {
+      "file": "obj/gold__teleport_control.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gold_dragon_scale_mail": {
+      "file": "obj/gold_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gold_dragon_scales": {
+      "file": "obj/gold_dragon_scales.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1222,6 +1786,18 @@
       "height": 256,
       "frames": 1
     },
+    "obj/granite__gain_strength": {
+      "file": "obj/granite__gain_strength.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/grappling_hook": {
+      "file": "obj/grappling_hook.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/gray__detect_treasure": {
       "file": "obj/gray__detect_treasure.png",
       "width": 256,
@@ -1230,8 +1806,38 @@
     },
     "obj/gray__flint": {
       "file": "obj/gray__flint.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gray__loadstone": {
+      "file": "obj/gray__loadstone.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gray__luckstone": {
+      "file": "obj/gray__luckstone.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gray__touchstone": {
+      "file": "obj/gray__touchstone.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gray_dragon_scale_mail": {
+      "file": "obj/gray_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/gray_dragon_scales": {
+      "file": "obj/gray_dragon_scales.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/green__aquamarine": {
@@ -1264,6 +1870,18 @@
       "height": 256,
       "frames": 1
     },
+    "obj/green_dragon_scale_mail": {
+      "file": "obj/green_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/green_dragon_scales": {
+      "file": "obj/green_dragon_scales.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/hackem_muche__charging": {
       "file": "obj/hackem_muche__charging.png",
       "width": 256,
@@ -1276,14 +1894,62 @@
       "height": 256,
       "frames": 1
     },
+    "obj/hard_hat__dwarvish_iron_helm": {
+      "file": "obj/hard_hat__dwarvish_iron_helm.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/hard_shoes__iron_shoes": {
+      "file": "obj/hard_shoes__iron_shoes.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/harp__magic_harp": {
+      "file": "obj/harp__magic_harp.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/harp__wooden_harp": {
+      "file": "obj/harp__wooden_harp.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/hawaiian_shirt": {
       "file": "obj/hawaiian_shirt.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/heavy_iron_ball": {
+      "file": "obj/heavy_iron_ball.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/hexagonal__amulet_of_reflection": {
+      "file": "obj/hexagonal__amulet_of_reflection.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/hiking_boots__jumping_boots": {
+      "file": "obj/hiking_boots__jumping_boots.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/hilted_polearm__ranseur": {
       "file": "obj/hilted_polearm__ranseur.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/hooded_cloak__dwarvish_cloak": {
+      "file": "obj/hooded_cloak__dwarvish_cloak.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1294,16 +1960,100 @@
       "height": 256,
       "frames": 1
     },
+    "obj/horn__fire_horn": {
+      "file": "obj/horn__fire_horn.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/horn__frost_horn": {
+      "file": "obj/horn__frost_horn.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/horn__horn_of_plenty": {
+      "file": "obj/horn__horn_of_plenty.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/horn__tooled_horn": {
+      "file": "obj/horn__tooled_horn.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/ice_box": {
+      "file": "obj/ice_box.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/indigo__cure_sickness": {
       "file": "obj/indigo__cure_sickness.png",
       "width": 256,
       "height": 256,
       "frames": 1
     },
+    "obj/iridium__teleportation": {
+      "file": "obj/iridium__teleportation.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/iron__fire_resistance": {
+      "file": "obj/iron__fire_resistance.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/iron_ball__generic_iron_ball": {
+      "file": "obj/iron_ball__generic_iron_ball.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/iron_chain": {
+      "file": "obj/iron_chain.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/iron_chain__generic_iron_chain": {
+      "file": "obj/iron_chain__generic_iron_chain.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/iron_skull_cap__orcish_helm": {
       "file": "obj/iron_skull_cap__orcish_helm.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/ivory__polymorph": {
+      "file": "obj/ivory__polymorph.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/jackboots__high_boots": {
+      "file": "obj/jackboots__high_boots.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/jade__stealth": {
+      "file": "obj/jade__stealth.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/jungle_boots__water_walking_boots": {
+      "file": "obj/jungle_boots__water_walking_boots.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/juyed_awk_yacc__destroy_armor": {
@@ -1312,8 +2062,26 @@
       "height": 256,
       "frames": 1
     },
+    "obj/k_ration": {
+      "file": "obj/k_ration.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/kelp_frond": {
+      "file": "obj/kelp_frond.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/kernod_wel__identify": {
       "file": "obj/kernod_wel__identify.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/key__skeleton_key": {
+      "file": "obj/key__skeleton_key.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1336,40 +2104,100 @@
       "height": 256,
       "frames": 1
     },
+    "obj/lamp__magic_lamp": {
+      "file": "obj/lamp__magic_lamp.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/lamp__oil_lamp": {
+      "file": "obj/lamp__oil_lamp.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/lance": {
       "file": "obj/lance.png",
       "width": 256,
       "height": 256,
       "frames": 1
     },
+    "obj/land_mine": {
+      "file": "obj/land_mine.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/large_box": {
       "file": "obj/large_box.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/large_rock__generic_large_rock": {
+      "file": "obj/large_rock__generic_large_rock.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/large_round_shield__dwarvish_roundshield": {
+      "file": "obj/large_round_shield__dwarvish_roundshield.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/large_shield": {
+      "file": "obj/large_shield.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/leash": {
+      "file": "obj/leash.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/leather_armor": {
       "file": "obj/leather_armor.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/leather_cloak": {
       "file": "obj/leather_cloak.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/leather_hat__elven_leather_helm": {
+      "file": "obj/leather_hat__elven_leather_helm.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/leather_jacket": {
       "file": "obj/leather_jacket.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/leathery__detect_monsters": {
+      "file": "obj/leathery__detect_monsters.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/lembas_wafer": {
       "file": "obj/lembas_wafer.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/lenses": {
+      "file": "obj/lenses.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/lep_gex_ven_zea__create_monster": {
@@ -1398,8 +2226,8 @@
     },
     "obj/lock_pick": {
       "file": "obj/lock_pick.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/long_bow__yumi": {
@@ -1422,6 +2250,12 @@
     },
     "obj/long_sword": {
       "file": "obj/long_sword.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/looking_glass__mirror": {
+      "file": "obj/looking_glass__mirror.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1450,14 +2284,92 @@
       "height": 256,
       "frames": 1
     },
+    "obj/magic_marker": {
+      "file": "obj/magic_marker.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/mapiro_mahama_diromat": {
       "file": "obj/mapiro_mahama_diromat.png",
       "width": 256,
       "height": 256,
       "frames": 1
     },
+    "obj/maple__create_monster": {
+      "file": "obj/maple__create_monster.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/marble__make_invisible": {
+      "file": "obj/marble__make_invisible.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/meat_ring": {
+      "file": "obj/meat_ring.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/meat_stick": {
+      "file": "obj/meat_stick.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/meatball": {
+      "file": "obj/meatball.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/melon": {
+      "file": "obj/melon.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/milky__gain_level": {
+      "file": "obj/milky__gain_level.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/moonstone__regeneration": {
+      "file": "obj/moonstone__regeneration.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/morning_star": {
       "file": "obj/morning_star.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/mottled__sleep": {
+      "file": "obj/mottled__sleep.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/mud_boots__elven_boots": {
+      "file": "obj/mud_boots__elven_boots.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/mummy_wrapping": {
+      "file": "obj/mummy_wrapping.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/murky__oil": {
+      "file": "obj/murky__oil.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1474,16 +2386,34 @@
       "height": 256,
       "frames": 1
     },
+    "obj/octagonal__amulet_of_magical_breathing": {
+      "file": "obj/octagonal__amulet_of_magical_breathing.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/old_gloves__leather_gloves": {
       "file": "obj/old_gloves__leather_gloves.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/opal__gain_constitution": {
+      "file": "obj/opal__gain_constitution.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/opera_cloak__cloak_of_invisibility": {
+      "file": "obj/opera_cloak__cloak_of_invisibility.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/orange": {
       "file": "obj/orange.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/orange__agate": {
@@ -1518,14 +2448,74 @@
     },
     "obj/orange_dragon_scale_mail": {
       "file": "obj/orange_dragon_scale_mail.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/orange_dragon_scales": {
       "file": "obj/orange_dragon_scales.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/ornamental_cope__cloak_of_magic_resistance": {
+      "file": "obj/ornamental_cope__cloak_of_magic_resistance.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/oval__amulet_of_strangulation": {
+      "file": "obj/oval__amulet_of_strangulation.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/padded_gloves__gauntlets_of_fumbling": {
+      "file": "obj/padded_gloves__gauntlets_of_fumbling.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/pancake": {
+      "file": "obj/pancake.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/paperback__novel": {
+      "file": "obj/paperback__novel.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/papyrus__book_of_the_dead": {
+      "file": "obj/papyrus__book_of_the_dead.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/parchment__dig": {
+      "file": "obj/parchment__dig.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/pear": {
+      "file": "obj/pear.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/pearl__poison_resistance": {
+      "file": "obj/pearl__poison_resistance.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/perforated__amulet_of_guarding": {
+      "file": "obj/perforated__amulet_of_guarding.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/phol_ende_wodan": {
@@ -1536,8 +2526,20 @@
     },
     "obj/pick_axe": {
       "file": "obj/pick_axe.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/piece_of_cloth__cloak_of_displacement": {
+      "file": "obj/piece_of_cloth__cloak_of_displacement.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/pine__wishing": {
+      "file": "obj/pine__wishing.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/pink__knock": {
@@ -1552,16 +2554,34 @@
       "height": 256,
       "frames": 1
     },
+    "obj/plaid__extra_healing": {
+      "file": "obj/plaid__extra_healing.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/plain__blank_paper": {
+      "file": "obj/plain__blank_paper.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/plate_mail": {
       "file": "obj/plate_mail.png",
       "width": 256,
       "height": 256,
       "frames": 1
     },
+    "obj/platinum__cancellation": {
+      "file": "obj/platinum__cancellation.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/plumed_helmet__helmet": {
       "file": "obj/plumed_helmet__helmet.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/pole_cleaver__voulge": {
@@ -1572,6 +2592,18 @@
     },
     "obj/pole_sickle__fauchard": {
       "file": "obj/pole_sickle__fauchard.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/polished_silver_shield__shield_of_reflection": {
+      "file": "obj/polished_silver_shield__shield_of_reflection.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/potion__generic_potion": {
+      "file": "obj/potion__generic_potion.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1618,6 +2650,18 @@
       "height": 256,
       "frames": 1
     },
+    "obj/pyramidal__amulet_versus_poison": {
+      "file": "obj/pyramidal__amulet_versus_poison.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/ragged__fireball": {
+      "file": "obj/ragged__fireball.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/read_me": {
       "file": "obj/read_me.png",
       "width": 256,
@@ -1654,22 +2698,64 @@
       "height": 256,
       "frames": 1
     },
+    "obj/red_dragon_scale_mail": {
+      "file": "obj/red_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/red_dragon_scales": {
+      "file": "obj/red_dragon_scales.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/red_eyed_shield__orcish_shield": {
+      "file": "obj/red_eyed_shield__orcish_shield.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/redwood__stasis": {
+      "file": "obj/redwood__stasis.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/riding_boots__fumble_boots": {
+      "file": "obj/riding_boots__fumble_boots.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/riding_gloves__gauntlets_of_power": {
+      "file": "obj/riding_gloves__gauntlets_of_power.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/ring__generic_ring": {
+      "file": "obj/ring__generic_ring.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/ring_mail": {
       "file": "obj/ring_mail.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/robe": {
       "file": "obj/robe.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/rock": {
       "file": "obj/rock.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/rubber_hose": {
@@ -1732,8 +2818,26 @@
       "height": 256,
       "frames": 1
     },
+    "obj/saddle": {
+      "file": "obj/saddle.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/samurai_sword__katana": {
       "file": "obj/samurai_sword__katana.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/sapphire__aggravate_monster": {
+      "file": "obj/sapphire__aggravate_monster.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/scale_mail": {
+      "file": "obj/scale_mail.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1744,8 +2848,56 @@
       "height": 256,
       "frames": 1
     },
+    "obj/scroll__generic_scroll": {
+      "file": "obj/scroll__generic_scroll.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/shimmering_dragon_scale_mail": {
+      "file": "obj/shimmering_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/shimmering_dragon_scales": {
+      "file": "obj/shimmering_dragon_scales.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/shining__cancellation": {
+      "file": "obj/shining__cancellation.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/shiny__protection_from_shape_changers": {
+      "file": "obj/shiny__protection_from_shape_changers.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/short_sword": {
       "file": "obj/short_sword.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/silver__polymorph.2": {
+      "file": "obj/silver__polymorph.2.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/silver__polymorph": {
+      "file": "obj/silver__polymorph.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/silver__teleportation": {
+      "file": "obj/silver__teleportation.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1756,8 +2908,26 @@
       "height": 256,
       "frames": 1
     },
+    "obj/silver_bell__bell_of_opening": {
+      "file": "obj/silver_bell__bell_of_opening.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/silver_dagger": {
       "file": "obj/silver_dagger.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/silver_dragon_scale_mail": {
+      "file": "obj/silver_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/silver_dragon_scales": {
+      "file": "obj/silver_dragon_scales.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1794,12 +2964,30 @@
     },
     "obj/slime_mold": {
       "file": "obj/slime_mold.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/sling": {
       "file": "obj/sling.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/slippery_cloak__oilskin_cloak": {
+      "file": "obj/slippery_cloak__oilskin_cloak.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/smoky__object_detection": {
+      "file": "obj/smoky__object_detection.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/snow_boots__levitation_boots": {
+      "file": "obj/snow_boots__levitation_boots.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1810,10 +2998,46 @@
       "height": 256,
       "frames": 1
     },
+    "obj/spellbook__generic_spellbook": {
+      "file": "obj/spellbook__generic_spellbook.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/spherical__amulet_of_life_saving": {
+      "file": "obj/spherical__amulet_of_life_saving.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/splash_of_venom__splash_of_acid_venom": {
+      "file": "obj/splash_of_venom__splash_of_acid_venom.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/splash_of_venom__splash_of_blinding_venom": {
+      "file": "obj/splash_of_venom__splash_of_blinding_venom.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/splint_mail": {
       "file": "obj/splint_mail.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/sprig_of_wolfsbane": {
+      "file": "obj/sprig_of_wolfsbane.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/square__amulet_of_change": {
+      "file": "obj/square__amulet_of_change.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/staff__quarterstaff": {
@@ -1822,10 +3046,34 @@
       "height": 256,
       "frames": 1
     },
+    "obj/stained__finger_of_death": {
+      "file": "obj/stained__finger_of_death.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/stamped__mail": {
+      "file": "obj/stamped__mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/statue": {
+      "file": "obj/statue.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/steel__slow_digestion": {
+      "file": "obj/steel__slow_digestion.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/stethoscope": {
       "file": "obj/stethoscope.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/stiletto": {
@@ -1860,12 +3108,30 @@
     },
     "obj/studded_leather_armor": {
       "file": "obj/studded_leather_armor.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/swirly__enlightenment": {
+      "file": "obj/swirly__enlightenment.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/t_shirt": {
+      "file": "obj/t_shirt.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/tan__levitation": {
       "file": "obj/tan__levitation.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/tattered_cape__cloak_of_protection": {
+      "file": "obj/tattered_cape__cloak_of_protection.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1878,6 +3144,18 @@
     },
     "obj/tharr__gold_detection": {
       "file": "obj/tharr__gold_detection.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/thick__stone_to_flesh": {
+      "file": "obj/thick__stone_to_flesh.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/thin__jumping": {
+      "file": "obj/thin__jumping.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1900,16 +3178,58 @@
       "height": 256,
       "frames": 1
     },
+    "obj/tiger_eye__searching": {
+      "file": "obj/tiger_eye__searching.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/tin": {
+      "file": "obj/tin.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/tin__slow_monster": {
+      "file": "obj/tin__slow_monster.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/tin_opener": {
       "file": "obj/tin_opener.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/tinning_kit": {
       "file": "obj/tinning_kit.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/tool__generic_tool": {
+      "file": "obj/tool__generic_tool.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/topaz__hunger": {
+      "file": "obj/topaz__hunger.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/towel": {
+      "file": "obj/towel.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/triangular__amulet_of_restful_sleep": {
+      "file": "obj/triangular__amulet_of_restful_sleep.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/trident": {
@@ -1920,8 +3240,8 @@
     },
     "obj/tripe_ration": {
       "file": "obj/tripe_ration.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/turquoise__create_monster": {
@@ -1930,8 +3250,26 @@
       "height": 256,
       "frames": 1
     },
+    "obj/twisted__free_action": {
+      "file": "obj/twisted__free_action.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/two_handed_sword": {
       "file": "obj/two_handed_sword.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/unicorn_horn": {
+      "file": "obj/unicorn_horn.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/unlabeled__blank_paper": {
+      "file": "obj/unlabeled__blank_paper.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1948,8 +3286,26 @@
       "height": 256,
       "frames": 1
     },
+    "obj/vellum__magic_missile": {
+      "file": "obj/vellum__magic_missile.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/velox_neb__stinking_cloud": {
       "file": "obj/velox_neb__stinking_cloud.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/velvet__drain_life": {
+      "file": "obj/velvet__drain_life.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/venom__generic_venom": {
+      "file": "obj/venom__generic_venom.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -1990,6 +3346,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/visored_helmet__helm_of_telepathy": {
+      "file": "obj/visored_helmet__helm_of_telepathy.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/vulgar_polearm__partisan": {
       "file": "obj/vulgar_polearm__partisan.png",
       "width": 256,
@@ -1998,12 +3360,36 @@
     },
     "obj/walking_shoes__low_boots": {
       "file": "obj/walking_shoes__low_boots.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/wand__generic_wand": {
+      "file": "obj/wand__generic_wand.png",
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/war_hammer": {
       "file": "obj/war_hammer.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/weapon__generic_weapon": {
+      "file": "obj/weapon__generic_weapon.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/whistle__magic_whistle": {
+      "file": "obj/whistle__magic_whistle.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/whistle__tin_whistle": {
+      "file": "obj/whistle__tin_whistle.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -2044,14 +3430,62 @@
       "height": 256,
       "frames": 1
     },
+    "obj/white_dragon_scale_mail": {
+      "file": "obj/white_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/white_dragon_scales": {
+      "file": "obj/white_dragon_scales.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/white_handed_shield__uruk_hai_shield": {
+      "file": "obj/white_handed_shield__uruk_hai_shield.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/wire__invisibility": {
+      "file": "obj/wire__invisibility.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/wooden__adornment": {
+      "file": "obj/wooden__adornment.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/wooden_shield__shield_of_drain_resistance": {
+      "file": "obj/wooden_shield__shield_of_drain_resistance.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/wooden_shield__shield_of_shock_resistance": {
+      "file": "obj/wooden_shield__shield_of_shock_resistance.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/wooden_shield__small_shield": {
       "file": "obj/wooden_shield__small_shield.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "obj/worm_tooth": {
       "file": "obj/worm_tooth.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/wrinkled__remove_curse": {
+      "file": "obj/wrinkled__remove_curse.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -2094,6 +3528,18 @@
     },
     "obj/yellow__worthless_piece_of_yellow_glass": {
       "file": "obj/yellow__worthless_piece_of_yellow_glass.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/yellow_dragon_scale_mail": {
+      "file": "obj/yellow_dragon_scale_mail.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/yellow_dragon_scales": {
+      "file": "obj/yellow_dragon_scales.png",
       "width": 256,
       "height": 256,
       "frames": 1
