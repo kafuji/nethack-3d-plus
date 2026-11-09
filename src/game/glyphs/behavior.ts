@@ -188,12 +188,23 @@ export function getOpenDoorGlyphFrom(glyph: number): number | null {
 /**
  * Floor the hero currently sees lit: room floor (S_room) or a lit corridor
  * (S_litcorr). Remembered or unlit floor shows as S_darkroom / S_corr.
+ * NetHack 5 inserts S_engroom before the corridors, moving S_litcorr to 23.
  */
 export function isLitFloorCmapGlyph(glyph: number): "room" | "corridor" | null {
   const cmapIndex = getCmapIndex(glyph, null);
   if (cmapIndex === 19) return "room";
-  if (cmapIndex === 22) return "corridor";
+  const litCorridor = getActiveGlyphCatalogVersion() === "5.0" ? 23 : 22;
+  if (cmapIndex === litCorridor) return "corridor";
   return null;
+}
+
+/** Molten lava (and NetHack 5's wall of lava), which glows. */
+export function isLavaCmapGlyph(glyph: number): boolean {
+  const cmapIndex = getCmapIndex(glyph, null);
+  if (cmapIndex === null) return false;
+  return getActiveGlyphCatalogVersion() === "5.0"
+    ? cmapIndex === 40 || cmapIndex === 41
+    : cmapIndex === 34;
 }
 
 export function isDarkCorridorCmapGlyph(glyph: number): boolean {

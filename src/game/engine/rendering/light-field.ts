@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { TILE_SIZE } from "../../constants";
-import { isLitFloorCmapGlyph } from "../../glyphs/behavior";
+import { isLavaCmapGlyph, isLitFloorCmapGlyph } from "../../glyphs/behavior";
 import type { Camera } from "../camera/camera";
 import type { MovementInput } from "../input/movement-input";
 import type { EngineState } from "../runtime/engine-state";
@@ -12,6 +12,7 @@ import {
   sampleFlicker,
   type CarriedLight,
 } from "./carried-light";
+import { LAVA_GLOW, resolveGlowingMonsterLight, type GlowLight } from "./glowing-monsters";
 import type { Lighting } from "./lighting";
 import type { TerminalRendering } from "./terminal-rendering";
 import type { TileRendering } from "./tile-rendering";
@@ -57,6 +58,12 @@ export interface LightFieldTuning {
   fadeMs: number;
   /** Strength of the old distance darkening while this lighting is on. */
   vignette: number;
+  /** Brightness of glowing monsters and lava. */
+  glowLight: number;
+  /** Colour saturation of terrain the hero only remembers (1 = unchanged). */
+  memorySaturation: number;
+  /** Radius of the area a light scroll or spell lights, tinted blue. */
+  magicLightRadius: number;
 }
 
 export const DEFAULT_LIGHT_FIELD_TUNING: Readonly<LightFieldTuning> = {
@@ -71,11 +78,30 @@ export const DEFAULT_LIGHT_FIELD_TUNING: Readonly<LightFieldTuning> = {
   maxLight: 1.35,
   fadeMs: 220,
   vignette: 0.3,
+  glowLight: 0.9,
+  memorySaturation: 0.5,
+  magicLightRadius: 5,
 };
 
 const AMBIENT_TINT: readonly [number, number, number] = [0.92, 0.95, 1.06];
 const ROOM_TINT: readonly [number, number, number] = [1.0, 0.97, 0.9];
 const PERSONAL_TINT: readonly [number, number, number] = [0.9, 0.92, 1.0];
+/** Light from a light scroll or spell: a cooler, slightly blue white. */
+const MAGIC_TINT: readonly [number, number, number] = [0.78, 0.88, 1.12];
+/** Remembered terrain drifts slightly toward blue as it loses colour. */
+const MEMORY_TINT: readonly [number, number, number] = [0.94, 0.97, 1.06];
+
+interface PlacedGlow {
+  readonly x: number;
+  readonly y: number;
+  readonly light: GlowLight;
+}
+
+interface MagicLightZone {
+  readonly x: number;
+  readonly y: number;
+  readonly radius: number;
+}
 const CORNER_LIGHT_HEIGHT = 0.8;
 
 export interface LitRoom {
@@ -216,6 +242,11 @@ export class LightField {
 
   rooms: LitRoom[] = [];
 
+  glows: PlacedGlow[] = [];
+
+  /** Areas lit by a light scroll or spell on this level. */
+  magicLightZones: MagicLightZone[] = [];
+
   isActive(): boolean {
     const options = this.dependencies.engineState.clientOptions;
     return (
@@ -233,6 +264,20 @@ export class LightField {
     this.signature = "";
     this.settled = false;
     this.rooms = [];
+    this.glows = [];
+    this.magicLightZones = [];
+  }
+
+  /**
+   * Game messages that change light. A light scroll or spell lights the area
+   * around the hero; that area is tinted as magical light from then on.
+   */
+  captureMessage(text: unknown): void {
+    if (typeof text !== "string" || !/\bA lit field surrounds you\b/i.test(text)) return;
+    if (!this.dependencies.playerMovement.hasSeenPlayerPosition) return;
+    const player = this.dependencies.playerMovement.playerPos;
+    this.magicLightZones.push({ x: player.x, y: player.y, radius: this.tuning.magicLightRadius });
+    this.signature = "";
   }
 
   setTuning(next: Partial<LightFieldTuning>): void {
@@ -288,6 +333,7 @@ export class LightField {
     const ambient = this.tuning.ambient;
     uniforms.uAmbientLight.value.set(ambient * AMBIENT_TINT[0], ambient * AMBIENT_TINT[1], ambient * AMBIENT_TINT[2]);
     uniforms.uLightParams.value.set(this.tuning.maxLight, this.tuning.playerLightInRoom, LIGHT_FIELD_RANGE, 0);
+    uniforms.uMemoryLook.value.set(this.tuning.memorySaturation, MEMORY_TINT[0], MEMORY_TINT[1], MEMORY_TINT[2]);
     this.updatePlayerLightUniforms(timeMs / 1000, lightRadius);
   }
 
@@ -310,6 +356,7 @@ export class LightField {
     this.litRoom.fill(0);
     this.litCorridor.fill(0);
     this.opaque.fill(1);
+    this.glows = [];
     for (const [key, mesh] of this.dependencies.tileRendering.tileMap) {
       let x = mesh.userData?.tileX;
       let y = mesh.userData?.tileY;
@@ -328,6 +375,8 @@ export class LightField {
         const lit = isLitFloorCmapGlyph(glyph);
         if (lit === "room") this.litRoom[index] = 1;
         else if (lit === "corridor") this.litCorridor[index] = 1;
+        const glow = isLavaCmapGlyph(glyph) ? LAVA_GLOW : resolveGlowingMonsterLight(glyph);
+        if (glow) this.glows.push({ x, y, light: glow });
       }
     }
   }
@@ -339,20 +388,31 @@ export class LightField {
       hash ^= this.litRoom[i] | (this.litCorridor[i] << 1) | (this.opaque[i] << 2);
       hash = Math.imul(hash, 16777619);
     }
-    return `${hash >>> 0}|${player ? `${player.x},${player.y}` : "-"}|${lightRadius}`;
+    const glows = this.glows.map((glow) => `${glow.x},${glow.y},${glow.light.color.join(",")}`).join(";");
+    return `${hash >>> 0}|${player ? `${player.x},${player.y}` : "-"}|${lightRadius}|${glows}`;
   }
 
   private rebuildTarget(player: { x: number; y: number } | null, lightRadius: number): void {
     const { columns, rows, subcells, target, tuning } = this;
     const width = columns * subcells;
-    target.fill(0);
+    const height = rows * subcells;
+    // RGB holds all static light, starting from the ambient level everywhere.
+    for (let i = 0; i < target.length; i += 4) {
+      target[i] = tuning.ambient * AMBIENT_TINT[0];
+      target[i + 1] = tuning.ambient * AMBIENT_TINT[1];
+      target[i + 2] = tuning.ambient * AMBIENT_TINT[2];
+      target[i + 3] = 0;
+    }
     this.rooms = findLitRooms(this.litRoom, columns, rows, player);
 
+    const isMagicLit = (x: number, y: number) =>
+      this.magicLightZones.some((zone) => (x - zone.x) ** 2 + (y - zone.y) ** 2 <= zone.radius * zone.radius);
     const writeLight = (tx: number, ty: number, value: number, tint: readonly [number, number, number]) => {
       const base = (ty * width + tx) * 4;
-      target[base] = Math.max(target[base], value * tint[0]);
-      target[base + 1] = Math.max(target[base + 1], value * tint[1]);
-      target[base + 2] = Math.max(target[base + 2], value * tint[2]);
+      const look = isMagicLit(Math.floor(tx / subcells), Math.floor(ty / subcells)) ? MAGIC_TINT : tint;
+      target[base] = Math.max(target[base], value * look[0]);
+      target[base + 1] = Math.max(target[base + 1], value * look[1]);
+      target[base + 2] = Math.max(target[base + 2], value * look[2]);
     };
 
     for (const room of this.rooms) {
@@ -384,6 +444,34 @@ export class LightField {
       for (let sy = 0; sy < subcells; sy++) {
         for (let sx = 0; sx < subcells; sx++) {
           writeLight(cx * subcells + sx, cy * subcells + sy, tuning.roomLight * 0.85, ROOM_TINT);
+        }
+      }
+    }
+
+    // Glowing monsters and lava add coloured light where it can reach.
+    for (const glow of this.glows) {
+      const radius = glow.light.radius;
+      computeLightReach(this.opaque, columns, rows, glow.x, glow.y, radius + 0.5, this.reach);
+      const fromX = Math.max(0, Math.floor((glow.x - radius - 1) * subcells));
+      const toX = Math.min(width - 1, Math.ceil((glow.x + radius + 1) * subcells));
+      const fromY = Math.max(0, Math.floor((glow.y - radius - 1) * subcells));
+      const toY = Math.min(height - 1, Math.ceil((glow.y + radius + 1) * subcells));
+      for (let ty = fromY; ty <= toY; ty++) {
+        const cellY = Math.floor(ty / subcells);
+        const y = (ty + 0.5) / subcells - 0.5;
+        for (let tx = fromX; tx <= toX; tx++) {
+          const cellX = Math.floor(tx / subcells);
+          if (!this.reach[cellY * columns + cellX]) continue;
+          const x = (tx + 0.5) / subcells - 0.5;
+          const falloff = Math.max(0, 1 - Math.hypot(x - glow.x, y - glow.y) / radius) ** 2;
+          if (falloff <= 0) continue;
+          const base = (ty * width + tx) * 4;
+          for (let c = 0; c < 3; c++) {
+            target[base + c] = Math.min(
+              LIGHT_FIELD_RANGE,
+              target[base + c] + glow.light.color[c] * tuning.glowLight * falloff,
+            );
+          }
         }
       }
     }

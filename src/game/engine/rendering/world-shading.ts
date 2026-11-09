@@ -73,13 +73,15 @@ const EXPLORED_MASK_GLSL = `
 `;
 
 /**
- * Light from the game world (see LightField). The light texture holds room
- * light in RGB (scaled down by uLightParams.z) and, in alpha, where the hero's
- * own light reaches. Side faces read the cell they face, so a wall lights up
+ * Light from the game world (see LightField). The light texture holds all
+ * static light in RGB (ambient, lit rooms, glowing monsters and lava; scaled
+ * down by uLightParams.z) and, in alpha, where the hero's own light reaches. Side faces read the cell they face, so a wall lights up
  * on its room side and stays dark on the side facing rock. The hero's light
  * falls off with distance and, on terrain, with the angle to each face.
  * uLightParams holds (maximum light, how much the hero's light dims inside a
- * lit room, texture range, unused).
+ * lit room, texture range, unused). On terrain, anything neither lit above
+ * the ambient level nor reached by the hero's light is only remembered: it
+ * loses colour toward uMemoryLook (saturation, then an RGB tint).
  */
 const LIGHT_FIELD_PREFIX_GLSL = `
         uniform sampler2D uLightField;
@@ -90,6 +92,7 @@ const LIGHT_FIELD_PREFIX_GLSL = `
         uniform vec3 uPlayerLightColor;
         uniform float uPlayerLightRadius;
         uniform vec4 uLightParams;
+        uniform vec4 uMemoryLook;
 `;
 
 function lightFieldGlsl(useSurfaceNormal: boolean): string {
@@ -101,6 +104,15 @@ function lightFieldGlsl(useSurfaceNormal: boolean): string {
   const facing = useSurfaceNormal
     ? "clamp(dot(lightNormal, toPlayerLight / max(playerLightDistance, 0.0001)) * 0.75 + 0.25, 0.0, 1.0)"
     : "1.0";
+  // Only terrain is remembered; monsters and items are drawn as last seen.
+  const memory = useSurfaceNormal
+    ? `
+          float seen = max(litAboveAmbient, lightSample.a);
+          float memorySaturation = mix(uMemoryLook.x, 1.0, seen);
+          float memoryLuma = dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114));
+          gl_FragColor.rgb = mix(vec3(memoryLuma), gl_FragColor.rgb, memorySaturation) *
+            mix(uMemoryLook.yzw, vec3(1.0), seen);`
+    : "";
   return `
         if (uLightFieldEnabled > 0.0) {
           vec3 lightPoint = vec3(logicalWorldPosition, vWorldPos.z);
@@ -109,17 +121,21 @@ function lightFieldGlsl(useSurfaceNormal: boolean): string {
           vec2 lightCell = vec2(lightPoint.x, -lightPoint.y) / ${TILE_SIZE.toFixed(6)} +
             vec2(lightNormal.x, -lightNormal.y) * (1.0 - lightUpness) * 0.5;
           vec4 lightSample = texture2D(uLightField, (lightCell + 0.5) / uLightFieldGrid);
-          vec3 roomLight = lightSample.rgb * uLightParams.z;
-          vec3 lightBase = max(uAmbientLight, roomLight);
+          vec3 lightBase = lightSample.rgb * uLightParams.z;
+          float ambientLevel = max(uAmbientLight.r, max(uAmbientLight.g, uAmbientLight.b));
+          float litAboveAmbient = clamp(
+            (max(lightBase.r, max(lightBase.g, lightBase.b)) - ambientLevel) / max(1.0 - ambientLevel, 0.05),
+            0.0,
+            1.0
+          );
           vec3 toPlayerLight = uPlayerLightPos - lightPoint;
           float playerLightDistance = length(toPlayerLight);
           float playerLightFalloff = clamp(1.0 - playerLightDistance / max(uPlayerLightRadius, 0.001), 0.0, 1.0);
           playerLightFalloff *= playerLightFalloff;
           float playerLightFacing = ${facing};
-          float roomBrightness = clamp(max(roomLight.r, max(roomLight.g, roomLight.b)), 0.0, 1.0);
           vec3 playerLight = uPlayerLightColor * playerLightFalloff * playerLightFacing * lightSample.a *
-            (1.0 - uLightParams.y * roomBrightness);
-          vec3 worldLight = min(lightBase + playerLight, vec3(uLightParams.x));
+            (1.0 - uLightParams.y * litAboveAmbient);
+          vec3 worldLight = min(lightBase + playerLight, vec3(uLightParams.x));${memory}
           gl_FragColor.rgb *= mix(vec3(1.0), worldLight, uLightFieldEnabled);
         }
 `;
@@ -161,6 +177,8 @@ export function createWorldShadingUniforms(initial: WorldShadingInitialValues) {
     uPlayerLightColor: { value: new THREE.Vector3(0, 0, 0) },
     uPlayerLightRadius: { value: 1 },
     uLightParams: { value: new THREE.Vector4(1.35, 0.6, 2, 0) },
+    /** Remembered terrain: (saturation, RGB tint). */
+    uMemoryLook: { value: new THREE.Vector4(1, 1, 1, 1) },
   };
 }
 
@@ -247,6 +265,7 @@ export class WorldShading {
       shader.uniforms.uPlayerLightColor = this.uniforms.uPlayerLightColor;
       shader.uniforms.uPlayerLightRadius = this.uniforms.uPlayerLightRadius;
       shader.uniforms.uLightParams = this.uniforms.uLightParams;
+      shader.uniforms.uMemoryLook = this.uniforms.uMemoryLook;
       if (exploredMask) {
         shader.uniforms.uExploredMask = this.uniforms.uExploredMask;
         shader.uniforms.uExploredMaskEnabled = this.uniforms.uExploredMaskEnabled;

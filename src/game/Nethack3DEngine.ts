@@ -1233,6 +1233,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
         }
         this.systems.combatAttribution.captureDamageFromMessage(data.text);
+        this.systems.lightField.captureMessage(data.text);
         this.systems.audioHapticsPlatform.backgroundMusic?.notifyGameMessage(data.text);
         this.systems.engineMessages.addGameMessage(data.text);
         break;
@@ -1257,6 +1258,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
           );
         }
         this.systems.combatAttribution.captureDamageFromMessage(data.text);
+        this.systems.lightField.captureMessage(data.text);
         this.systems.audioHapticsPlatform.backgroundMusic?.notifyGameMessage(data.text);
         this.systems.engineMessages.addGameMessage(data.text);
         break;
