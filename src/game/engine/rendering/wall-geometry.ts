@@ -467,7 +467,7 @@ export class WallGeometry {
       transparent: false,
       toneMapped: false,
     });
-    this.dependencies.lighting.patchMaterialForVignette(material);
+    this.dependencies.lighting.patchMaterialForVignette(material, { faceShade: true });
     this.fpsWallChamferFaceMaterialCache.set(cacheKey, material);
     return material;
   }
@@ -548,7 +548,7 @@ export class WallGeometry {
     });
 
     // Patch the dynamically created floor material
-    this.dependencies.lighting.patchMaterialForVignette(material);
+    this.dependencies.lighting.patchMaterialForVignette(material, { faceShade: true });
 
     return material;
   }

@@ -18,12 +18,38 @@ export interface HiResTileFrame {
   readonly height: number;
   readonly frames: number;
   readonly filter: HiResTileFilter;
+  /**
+   * True when the first frame has see-through pixels, so terrain drawn flat
+   * needs a floor composited under it.
+   */
+  readonly translucent: boolean;
 }
 
 interface LoadedTile {
   readonly entry: HiResTileManifestEntry;
   readonly image: HTMLImageElement;
   readonly frameWidth: number;
+  translucent?: boolean;
+}
+
+/** Whether any pixel of the first frame is less than fully opaque. */
+function hasTranslucentPixels(image: HTMLImageElement, frameWidth: number): boolean {
+  if (typeof document === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    canvas.width = frameWidth;
+    canvas.height = image.height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return false;
+    context.drawImage(image, 0, 0, frameWidth, image.height, 0, 0, frameWidth, image.height);
+    const { data } = context.getImageData(0, 0, frameWidth, image.height);
+    for (let index = 3; index < data.length; index += 4) {
+      if (data[index] < 250) return true;
+    }
+  } catch {
+    // An image the canvas cannot read is treated as opaque.
+  }
+  return false;
 }
 
 export interface HiResTilePackOptions {
@@ -114,6 +140,9 @@ export class HiResTilePack {
     const key = NH5_TILE_KEYS[runtimeTileIndex];
     const tile = key ? this.tiles.get(key) : undefined;
     if (!key || !tile) return null;
+    if (tile.translucent === undefined) {
+      tile.translucent = hasTranslucentPixels(tile.image, tile.frameWidth);
+    }
     return {
       key,
       source: tile.image,
@@ -123,6 +152,7 @@ export class HiResTilePack {
       height: tile.image.height,
       frames: tile.entry.frames,
       filter: tile.entry.filter,
+      translucent: tile.translucent,
     };
   }
 

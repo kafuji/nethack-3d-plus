@@ -74,7 +74,7 @@ describe("rectangular atlas extraction", () => {
 describe("high-resolution tile substitution", () => {
   const hiResFrame = (index: number): HiResTileFrame => ({
     key: `tile/${index}`, source: { id: index } as unknown as CanvasImageSource,
-    sx: 0, sy: 0, width: 128, height: 128, frames: 1, filter: "linear",
+    sx: 0, sy: 0, width: 128, height: 128, frames: 1, filter: "linear", translucent: false,
   });
 
   it("draws the pack file at its own size, without background removal", () => {

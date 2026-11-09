@@ -32,7 +32,7 @@ function fixture(start = true) {
       uLightingCenter: { value: new THREE.Vector3() }, uLightingRadius: { value: 20 },
       uFalloffPower: { value: 1 }, uMaxDarkAlpha: { value: 1 }, uIsFpsMode: { value: false },
       uBloodGroundStrength: { value: 1 }, uBloodGroundSpecularReferenceStrength: { value: 1 },
-      uWorldTileScaleX: { value: 1 },
+      uWorldTileScaleX: { value: 1 }, uFaceShade: { value: new THREE.Vector4(1, 1, 1, 1) },
     } },
     playerMovement: { playerPos: { x: 5, y: 8 } },
     renderPipeline: { scene: new THREE.Scene() },

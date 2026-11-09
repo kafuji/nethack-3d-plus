@@ -58,6 +58,7 @@ export interface WorldClassificationDependencies {
   readonly tilesetAssets: Pick<
     TilesetAssets,
     "loadedTilesetTileLayoutVersion"
+    | "resolveHiResTile"
     | "resolveRuntimeVersion"
     | "resolveTilesetBackgroundReferenceTileIndex"
     | "shouldUseVultureTiles"
@@ -457,6 +458,24 @@ export class WorldClassification {
 
   resolveRaisedSpecialTileFloorBehavior(): TileBehaviorResult {
     const fallbackGlyph = getDefaultFloorGlyph();
+    // A high-resolution pack floor stands in for the atlas's background
+    // reference tile, so features stand on the same floor as the room.
+    const plainFloor = classifyTileBehavior({
+      glyph: fallbackGlyph,
+      runtimeChar: ".",
+      runtimeColor: null,
+      runtimeTileIndex: null,
+      priorTerrain: null,
+    });
+    const plainFloorTileIndex = plainFloor.effective.tileIndex;
+    if (
+      typeof plainFloorTileIndex === "number" &&
+      plainFloorTileIndex >= 0 &&
+      this.dependencies.tilesetAssets.resolveHiResTile(plainFloorTileIndex) !== null
+    ) {
+      plainFloor.useBackgroundReferenceTile = false;
+      return plainFloor;
+    }
     const shouldUseTilesetBackgroundTileUnderlay =
       this.dependencies.engineState.clientOptions.tilesetMode === "tiles" &&
       !this.dependencies.tilesetAssets.shouldUseVultureTiles() &&
