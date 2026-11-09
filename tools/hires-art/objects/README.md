@@ -1,7 +1,11 @@
 # 高解像度アイテムアイコンの作り方
 
 PixelHack の 32px アイテムアイコン (`obj/<key>`) を、256px の手描き風アイコンに置き換える作業の手順書。
-武器 71 種は [weapons.json](weapons.json) で作成済み。残りの分類はこの手順で [items.json](items.json) に足していく。
+武器 71 種は [weapons.json](weapons.json) で作成済み。武器以外の全 412 キーは [items.json](items.json) に登録済み。
+
+**2026-11-09 の状況: 全 483 キー中 469 キーが 256px で完成。旧 128px は 0、未作成は 14。** 内蔵生成器の利用上限に達したため、残りは [再開用の対象・プロンプト](pending-native.json) に保存した。ツールが返したリセット予定は **2026-11-10 15:43:44 JST**。死者の書の紋章を滑らかにする追加調整 1 点も保留中。
+
+[完成分の抜粋](production-overview.png) / [確認用コンタクトシート](contact-sheets/README.md) / [制作記録](production-generation.md)
 
 ## 方針
 
@@ -13,7 +17,11 @@ PixelHack の 32px アイテムアイコン (`obj/<key>`) を、256px の手描�
 
 ## 準備
 
-1. API キーは `OPENAI_API_KEY` か `~/.config/openai/api_key`。スクリプトは表示しない。
+内蔵画像生成器を使う場合は API キー不要。元の PixelHack 画像を構図の参照、下の完成見本を画風の参照として、**1 アイテムにつき 1 回**生成する。透過を指定し、原画を `.hires-tmp/objects/raw_<name>.png` にコピーして、下の `build` で仕上げる。[制作記録](production-generation.md) に参照画像とプロンプトの組み立て方を記載。
+
+以下の API キーと `gen` コマンドの説明は、外部 API で生成する場合の手順。内蔵生成器では使わない。
+
+1. 外部 API を使う場合のみ、API キーは `OPENAI_API_KEY` か `~/.config/openai/api_key`。スクリプトは表示しない。
 2. 参照用の PixelHack 分割画像を作る (`.hires-tmp/` は git 管理外なので、新しい作業ツリーでは必ず必要):
 
    ```bash
@@ -80,29 +88,29 @@ for n in a b c; do node tools/hires-art/terrain-gen.mjs gen --spec tools/hires-a
 - キー色と判定するのは色相 297–353° (マゼンタからショッキングピンク)。モデルは #FF00FF と頼んでもピンク寄りに塗るため。キー色以外に赤・ピンク・紫の部分がある品には使えない。
 - 描いた後は `.hires-tmp/objects/tile_<name>.png` がマゼンタのまま残る (パックには出ない)。色見本は items.json の potion / spellbook / gem の出力を参照。
 
-## 分類ごとの計画
+## 分類ごとの制作状況
 
-枚数は「新しく描く画像の数」。合計は約 248 枚で、うち 13 枚 (下の見本) は作成済み。
+画像数は色替え・共有前の原画の数。合計 247 枚のうち 233 枚が完成。既存の見本と試作 3 枚を含む 16 枚に加え、この続きで 217 種類の原画を内蔵生成器で作成した。残りは食べ物 1 枚と杖 13 枚。
 
 | 分類 | キー数 | 画像数 | まとめ方 | 状態 |
 |---|---|---|---|---|
-| 防具 | 86 | 約66 | ドラゴンの鱗鎧・鱗は「鎧」「鱗」の基本形を各 1 枚描いて 10 色に色替え、玉虫色 (shimmering) の 2 種だけ個別。`wooden_shield__*` 3 種は 1 枚 | 見本 1 |
-| 指輪 | 28 | 28 | 1 品 1 枚 | 見本 1 |
-| 護符 | 13 | 12 | `amulet_of_yendor__*` 2 種は 1 枚 | 見本 1 |
-| 道具 | 50 | 38 | 同名の品は 1 枚: 袋 4、`candle__*` 2、`lamp__*` 2、`whistle__*` 2、`flute__*` 2、`horn__*` 4、`harp__*` 2、`drum__*` 2 | 袋は完了 |
-| 食べ物 | 33 | 30 | `glob_of_*` 4 種は 1 枚を色替え (灰・茶・緑・黒) | 見本 1 |
-| 薬 | 26 | 10 | 単色 17 種は瓶 1 枚を色替え (**完了**)。残りは質感の 8 種 (milky, swirly, bubbly, smoky, cloudy, effervescent, fizzy, murky) と `clear__water` を個別に | 単色は完了 |
-| 巻物 | 43 | 3 | ラベル付き 41 種は 1 枚 (**完了**)。`stamped__mail` (郵便) と `unlabeled__blank_paper` (白紙) は個別 | ラベル付きは完了 |
-| 魔法書 | 44 | 約23 | 色名 19 種は布表紙 1 枚を色替え (**完了**)。bronze/copper/silver/gold は金属表紙 1 枚を色替え。質感 18 種 (parchment, vellum, ragged, dog_eared, mottled, stained, cloth, leathery, velvet, plaid, wrinkled, dusty, glittering, shining, dull, thin, thick, checkered) は個別。`plain` (白紙)、`paperback` (小説)、`papyrus` (死者の書) は個別 | 色名は完了 |
-| 杖 | 28 | 28 | 1 品 1 枚 | 見本 1 |
+| 防具 | 86 | 65 | ドラゴンの鱗鎧・鱗は基本形を各 1 枚描いて 10 色に色替え、玉虫色 2 種は個別。木の盾 3 種と conical hat 2 種はそれぞれ同じ画像を共有 | 86/86 完了 |
+| 指輪 | 28 | 28 | 1 品 1 枚。19 種は画素の段差を自然な曲線に描き直した | 28/28 完了 |
+| 護符 | 13 | 12 | `amulet_of_yendor__*` 2 種は 1 枚 | 13/13 完了 |
+| 道具 | 50 | 38 | 同名の品は 1 枚: 袋 4、`candle__*` 2、`lamp__*` 2、`whistle__*` 2、`flute__*` 2、`horn__*` 4、`harp__*` 2、`drum__*` 2 | 50/50 完了 |
+| 食べ物 | 33 | 30 | `glob_of_*` 4 種は 1 枚を色替え (灰・茶・緑・黒) | 32/33。royal jelly 未作成 |
+| 薬 | 26 | 10 | 単色 17 種は瓶 1 枚を色替え。質感 8 種と `clear__water` は個別 | 26/26 完了 |
+| 巻物 | 43 | 3 | ラベル付き 41 種は 1 枚。郵便と白紙は個別 | 43/43 完了 |
+| 魔法書 | 44 | 23 | 色名 19 種は 1 枚、金属表紙 4 種は 1 枚を色替え。質感 18 種、白紙・小説・死者の書は個別 | 44/44 配置済み。死者の書の紋章調整 1 点保留 |
+| 杖 | 28 | 28 | 1 品 1 枚 | 15/28。残り 13 |
 | 金貨 | 1 | 1 | | 完了 |
-| 宝石 | 35 | 2 | 宝石とガラス玉 31 種は 1 枚を 9 色に色替え (**完了**)。`gray__*` 4 種 (幸運の石・負荷の石・試金石・火打石) は「灰色の石」1 枚 | 宝石は完了 |
-| 岩など | 7 | 6 | `splash_of_venom__*` 2 種は 1 枚 | 岩 (boulder) は完了 |
-| 一般アイコン | 18 | 1 | `strange_object` だけ描く (**完了**)。残り 16 は各分類の代表画像を `derive` で流用 | |
+| 宝石 | 35 | 2 | 宝石とガラス玉 31 種は 1 枚を 9 色に色替え。`gray__*` 4 種は「灰色の石」1 枚 | 35/35 完了 |
+| 岩など | 7 | 6 | `splash_of_venom__*` 2 種は 1 枚 | 7/7 完了 |
+| 一般アイコン | 18 | 1 | `strange_object` と `strange__generic_strange` は既存の 1 枚を共有。残り 16 は各分類の代表画像を `derive` で流用 | 18/18 完了 |
 
 ### 128px の旧アイコンに注意
 
-パックには、以前の別手順で作った **128px のアイコンが 38 種**残っている (防具 17、食べ物 10、道具 9、`gray__flint`、`rock`)。見た目の処理が揃っていないので、すべて 256px で作り直す。「ファイルがあるから作成済み」と判断せず、幅で見分ける:
+以前の別手順で作った 128px のアイコンはすべて 256px へ置き換えた。現在の旧 128px は **0 種**。「ファイルがあるから作成済み」と判断せず、幅で見分ける:
 
 ```bash
 node -e "const {PNG}=require('pngjs');const fs=require('fs');const d='public/assets/hires/pixelhack-hd/obj/';for(const f of fs.readdirSync(d)){const w=fs.readFileSync(d+f).readUInt32BE(16);if(w!==256)console.log(w,f)}"
@@ -114,15 +122,19 @@ node -e "const {PNG}=require('pngjs');const fs=require('fs');const d='public/ass
 
 ゲーム内の確認はしない。ビルドした PNG をコンタクトシートに並べて目で見る。
 
+2026-11-09 の内蔵画像生成器による試作 3 枚は [比較シート](pilot-contact-sheet.png) と [生成プロンプト・保存先](pilot-generation.md) を参照。
+
+続きの完成分は [抜粋](production-overview.png) と [17 枚の一覧](contact-sheets/README.md) を参照。`node tools/hires-art/objects/audit.mjs --allow-incomplete` は 469/483、旧 128px 0、欠落 14、エラー 0、共有画像 24 組一致。残りが終わったら `--allow-incomplete` を外して 483/483 を確認する。
+
 - 似た品 (同系統の防具、指輪、杖など) は並べて、48px 程度に縮めても見分けられるか。
 - 元の PixelHack アイコンと向き・位置が揃っているか。
 - 色替えした品は、キー色の取り残し (ピンクのにじみ) がないか。
 
 `fitIntoBox` は参照画像の主な部分の外接矩形に合わせる。PixelHack は小物 (指輪、金貨、石など) の上に小さな印を描いているが、面積が全体の 4% 未満の離れた部分は無視するので、印に引っ張られて上にずれることはない。この規則は武器を作った後に入れたので、武器のうち broadsword, pronged_polearm__lucern_hammer, thonged_club__aklys は作り直すと位置がわずかに変わる。
 
-## 費用
+## 生成方式
 
-`gpt-image-2.5-sunburst`、quality medium、1024px で 1 枚約 $0.025。描き直しを 2 割強見込んで、残り約 235 枚で **$7 前後**。
+今回の制作は内蔵生成器を使用し、外部画像生成 API は呼んでいない。API キーと外部 API の費用見積もりは今回の手順では使用しない。上限解除後の再開も [pending-native.json](pending-native.json) の 1 対象につき内蔵生成器を 1 回呼ぶ。
 
 ## 見本 (分類ごとに 1 つ)
 
