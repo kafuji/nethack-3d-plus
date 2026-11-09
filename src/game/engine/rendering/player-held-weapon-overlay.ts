@@ -97,86 +97,62 @@ export function buildPlayerHeldWeaponsKey(weapons: PlayerHeldWeapons): string {
     : "";
 }
 
-export interface HeldWeaponOverlayImage {
+export interface WeaponImageSource {
   readonly source: CanvasImageSource;
   readonly width: number;
   readonly height: number;
 }
 
-function createOutlineSilhouette(
-  image: HeldWeaponOverlayImage,
-  drawWidth: number,
-  drawHeight: number,
-): HTMLCanvasElement | null {
+export interface OutlinedWeaponCanvas {
+  readonly canvas: HTMLCanvasElement;
+  /** Transparent margin added on each side, as a fraction of the result. */
+  readonly paddingU: number;
+  readonly paddingV: number;
+}
+
+/**
+ * Copy a weapon tile onto a slightly larger canvas with a crisp dark rim, so
+ * thin blades stay readable over busy character art. Small tiles are
+ * upscaled with nearest-neighbour first so the rim stays thin.
+ */
+export function createOutlinedWeaponCanvas(
+  image: WeaponImageSource,
+): OutlinedWeaponCanvas | null {
   if (typeof document === "undefined") {
     return null;
   }
+  const scale = Math.max(1, Math.ceil(64 / Math.max(1, Math.min(image.width, image.height))));
+  const width = image.width * scale;
+  const height = image.height * scale;
+  const outline = Math.max(1, Math.round(Math.min(width, height) / 40));
+  const silhouette = document.createElement("canvas");
+  silhouette.width = width;
+  silhouette.height = height;
+  const silhouetteContext = silhouette.getContext("2d");
   const canvas = document.createElement("canvas");
-  canvas.width = Math.max(1, Math.round(drawWidth));
-  canvas.height = Math.max(1, Math.round(drawHeight));
+  canvas.width = width + outline * 2;
+  canvas.height = height + outline * 2;
   const context = canvas.getContext("2d");
-  if (!context) {
+  if (!silhouetteContext || !context) {
     return null;
   }
+  silhouetteContext.imageSmoothingEnabled = false;
+  silhouetteContext.drawImage(image.source, 0, 0, width, height);
+  silhouetteContext.globalCompositeOperation = "source-in";
+  silhouetteContext.fillStyle = "rgba(8, 8, 12, 0.95)";
+  silhouetteContext.fillRect(0, 0, width, height);
   context.imageSmoothingEnabled = false;
-  context.drawImage(image.source, 0, 0, canvas.width, canvas.height);
-  context.globalCompositeOperation = "source-in";
-  context.fillStyle = "rgba(8, 8, 12, 0.95)";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  return canvas;
-}
-
-/** Fraction of the sprite's shorter side covered by one weapon tile. */
-export const PLAYER_HELD_WEAPON_OVERLAY_SCALE = 0.62;
-
-/**
- * Draw held weapons over an already painted player sprite. The main weapon
- * sits on the viewer's right; the off-hand weapon is mirrored on the left so
- * dual-wielded blades read as a pair.
- */
-export function drawPlayerHeldWeaponOverlay(
-  context: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-  primary: HeldWeaponOverlayImage | null,
-  secondary: HeldWeaponOverlayImage | null,
-): void {
-  const minAxis = Math.max(1, Math.min(width, height));
-  const drawWeapon = (image: HeldWeaponOverlayImage, mirrored: boolean) => {
-    const fit = (minAxis * PLAYER_HELD_WEAPON_OVERLAY_SCALE) /
-      Math.max(1, Math.max(image.width, image.height));
-    const drawWidth = image.width * fit;
-    const drawHeight = image.height * fit;
-    // Keep the weapon inside the sprite bounds so the billboard's grounding
-    // and footprint stay identical to the undecorated sprite.
-    const outline = Math.max(1, Math.round(minAxis / 40));
-    const left = mirrored ? outline : width - drawWidth - outline;
-    const top = height - drawHeight - outline;
-    const silhouette = createOutlineSilhouette(image, drawWidth, drawHeight);
-    context.save();
-    if (mirrored) {
-      context.translate(left + drawWidth, top);
-      context.scale(-1, 1);
-    } else {
-      context.translate(left, top);
-    }
-    // A crisp dark rim keeps thin blades readable over busy character art.
-    if (silhouette) {
-      for (let dy = -outline; dy <= outline; dy += outline) {
-        for (let dx = -outline; dx <= outline; dx += outline) {
-          if (dx !== 0 || dy !== 0) {
-            context.drawImage(silhouette, dx, dy, drawWidth, drawHeight);
-          }
-        }
+  for (let dy = -1; dy <= 1; dy += 1) {
+    for (let dx = -1; dx <= 1; dx += 1) {
+      if (dx !== 0 || dy !== 0) {
+        context.drawImage(silhouette, outline + dx * outline, outline + dy * outline);
       }
     }
-    context.drawImage(image.source, 0, 0, drawWidth, drawHeight);
-    context.restore();
+  }
+  context.drawImage(image.source, outline, outline, width, height);
+  return {
+    canvas,
+    paddingU: outline / canvas.width,
+    paddingV: outline / canvas.height,
   };
-  if (secondary) {
-    drawWeapon(secondary, true);
-  }
-  if (primary) {
-    drawWeapon(primary, false);
-  }
 }
