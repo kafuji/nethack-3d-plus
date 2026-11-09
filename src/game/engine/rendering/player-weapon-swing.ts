@@ -10,7 +10,7 @@ export const PLAYER_WEAPON_SIZE = 0.62;
 export const PLAYER_WEAPON_GRIP_UV = { u: 0.24, v: 0.24 } as const;
 
 /** Resting hand position inside the player sprite, for the viewer-right hand. */
-export const PLAYER_WEAPON_HAND_UV = { u: 0.66, v: 0.24 } as const;
+export const PLAYER_WEAPON_HAND_UV = { u: 0.66, v: 0.38 } as const;
 
 export const PLAYER_WEAPON_SWING_DURATION_MS = 340;
 
