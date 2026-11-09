@@ -420,19 +420,21 @@ function addOutline(png, radius, color = [16, 12, 10], strength = 0.85) {
 /**
  * Trims a transparent painting to its object and fits it, keeping its
  * aspect, centred in `box` (bounds measured on a reference of `refSize`
- * pixels), on a canvas of `size`.
+ * pixels), on a canvas of `size`. `scale` shrinks it further (a dwarf in a
+ * human's box); with `anchor: "bottom"` it stands on the box's bottom edge.
  */
-function fitIntoBox(png, size, box, refSize) {
+function fitIntoBox(png, size, box, refSize, { scale: extra = 1, anchor = "center" } = {}) {
   const bounds = alphaBounds(png);
   if (!bounds || !box) return resample(png, size);
   const object = crop(png, bounds);
   const k = size / refSize;
   const bw = (box.x1 - box.x0) * k, bh = (box.y1 - box.y0) * k;
-  const scale = Math.min(bw / object.width, bh / object.height);
+  const scale = Math.min(bw / object.width, bh / object.height) * extra;
   const w = Math.max(1, Math.round(object.width * scale));
   const h = Math.max(1, Math.round(object.height * scale));
   const out = blank(size, size);
-  paste(out, resample(object, w, h), Math.round((box.x0 + box.x1) / 2 * k - w / 2), Math.round((box.y0 + box.y1) / 2 * k - h / 2));
+  const top = anchor === "bottom" ? box.y1 * k - h : (box.y0 + box.y1) / 2 * k - h / 2;
+  paste(out, resample(object, w, h), Math.round((box.x0 + box.x1) / 2 * k - w / 2), Math.round(top));
   return out;
 }
 
@@ -470,6 +472,48 @@ function tintPng(png, tint) {
   png.data.copy(out.data);
   for (let p = 0; p < out.data.length; p += 4) {
     for (let c = 0; c < 3; c += 1) out.data[p + c] = Math.min(255, out.data[p + c] * factors[c]);
+  }
+  return out;
+}
+
+/**
+ * Colour grade: `saturation` scales chroma around each pixel's luminance,
+ * `brightness` multiplies, `gamma` < 1 opens up the shadows.
+ */
+function gradePng(png, { saturation = 1, brightness = 1, gamma = 1 } = {}) {
+  const out = blank(png.width, png.height);
+  png.data.copy(out.data);
+  for (let p = 0; p < out.data.length; p += 4) {
+    const rgb = [0, 1, 2].map((c) => Math.pow(png.data[p + c] / 255, gamma) * 255 * brightness);
+    const y = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2];
+    for (let c = 0; c < 3; c += 1) {
+      out.data[p + c] = Math.max(0, Math.min(255, Math.round(y + (rgb[c] - y) * saturation)));
+    }
+  }
+  return out;
+}
+
+/**
+ * A soft dark ellipse under the figure's feet, like the drop shadow under
+ * PixelHack's figures: `width` is a share of the figure's width, `opacity`
+ * its darkness.
+ */
+function groundShadow(png, { width = 0.8, height = 0.09, opacity = 0.55 } = {}) {
+  const bounds = alphaBounds(png);
+  const out = blank(png.width, png.height);
+  if (!bounds) return out;
+  const cx = (bounds.x0 + bounds.x1) / 2;
+  const rx = (bounds.x1 - bounds.x0) * width / 2;
+  const ry = png.height * height / 2;
+  const cy = Math.min(png.height - ry, bounds.y1 - ry * 0.5);
+  for (let y = 0; y < png.height; y += 1) {
+    for (let x = 0; x < png.width; x += 1) {
+      const d = Math.hypot((x - cx) / rx, (y - cy) / ry);
+      if (d >= 1) continue;
+      const index = (y * png.width + x) * 4;
+      out.data[index] = 8; out.data[index + 1] = 6; out.data[index + 2] = 6;
+      out.data[index + 3] = Math.round(255 * opacity * (1 - smooth(Math.max(0, (d - 0.35) / 0.65))));
+    }
   }
   return out;
 }
@@ -551,13 +595,15 @@ const rawFile = (spec, name, index = 1) =>
   join(spec.work, index === 1 ? `raw_${name}.png` : `raw_${name}_${index}.png`);
 
 /**
- * A "px_<key>" reference is the PixelHack sprite of obj/<key>. If it is not in
+ * A "px_<key>" reference is the PixelHack sprite of obj/<key>, "pxm_<key>"
+ * that of mon/<key>. If it is not in
  * the work folder yet it is copied from the `npm run hires:split` output.
  */
 function ensureRef(spec, name) {
   const file = rawFile(spec, name);
-  if (existsSync(file) || !name.startsWith("px_")) return;
-  const source = join(spec.pixelhack, "obj", `${name.slice(3)}.png`);
+  const folder = name.startsWith("px_") ? "obj" : name.startsWith("pxm_") ? "mon" : null;
+  if (existsSync(file) || !folder) return;
+  const source = join(spec.pixelhack, folder, `${name.slice(folder === "obj" ? 3 : 4)}.png`);
   if (!existsSync(source)) throw new Error(`${name}: ${source} is missing; run npm run hires:split`);
   writeFileSync(file, readFileSync(source));
 }
@@ -618,9 +664,12 @@ function processItem(spec, item) {
   if (item.fit?.matchRef) {
     ensureRef(spec, item.fit.matchRef);
     const ref = cleanAlpha(readPng(rawFile(spec, item.fit.matchRef)));
-    let tile = fitIntoBox(clean, size, mainBounds(ref), ref.width);
+    let tile = fitIntoBox(clean, size, mainBounds(ref), ref.width, item.fit);
+    if (item.flipX) tile = flipX(tile);
+    if (item.grade) tile = gradePng(tile, item.grade);
     if (item.relief) tile = bakeRelief(tile, item.relief);
     if (item.outline) tile = addOutline(tile, item.outline * size / 256);
+    if (item.shadow) tile = over(groundShadow(tile, item.shadow), tile);
     return tile;
   }
   if (item.opacity !== undefined) {
