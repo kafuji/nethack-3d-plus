@@ -110,6 +110,7 @@ export interface DarkCorridorInferenceDependencies {
   readonly tilesetAssets: Pick<
     TilesetAssets,
     "isVultureTilesActive"
+    | "resolveHiResTile"
     | "resolveOverrideTileIndexForRuntime"
     | "resolveRuntimeVersion"
   >;
@@ -777,6 +778,29 @@ export class DarkCorridorInference {
       return null;
     }
     return `#${match[1].toLowerCase()}`;
+  }
+
+  /**
+   * The solid colour for an inferred dark-corridor wall drawn with this tile,
+   * or null to show the tile itself. The colour stands in for rock that has no
+   * art of its own; a high-resolution pack paints that rock (other/stone).
+   * Every path that (re)applies a wall material must use this, or blocks that
+   * are rebuilt later (such as rounded corners) fall back to the flat colour.
+   */
+  resolveInferredDarkCorridorWallSolidColorHexForTile(
+    isInferredDarkCorridorWall: boolean,
+    tileTextureIndex: number,
+    useTerrainTiles: boolean,
+  ): string | null {
+    if (
+      isInferredDarkCorridorWall &&
+      useTerrainTiles &&
+      tileTextureIndex >= 0 &&
+      this.dependencies.tilesetAssets.resolveHiResTile(tileTextureIndex) !== null
+    ) {
+      return null;
+    }
+    return this.resolveInferredDarkCorridorWallSolidColorHex(isInferredDarkCorridorWall);
   }
 
   resolveInferredDarkCorridorWallSolidColorGridEnabled(

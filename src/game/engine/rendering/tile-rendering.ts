@@ -46,7 +46,7 @@ export interface TileRenderingDependencies {
     | "removeInferredDarkCorridorTile"
     | "resolveInferredDarkCorridorWallSolidColorGridDarknessPercent"
     | "resolveInferredDarkCorridorWallSolidColorGridEnabled"
-    | "resolveInferredDarkCorridorWallSolidColorHex"
+    | "resolveInferredDarkCorridorWallSolidColorHexForTile"
     | "resolveInferredDarkCorridorWallTileTextureIndex"
   >;
   readonly engineState: Pick<
@@ -980,16 +980,11 @@ export class TileRendering {
         renderBehavior.effective.tileIndex,
         darkCorridorWallCompatibilityActive,
       );
-    // The solid colour stands in for rock that has no art of its own. A
-    // high-resolution pack paints that rock (other/stone), so show it.
-    const hiResPackPaintsDarkCorridorWall =
-      darkCorridorWallCompatibilityActive &&
-      useTerrainTiles &&
-      this.dependencies.tilesetAssets.resolveHiResTile(tileTextureIndex) !== null;
-    const inferredDarkWallSolidColorHex = hiResPackPaintsDarkCorridorWall
-      ? null
-      : this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorHex(
+    const inferredDarkWallSolidColorHex =
+      this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorHexForTile(
         darkCorridorWallCompatibilityActive,
+        tileTextureIndex,
+        useTerrainTiles,
       );
     const inferredDarkWallSolidColorGridEnabled =
       this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorGridEnabled(

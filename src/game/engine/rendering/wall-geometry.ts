@@ -1,4 +1,4 @@
-import { usesWallTiles, usesFloorTiles } from "../../terrain-tile-options";
+import { usesWallTiles, usesFloorTiles, usesTerrainTiles } from "../../terrain-tile-options";
 import * as THREE from "three";
 import { TileNeighborBatch } from "./tile-neighbor-batch";
 import { TILE_SIZE, WALL_HEIGHT } from "../../constants";
@@ -41,7 +41,7 @@ export interface WallGeometryDependencies {
     "getKnownTerrainSnapshotForInferenceAtKey"
     | "resolveInferredDarkCorridorWallSolidColorGridDarknessPercent"
     | "resolveInferredDarkCorridorWallSolidColorGridEnabled"
-    | "resolveInferredDarkCorridorWallSolidColorHex"
+    | "resolveInferredDarkCorridorWallSolidColorHexForTile"
   >;
   readonly engineState: Pick<
     EngineState,
@@ -1226,8 +1226,10 @@ export class WallGeometry {
     const darkCorridorWallCompatibilityActive =
       this.dependencies.tilesetAssets.isDarkCorridorWallCompatibilityActiveOnMesh(mesh);
     const inferredDarkWallSolidColorHex =
-      this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorHex(
+      this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorHexForTile(
         darkCorridorWallCompatibilityActive,
+        tileIndex,
+        usesTerrainTiles(this.dependencies.engineState.clientOptions, true, materialKind),
       );
     const inferredDarkWallSolidColorGridEnabled =
       this.dependencies.darkCorridorInference.resolveInferredDarkCorridorWallSolidColorGridEnabled(
