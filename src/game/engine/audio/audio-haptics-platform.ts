@@ -21,6 +21,7 @@ import {
   type MusicSpecialLevel,
 } from "../../../audio/music/music-region";
 import { classifyTileBehavior } from "../../glyphs/behavior";
+import { WizardPresenceTracker } from "./wizard-presence";
 import type { Nh3dAndroidBridge } from "../shared/types";
 import type { DirectionPrompts } from "../ui/direction-prompts";
 import type { EngineState } from "../runtime/engine-state";
@@ -88,6 +89,8 @@ export class AudioHapticsPlatform {
   backgroundMusic!: BackgroundMusic;
 
   private readonly statusSoundTracker = new Nh3dStatusSoundTracker();
+
+  private readonly wizardPresence = new WizardPresenceTracker();
 
   private knownWaterTileCount: {
     terrain: ReadonlyMap<unknown, unknown>;
@@ -191,11 +194,11 @@ export class AudioHapticsPlatform {
   }
 
   syncBackgroundMusicWithClientOptions(
-    options: Pick<Nh3dClientOptions, "soundEnabled" | "musicEnabled" | "musicVolume">,
+    options: Pick<Nh3dClientOptions, "soundEnabled" | "musicPack" | "musicVolume">,
   ): void {
     this.backgroundMusic?.setSettings({
       soundEnabled: options.soundEnabled,
-      musicEnabled: options.musicEnabled,
+      musicPack: options.musicPack,
       musicVolume: options.musicVolume,
     });
   }
@@ -224,6 +227,18 @@ export class AudioHapticsPlatform {
       dangerCondition,
       resolveMusicStatusEffects(stats.conditionMask, runtimeVersion),
     );
+  }
+
+  /** A map_glyph tile: switches to the Wizard's music while he is on the map. */
+  notifyBackgroundMusicMapTile(tile: unknown): void {
+    if (this.wizardPresence.update(tile)) {
+      this.backgroundMusic?.notifyWizardPresence(this.wizardPresence.present);
+    }
+  }
+
+  /** The map was cleared for a level change. */
+  clearBackgroundMusicMapTiles(): void {
+    if (this.wizardPresence.clear()) this.backgroundMusic?.notifyWizardPresence(false);
   }
 
   private resolveMusicSpecialLevel(): MusicSpecialLevel | null {

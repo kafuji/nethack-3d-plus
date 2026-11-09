@@ -102,7 +102,7 @@ for (const file of readdirSync(path.join(root, "src")).filter((name) => name.end
 }
 
 for (const file of readdirSync(path.join(root, "dat")).filter((name) => name.endsWith(".lua"))) {
-  // quest.lua is translated as whole documents by the game-text tier.
+  // quest.lua is translated as whole documents by src/i18n/quest-text.ts.
   const src = stripComments(readFileSync(path.join(root, "dat", file), "latin1"), true);
   for (const match of src.matchAll(/\b(des\.message|nh\.pline|nh\.verbalize|nh\.text|nh\.message)\s*\(\s*(?:"((?:[^"\\\n]|\\.)*)"|\[\[([\s\S]*?)\]\])/g)) {
     add(file, src.slice(0, match.index).split("\n").length, unescape(match[2] ?? match[3]), "lua");

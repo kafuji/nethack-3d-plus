@@ -988,10 +988,13 @@ export const esOverrides = {
                     },
                 },
                 groupSound: "Sonido",
-                musicEnabled: {
-                  label: "Música de fondo",
+                musicPack: {
+                  label: "Usar paquete de BGM",
                   description:
-                    "Reproduce música de fondo que cambia según la situación (calma, combate, peligro). Requiere el sonido activado.",
+                    "El conjunto de música de fondo que se reproduce. Cambia según la situación (calma, combate, peligro) y el lugar. Elige Ninguno para no reproducir música. Requiere el sonido activado.",
+                  options: {
+                    none: "Ninguno",
+                  },
                 },
                 musicVolume: {
                   label: "Volumen de la música",

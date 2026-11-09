@@ -2,6 +2,7 @@ import {
   nh3dFpsLookSensitivityMax,
   nh3dFpsLookSensitivityMin
 } from "../../../game/ui-types";
+import { musicPacks, NO_MUSIC_PACK_ID } from "../../../audio/music/music-pack";
 import type {
   ClientOption,
   ClientOptionsTab,
@@ -570,10 +571,15 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
-    key: "musicEnabled",
-    label: t.clientOptions.config.musicEnabled.label,
-    description: t.clientOptions.config.musicEnabled.description,
-    type: "boolean",
+    key: "musicPack",
+    label: t.clientOptions.config.musicPack.label,
+    description: t.clientOptions.config.musicPack.description,
+    type: "select",
+    // Pack names are proper names, so only "none" is translated.
+    options: [
+      ...musicPacks.map((pack) => ({ value: pack.id, label: pack.name })),
+      { value: NO_MUSIC_PACK_ID, label: t.clientOptions.config.musicPack.options.none },
+    ],
   },
   {
     key: "musicVolume",

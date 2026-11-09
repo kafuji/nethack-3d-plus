@@ -1,18 +1,15 @@
 import { MusicDirector, type MusicMood } from "./music-director";
 import { FileMusicPlayer } from "./file-music-player";
-import { ascensionMusicTrack, defaultMusicLibrary, type MusicLibrary } from "./music-library";
+import type { MusicLibrary } from "./music-library";
+import { resolveMusicPack, type MusicPack } from "./music-pack";
 import { ProceduralMusicPlayer, type BackgroundMusicPlayer } from "./procedural-music-player";
-import {
-  regionTrackPreferences,
-  resolveMusicRegion,
-  type MusicRegion,
-  type MusicSpecialLevel,
-} from "./music-region";
+import { resolveMusicRegion, type MusicRegion, type MusicSpecialLevel } from "./music-region";
 import type { MusicStatusEffect } from "./status-effects";
 
 export type BackgroundMusicSettings = {
   soundEnabled: boolean;
-  musicEnabled: boolean;
+  /** Music pack id, or "none" for no music (see music-pack.ts). */
+  musicPack: string;
   musicVolume: number;
 };
 
@@ -35,6 +32,12 @@ const EVALUATE_INTERVAL_MS = 250;
  */
 const ASCENSION_MESSAGE = /invisible choir sings|^\s*ascended\b/i;
 
+/**
+ * The Wizard teleports away to heal and comes straight back, so the panic
+ * outlasts his last sighting a little instead of cutting out at every blink.
+ */
+export const WIZARD_LINGER_MS = 8000;
+
 function resolvePublicAssetUrl(path: string): string {
   const normalizedPath = String(path || "").replace(/^\/+/, "");
   const rawBase =
@@ -46,49 +49,67 @@ function resolvePublicAssetUrl(path: string): string {
   return new URL(normalizedPath, new URL(base, window.location.href)).toString();
 }
 
-/** Bundled CC0 music files, falling back to the procedural synth if they fail to load. */
-export function createDefaultBackgroundMusicPlayer(
-  library: MusicLibrary = defaultMusicLibrary,
-): BackgroundMusicPlayer {
+/** Bundled music files, falling back to the procedural synth if they fail to load. */
+export function createFileMusicPlayer(library: MusicLibrary): BackgroundMusicPlayer {
   return new FileMusicPlayer(library, resolvePublicAssetUrl, new ProceduralMusicPlayer());
 }
 
 /**
  * Glue between the game and the music player: feeds the director with
- * player stats / combat events and switches the player's mood.
+ * player stats / combat events and switches the player's mood. The player
+ * belongs to the selected music pack and is replaced when the pack changes.
  */
 export class BackgroundMusic {
   private readonly director = new MusicDirector();
-  private settings: BackgroundMusicSettings = {
-    soundEnabled: true,
-    musicEnabled: true,
-    musicVolume: 0.5,
-  };
+  private settings: BackgroundMusicSettings | null = null;
+  private pack: MusicPack | null = null;
+  private player: BackgroundMusicPlayer | null = null;
   private stats: BackgroundMusicStats | null = null;
   private dangerCondition = false;
   private gameOver = false;
   private ascended = false;
   private previewMood: MusicMood | null | undefined = undefined;
   private region: MusicRegion | null = null;
-  private statusEffectsKey = "";
+  private wizardInView = false;
+  private wizardLastSeenAt = Number.NEGATIVE_INFINITY;
+  private wizardPanic = false;
+  private statusEffects: MusicStatusEffect[] = [];
   private evaluateTimer: ReturnType<typeof setInterval> | null = null;
   private disposed = false;
 
   constructor(
-    private readonly player: BackgroundMusicPlayer = createDefaultBackgroundMusicPlayer(),
+    private readonly createPlayer: (pack: MusicPack) => BackgroundMusicPlayer = (pack) =>
+      createFileMusicPlayer(pack.library),
     private readonly now: () => number = () => Date.now(),
   ) {}
 
   setSettings(settings: BackgroundMusicSettings): void {
+    if (this.disposed) return;
+    const packChanged = settings.musicPack !== this.settings?.musicPack;
     this.settings = { ...settings };
-    this.player.setVolume(settings.musicVolume);
+    if (packChanged) this.usePack(resolveMusicPack(settings.musicPack));
+    this.player?.setVolume(settings.musicVolume);
     if (!this.isEnabled()) {
-      this.player.setMood(null);
-      void this.player.suspend();
+      this.player?.setMood(null);
+      void this.player?.suspend();
     } else {
-      void this.player.resume();
+      void this.player?.resume();
     }
     this.evaluate();
+  }
+
+  getMusicPack(): MusicPack | null {
+    return this.pack;
+  }
+
+  private usePack(pack: MusicPack | null): void {
+    this.player?.stopOnce?.();
+    this.player?.dispose();
+    this.pack = pack;
+    this.player = pack ? this.createPlayer(pack) : null;
+    if (!this.player) return;
+    this.player.setStatusEffects?.(this.statusEffects);
+    this.applyTrackPreference();
   }
 
   notifyPlayerStats(
@@ -108,25 +129,53 @@ export class BackgroundMusic {
   /** Confusion, hallucination, ... color the music (see status-effects.ts). */
   setStatusEffects(effects: readonly MusicStatusEffect[]): void {
     const sorted = [...new Set(effects)].sort();
-    const key = sorted.join(",");
-    if (key === this.statusEffectsKey) return;
-    this.statusEffectsKey = key;
-    this.player.setStatusEffects?.(sorted);
+    if (sorted.join(",") === this.statusEffects.join(",")) return;
+    this.statusEffects = sorted;
+    this.player?.setStatusEffects?.(sorted);
   }
 
   getCurrentRegion(): MusicRegion | null {
     return this.region;
   }
 
+  /** Whether the Wizard of Yendor is on the map right now. */
+  notifyWizardPresence(inView: boolean): void {
+    if (inView === this.wizardInView) return;
+    this.wizardInView = inView;
+    // Count the linger from when he leaves the map.
+    if (!inView) this.wizardLastSeenAt = this.now();
+    this.evaluate();
+  }
+
+  isWizardPanic(): boolean {
+    return this.wizardPanic;
+  }
+
+  private applyTrackPreference(): void {
+    const pack = this.pack;
+    if (!pack) return;
+    const regional = this.region ? pack.regionTracks[this.region] : {};
+    const wizard = this.wizardPanic ? pack.wizardTrackId : null;
+    this.player?.setTrackPreference?.(wizard ? { ...regional, combat: [wizard] } : regional);
+  }
+
+  private updateWizardPanic(): void {
+    const sighted = this.wizardInView || this.now() - this.wizardLastSeenAt < WIZARD_LINGER_MS;
+    const panic = sighted && Boolean(this.pack?.wizardTrackId);
+    if (panic === this.wizardPanic) return;
+    this.wizardPanic = panic;
+    this.applyTrackPreference();
+  }
+
   private updateRegion(region: MusicRegion): void {
     if (region === this.region) return;
     const entering = this.region !== null;
     this.region = region;
-    this.player.setTrackPreference?.(regionTrackPreferences[region]);
+    this.applyTrackPreference();
     // A small fanfare when walking into a new branch or special level (not on
     // game start).
     if (entering && region !== "dungeon" && this.isEnabled() && !this.gameOver) {
-      this.player.playStinger?.("region-enter");
+      this.player?.playStinger?.("region-enter");
     }
   }
 
@@ -139,7 +188,8 @@ export class BackgroundMusic {
     if (this.ascended) return;
     this.ascended = true;
     this.evaluate();
-    if (this.isEnabled()) this.player.playOnce?.(ascensionMusicTrack);
+    const track = this.pack?.ascensionTrack;
+    if (track && this.isEnabled()) this.player?.playOnce?.(track);
   }
 
   /** The player attacked, missed, or killed something. */
@@ -152,11 +202,11 @@ export class BackgroundMusic {
     const ended = active && !this.gameOver;
     this.gameOver = active;
     this.evaluate();
-    if (ended && !this.ascended && this.isEnabled()) this.player.playStinger?.("game-over");
+    if (ended && !this.ascended && this.isEnabled()) this.player?.playStinger?.("game-over");
   }
 
   resumeFromUserGesture(): void {
-    if (this.isEnabled()) void this.player.resume();
+    if (this.isEnabled()) void this.player?.resume();
   }
 
   /** New game / reconnect. */
@@ -166,16 +216,19 @@ export class BackgroundMusic {
     this.dangerCondition = false;
     this.gameOver = false;
     this.ascended = false;
-    this.player.stopOnce?.();
+    this.player?.stopOnce?.();
     this.region = null;
+    this.wizardInView = false;
+    this.wizardLastSeenAt = Number.NEGATIVE_INFINITY;
+    this.wizardPanic = false;
     this.setStatusEffects([]);
-    this.player.setMood(null);
+    this.player?.setMood(null);
   }
 
   /** Debug: force a mood (null = silence), or undefined to return to auto. */
   setPreviewMood(mood: MusicMood | null | undefined): void {
     this.previewMood = mood;
-    if (mood !== undefined) void this.player.resume();
+    if (mood !== undefined) void this.player?.resume();
     this.evaluate();
   }
 
@@ -186,27 +239,34 @@ export class BackgroundMusic {
   dispose(): void {
     this.disposed = true;
     this.stopTimer();
-    this.player.dispose();
+    this.player?.dispose();
+    this.player = null;
   }
 
   private isEnabled(): boolean {
+    const settings = this.settings;
     return (
       !this.disposed &&
-      this.settings.soundEnabled &&
-      this.settings.musicEnabled &&
-      this.settings.musicVolume > 0
+      this.player !== null &&
+      settings !== null &&
+      settings.soundEnabled &&
+      settings.musicVolume > 0
     );
   }
 
   private evaluate(): void {
-    if (this.disposed) return;
+    const player = this.player;
+    if (this.disposed || !player) {
+      this.stopTimer();
+      return;
+    }
     if (this.previewMood !== undefined) {
-      this.player.setMood(this.isEnabled() ? this.previewMood : null);
+      player.setMood(this.isEnabled() ? this.previewMood : null);
       this.stopTimer();
       return;
     }
     if (!this.isEnabled() || this.gameOver || this.ascended || !this.stats || this.stats.maxHp <= 0) {
-      this.player.setMood(null);
+      player.setMood(null);
       this.stopTimer();
       return;
     }
@@ -217,7 +277,9 @@ export class BackgroundMusic {
       turn: this.stats.time,
       dangerCondition: this.dangerCondition,
     });
-    this.player.setMood(mood);
+    // The Wizard's track rides on the combat channel and outranks every mood.
+    this.updateWizardPanic();
+    player.setMood(this.wizardPanic ? "combat" : mood);
     this.ensureTimer();
   }
 

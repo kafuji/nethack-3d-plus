@@ -87,14 +87,27 @@ the C expressions, so some listed samples are nonsense; review it by hand and
 add renderings for real messages to `nethack5-source-ja.json`. A format key may
 spell out a runtime verb (`"%s toots."` for `pline("%s.", Tobjnam(obj, "toot"))`).
 
+Messages that `Sprintf()` assembles for prompts, window lines and later
+`pline()` calls are included when the format has prose of its own. An argument
+made only of string literals (`flags.female ? "dess" : ""`) makes a separate
+form of the sentence, and every form must have a Japanese sample. The last
+column of the report lists the failing forms with those literals written in,
+ready to use as dictionary keys ("You ascend to the status of Demigoddess...").
+
 ## Rumors and oracles
 
 `oracles-rumors-ja.json` pairs the rumors (`dat/rumors.tru`, `dat/rumors.fal`)
-and major oracles (`dat/oracles.txt`) of NetHack 3.6.7 and 5.0 with the
-Japanese text of JNetHack (https://github.com/jnethack/jnethack-alpha, tag
-`v3.6.7-0.2` and branch `develop`), distributed under the NetHack General
-Public License. The files are paired line by line (rumors) and section by
-section (oracles); JNetHack's "，．" punctuation is rewritten as "、。". Rumors
-added after 3.6.7, which JNetHack has not translated, were translated for this
-project with its own item names. `[cookie] ` prefixes of 5.0 rumors are not
-part of the keys, since the game strips them before display.
+and major oracles (`dat/oracles.txt`) of NetHack 3.6.7 and 5.0 with this
+project's own translations, line by line (rumors) and section by section
+(oracles), in its item and monster names. `[cookie] ` prefixes of 5.0 rumors
+are not part of the keys, since the game strips them before display.
+
+## Quest texts
+
+`quest-texts-ja.json` holds the long texts of `dat/quest.lua`, keyed by the
+English with its %-codes and with runs of whitespace collapsed;
+`../quest-lines.ts` and `../quest-synopses.ts` hold its one-line remarks and its
+message-history synopses. The Japanese uses the same codes, and
+`../quest-text.ts` puts the names NetHack filled in back into them. To check
+every text with each role's names, run
+`NH_DAT=<NetHack>/dat npx vitest run src/i18n/data-file-coverage.test.ts`.

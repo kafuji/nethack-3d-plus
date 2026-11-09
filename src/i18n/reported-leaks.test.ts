@@ -1,8 +1,8 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { translateGameMenuItem } from "./game-menu";
+import { translateGamePrompt } from "./game-prompts";
 import { translateHelpDocument } from "./help-text";
 import { translateInventoryCategory, translateInventoryItem } from "./inventory-text";
-import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { presentGameMessage } from "./message-presentation";
 import { translateReportLine } from "./report-text";
 
@@ -27,7 +27,7 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["The blinded Archon gazes toward it...", "盲目のアルコンはそれの方をにらんだ……"],
   // Found by scripts/i18n/play-bot.mjs.
   ["Something casts a spell at you!", "何かはあなたに呪文を唱えた！"],
-  ["Dirk's ghost touches you!", "Dirkの幽霊があなたに触れた！"],
+  ["Dirk's ghost touches you!", "ディルクの幽霊があなたに触れた！"],
   ["The vampire bat's bite was poisoned!", "吸血コウモリの牙には毒が塗られていた！"],
   ["Its sting was poisoned!", "その針には毒が塗られていた！"],
   ["You detect 15 unseen monsters!", "見えないモンスターを15匹探知した！"],
@@ -46,7 +46,7 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["You hear a lieutenant incant ZELGO MER.", "中尉が「ZELGO MER」と唱えるのが聞こえた。"],
   ["stone (no travel path)", "石（移動経路なし）"],
   ["The blast of gravy hits you!", "グレイビーソースの爆風があなたに当たった！"],
-  ["The priest of Moloch casts a spell!", "モロクの僧侶が呪文を唱えた！"],
+  ["The priest of Moloch casts a spell!", "モロクの司祭が呪文を唱えた！"],
   ["(2north,3east): doorway.", "（2北、3東）：戸口"],
   ["<17,6>   %  an uncursed apple", "<17,6> % 呪われていないリンゴ"],
   ["Portal to The Quest: 12", "クエストへのポータル：12階"],
@@ -65,13 +65,34 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["You turn into a female silver dragon!", "シルバードラゴンに変化した！"],
   ["The design features toucans on an abstract background.", "抽象的な背景にオオハシの柄が描かれている。"],
   ["The voice of Thoth booms out: Thou hast angered me.", "トートの声が響いた：「汝は我を怒らせた。」"],
-  ["You have 50 zorkmids credit at Asidonhopo's general store.", "Asidonhopoの雑貨店に50ゴールドの信用がある。"],
+  ["You have 50 zorkmids credit at Asidonhopo's general store.", "アシドンホポの雑貨店に50ゾークミドの信用がある。"],
   ["\"Don't Panic\"", "「あわてるな」"],
+  // Generated names, in katakana wherever they appear.
+  ["You enter Izchak's lighting store!", "イズチャクの照明店に入った！"],
+  ["You do not owe Sipaliwini anything.", "シパリウィニには何の借りもない。"],
+  ["Aothog of Aothaiakh wields a long sword!", "アオスアイアクのアオスオグがロングソードを手に持った！"],
+  ["Ai-goru of Aothaiakh is suddenly moving faster.", "アオスアイアクのアイ・ゴルウの動きは突然すばやくなった。"],
+  ["The vial crashes on Aothog of Aothaiakh's head and breaks into shards.", "ガラス瓶がアオスアイアクのアオスオグの頭に当たって割れ、破片になった。"],
+  ["Mike the Traveler hits!", "旅行者のマイクが攻撃を命中させた！"],
+  ["coyote - Hungrii Flea-Bagius", "コヨーテ - ハングリイ・フリーバギウス"],
+  ["You miss Madame.", "マダムへの攻撃は外れた。"],
+  ["peaceful Izchak", "友好的なイズチャク"],
+  // Rays, liquids and traps as a hallucinating hero sees them.
+  ["The blast of salt misses the homunculus.", "塩の爆風はホムンクルスに当たらなかった。"],
+  ["The wolf is killed by the blast of leaves!", "オオカミは木の葉の爆風で殺された！"],
+  ["You splash some mulled wine around.", "ホットワインをあたりにはね散らした。"],
+  ["box and stick trap", "箱と棒の罠"],
+  // Shop talk and other sentences the bot met.
+  ["A brass lantern, price 16 zorkmids, superb craftsmanship!", "真鍮のランタン、お値段16ゾークミド。見事な出来ばえだ！"],
+  ["The priest of Moloch hurls a potion of blindness!", "モロクの司祭が盲目のポーションを投げつけた！"],
+  ["Your help is urgently needed at Orion's camp!", "オリオンの野営地であなたの助けが緊急に必要だ！"],
+  ["Use the command #monster to spin a web.", "#monster コマンドで巣を張れる。"],
+  ["Your rear limb feels better.", "あなたの後肢は具合がよくなった。"],
   // Assembled from the source's word tables.
   ["adjust: adjust inventory letters", "adjust: 持ち物の文字を整理する"],
-  ["So, Agent, you dare return to Asidonhopo's general store?!", "Agentよ、Asidonhopoの雑貨店によくも戻って来られたな！"],
-  ["You enter Asidonhopo's general store again!", "Asidonhopoの雑貨店に再び入った！"],
-  ["You owe Asidonhopo 50 zorkmids for goods lost.", "Asidonhopoに失われた品物の代金として50ゴールドの借りがある。"],
+  ["So, Agent, you dare return to Asidonhopo's general store?!", "Agentよ、アシドンホポの雑貨店によくも戻って来られたな！"],
+  ["You enter Asidonhopo's general store again!", "アシドンホポの雑貨店に再び入った！"],
+  ["You owe Asidonhopo 50 zorkmids for goods lost.", "アシドンホポに失われた品物の代金として50ゾークミドの借りがある。"],
   ["The massive hammer hits!  Lightning strikes the jackal!", "巨大なハンマーが命中した！稲妻がジャッカルを撃った！"],
   ["Your dagger glows brown.", "あなたのダガーが茶色に光った。"],
   ["Your long sword softly glows amber and is now as good as new.", "あなたのロングソードが琥珀色に光った。新品同様になった。"],
@@ -82,6 +103,33 @@ const messages: ReadonlyArray<readonly [string, string]> = [
   ["The fiery blade burns the jackal!", "炎の刃がジャッカルを焼いた！"],
   ["You consume smoked newt.", "燻製のイモリの肉を食べた。"],
   ["There is a chest here.  Check it for traps?", "ここに宝箱がある。罠を調べますか？"],
+  // Left in English once JNetHack's translation was no longer used.
+  ["You ascend to the status of Demigod...", "あなたは昇天し、半神の地位に上った…"],
+  ["You ascend to the status of Demigoddess...", "あなたは昇天し、半女神の地位に上った…"],
+  ["You reveal 2 secret corridors!", "隠し通路2個をあらわにした！"],
+  ["You fail to unleash something.", "何かのリードを外し損ねた。"],
+  ["The Key feels very warm!", "鍵はとても温かい！"],
+  ["You hear a voice say, \"They're dead, Jim.\"", "「死んでいるよ、ジム」という声が聞こえた。"],
+  ["\"Hello stranger, who are you?\" -", "「やあ、見知らぬ人よ、お前は誰だ？」 -"],
+];
+
+// Each line as a text window shows it: report rendering, then message rendering.
+const windowLines: ReadonlyArray<readonly [string, string]> = [
+  ["      Completed quest for Lord Sato.", "      佐藤卿のクエストを達成した。"],
+  ["      Stairs down to the Gnomish Mines.", "      ノームの鉱山への下り階段。"],
+  ["      The castle (play C D E F G to open or close drawbridge).", "      城（「C D E F G」を奏でると跳ね橋が開閉する）。"],
+  ["You dissolved in the lava in Gehennom on dungeon level 40 with 2 points,", "あなたはゲヘナの地下40階で溶岩に溶けた（2ポイント）、"],
+  ["       3 worthless pieces of colored glass,", "       価値のない色ガラス3個、"],
+  ["The Amulet of Yendor (worth 30000 zorkmids and 30000 points)", "イェンダーの魔除け（30000ゾークミド、30000ポイント相当）"],
+  ["Extinct species:", "絶滅した種族："],
+  ["You aggravated monsters.", "モンスターを刺激していました。"],
+  ["you, crushed to death underneath a drawbridge.", "あなた（跳ね橋の下敷きになって死んだ）。"],
+  ["you, killed by touching a cockatrice corpse bare-handed.", "あなた（コカトリスの死体を素手で触ったことに殺された）。"],
+];
+
+const prompts: ReadonlyArray<readonly [string, string]> = [
+  ["Do you want a list of extinct species?", "絶滅した種族の一覧を見ますか？"],
+  ["Do you want a list of species genocided and extinct?", "抹殺または絶滅した種族の一覧を見ますか？"],
 ];
 
 const reportLines: ReadonlyArray<readonly [string, string]> = [
@@ -112,6 +160,14 @@ function reportedLeaks(): void {
 
   it.each(reportLines)("translates the report line %s", (english, japanese) => {
     expect(translateReportLine(english, "ja")).toBe(japanese);
+  });
+
+  it.each(windowLines)("translates the window line %s", (english, japanese) => {
+    expect(presentGameMessage(translateReportLine(english, "ja"), "ja").text).toBe(japanese);
+  });
+
+  it.each(prompts)("translates the prompt %s", (english, japanese) => {
+    expect(translateGamePrompt(english, "ja")).toBe(japanese);
   });
 
   it.each([
@@ -154,7 +210,3 @@ function reportedLeaks(): void {
 
 describe("reported leaks", reportedLeaks);
 
-describe("reported leaks with the JNetHack dictionary loaded", () => {
-  beforeAll(loadJapaneseDictionary, 40000);
-  reportedLeaks();
-});

@@ -2,6 +2,8 @@
 //   node scripts/i18n/extract-source-messages.mjs <NetHack>/src samples.json
 //   NH_MESSAGE_SAMPLES=samples.json npx vitest run src/i18n/source-message-coverage.test.ts
 // Writes <samples>-untranslated.tsv next to the input (location, format, samples).
+// Each form of a message (one per choice of its literal arguments) must have
+// a Japanese sample; Sprintf() text may also be a prompt or a window line.
 import { expect, it, vi } from "vitest";
 import { setCurrentLocale } from "./core";
 
@@ -20,21 +22,33 @@ it.skipIf(!samplesFile)("reports source messages without a Japanese rendering", 
     writeFileSync: (path: string, data: string) => void;
   }>("node:fs");
   setCurrentLocale("ja");
-  const gameText = await import("../plus/game-text/index");
-  gameText.ensureGameTextTranslatorLoaded();
-  // Let the lazily imported JNetHack dictionary finish loading.
-  await new Promise((resolve) => setTimeout(resolve, 3000));
   const { presentGameMessage } = await import("./message-presentation");
+  const { translateGamePrompt } = await import("./game-prompts");
+  const { translateGameMenuItem } = await import("./game-menu");
+  const { translateReportLine } = await import("./report-text");
   const entries = JSON.parse(readFileSync(samplesFile!, "utf8")) as {
-    file: string; line: number; format: string; samples: string[];
+    file: string; line: number; call?: string; format: string; samples: string[]; groups?: string[][]; forms?: string[];
   }[];
   const report: string[] = [];
   for (const entry of entries) {
-    const results = entry.samples.map((sample) => [sample, presentGameMessage(sample, "ja").text] as const);
-    if (results.some(([, ja]) => !isUntranslated(ja))) continue;
-    report.push(`${entry.file}:${entry.line}\t${entry.format}\t${results.map(([en, ja]) => (ja === en ? en : `${en} => ${ja}`)).join(" || ")}`);
+    const assembled = entry.call === "Sprintf" || entry.call === "Snprintf";
+    const render = (sample: string): string => {
+      const message = presentGameMessage(sample, "ja").text;
+      if (!assembled || !isUntranslated(message)) return message;
+      return [translateGamePrompt(sample, "ja"), translateReportLine(sample, "ja"), translateGameMenuItem(sample, "", "ja")]
+        .find((text) => !isUntranslated(text)) ?? message;
+    };
+    const groups = entry.groups ?? [entry.samples];
+    const failingForms = groups
+      .map((group, index) => ({ form: entry.forms?.[index] ?? entry.format, results: group.map((sample) => [sample, render(sample)] as const) }))
+      .filter(({ results }) => !results.some(([, ja]) => !isUntranslated(ja)));
+    if (!failingForms.length) continue;
+    const failing = failingForms.map(({ results }) => results);
+    // Columns: location, format, failing samples, and the failing forms (dictionary keys to add).
+    report.push(`${entry.file}:${entry.line}\t${entry.format}\t${failing.flat().map(([en, ja]) => (ja === en ? en : `${en} => ${ja}`)).join(" || ")}\t${failingForms.map(({ form }) => form).join(" || ")}`
+      .replace(/\n/g, "\\n"));
   }
   writeFileSync(samplesFile!.replace(/\.json$/, "") + "-untranslated.tsv", report.join("\n"));
-  console.log(`${report.length} of ${entries.length} source formats have no Japanese sample`);
+  console.info(`${report.length} of ${entries.length} source formats have a form without a Japanese sample`);
   expect(entries.length).toBeGreaterThan(0);
 }, 600000);

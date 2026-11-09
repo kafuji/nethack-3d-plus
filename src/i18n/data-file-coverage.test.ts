@@ -3,9 +3,8 @@
 //   NH_DAT=<NetHack>/dat npx vitest run src/i18n/data-file-coverage.test.ts
 // Writes data-untranslated.tsv in that directory: file, text, rendering.
 import { expect, it, vi } from "vitest";
-import { jnethackQuestDocument } from "../plus/game-text/fallback";
+import { translateQuestDocument } from "./quest-text";
 import { translateHelpDocument } from "./help-text";
-import { loadJapaneseDictionary } from "./load-japanese-dictionary";
 import { presentGameMessage } from "./message-presentation";
 import { translateOracleDocument, translateRumor } from "./oracle-text";
 import { translateReportLine } from "./report-text";
@@ -68,7 +67,6 @@ it.skipIf(!datDir)("reports data file text that stayed in English", async () => 
     readFileSync: (path: string, encoding: "utf8") => string;
     writeFileSync: (path: string, data: string) => void;
   }>("node:fs");
-  await loadJapaneseDictionary();
   const read = (name: string) => readFileSync(`${datDir}/${name}`, "utf8").replace(/\r\n/g, "\n");
   const lines = (name: string) => read(name).split("\n").filter((line) => line.trim() && !comment.test(line));
   const report: string[] = [];
@@ -81,7 +79,7 @@ it.skipIf(!datDir)("reports data file text that stayed in English", async () => 
     for (const r of roles) {
       const filled = fillQuest(r, text);
       if (filled.includes("\n") || filled.length > 180) {
-        add(`quest:${r}:${name}`, filled, jnethackQuestDocument(filled.split("\n")) ?? filled);
+        add(`quest:${r}:${name}`, filled, translateQuestDocument(filled.split("\n")) ?? filled);
       } else {
         add(`quest:${r}:${name}`, filled, presentGameMessage(filled, "ja").text);
       }

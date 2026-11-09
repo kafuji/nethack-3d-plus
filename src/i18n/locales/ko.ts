@@ -1046,10 +1046,13 @@ export const ko = {
           },
         },
         groupSound: "사운드",
-        musicEnabled: {
-          label: "배경 음악",
+        musicPack: {
+          label: "BGM 팩 사용",
           description:
-            "상황(평온, 전투, 위험)에 따라 바뀌는 배경 음악을 재생합니다. 사운드가 켜져 있어야 합니다.",
+            "재생할 배경 음악 세트입니다. 상황(평온, 전투, 위험)과 장소에 따라 곡이 바뀝니다. 음악을 끄려면 '없음'을 선택하세요. 사운드가 켜져 있어야 합니다.",
+          options: {
+            none: "없음",
+          },
         },
         musicVolume: {
           label: "음악 볼륨",

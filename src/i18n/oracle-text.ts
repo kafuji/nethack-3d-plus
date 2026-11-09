@@ -2,7 +2,7 @@ import type { SupportedLocale } from "./core";
 import data from "./data/oracles-rumors-ja.json";
 
 // Rumors (dat/rumors.tru, dat/rumors.fal) and major oracles (dat/oracles.txt)
-// paired with JNetHack's translations; see data/README.md. Lookups compare
+// paired with their translations; see data/README.md. Lookups compare
 // text with runs of whitespace collapsed, since the game rewraps oracles.
 const rumors: Readonly<Record<string, string>> = data.rumors;
 const oracles = new Map<string, string>(data.oracles as [string, string][]);

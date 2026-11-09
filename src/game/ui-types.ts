@@ -22,6 +22,7 @@ import {
   type SupportedLocale,
 } from "../i18n/core";
 import { constrainFpsModeForTilesetMode } from "./client-option-constraints";
+import { defaultMusicPackId, normalizeMusicPackId } from "../audio/music/music-pack";
 
 export type NethackConnectionState =
   | "disconnected"
@@ -351,7 +352,8 @@ export type Nh3dClientOptions = {
   // nh3d-plus: background opacity of the boxed desktop message log.
   desktopMessageLogBackgroundOpacity: number;
   soundEnabled: boolean;
-  musicEnabled: boolean;
+  /** Music pack id ("takachiho"), or "none" for no background music. */
+  musicPack: string;
   musicVolume: number;
   blockAmbientOcclusion: boolean;
   darkCorridorWalls367: boolean;
@@ -518,7 +520,7 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   desktopMessageLogWindowScale: 1,
   desktopMessageLogBackgroundOpacity: 0.92,
   soundEnabled: true,
-  musicEnabled: true,
+  musicPack: defaultMusicPackId,
   musicVolume: 0.5,
   blockAmbientOcclusion: true,
   darkCorridorWalls367: true,
@@ -1350,10 +1352,11 @@ export function normalizeNh3dClientOptions(
       typeof overrides?.soundEnabled === "boolean"
         ? overrides.soundEnabled
         : defaultNh3dClientOptions.soundEnabled,
-    musicEnabled:
-      typeof overrides?.musicEnabled === "boolean"
-        ? overrides.musicEnabled
-        : defaultNh3dClientOptions.musicEnabled,
+    // Options saved before music packs had musicEnabled: false for no music.
+    musicPack: normalizeMusicPackId(
+      overrides?.musicPack,
+      (overrides as { musicEnabled?: unknown } | null | undefined)?.musicEnabled,
+    ),
     musicVolume,
     blockAmbientOcclusion:
       typeof overrides?.blockAmbientOcclusion === "boolean"

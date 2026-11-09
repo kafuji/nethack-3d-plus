@@ -30,14 +30,9 @@ const values: Readonly<Record<string, string>> = {
   Priest: "司祭", Priestess: "女司祭", Rogue: "盗賊", Ranger: "レンジャー", Samurai: "侍", Tourist: "観光客", Valkyrie: "ワルキューレ", Wizard: "魔法使い",
   "Flame Mage": "炎の魔術師", "Ice Mage": "氷の魔術師", Necromancer: "死霊術師", "Undead Slayer": "アンデッド討伐者", Yeoman: "自作農",
 };
-export const deityNames: Readonly<Record<string, string>> = {
-  Thoth: "トート", Ptah: "プタハ", Anhur: "アンフル", "Amaterasu Omikami": "天照大神", Raijin: "雷神", Susanowo: "スサノオ",
-  Tyr: "テュール", Odin: "オーディン", Loki: "ロキ", Anu: "アヌ", Ishtar: "イシュタル", Anshar: "アンシャル", Kos: "コス", Mog: "モグ", Issek: "イセク",
-  Quetzalcoatl: "ケツァルコアトル", Camaxtli: "カマックストリ", Huhetotl: "フエフエテオトル", Mitra: "ミトラ", Crom: "クロム", Set: "セト",
-  Athena: "アテナ", Hermes: "ヘルメス", Poseidon: "ポセイドン", Lugh: "ルー", Brigit: "ブリギット", "Manannan Mac Lir": "マナナン・マクリル",
-  "Shan Lai Ching": "山雷経", "Chih Sung-tzu": "赤松子", "Huan Ti": "黄帝", Mercury: "メルクリウス", Venus: "ヴィーナス", Mars: "マルス",
-  "Blind Io": "盲目のイオ", "The Lady": "淑女", Offler: "オフラー", Moloch: "モロク",
-};
+// The pantheons are named in intro-story.ts, for every text that shows them.
+import { deityNames } from "./intro-story";
+export { deityNames };
 const exactLines: Readonly<Record<string, string>> = {
   "You have just started your adventure.": "冒険を始めたばかりです。",
   "Your wallet is empty.": "財布は空です。",
@@ -118,6 +113,21 @@ const exactLines: Readonly<Record<string, string>> = {
   "You are unlucky.": "運が悪いです。", "You are very unlucky.": "運がとても悪いです。", "You are extremely unlucky.": "運が極めて悪いです。",
   "You have extra luck.": "運に追加の恩恵があります。", "You have reduced luck.": "運に不利な影響があります。",
   "Bad luck does not time out for you.": "悪運は時間が経っても戻りません。", "Good luck does not time out for you.": "幸運は時間が経っても失われません。",
+  // Final disclosure: insight.c gives these their own past tense.
+  "Bad luck did not time out for you.": "悪運は時間が経っても戻りませんでした。", "Good luck did not time out for you.": "幸運は時間が経っても失われませんでした。",
+  "You aggravated monsters.": "モンスターを刺激していました。", "You caused conflict.": "周囲に争いを引き起こしていました。",
+  "You regenerated.": "体力が再生していました。", "You took reduced poison gas damage.": "毒ガスから受けるダメージが減っていました。",
+  "You resisted hallucinations.": "幻覚への耐性がありました。", "Your life would have been saved.": "命を救われるはずでした。",
+  "You hunger rapidly.": "すぐにお腹が空きます。", "You hungered rapidly.": "すぐにお腹が空いていました。",
+  "You fumble.": "よろめきがちです。", "You fumbled.": "よろめきがちでした。",
+  "You fall asleep uncontrollably.": "抑えようもなく眠り込んでしまいます。", "You fell asleep uncontrollably.": "抑えようもなく眠り込んでしまっていました。",
+  "You did not wear any armor.": "防具を一切着けていませんでした。",
+  "You are levitating, at will.": "自分の意志で浮遊しています。", "You are buried.": "埋まっています。", "You can see.": "目が見えます。",
+  "You can not change from your current form.": "今の姿から変わることができません。",
+  "It is the midnight hour.": "真夜中です。", "It was the midnight hour.": "真夜中でした。",
+  "You would see invisible when not blind.": "目が見えれば透明なものが見えます。", "You would have seen invisible when not blind.": "目が見えていれば透明なものが見えたはずでした。",
+  "You would have seen invisible if not blind.": "目が見えていれば透明なものが見えたはずでした。",
+  "You could be clairvoyant.": "千里眼になれます。", "You could have been clairvoyant.": "千里眼になれたはずでした。",
 };
 const skillLevels: Readonly<Record<string, string>> = {
   no: "なし", unskilled: "未熟練", basic: "基本", skilled: "熟練", expert: "専門家", master: "達人", "grand master": "大達人", "grand-master": "大達人",
@@ -186,8 +196,8 @@ function translateCharacterContent(line: string, locale: SupportedLocale): strin
         `${ending === "ません" ? "ませんでした" : ending === "ます" ? "ました" : "でした"}${detail ?? ""}。`);
     }
   }
-  let m = /^You are an? (.+?), a level (\d+) (?:(male|female|neuter) )?(\S+) (.+)\.$/.exec(line);
-  if (m) return `あなたは${translatePlayerRank(m[1], locale)}、レベル${m[2]}の${m[3] ? `${own(values, m[3])}の` : ""}${own(values, m[4])}の${own(values, m[5])}です。`;
+  let m = /^You (are|were) an? (.+?), a level (\d+) (?:(male|female|neuter) )?(\S+) (.+)\.$/.exec(line);
+  if (m) return `あなたは${translatePlayerRank(m[2], locale)}、レベル${m[3]}の${m[4] ? `${own(values, m[4])}の` : ""}${own(values, m[5])}の${own(values, m[6])}${m[1] === "are" ? "です" : "でした"}。`;
   m = /^Total elapsed playing time (?:is|was) (\d+ (?:days?|hours?|minutes?|seconds?)(?:,? (?:and )?\d+ (?:days?|hours?|minutes?|seconds?))*)\.$/.exec(line);
   if (m) {
     const units: Readonly<Record<string, string>> = { day: "日", hour: "時間", minute: "分", second: "秒" };

@@ -56,6 +56,8 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   private onceRequest: MusicTrack | null = null;
   private onceElement: HTMLAudioElement | null = null;
   private onceOutput: GainNode | null = null;
+  /** Music volume for playOnce tracks, which bypass the status effect chain. */
+  private onceMaster: GainNode | null = null;
 
   constructor(
     private readonly library: MusicLibrary,
@@ -117,13 +119,13 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
     void (async () => {
       const url = await this.loadTrackUrl(track);
       const context = this.ensureContext();
-      if (!url || !context || !this.master || this.onceRequest !== track || this.disposed) return;
+      if (!url || !context || !this.onceMaster || this.onceRequest !== track || this.disposed) return;
       const element = new Audio();
       element.src = url;
       const output = context.createGain();
       output.gain.value = Math.pow(10, (track.gainDb ?? 0) / 20);
       context.createMediaElementSource(element).connect(output);
-      output.connect(this.master);
+      output.connect(this.onceMaster);
       this.onceElement = element;
       this.onceOutput = output;
       void element.play().catch(() => undefined);
@@ -159,10 +161,12 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
   setVolume(volume: number): void {
     this.volume = Math.max(0, Math.min(1, volume));
     this.fallback?.setVolume(volume);
-    if (this.context && this.master) {
+    if (this.context && this.master && this.onceMaster) {
       const now = this.context.currentTime;
-      this.master.gain.cancelScheduledValues(now);
-      this.master.gain.setTargetAtTime(this.resolveMasterGain(), now, 0.1);
+      for (const node of [this.master, this.onceMaster]) {
+        node.gain.cancelScheduledValues(now);
+        node.gain.setTargetAtTime(this.resolveMasterGain(), now, 0.1);
+      }
     }
   }
 
@@ -222,6 +226,7 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
     const context = this.context;
     this.context = null;
     this.master = null;
+    this.onceMaster = null;
     if (context) void context.close().catch(() => undefined);
   }
 
@@ -249,8 +254,12 @@ export class FileMusicPlayer implements BackgroundMusicPlayer {
       this.effects = new MusicStatusEffectChain(context, context.destination, (rate) => this.applyPlaybackRate(rate));
       this.effects.setEffects(this.statusEffects);
       master.connect(this.effects.input);
+      const onceMaster = context.createGain();
+      onceMaster.gain.value = this.resolveMasterGain();
+      onceMaster.connect(context.destination);
       this.context = context;
       this.master = master;
+      this.onceMaster = onceMaster;
       return context;
     } catch (error) {
       console.warn("[NetHack 3D] Unable to create WebAudio context for background music.", error);

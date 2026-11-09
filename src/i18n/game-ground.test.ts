@@ -4,7 +4,7 @@ import { translateGroundObject } from "./game-ground";
 describe("ground description presentation", () => {
   it("translates visible features without inventing hidden information", () => {
     expect(translateGroundObject("a doorway", "ja")).toBe("戸口");
-    expect(translateGroundObject("an open door", "ja")).toBe("開いたドア");
+    expect(translateGroundObject("an open door", "ja")).toBe("開いた扉");
     expect(translateGroundObject("a staircase down", "ja")).toBe("下り階段");
     expect(translateGroundObject("a staircase down to level 3", "ja")).toBe("3階へ下りる階段");
     expect(translateGroundObject("a fountain named Hachi", "ja")).toBe("a fountain named Hachi");

@@ -247,7 +247,7 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
       },
       autoopen: {
         label: "自動開閉",
-        description: "ドアに向かって移動したとき、自動で開けようとします。",
+        description: "扉に向かって移動したとき、自動で開けようとします。",
       },
       autodig: {
         label: "自動掘削",
@@ -400,12 +400,12 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
       "monster-killed": "モンスター撃破（プレイヤー）",
       "monster-killed-other": "モンスター撃破（その他）",
       "missed-attack": "攻撃失敗",
-      "door-opens": "ドアが開く",
-      "door-closes": "ドアが閉まる",
-      "door-kick": "ドアを蹴る",
-      "door-smash": "ドア破壊",
-      "door-resists": "ドアはびくともしない",
-      "door-distant": "遠くのドア",
+      "door-opens": "扉が開く",
+      "door-closes": "扉が閉まる",
+      "door-kick": "扉を蹴る",
+      "door-smash": "扉破壊",
+      "door-resists": "扉はびくともしない",
+      "door-distant": "遠くの扉",
       "walk-down-stairs": "階段を下りる",
       "walk-up-stairs": "階段を上る",
       eating: "食事",
@@ -416,8 +416,8 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
       "find-hidden": "隠し扉 / 通路を発見",
       "level-up": "レベルアップ",
       unlock: "解錠",
-      "boulder-push": "岩を押す",
-      "boulder-blocked": "岩が塞いでいる",
+      "boulder-push": "大岩を押す",
+      "boulder-blocked": "大岩が塞いでいる",
       splash: "水しぶき",
       searching: "探索中",
       "magic-cast": "魔法詠唱",
@@ -558,7 +558,7 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
       browse: "インストール済みフォントを表示",
       loading: "フォントを読み込み中…",
       fontName: "フォントファミリー名",
-      preview: "冒険者は暗い迷宮を進みます。HP 42/100 · @ # 0123456789",
+      preview: "冒険者は暗いダンジョンを進みます。HP 42/100 · @ # 0123456789",
       unavailable: "フォント一覧を取得できないか、アクセスが拒否されました。インストール済みのフォントファミリー名を入力することもできます。",
     },
     saveTransfer: {
@@ -1015,10 +1015,13 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "FMOD オーディオのオン/オフを切り替えます。無効にすると低性能デバイスでの音声処理負荷を軽減できます。",
         },
-        musicEnabled: {
-          label: "BGM を有効化",
+        musicPack: {
+          label: "BGM パックを使用",
           description:
-            "状況（平常・戦闘・ピンチ）に応じて変わる BGM を再生します。サウンドが有効なときのみ鳴ります。",
+            "再生する BGM のセットです。状況（平常・戦闘・ピンチ）や場所に応じて曲が変わります。「なし」を選ぶと BGM を再生しません。サウンドが有効なときのみ鳴ります。",
+          options: {
+            none: "なし",
+          },
         },
         musicVolume: {
           label: "BGM 音量",

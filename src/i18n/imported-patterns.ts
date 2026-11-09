@@ -1,3 +1,4 @@
+import { withProjectTerms } from "./term-rules";
 import patterns from "./data/nehww-patterns.json";
 import { translateInventoryItem } from "./inventory-text";
 import { translateMonsterName } from "./game-monsters";
@@ -6,6 +7,11 @@ import { translateMonsterName } from "./game-monsters";
 // they are matched with string operations rather than evaluating source regexes.
 // Reject ambiguous matches and preserve captures the dictionaries do not know.
 export function lookupImportedJapanesePattern(message: string): string | undefined {
+  const found = lookupImportedJapanesePatternUnchanged(message);
+  return found === undefined ? undefined : withProjectTerms(found, message);
+}
+
+function lookupImportedJapanesePatternUnchanged(message: string): string | undefined {
   if (message.length > 256 || /[\r\n]/.test(message)) return undefined;
   let result: string | undefined;
   for (const { parts, translation } of patterns) {

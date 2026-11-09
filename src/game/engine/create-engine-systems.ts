@@ -36,6 +36,7 @@ import { EntityBillboards } from "./rendering/entity-billboards";
 import { TerminalRendering } from "./rendering/terminal-rendering";
 import { TileRendering } from "./rendering/tile-rendering";
 import { HeldWeapon } from "./rendering/held-weapon";
+import { PlayerWeaponOverlay } from "./rendering/player-weapon-overlay";
 import { Camera } from "./camera/camera";
 import { PositionSelection } from "./input/position-selection";
 import { InputCommands } from "./input/input-commands";
@@ -98,6 +99,7 @@ export interface EngineSystems {
   readonly terminalRendering: TerminalRendering;
   readonly tileRendering: TileRendering;
   readonly heldWeapon: HeldWeapon;
+  readonly playerWeaponOverlay: PlayerWeaponOverlay;
   readonly camera: Camera;
   readonly positionSelection: PositionSelection;
   readonly inputCommands: InputCommands;
@@ -263,6 +265,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get minimap() { return minimap; },
     get movementInput() { return movementInput; },
     get playerMovement() { return playerMovement; },
+    get playerWeaponOverlay() { return playerWeaponOverlay; },
     get runtimeEntityTracking() { return runtimeEntityTracking; },
     get tileRendering() { return tileRendering; },
     get worldClassification() { return worldClassification; },
@@ -473,7 +476,6 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get movementInput() { return movementInput; },
     get playerMovement() { return playerMovement; },
     get positionSelection() { return positionSelection; },
-    get promptDialogs() { return promptDialogs; },
     get renderPipeline() { return renderPipeline; },
     get terminalRendering() { return terminalRendering; },
     get tilesetAssets() { return tilesetAssets; },
@@ -524,6 +526,18 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get wallGeometry() { return wallGeometry; },
     get wallOverlays() { return wallOverlays; },
     get worldClassification() { return worldClassification; },
+  });
+  const playerWeaponOverlay: PlayerWeaponOverlay = new PlayerWeaponOverlay({
+    get camera() { return camera; },
+    get engineState() { return engineState; },
+    get entityBillboards() { return entityBillboards; },
+    get glyphTextures() { return glyphTextures; },
+    get lighting() { return lighting; },
+    get movementInput() { return movementInput; },
+    get playerMovement() { return playerMovement; },
+    get promptDialogs() { return promptDialogs; },
+    get renderPipeline() { return renderPipeline; },
+    get tilesetAssets() { return tilesetAssets; },
   });
   const heldWeapon: HeldWeapon = new HeldWeapon({
     get audioHapticsPlatform() { return audioHapticsPlatform; },
@@ -939,6 +953,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     terminalRendering,
     tileRendering,
     heldWeapon,
+    playerWeaponOverlay,
     camera,
     positionSelection,
     inputCommands,

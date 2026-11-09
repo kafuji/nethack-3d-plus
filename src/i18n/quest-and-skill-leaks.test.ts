@@ -1,12 +1,9 @@
-import { beforeAll, describe, expect, it } from "vitest";
-import { loadJapaneseDictionary } from "./load-japanese-dictionary";
+import { describe, expect, it } from "vitest";
 import { presentGameMessage } from "./message-presentation";
 import { translateInventoryItem } from "./inventory-text";
 import { translateSkillLegendLine } from "./game-skills";
 import { translateMonsterName } from "./game-monsters";
-import { GameTextTranslator, type GameTextData } from "../plus/game-text/translator";
-import { questLines } from "../plus/game-text/quest-lines";
-import data from "../plus/game-text/data/jnethack.generated.json";
+import { questLines } from "./quest-lines";
 
 const ja = (message: string): string => presentGameMessage(message, "ja").text;
 
@@ -59,20 +56,11 @@ describe("messages that used to stay in English", () => {
   });
 });
 
-describe("those messages with the JNetHack dictionary loaded", () => {
-  beforeAll(loadJapaneseDictionary, 40000);
-
-  it.each(leakedMessages)("translates %s", (english, japanese) => {
-    expect(ja(english)).toBe(japanese);
-  });
-});
-
 describe("quest encourage and discourage lines", () => {
-  const translator = new GameTextTranslator(data as unknown as GameTextData);
   const values: Readonly<Record<string, string>> = {
     p: "Kafujinho", c: "Samurai", r: "Hatamoto", R: "Ryoshu", s: "brother", S: "son", l: "Lord Sato",
     i: "the Shogun's Castle", o: "the Tsurugi of Muramasa", n: "Ashikaga Takauji", g: "roshi", H: "the Castle of the Taro Clan",
-    a: "lawful", d: "Amaterasu Omikami",
+    a: "lawful", d: "Amaterasu Omikami", D: "Amaterasu Omikami",
   };
   const pronouns: Readonly<Record<string, string>> = { h: "he", H: "He", i: "him", I: "Him", j: "his", J: "His" };
   // questpgr.c convert_line(), reduced to what these lines use.
@@ -94,13 +82,13 @@ describe("quest encourage and discourage lines", () => {
 
   it.each(questLines.map(([english]) => [english]))("translates %s", (english) => {
     const line = fill(english);
-    const japanese = translator.translate(line);
+    const japanese = ja(line);
     expect(japanese, line).toMatch(/^「.*」$/);
     expect(japanese.replace(/Kafujinho/g, ""), line).not.toMatch(/[A-Za-z]{2,}|%[A-Za-z]/);
   });
 
   it("uses the same text in the message history's brackets", () => {
-    expect(translator.translate('["You are indeed a worthy Ryoshu, but now you must be a worthy samurai."]'))
+    expect(ja('["You are indeed a worthy Ryoshu, but now you must be a worthy samurai."]'))
       .toBe("[「お前はまさしく領主にふさわしい。だが今こそ、侍にふさわしくあらねばならぬ。」]");
   });
 });

@@ -197,7 +197,7 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
         Polyselfless: "自己変化なし",
         Wishless: "願いなし",
         "Artifact-wishless": "アーティファクトの願いなし",
-        Genocideless: "虐殺なし",
+        Genocideless: "抹殺なし",
       },
       achievements: {
         "Bell of Opening": "開放の鐘",
@@ -221,11 +221,11 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
         "Bones disabled": "骨ファイル無効",
       },
       telemetryLabels: {
-        "Pit trap": "落し穴",
-        "Trap door": "落し扉",
-        "Bear trap": "熊の罠",
+        "Pit trap": "落とし穴",
+        "Trap door": "落とし扉",
+        "Bear trap": "トラバサミ",
         "Land mine": "地雷",
-        "Rolling boulder trap": "巨岩の罠",
+        "Rolling boulder trap": "転がる大岩の罠",
         "Dart trap": "投げ矢の罠",
         "Arrow trap": "矢の罠",
         "Teleport trap": "テレポートの罠",
@@ -522,8 +522,8 @@ const jaPlusTranslations: LocaleOverrides<TranslationDictionary> = {
   },
 };
 
-// Terminology fixes for upstream ja.ts strings, aligned with JNetHack usage
-// (e.g. 職業 for role, 探す for search, 探検 for explore mode).
+// Terminology fixes for upstream ja.ts strings, aligned with the game text's
+// terms (e.g. 職業 for role, 探す for search, 探検 for explore mode).
 const jaPlusTerminologyFixes: LocaleOverrides<TranslationDictionary> = {
   controller: {
     actions: {
@@ -544,7 +544,7 @@ const jaPlusTerminologyFixes: LocaleOverrides<TranslationDictionary> = {
         },
       },
       autoopen: {
-        label: "ドアを自動で開ける",
+        label: "扉を自動で開ける",
       },
       legacy: {
         label: "冒頭の物語",

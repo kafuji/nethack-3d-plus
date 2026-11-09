@@ -12,12 +12,12 @@ const actionLabels: Readonly<Record<string, string>> = {
 };
 
 const targetNames: Readonly<Record<string, string>> = {
-  monster: "モンスター", loot: "アイテム", door: "ドア", "stairs up": "上り階段",
+  monster: "モンスター", loot: "アイテム", door: "扉", "stairs up": "上り階段",
   "stairs down": "下り階段", "staircase up": "上り階段", "staircase down": "下り階段",
   wall: "壁", water: "水", trap: "罠", feature: "地形", floor: "床", tile: "マス",
-  "closed door": "閉じたドア", "open door": "開いたドア", "broken door": "壊れたドア",
+  "closed door": "閉じた扉", "open door": "開いた扉", "broken door": "壊れた扉",
   "floor of a room": "部屋の床", corridor: "通路", "dark corridor": "暗い通路",
-  fountain: "噴水", sink: "流し",
+  fountain: "泉", sink: "流し台",
   pool: "水たまり", moat: "堀", lava: "溶岩", altar: "祭壇", throne: "玉座",
   grave: "墓", tree: "木", "iron bars": "鉄格子", boulder: "大岩", statue: "石像",
 };

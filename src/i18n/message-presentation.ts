@@ -3,8 +3,10 @@ import { englishLeftover, translateGameMessage } from "./game-messages";
 import { translateRuntimeText } from "./runtime-text";
 import { lookupImportedJapaneseMessage } from "./imported-messages";
 import { lookupImportedJapanesePattern } from "./imported-patterns";
-import { jnethackMessage } from "../plus/game-text/fallback";
+import { translateDisclosureLine } from "./disclosure-text";
+import { translateQuestMessage } from "./quest-text";
 import { withHallucinatedCurrency } from "./currency-text";
+import { withJapaneseProperNames } from "./proper-names";
 
 export interface PresentedGameMessage {
   text: string;
@@ -13,6 +15,11 @@ export interface PresentedGameMessage {
 
 /** Preserve curated translations and runtime errors before using an unreviewed exact match. */
 export function presentGameMessage(message: string, locale: SupportedLocale): PresentedGameMessage {
+  const presented = chooseGameMessage(message, locale);
+  return locale === "ja" ? { ...presented, text: withJapaneseProperNames(presented.text) } : presented;
+}
+
+function chooseGameMessage(message: string, locale: SupportedLocale): PresentedGameMessage {
   if (locale === "ja" && /\n/.test(message.trim())) {
     // Several messages shown together; translate each line independently.
     const lines = message.split("\n").map((line) => presentGameMessage(line, locale));
@@ -30,17 +37,19 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
   const curated = translateRuntimeText(translateGameMessage(message, locale), locale);
   const trimmed = message.trim();
   if (locale !== "ja") return { text: curated, isReferenceTranslation: false };
-  // JNetHack's human translation ranks above unreviewed reference matches,
-  // and above a curated rendering that still kept English words.
-  const jnethack = curated !== message && englishLeftover(message, curated) === 0 ? undefined : jnethackMessage(trimmed);
+  // Quest dialogue and end-of-game lines rank above unreviewed reference
+  // matches, and above a curated rendering that still kept English words.
+  const whole = curated !== message && englishLeftover(message, curated) === 0
+    ? undefined
+    : translateQuestMessage(trimmed) ?? translateDisclosureLine(trimmed);
   if (curated !== message && !keepsEnglishRun(message, curated)
-    && (jnethack === undefined || englishLeftover(trimmed, jnethack) >= englishLeftover(message, curated))) {
+    && (whole === undefined || englishLeftover(trimmed, whole) >= englishLeftover(message, curated))) {
     return { text: curated, isReferenceTranslation: false };
   }
-  if (jnethack !== undefined) {
+  if (whole !== undefined) {
     const leading = message.slice(0, message.length - message.trimStart().length);
     const trailing = message.slice(message.trimEnd().length);
-    return { text: `${leading}${jnethack}${trailing}`, isReferenceTranslation: false };
+    return { text: `${leading}${whole}${trailing}`, isReferenceTranslation: false };
   }
   const suggested = lookupImportedJapaneseMessage(trimmed) ?? lookupImportedJapanesePattern(trimmed);
   if (suggested === undefined || keepsEnglishRun(trimmed, suggested)) {
@@ -60,7 +69,7 @@ export function presentGameMessage(message: string, locale: SupportedLocale): Pr
  */
 export function keepsEnglishRun(original: string, translated: string): boolean {
   // Quoted text is the game's own label or a player's words ("ZELGO MER").
-  for (const run of translated.replace(/「[^」]*」/g, "").replace(/\b[A-Z][\w-]+ of [A-Z][a-z]+\b/g, "").match(/[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){2,}/g) ?? []) {
+  for (const run of translated.replace(/「[^」]*」|（(?:名前|呼び名)：[^）]*）/g, "").replace(/\b[A-Z][\w-]+ of [A-Z][a-z]+\b/g, "").match(/[A-Za-z][A-Za-z'-]*(?: [A-Za-z][A-Za-z'-]*){2,}/g) ?? []) {
     if (original.includes(run)) return true;
   }
   return false;

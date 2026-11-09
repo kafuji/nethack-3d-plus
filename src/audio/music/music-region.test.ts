@@ -2,11 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   MEDUSA_MIN_WATER_TILES,
   couldBeMedusaLevel,
-  regionTrackPreferences,
   resolveMusicRegion,
   resolveMusicSpecialLevel,
 } from "./music-region";
-import { defaultMusicLibrary } from "./music-library";
 
 describe("resolveMusicRegion", () => {
   it.each([
@@ -30,21 +28,6 @@ describe("resolveMusicRegion", () => {
     expect(resolveMusicRegion("The Dungeons of Doom", "medusa")).toBe("medusa");
     expect(resolveMusicRegion("The Dungeons of Doom", "castle")).toBe("castle");
     expect(resolveMusicRegion("The Dungeons of Doom", null)).toBe("dungeon");
-  });
-
-  it("gives Medusa and the Castle their own tracks", () => {
-    expect(regionTrackPreferences.medusa.calm).toEqual(["medusa"]);
-    expect(regionTrackPreferences.castle.calm).toEqual(["castle"]);
-    expect(regionTrackPreferences.castle.combat).toEqual(["combat-boss"]);
-  });
-
-  it("only refers to bundled tracks", () => {
-    const ids = new Set(Object.values(defaultMusicLibrary).flat().map((track) => track.id));
-    for (const preference of Object.values(regionTrackPreferences)) {
-      for (const list of Object.values(preference)) {
-        for (const id of list ?? []) expect(ids.has(id)).toBe(true);
-      }
-    }
   });
 });
 

@@ -1,7 +1,7 @@
 // Finds wiki-linkable names in a message. Names are recognized in the English
 // runtime text and only then located in the translated display text, so a short
 // Japanese word never becomes a link unless the original message named it.
-import { singularCandidates } from "../game-text/object-names";
+import { singularCandidates } from "./singular";
 
 export interface WikiNameSources {
   /** Monster names. */

@@ -1,3 +1,4 @@
+import { withJapaneseProperNames } from "./proper-names";
 import type { SupportedLocale } from "./core";
 import { withHallucinatedCurrency } from "./currency-text";
 import { translateInventoryItem } from "./inventory-text";
@@ -6,7 +7,6 @@ import { nethack5ExtraMessages } from "./nethack5-extra-messages";
 import { lookupNethack5SourceExact, translateNethack5SourceMessage } from "./nethack5-source-messages";
 import { englishLeftover } from "./game-messages";
 import { translateAssembledMessage } from "./nethack5-assembled-messages";
-import { jnethackMessage } from "../plus/game-text/fallback";
 
 // Prompts are presented separately from their raw values, which determine
 // choices, command routing and submitted input. Keep this list exact.
@@ -55,7 +55,7 @@ const japanesePrompts: Readonly<Record<string, string>> = {
   "Do you want to add to the current engraving?": "今ある刻印に書き足しますか？",
   "Drink the water around you?": "周囲の水を飲みますか？",
   "Drink from the fountain?": "泉の水を飲みますか？",
-  "Drink from the sink?": "流しの水を飲みますか？",
+  "Drink from the sink?": "流し台の水を飲みますか？",
   "Do you wish to teleport?": "テレポートしますか？",
   "Which way do you want to teleport?": "どの方向にテレポートしますか？",
   "Name an individual object?": "個別のアイテムに名前を付けますか？",
@@ -152,6 +152,11 @@ function translatePromptObject(value: string): string {
     const translated = translateInventoryItem(demonstrative[2], "ja");
     return translated === demonstrative[2] ? value : `${demonstrative[1] === "this" ? "この" : "これらの"}${translated}`;
   }
+  const yours = /^your (.+)$/.exec(value);
+  if (yours) {
+    const translated = translateInventoryItem(yours[1], "ja");
+    if (translated !== yours[1]) return `あなたの${translated}`;
+  }
   return translateInventoryItem(value, "ja");
 }
 
@@ -170,7 +175,7 @@ const japanesePromptTemplates: readonly [RegExp, (...values: string[]) => string
   [/^Pick (\d+) of what\?$/, (value) => `何を${value}個拾いますか？`],
   [/^Do you want to change into ([^?\n]+)\?$/, (value) => `${translateMonsterName(value, "ja")}に変化しますか？`],
   [/^Do you want to remove the saddle from ([^?\n]+)\?$/, (value) => `${translateMonsterName(value, "ja")}から鞍を外しますか？`],
-  [/^What do you want to call ([^?\n]+)\?$/, (value) => `${translatePromptObject(value)}を何と呼びますか？`],
+  [/^What do you want to call ([^?\n]+)\?$/, (value) => (/^level \d+, /.test(value) ? translateAssembledMessage(`What do you want to call ${value}?`) : undefined) ?? `${translatePromptObject(value)}を何と呼びますか？`],
   [/^What do you want to name ([^?\n]+)\?$/, (value) => `${translatePromptObject(value)}に何と名前を付けますか？`],
   [/^Do what with ([^?\n]+)\?$/, (value) => `${translatePromptObject(value)}をどうしますか？`],
   [/^This spellbook is (a little |somewhat |rather |quite |very |extremely |too )?difficult to comprehend\.  Continue\?$/, (degree) => {
@@ -208,18 +213,6 @@ const japanesePromptTemplates: readonly [RegExp, (...values: string[]) => string
   [/^Drop the ([^.!?\n]+) corpse without ([^?\n]+) protection on\?$/, (monster, protection) => `${translateMonsterName(`the ${monster}`, "ja")}の死体を${translatePromptObject(protection)}で防護せずに置きますか？`],
 ];
 
-/**
- * True when a translation copies ordinary English words from the prompt, e.g.
- * "どの種類のものをPut in？". Names and scroll labels stay in English: they are
- * capitalized or upper case and do not start the prompt.
- */
-function keepsEnglishWords(original: string, translated: string): boolean {
-  const first = /[A-Za-z][A-Za-z'-]*/.exec(original)?.[0];
-  const words = new Set(original.match(/[A-Za-z][A-Za-z'-]*/g) ?? []);
-  return (translated.match(/[A-Za-z][A-Za-z'-]*/g) ?? [])
-    .some((word) => words.has(word) && (word === first || /^[a-z]/.test(word)));
-}
-
 /** Translate only the visible prompt; retain choice letters and defaults. */
 export function translateGamePrompt(prompt: string, locale: SupportedLocale): string {
   if (locale !== "ja" || !prompt.trim()) return prompt;
@@ -248,14 +241,11 @@ export function translateGamePrompt(prompt: string, locale: SupportedLocale): st
   // use it only when the rendering leaves no English from the prompt behind.
   if (translated === undefined) {
     const source = translateAssembledMessage(text) ?? lookupNethack5SourceExact(text) ?? translateNethack5SourceMessage(text);
-    if (source !== undefined && source !== text && englishLeftover(text, source) === 0) translated = source;
-  }
-  // Fall back to JNetHack wording for prompts without a curated translation.
-  if (translated === undefined) {
-    const jnethack = jnethackMessage(text);
-    if (jnethack !== undefined && !keepsEnglishWords(text, jnethack)) translated = jnethack;
+    // The letters offered in brackets stay as they are.
+    const letters = /\[[^\n]*\]/g;
+    if (source !== undefined && source !== text && englishLeftover(text.replace(letters, ""), source.replace(letters, "")) === 0) translated = source;
   }
   return translated === undefined
     ? prompt
-    : `${leading}${translated}${choiceSuffix?.[2] ?? ""}${trailing}`;
+    : withJapaneseProperNames(`${leading}${translated}${choiceSuffix?.[2] ?? ""}${trailing}`);
 }

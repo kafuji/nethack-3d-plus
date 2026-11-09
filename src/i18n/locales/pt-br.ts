@@ -1066,10 +1066,13 @@ export const ptBrOverrides = {
           },
         },
         groupSound: "Som",
-        musicEnabled: {
-          label: "Música de fundo",
+        musicPack: {
+          label: "Usar pacote de BGM",
           description:
-            "Toca música de fundo que muda conforme a situação (calma, combate, perigo). Requer o som ativado.",
+            "O conjunto de música de fundo a tocar. Ela muda conforme a situação (calma, combate, perigo) e o lugar. Escolha Nenhum para não tocar música. Requer o som ativado.",
+          options: {
+            none: "Nenhum",
+          },
         },
         musicVolume: {
           label: "Volume da música",

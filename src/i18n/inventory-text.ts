@@ -1,6 +1,5 @@
 import type { SupportedLocale } from "./core";
 import { translateMonsterName } from "./game-monsters";
-import { jnethackItem } from "../plus/game-text/fallback";
 // Used only at call time (game-messages imports this module too).
 import { translateGameMessage } from "./game-messages";
 import { keepsEnglishRun } from "./message-presentation";
@@ -11,7 +10,7 @@ const categories: Readonly<Record<string, string>> = {
   "Special": "特殊", "Weapons": "武器", "Armor": "防具", "Rings": "指輪", "Amulets": "護符",
   "Tools": "道具", "Comestibles": "食料", "Potions": "ポーション", "Scrolls": "巻物",
   "Spellbooks": "魔法書", "Wands": "杖", "Coins": "硬貨", "Gems/Stones": "宝石・石",
-  "Gems": "宝石", "Boulders/Statues": "岩・彫像", "Iron balls": "鉄球", "Chains": "鎖",
+  "Gems": "宝石", "Boulders/Statues": "大岩・石像", "Iron balls": "鉄球", "Chains": "鎖",
   "Venoms": "毒液", "Items in a bag": "袋の中身", "Items in a box": "箱の中身",
   "Unpaid items": "未払いの品", "Unpaid items already used up": "使用済みの未払いの品",
   // shk.c dopay itemized-billing menu headings.
@@ -73,7 +72,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "ring of levitation": "浮遊の指輪", "ring of free action": "自由行動の指輪", "ring of fire resistance": "火炎耐性の指輪", "ring of cold resistance": "冷気耐性の指輪", "ring of poison resistance": "毒耐性の指輪",
   "amulet of reflection": "反射の護符", "amulet of life saving": "救命の護符", "amulet of ESP": "ESPの護符",
   "Amulet of Yendor": "イェンダーの魔除け",
-  "Bell of Opening": "開門の鐘", "Candelabrum of Invocation": "招来の燭台", candelabrum: "燭台", whip: "鞭", tool: "道具", bolt: "クロスボウの矢", "Book of the Dead": "死者の書",
+  "Bell of Opening": "開門の鐘", "Candelabrum of Invocation": "招来の燭台", candelabrum: "燭台", whip: "むち", tool: "道具", bolt: "クロスボウの矢", "Book of the Dead": "死者の書",
   "sack": "袋", "oilskin sack": "油布の袋", "bag of holding": "保持の袋", "bag of tricks": "手品の袋", "large box": "大きな箱", "chest": "宝箱",
   "skeleton key": "万能鍵", "lock pick": "開錠具", "credit card": "クレジットカード", "tinning kit": "缶詰製造キット", "tin opener": "缶切り",
   "towel": "タオル", "blindfold": "目隠し", "mirror": "鏡", "magic marker": "魔法のマーカー", "stethoscope": "聴診器", "whistle": "笛", "magic whistle": "魔法の笛",
@@ -110,7 +109,7 @@ const itemNames: Readonly<Record<string, string>> = {
   "splash of venom": "毒液の飛沫", "splash of blinding venom": "目くらましの毒液の飛沫", "splash of acid venom": "酸性の毒液の飛沫",
   // Proper artifact names are translated only when the name itself is shown;
   // arbitrary user-supplied `named`/`called` labels are kept verbatim.
-  "Excalibur": "エクスカリバー", "Stormbringer": "ストームブリンガー", "Mjollnir": "ミョルニル", "Cleaver": "クリーヴァー", "Grimtooth": "グリムトゥース", "Orcrist": "オルクリスト", "Sting": "つらぬき丸", "Magicbane": "マジックベイン", "Frost Brand": "フロストブランド", "Fire Brand": "ファイアブランド", "Dragonbane": "ドラゴンベイン", "Demonbane": "デーモンベイン", "Werebane": "ウェアベイン", "Grayswandir": "グレイスワンディール", "Giantslayer": "ジャイアントスレイヤー", "Ogresmasher": "オーガスマッシャー", "Trollsbane": "トロルズベイン", "Vorpal Blade": "ヴォーパルブレード", "Snickersnee": "スニッカースニー", "Sunsword": "サンソード",
+  "Excalibur": "エクスカリバー", "Stormbringer": "ストームブリンガー", "Mjollnir": "ミョルニル", "Cleaver": "クリーヴァー", "Grimtooth": "グリムトゥース", "Orcrist": "オルクリスト", "Sting": "つらぬき丸", "Magicbane": "マジックベイン", "Frost Brand": "フロストブランド", "Fire Brand": "ファイアブランド", "Dragonbane": "ドラゴンベイン", "Demonbane": "デーモンベイン", "Werebane": "ウェアベイン", "Grayswandir": "グレイスワンディール", "Giantslayer": "ジャイアントスレイヤー", "Ogresmasher": "オーガスマッシャー", "Trollsbane": "トロールズベイン", "Vorpal Blade": "ヴォーパルブレード", "Snickersnee": "スニッカースニー", "Sunsword": "サンソード",
   "Palantir of Westernesse": "西方のパランティア", "Orb of Detection": "探知の宝珠", "Heart of Ahriman": "アーリマンの心臓", "Sceptre of Might": "力の王笏", "Staff of Aesculapius": "アスクレピオスの杖", "Magic Mirror of Merlin": "マーリンの魔法の鏡", "Eyes of the Overworld": "異界の眼", "Mitre of Holiness": "聖なる司教冠", "Longbow of Diana": "ディアナの長弓", "Master Key of Thievery": "盗賊の万能鍵", "Tsurugi of Muramasa": "村正の剣", "Platinum Yendorian Express Card": "プラチナ・イェンダー・エクスプレスカード", "Orb of Fate": "運命の宝珠", "Eye of the Aethiopica": "エチオピカの眼",
   "glob of gray ooze": "灰色ウーズの塊", "glob of brown pudding": "茶色プディングの塊", "glob of green slime": "緑色スライムの塊", "glob of black pudding": "黒色プディングの塊",
   "gray dragon scales": "灰色のドラゴンの鱗", "gold dragon scales": "金色のドラゴンの鱗", "silver dragon scales": "銀色のドラゴンの鱗", "red dragon scales": "赤いドラゴンの鱗", "white dragon scales": "白いドラゴンの鱗", "orange dragon scales": "オレンジ色のドラゴンの鱗", "black dragon scales": "黒いドラゴンの鱗", "blue dragon scales": "青いドラゴンの鱗", "green dragon scales": "緑色のドラゴンの鱗", "yellow dragon scales": "黄色いドラゴンの鱗",
@@ -143,9 +142,11 @@ const gemColors: Readonly<Record<string, string>> = {
 
 const genericAppearances: Readonly<Record<string, string>> = {
   "cloak": "クローク", "helmet": "兜", "shield": "盾", "shirt": "シャツ", "suit": "鎧", "armor": "鎧",
-  "wooden shield": "木製の盾", "crystal helmet": "水晶の兜", "bag": "袋",
+  "wooden shield": "木製の盾", "crystal helmet": "水晶の兜", "bag": "袋", "mail": "鎧",
+  // A gem or rock felt while blind; novels and the Book of the Dead before they are read.
+  "stone": "石", "gem": "宝石", "book": "本", "paperback book": "ペーパーバックの本", "papyrus book": "パピルスの本",
   "little dart": "小さな投げ矢", "vulgar polearm": "ありふれた長柄武器", "hilted polearm": "柄のある長柄武器", "forked polearm": "二股の長柄武器", "single-edged polearm": "片刃の長柄武器", "angled poleaxe": "角ばった長柄斧", "long poleaxe": "長い長柄斧", "pole cleaver": "長柄の鉈", "pole sickle": "長柄の鎌", "pruning hook": "剪定用の鉤", "hooked polearm": "鉤状の長柄武器", "pronged polearm": "先端が枝分かれした長柄武器", "beaked polearm": "くちばし状の長柄武器", "broad pick": "幅広いつるはし", "thonged club": "ひも付きのこん棒", "silver bell": "銀の鈴", "boots": "ブーツ", "shoes": "靴", "gloves": "手袋", "gauntlets": "籠手", "hat": "帽子", "helm": "兜", "smock": "スモック", "dragon scales": "ドラゴンの鱗",
-  "runed arrow": "ルーンの刻まれた矢", "crude arrow": "粗末な矢", "bamboo arrow": "竹の矢", "throwing star": "投げ星", "runed spear": "ルーンの刻まれた槍", "crude spear": "粗末な槍", "stout spear": "頑丈な槍", "throwing spear": "投げ槍", "runed dagger": "ルーンの刻まれたダガー", "crude dagger": "粗末なダガー", "double-headed axe": "両刃の斧", "runed short sword": "ルーンの刻まれたショートソード", "crude short sword": "粗末なショートソード", "broad short sword": "幅広のショートソード", "curved sword": "曲がった剣", "runed broadsword": "ルーンの刻まれた幅広の剣", "samurai sword": "侍の剣", "long samurai sword": "長い侍の剣", "runed bow": "ルーンの刻まれた弓", "crude bow": "粗末な弓", "long bow": "長弓", "staff": "棒", "leather hat": "革の帽子", "iron skull cap": "鉄の頭巾", "hard hat": "硬い帽子", "conical hat": "円錐形の帽子", "plumed helmet": "羽飾りの兜", "etched helmet": "模様のある兜", "crested helmet": "飾りのある兜", "visored helmet": "面頬付きの兜", "crude chain mail": "粗末な鎖かたびら", "crude ring mail": "粗末なリングメイル", "faded pall": "色あせた外套", "coarse mantelet": "粗い外套", "hooded cloak": "フード付きの外套", "slippery cloak": "滑りやすい外套", "apron": "エプロン", "tattered cape": "ぼろぼろのケープ", "opera cloak": "オペラ用の外套", "ornamental cope": "装飾された外套", "piece of cloth": "布切れ", "blue and green shield": "青と緑の盾", "white-handed shield": "白い手の盾", "red-eyed shield": "赤い目の盾", "large round shield": "大きな丸盾", "polished silver shield": "磨かれた銀の盾", "old gloves": "古い手袋", "padded gloves": "厚手の手袋", "riding gloves": "乗馬用手袋", "fencing gloves": "フェンシング用手袋", "walking shoes": "歩行靴", "hard shoes": "硬い靴", "jackboots": "乗馬靴", "combat boots": "戦闘靴", "jungle boots": "ジャングルブーツ", "hiking boots": "登山靴", "mud boots": "泥の付いたブーツ", "buckled boots": "留め金付きのブーツ", "riding boots": "乗馬ブーツ", "snow boots": "雪用ブーツ", "key": "鍵", "lamp": "ランプ", "looking glass": "手鏡", "glass orb": "ガラス玉", "flute": "フルート", "horn": "角笛", "harp": "ハープ", "drum": "太鼓", "potion": "ポーション", "potions": "ポーション", "scroll": "巻物", "scrolls": "巻物", "ring": "指輪", "rings": "指輪", "amulet": "護符", "amulets": "護符", "wand": "杖", "wands": "杖", "spellbook": "魔法書", "spellbooks": "魔法書",
+  "runed arrow": "ルーンの刻まれた矢", "crude arrow": "粗末な矢", "bamboo arrow": "竹の矢", "throwing star": "投げ星", "runed spear": "ルーンの刻まれた槍", "crude spear": "粗末な槍", "stout spear": "頑丈な槍", "throwing spear": "投げ槍", "runed dagger": "ルーンの刻まれたダガー", "crude dagger": "粗末なダガー", "double-headed axe": "両刃の斧", "runed short sword": "ルーンの刻まれたショートソード", "crude short sword": "粗末なショートソード", "broad short sword": "幅広のショートソード", "curved sword": "曲がった剣", "runed broadsword": "ルーンの刻まれた幅広の剣", "samurai sword": "侍の剣", "long samurai sword": "長い侍の剣", "runed bow": "ルーンの刻まれた弓", "crude bow": "粗末な弓", "long bow": "長弓", "staff": "棒", "leather hat": "革の帽子", "iron skull cap": "鉄の頭巾", "hard hat": "硬い帽子", "conical hat": "円錐形の帽子", "plumed helmet": "羽飾りの兜", "etched helmet": "模様のある兜", "crested helmet": "飾りのある兜", "visored helmet": "面頬付きの兜", "crude chain mail": "粗末な鎖かたびら", "crude ring mail": "粗末なリングメイル", "faded pall": "色あせた外套", "coarse mantelet": "粗い外套", "hooded cloak": "フード付きのクローク", "slippery cloak": "滑りやすいクローク", "apron": "エプロン", "tattered cape": "ぼろぼろのケープ", "opera cloak": "オペラ用のクローク", "ornamental cope": "装飾された外套", "piece of cloth": "布切れ", "blue and green shield": "青と緑の盾", "white-handed shield": "白い手の盾", "red-eyed shield": "赤い目の盾", "large round shield": "大きな丸盾", "polished silver shield": "磨かれた銀の盾", "old gloves": "古い手袋", "padded gloves": "厚手の手袋", "riding gloves": "乗馬用手袋", "fencing gloves": "フェンシング用手袋", "walking shoes": "歩行靴", "hard shoes": "硬い靴", "jackboots": "乗馬靴", "combat boots": "戦闘靴", "jungle boots": "ジャングルブーツ", "hiking boots": "登山靴", "mud boots": "泥の付いたブーツ", "buckled boots": "留め金付きのブーツ", "riding boots": "乗馬ブーツ", "snow boots": "雪用ブーツ", "key": "鍵", "lamp": "ランプ", "looking glass": "手鏡", "glass orb": "ガラス玉", "flute": "フルート", "horn": "角笛", "harp": "ハープ", "drum": "太鼓", "potion": "ポーション", "potions": "ポーション", "scroll": "巻物", "scrolls": "巻物", "ring": "指輪", "rings": "指輪", "amulet": "護符", "amulets": "護符", "wand": "杖", "wands": "杖", "spellbook": "魔法書", "spellbooks": "魔法書",
 };
 
 const modifiers: Readonly<Record<string, string>> = {
@@ -236,20 +237,7 @@ function translatePaidItem(text: string, locale: SupportedLocale): string | unde
 
 /** Translate only fully recognized item descriptions; otherwise retain the original. */
 export function translateInventoryItem(text: string, locale: SupportedLocale): string {
-  const curated = translateCuratedInventoryItem(text, locale);
-  if (locale !== "ja" || curated !== text || !text.trim()) return curated;
-  // Not recognized by the curated tables: try JNetHack's object names.
-  const leading = text.slice(0, text.length - text.trimStart().length);
-  const trailing = text.slice(text.trimEnd().length);
-  const jnethack = jnethackItem(text.trim());
-  if (jnethack !== undefined) return `${leading}${jnethack}${trailing}`;
-  return text;
-}
-
-/** src/i18n's own name for an item, without the JNetHack fallback. */
-export function translateCuratedItemName(text: string): string | undefined {
-  const translated = translateCuratedInventoryItem(text, "ja");
-  return translated !== text ? translated : undefined;
+  return translateCuratedInventoryItem(text, locale);
 }
 
 function translateCuratedInventoryItem(text: string, locale: SupportedLocale): string {
@@ -310,7 +298,8 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
     const missile = translateCuratedInventoryItem(volley[2], locale);
     return missile === volley[2] ? text : `${volley[1]}本目の${missile}`;
   }
-  const quantity = /^(a|an|the|The|\d+) (.+)$/.exec(item);
+  // "some": a stack whose count is not known (look_here() while blind).
+  const quantity = /^(a|an|the|The|some|\d+) (.+)$/.exec(item);
   if (quantity) item = quantity[2];
   const descriptions: string[] = [];
   // Recognize modifiers individually but do not translate any substring of an
@@ -355,6 +344,10 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
     name = own(itemNames, item.slice(0, -1));
   }
   if (name === undefined && item.endsWith("ies")) name = own(itemNames, `${item.slice(0, -3)}y`);
+  if (name === undefined && /(?:ss|sh|ch|x)es$/.test(item)) {
+    const one = translateCuratedInventoryItem(item.slice(0, -2), locale);
+    if (one !== item.slice(0, -2)) name = one;
+  }
   if (name === undefined) {
     const pluralOf = /^(potions|scrolls|spellbooks|wands|rings|amulets) of (.+)$/.exec(item);
     if (pluralOf) name = own(itemNames, `${pluralOf[1].slice(0, -1)} of ${pluralOf[2]}`);
@@ -389,15 +382,21 @@ function translateCuratedInventoryItem(text: string, locale: SupportedLocale): s
   if (name === undefined) {
     const unknownGem = /^(white|blue|red|yellowish brown|orange|yellow|black|green|violet) gems?$/.exec(item);
     const worthlessGlass = /^worthless pieces? of (white|blue|red|yellowish brown|orange|yellow|black|green|violet) glass$/.exec(item);
+    // A known gem the hero can only feel: "garnet stone".
+    const feltGem = /^(.+?) stones?$/.exec(item);
     if (unknownGem) name = `${gemColors[unknownGem[1]]}色の宝石`;
     else if (worthlessGlass) name = `価値のない${gemColors[worthlessGlass[1]]}色のガラス片`;
+    else if (feltGem && own(itemNames, feltGem[1]) !== undefined) name = own(itemNames, feltGem[1]);
   }
   if (name === undefined) {
     // These descriptions explicitly reveal the species. Translate only a
     // recognized complete species; retain unknown and player-supplied names.
     const remains = /^([^()]+?) (corpse|corpses|egg|eggs)$/.exec(item);
-    // A capitalized start is a sentence ending in the word: "Name this specific egg".
-    if (remains && !/^[A-Z]|: /.test(remains[1])) {
+    // A capitalized start is a sentence ending in the word ("Name this specific
+    // egg") unless it names a monster ("Woodland-elf corpse").
+    const species = remains?.[1].replace(/^(?:male|female) /, "") ?? "";
+    const knownSpecies = translateMonsterName(`the ${species}`, locale) !== `the ${species}`;
+    if (remains && !/: /.test(remains[1]) && (knownSpecies || !/^[A-Z]/.test(remains[1]))) {
       // NetHack 5 names a known sex: "male jackal corpse".
       const sex = /^(male|female) (.+)$/.exec(remains[1]);
       const species = sex ? sex[2] : remains[1];

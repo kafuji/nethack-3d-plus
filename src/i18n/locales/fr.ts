@@ -1075,10 +1075,13 @@ export const fr = {
           },
         },
         groupSound: "Son",
-        musicEnabled: {
-          label: "Musique de fond",
+        musicPack: {
+          label: "Pack de BGM",
           description:
-            "Joue une musique de fond qui change selon la situation (calme, combat, danger). Nécessite que le son soit activé.",
+            "L'ensemble de musiques de fond à jouer. Elles changent selon la situation (calme, combat, danger) et le lieu. Choisissez Aucun pour couper la musique. Nécessite que le son soit activé.",
+          options: {
+            none: "Aucun",
+          },
         },
         musicVolume: {
           label: "Volume de la musique",
