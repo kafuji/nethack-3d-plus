@@ -17,6 +17,7 @@ import type {
   VultureDoorProjectionContext
 } from "../shared/types";
 import type { EngineState } from "../runtime/engine-state";
+import type { HiResTileFrame } from "../../hires-tiles/hires-tile-pack";
 import type { Lighting } from "./lighting";
 import type { TilesetAssets } from "./tileset-assets";
 import type { VultureProjection } from "./vulture-projection";
@@ -35,6 +36,7 @@ export interface GlyphTexturesDependencies {
     TilesetAssets,
     "drawTilesetBackgroundReferenceTile"
     | "resolveAtlasTileIndexForRuntime"
+    | "resolveHiResTile"
     | "resolveTextureAnisotropyLevel"
     | "resolveTilesetAtlasImageSource"
     | "resolveTilesetBackgroundReferenceTileIndex"
@@ -214,7 +216,7 @@ export class GlyphTextures {
       });
 
       // Patch the newly created overlay material
-      this.dependencies.lighting.patchMaterialForVignette(materialClone);
+      this.dependencies.lighting.patchMaterialForVignette(materialClone, { faceShade: true });
 
       overlay = {
         texture: null,
@@ -248,8 +250,31 @@ export class GlyphTextures {
       doorProjection?: VultureDoorProjectionContext | null;
     } = {},
   ): THREE.CanvasTexture {
-    const size = this.dependencies.tilesetAssets.tileSourceSize;
-    const height = this.dependencies.tilesetAssets.tileSourceHeight ?? size;
+    const atlasCellWidth = this.dependencies.tilesetAssets.tileSourceSize;
+    const atlasCellHeight =
+      this.dependencies.tilesetAssets.tileSourceHeight ?? atlasCellWidth;
+    // High-resolution tiles replace atlas cells individually. A texture that
+    // contains one (directly or as its floor underlay) is built at that
+    // resolution, and any atlas art in it is upscaled.
+    const hiResTile =
+      sourceContext.vultureLookup ||
+      (sourceContext.useBackgroundReferenceTile === true && !applyChromaKey)
+        ? null
+        : this.dependencies.tilesetAssets.resolveHiResTile(tileIndex);
+    const hiResUnderlayTile =
+      applyChromaKey ||
+      sourceContext.floorUnderlayUseBackgroundReferenceTile === true ||
+      typeof sourceContext.floorUnderlayTileIndex !== "number"
+        ? null
+        : this.dependencies.tilesetAssets.resolveHiResTile(
+            sourceContext.floorUnderlayTileIndex,
+          );
+    const { width: size, height } = this.resolveTileCanvasSize(
+      atlasCellWidth,
+      atlasCellHeight,
+      hiResTile,
+      hiResUnderlayTile,
+    );
     const canvas = document.createElement("canvas");
     canvas.width = size;
     canvas.height = height;
@@ -259,6 +284,7 @@ export class GlyphTextures {
     }
 
     context.clearRect(0, 0, size, height);
+    context.imageSmoothingEnabled = false;
 
     const sourceGlyph =
       typeof sourceContext.sourceGlyph === "number" &&
@@ -513,36 +539,71 @@ export class GlyphTextures {
       (applyChromaKey || forceBackgroundRemoval) &&
       this.dependencies.engineState.clientOptions.tilesetBackgroundRemovalMode !== "none";
 
+    if (!translatedDrawSucceeded && !vultureLookup && hiResTile) {
+      // Pack files carry real alpha, so no background removal applies.
+      context.drawImage(
+        hiResTile.source,
+        hiResTile.sx,
+        hiResTile.sy,
+        hiResTile.width,
+        hiResTile.height,
+        0,
+        0,
+        size,
+        height,
+      );
+      translatedDrawSucceeded = true;
+    }
+
     const atlasImage = !translatedDrawSucceeded
       ? this.dependencies.tilesetAssets.resolveTilesetAtlasImageSource()
       : null;
     if (!translatedDrawSucceeded && !vultureLookup && atlasImage) {
       const img = atlasImage;
       const width = Math.trunc(img.width);
-      const tilesPerRow = Math.floor(width / size);
-      const tileRows = Math.floor(img.height / height);
+      const tilesPerRow = Math.floor(width / atlasCellWidth);
+      const tileRows = Math.floor(img.height / atlasCellHeight);
       const tileCount =
         tilesPerRow > 0 && tileRows > 0 ? tilesPerRow * tileRows : 0;
-      if (tilesPerRow > 0 && tileCount > 0) {
+      const upscaled = size !== atlasCellWidth || height !== atlasCellHeight;
+      // Background removal compares cells pixel for pixel, so an upscaled
+      // texture cuts the cell out at atlas size before scaling it in.
+      const cellContext = upscaled
+        ? this.createScratchContext(atlasCellWidth, atlasCellHeight)
+        : context;
+      if (tilesPerRow > 0 && tileCount > 0 && cellContext) {
         const atlasTileIndex = Math.max(
           0,
           this.dependencies.tilesetAssets.resolveAtlasTileIndexForRuntime(tileIndex, tileCount),
         );
-        const sx = (atlasTileIndex % tilesPerRow) * size;
-        const sy = Math.floor(atlasTileIndex / tilesPerRow) * height;
+        const sx = (atlasTileIndex % tilesPerRow) * atlasCellWidth;
+        const sy = Math.floor(atlasTileIndex / tilesPerRow) * atlasCellHeight;
 
         // Draw the specific tile from the atlas
-        context.drawImage(img, sx, sy, size, height, 0, 0, size, height);
+        cellContext.drawImage(
+          img,
+          sx,
+          sy,
+          atlasCellWidth,
+          atlasCellHeight,
+          0,
+          0,
+          atlasCellWidth,
+          atlasCellHeight,
+        );
 
         if (shouldApplyBackgroundRemoval) {
           this.applyTilesetBillboardBackgroundRemoval(
-            context,
+            cellContext,
             img,
-            size,
+            atlasCellWidth,
             tileCount,
             tilesPerRow,
-            height,
+            atlasCellHeight,
           );
+        }
+        if (cellContext !== context) {
+          context.drawImage(cellContext.canvas, 0, 0, size, height);
         }
       }
     }
@@ -560,12 +621,52 @@ export class GlyphTextures {
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
-    texture.magFilter = THREE.NearestFilter; // Keep pixel art sharp
-    texture.minFilter = THREE.NearestFilter;
-    texture.generateMipmaps = false;
+    const hiResFilter = (hiResTile ?? hiResUnderlayTile)?.filter;
+    if (hiResFilter === "linear") {
+      // Painted high-resolution art is sampled smoothly with mipmaps so it
+      // does not shimmer at a distance.
+      texture.magFilter = THREE.LinearFilter;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.generateMipmaps = true;
+    } else {
+      texture.magFilter = THREE.NearestFilter; // Keep pixel art sharp
+      texture.minFilter = THREE.NearestFilter;
+      texture.generateMipmaps = false;
+    }
     texture.anisotropy = this.dependencies.tilesetAssets.resolveTextureAnisotropyLevel();
 
     return texture;
+  }
+
+  resolveTileCanvasSize(
+    atlasCellWidth: number,
+    atlasCellHeight: number,
+    ...hiResTiles: ReadonlyArray<HiResTileFrame | null>
+  ): { width: number; height: number } {
+    let width = atlasCellWidth;
+    let height = atlasCellHeight;
+    for (const tile of hiResTiles) {
+      if (tile && tile.width > width) {
+        // Keep the atlas cell's aspect ratio: it sets the world block shape.
+        width = tile.width;
+        height = Math.max(1, Math.round((tile.width * atlasCellHeight) / atlasCellWidth));
+      }
+    }
+    return { width, height };
+  }
+
+  private createScratchContext(
+    width: number,
+    height: number,
+  ): CanvasRenderingContext2D | null {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (context) {
+      context.imageSmoothingEnabled = false;
+    }
+    return context;
   }
 
   parseSolidChromaKeyColorHex(

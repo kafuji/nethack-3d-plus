@@ -910,6 +910,10 @@ export const fr = {
           label: "Adapter les blocs aux proportions des tuiles",
           description: "Utilisez des blocs 3D rectangulaires lorsque les tuiles ne sont pas carrées. Désactivez pour conserver des blocs carrés.",
         },
+        tilesetUseHiResTiles: {
+          label: "Utiliser des tuiles haute résolution",
+          description: "NetHack 5 uniquement. Remplace les tuiles par des versions haute résolution lorsqu'elles existent ; les autres tuiles gardent le jeu sélectionné.",
+        },
         tilesetPath: {
           label: "Jeu de tuiles",
           description: "Jeux de tuiles integres et importes.",

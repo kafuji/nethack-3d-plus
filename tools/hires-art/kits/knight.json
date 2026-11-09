@@ -1,0 +1,130 @@
+{
+  "label": "human man, bare base figure",
+  "body": "../../../.hires-tmp/body2/body_1.png",
+  "items": [
+    {
+      "name": "hair",
+      "noun": "hair",
+      "prompt": "short, cropped dark-brown hair on the bald head, following the shape of the skull, with a natural hairline.",
+      "area": [
+        0.36,
+        0.06,
+        0.66,
+        0.3
+      ]
+    },
+    {
+      "name": "beard",
+      "noun": "beard",
+      "prompt": "a short, neatly trimmed dark-brown beard and moustache along the jaw.",
+      "area": [
+        0.36,
+        0.06,
+        0.66,
+        0.32
+      ]
+    },
+    {
+      "name": "shirt",
+      "noun": "linen shirt",
+      "prompt": "a long-sleeved shirt of coarse, faded blue linen, sleeves to the wrists, hem at mid-thigh, loose and slightly creased.",
+      "area": [
+        0.1,
+        0.26,
+        0.9,
+        0.75
+      ]
+    },
+    {
+      "name": "boots",
+      "noun": "boots",
+      "prompt": "a pair of tall, worn brown leather riding boots reaching just below the knee, with a turned-down cuff.",
+      "area": [
+        0.05,
+        0.5,
+        0.95,
+        1
+      ]
+    },
+    {
+      "name": "armor",
+      "noun": "ring mail shirt",
+      "label": "ring mail",
+      "ref": "../../../.hires-tmp/body2/ref.png",
+      "prompt": "a ring mail hauberk: iron rings riveted onto a leather backing, reaching mid-thigh, short sleeves to the upper arm, a standing collar, dull grey steel.",
+      "area": [
+        0.1,
+        0.26,
+        0.9,
+        0.75
+      ]
+    },
+    {
+      "name": "gloves",
+      "noun": "gloves",
+      "label": "leather gloves (riding gloves)",
+      "prompt": "a pair of brown leather gloves with short flared cuffs over the ends of the sleeves.",
+      "area": [
+        0.05,
+        0.3,
+        0.95,
+        0.75
+      ]
+    },
+    {
+      "name": "amulet",
+      "noun": "amulet",
+      "label": "amulet (circular amulet)",
+      "prompt": "a circular bronze amulet set with a dark red stone, hanging from a thin chain onto the chest, over the mail.",
+      "area": [
+        0.42,
+        0.26,
+        0.6,
+        0.42
+      ],
+      "cut": {
+        "minRegion": 120,
+        "opening": 1
+      }
+    },
+    {
+      "name": "cloak",
+      "noun": "cloak",
+      "label": "cloak",
+      "prompt": "a dark green wool cloak fastened at the throat with a simple iron clasp, thrown back over both shoulders and falling behind the figure to the calves; the front is open, so the chest, arms and legs stay visible.",
+      "area": [
+        0,
+        0.25,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "helmet",
+      "noun": "helmet",
+      "label": "helmet (plumed helmet)",
+      "hides": [
+        "hair"
+      ],
+      "prompt": "an open-faced steel helmet with a nasal guard and a tall, swept-back crimson plume, sitting firmly on the head down to the brow.",
+      "area": [
+        0.3,
+        0,
+        0.7,
+        0.32
+      ]
+    },
+    {
+      "name": "shield",
+      "noun": "shield",
+      "label": "small shield",
+      "prompt": "a small round wooden shield with an iron rim and a domed iron boss, strapped to the left forearm and held slightly forward, facing the viewer; the wood worn and dented.",
+      "area": [
+        0.4,
+        0.2,
+        1,
+        0.95
+      ]
+    }
+  ]
+}

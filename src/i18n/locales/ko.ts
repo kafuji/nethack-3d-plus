@@ -882,6 +882,10 @@ export const ko = {
           label: "블록을 타일 종횡비에 맞추기",
           description: "타일이 정사각형이 아니면 직사각형 3D 블록을 사용합니다. 끄면 정사각형 블록을 유지합니다.",
         },
+        tilesetUseHiResTiles: {
+          label: "고해상도 타일 사용",
+          description: "NetHack 5 전용. 고해상도 버전이 있는 타일을 교체합니다. 나머지 타일은 선택한 타일셋을 그대로 사용합니다.",
+        },
         tilesetPath: {
           label: "타일셋",
           description: "내장 및 업로드한 타일셋입니다.",

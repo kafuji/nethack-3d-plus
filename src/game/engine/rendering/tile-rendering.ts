@@ -128,6 +128,7 @@ export interface TileRenderingDependencies {
   readonly tilesetAssets: Pick<
     TilesetAssets,
     "isNh5DarkCorridorWallVariantForLegacyTileset"
+    | "resolveHiResTile"
     | "resolveRuntimeVersion"
     | "shouldUseVultureTiles"
   >;
@@ -1007,16 +1008,25 @@ export class TileRendering {
     );
     mesh.userData.tileUseBackgroundReferenceTile =
       renderBehavior.useBackgroundReferenceTile === true;
-    const shouldCompositeFloorUnderFlatFeatureOnTile =
+    // A see-through pack tile lying flat (stairs down, an open door, a trap)
+    // shows the room floor through its transparent parts.
+    const shouldCompositeFloorUnderHiResFlatTile =
       useTerrainTiles &&
-      this.dependencies.engineState.clientOptions.tilesetBackgroundRemovalMode === "none" &&
-      shouldUseTransparentFloorUnderlayTreatmentOnTile;
+      !renderBehavior.isWall &&
+      this.dependencies.tilesetAssets.resolveHiResTile(tileTextureIndex)?.translucent === true;
+    const shouldCompositeFloorUnderFlatFeatureOnTile =
+      shouldCompositeFloorUnderHiResFlatTile ||
+      (useTerrainTiles &&
+        this.dependencies.engineState.clientOptions.tilesetBackgroundRemovalMode === "none" &&
+        shouldUseTransparentFloorUnderlayTreatmentOnTile);
     if (shouldCompositeFloorUnderFlatFeatureOnTile) {
-      const floorUnderlayBehavior = shouldCompositeTransparentFloorOnFlatTile
-        ? this.dependencies.worldClassification.resolveTransparentOpenDoorwayFloorBehavior()
-        : this.dependencies.worldClassification.shouldUseTransparentTileFloorUnderlay(renderBehavior)
-          ? this.dependencies.worldClassification.resolveRaisedSpecialTileFloorBehavior()
-          : this.dependencies.worldClassification.resolveFpsFloorUnderlayBehaviorFromCache(key);
+      const floorUnderlayBehavior = shouldCompositeFloorUnderHiResFlatTile
+        ? this.dependencies.worldClassification.resolveRaisedSpecialTileFloorBehavior()
+        : shouldCompositeTransparentFloorOnFlatTile
+          ? this.dependencies.worldClassification.resolveTransparentOpenDoorwayFloorBehavior()
+          : this.dependencies.worldClassification.shouldUseTransparentTileFloorUnderlay(renderBehavior)
+            ? this.dependencies.worldClassification.resolveRaisedSpecialTileFloorBehavior()
+            : this.dependencies.worldClassification.resolveFpsFloorUnderlayBehaviorFromCache(key);
       mesh.userData.floorUnderlaySourceGlyph =
         floorUnderlayBehavior.effective.glyph;
       mesh.userData.floorUnderlayTileIndex =

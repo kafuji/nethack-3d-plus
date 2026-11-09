@@ -858,6 +858,10 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           label: "ブロックをタイルの縦横比に合わせる",
           description: "タイルが正方形でない場合、3Dブロックを長方形にします。オフにすると正方形のブロックを使用します。",
         },
+        tilesetUseHiResTiles: {
+          label: "高解像度タイルを使用",
+          description: "NetHack 5 のみ。高解像度版があるタイルを置き換えます。それ以外のタイルは選択中のタイルセットのままです。",
+        },
         tilesetPath: {
           label: "タイルセット",
           description: "組み込みタイルセットとアップロード済みタイルセットです。",

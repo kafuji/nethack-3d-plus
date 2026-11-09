@@ -988,7 +988,7 @@ export class WallOverlays {
         transparent: true,
         opacity: 1,
       });
-      this.dependencies.lighting.patchMaterialForVignette(material);
+      this.dependencies.lighting.patchMaterialForVignette(material, { faceShade: true });
       overlay = {
         textureKey: "",
         material,
@@ -1060,7 +1060,7 @@ export class WallOverlays {
         transparent: true,
         opacity: 1,
       });
-      this.dependencies.lighting.patchMaterialForVignette(material);
+      this.dependencies.lighting.patchMaterialForVignette(material, { faceShade: true });
       overlay = {
         textureKey: "",
         material,

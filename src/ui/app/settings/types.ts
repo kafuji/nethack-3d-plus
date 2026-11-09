@@ -142,6 +142,7 @@ export type ClientOptionToggleKey =
   | "disableAnimatedTransitions"
   | "uiTileBackgroundRemoval"
   | "tilesetUseTileAspectRatio"
+  | "tilesetUseHiResTiles"
   | "minimap"
   | "reduceInventoryMotion"
   | "inventoryTileOnlyMotion"

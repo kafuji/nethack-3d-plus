@@ -648,6 +648,10 @@ export const zhCnOverrides = {
           label: "使方块匹配图块宽高比",
           description: "图块不是正方形时使用长方形3D方块。关闭后保留正方形方块。",
         },
+        tilesetUseHiResTiles: {
+          label: "使用高分辨率图块",
+          description: "仅限 NetHack 5。有高分辨率版本的图块会被替换，其余图块仍使用所选图块集。",
+        },
         tilesetPath: {
           label: "瓦片集",
           description: "内置和已上传的瓦片集。",

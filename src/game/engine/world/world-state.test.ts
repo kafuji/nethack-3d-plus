@@ -46,6 +46,7 @@ function createWorldFixture() {
     tileRendering,
     tilesetAssets: {
       loadedTilesetTileLayoutVersion: "3.6.7",
+      resolveHiResTile: () => null,
       resolveRuntimeVersion: () => "3.6.7",
       resolveTilesetBackgroundReferenceTileIndex: () => 0,
       shouldUseVultureTiles: () => false,

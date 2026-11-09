@@ -21,6 +21,11 @@ import {
   translateNh5TileIndexToNh367PreservingAliases
 } from "../../tileset-367-to-5-translation";
 import { VultureTilesetTranslator } from "../../vulture/translation";
+import {
+  builtinHiResTilePackManifestUrl,
+  HiResTilePack,
+  type HiResTileFrame,
+} from "../../hires-tiles/hires-tile-pack";
 import type { EngineState } from "../runtime/engine-state";
 import type { EntityBillboards } from "./entity-billboards";
 import type { GlyphTextures } from "./glyph-textures";
@@ -165,6 +170,75 @@ export class TilesetAssets {
     this.dependencies.menuPreviews.refreshMenuTilePreviewStateForUi();
     this.refreshTilesetCompilationLoadingState();
   };
+
+  hiResTilePack: HiResTilePack | null = null;
+
+  /** High-resolution tiles are keyed by NetHack 5 tile index and replace atlas
+   * cells one by one; Vulture packs have their own per-file art. */
+  isHiResTilesActive(
+    options: Nh3dClientOptions = this.dependencies.engineState.clientOptions,
+  ): boolean {
+    return (
+      options.tilesetMode === "tiles" &&
+      options.tilesetUseHiResTiles === true &&
+      this.resolveRuntimeVersion() === "5.0" &&
+      !this.isVultureTilesActive(options)
+    );
+  }
+
+  resolveHiResTile(runtimeTileIndex: number): HiResTileFrame | null {
+    if (!this.hiResTilePack || !this.isHiResTilesActive()) {
+      return null;
+    }
+    return this.hiResTilePack.getTile(Math.trunc(runtimeTileIndex));
+  }
+
+  readonly handleHiResTilesReady = (): void => {
+    if (this.dependencies.engineState.disposed) {
+      return;
+    }
+    this.refreshTilesetDependentTextures();
+  };
+
+  private refreshTilesetDependentTextures(): void {
+    this.dependencies.menuPreviews.clearMenuTilePreviewCache();
+    this.invalidateTilesetDependentCaches();
+    if (usesTileTextures(this.dependencies.engineState.clientOptions)) {
+      this.dependencies.tileUpdates.refreshTilesFromStateCache();
+    }
+    this.dependencies.menuPreviews.refreshMenuTilePreviewStateForUi();
+  }
+
+  /** Loads or releases the pack to match the current options and runtime. */
+  syncHiResTilePack(): void {
+    if (!this.isHiResTilesActive()) {
+      this.hiResTilePack?.dispose();
+      this.hiResTilePack = null;
+      return;
+    }
+    if (this.hiResTilePack) {
+      return;
+    }
+    const pack = new HiResTilePack({
+      manifestUrl: builtinHiResTilePackManifestUrl,
+      onTilesReady: this.handleHiResTilesReady,
+    });
+    this.hiResTilePack = pack;
+    void pack.load().catch((error) => {
+      if (this.hiResTilePack === pack) {
+        console.warn("Failed to load high-resolution tiles", error);
+      }
+    });
+  }
+
+  /** Toggling the option swaps already-built textures in or out. */
+  applyHiResTilesOption(): void {
+    const hadTiles = (this.hiResTilePack?.loadedTileCount ?? 0) > 0;
+    this.syncHiResTilePack();
+    if (hadTiles || this.hiResTilePack?.ready) {
+      this.refreshTilesetDependentTextures();
+    }
+  }
 
   isVultureTilesActive(options: Nh3dClientOptions): boolean {
     if (options.tilesetMode !== "tiles") {
@@ -494,6 +568,7 @@ export class TilesetAssets {
   loadTilesetTexture(options: Nh3dClientOptions): void {
     const loadRequestId = ++this.tilesetTextureLoadRequestId;
     this.tilesetTextureRuntimeVersion = this.resolveRuntimeVersion();
+    this.syncHiResTilePack();
     const shouldShowCompileLoading = usesTileTextures(options);
     this.setTilesetCompilationLoadingVisible(shouldShowCompileLoading);
     const tileset = findNh3dTilesetByPath(options.tilesetPath);

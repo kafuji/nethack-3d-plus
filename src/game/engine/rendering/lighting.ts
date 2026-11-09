@@ -35,6 +35,31 @@ export interface LightingDependencies {
 }
 
 /** Lighting resources, player light, vignette shader and light-center smoothing */
+/**
+ * World z is up. The face normal comes from screen-space derivatives of the
+ * world position, turned toward the camera. Vertical faces get a key light
+ * from the north-west and darken toward their foot; floors keep their painted
+ * brightness and raised tops are scaled separately. uFaceShade holds
+ * (side facing away, side facing the light, foot, raised top).
+ */
+const FACE_SHADE_GLSL = `
+        {
+          vec3 faceNormal = normalize(cross(dFdx(vWorldPos), dFdy(vWorldPos)));
+          if (dot(faceNormal, cameraPosition - vWorldPos) < 0.0) faceNormal = -faceNormal;
+          float upness = clamp(faceNormal.z, 0.0, 1.0);
+          vec2 keyDirection = normalize(vec2(-0.6, 0.8));
+          float facing = dot(normalize(faceNormal.xy + vec2(0.000001)), keyDirection);
+          float sideShade = mix(uFaceShade.x, uFaceShade.y, facing * 0.5 + 0.5);
+          sideShade *= mix(uFaceShade.z, 1.0, smoothstep(0.0, 0.75, vWorldPos.z));
+          // In first person every wall is a side face, so they are lifted
+          // part of the way back toward their painted brightness.
+          if (uIsFpsMode) sideShade = mix(sideShade, 1.0, 0.35);
+          // Raised tops (wall caps) against the floor at z = 0.
+          float topShade = mix(1.0, uFaceShade.w, smoothstep(0.2, 0.8, vWorldPos.z));
+          gl_FragColor.rgb *= mix(sideShade, topShade, upness);
+        }
+`;
+
 export class Lighting {
   constructor(private readonly dependencies: LightingDependencies) {}
 
@@ -216,6 +241,7 @@ export class Lighting {
     uFalloffPower: { value: 1.08 },
     uMaxDarkAlpha: { value: this.lightingVignetteMaxDarkAlpha },
     uIsFpsMode: { value: false },
+    uFaceShade: { value: new THREE.Vector4(0.26, 0.58, 0.45, 1.22) },
     uBloodGroundStrength: { value: this.dependencies.engineState.clientOptions.bloodStrength },
     uBloodGroundSpecularReferenceStrength: {
       value: this.dependencies.bloodGround.bloodGroundSpecularReferenceStrength,
@@ -227,6 +253,13 @@ export class Lighting {
     options: {
       bloodGroundDiscardEmptyTexels?: boolean;
       bloodGroundSpecularEffectTexelSize?: THREE.Vector2;
+      /**
+       * Shades terrain by which way each face points: tops stay as painted,
+       * walls facing away from the key light are darker, and wall faces fade
+       * darker toward the floor. Tile materials are unlit, so without this
+       * every face of a block has the same brightness.
+       */
+      faceShade?: boolean;
     } = {},
   ): void {
     const bloodGroundDiscardEmptyTexels =
@@ -241,9 +274,11 @@ export class Lighting {
     const bloodGroundGuardKeySuffix = bloodGroundDiscardEmptyTexels
       ? "_blood_ground_color_guard_v1"
       : "";
+    const faceShade = options.faceShade === true;
+    const faceShadeKeySuffix = faceShade ? "_face_shade_v1" : "";
     // Force Three.js to compile a unique shader for this patch
     material.customProgramCacheKey = () =>
-      `vignette_patch_v10${shaderKeySuffix}${bloodGroundGuardKeySuffix}`;
+      `vignette_patch_v10${shaderKeySuffix}${bloodGroundGuardKeySuffix}${faceShadeKeySuffix}`;
 
     material.onBeforeCompile = (shader) => {
       // Bind our class-level uniforms to this specific shader
@@ -253,6 +288,7 @@ export class Lighting {
       shader.uniforms.uFalloffPower = this.vignetteUniforms.uFalloffPower;
       shader.uniforms.uMaxDarkAlpha = this.vignetteUniforms.uMaxDarkAlpha;
       shader.uniforms.uIsFpsMode = this.vignetteUniforms.uIsFpsMode;
+      shader.uniforms.uFaceShade = this.vignetteUniforms.uFaceShade;
       shader.uniforms.uBloodGroundStrength =
         this.vignetteUniforms.uBloodGroundStrength;
       shader.uniforms.uBloodGroundSpecularReferenceStrength =
@@ -783,6 +819,7 @@ export class Lighting {
         uniform float uFalloffPower;
         uniform float uMaxDarkAlpha;
         uniform bool uIsFpsMode;
+        uniform vec4 uFaceShade;
         varying vec3 vWorldPos;
         ${bloodGroundSpecularPrefix}
         ${shader.fragmentShader}
@@ -790,6 +827,7 @@ export class Lighting {
         "#include <fog_fragment>",
         `${bloodGroundSpecularLogic}
         #include <fog_fragment>
+        ${faceShade ? FACE_SHADE_GLSL : ""}
         
         ${damageFlashLogic}
         if (uDamageFlash > 0.0) {

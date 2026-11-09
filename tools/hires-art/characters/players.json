@@ -1,0 +1,1790 @@
+{
+  "label": "Player characters: one fixed sprite per race, role and gender, hands empty (held weapons are drawn over the sprite by player-held-weapon-overlay.ts). Prototypes.",
+  "work": "../../../.hires-tmp/characters",
+  "pack": "../../../public/assets/hires/pixelhack-hd",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "medium",
+  "size": 256,
+  "style": "Hand-painted dark-fantasy game character, painterly and believable in its materials, but designed above all as a bold, iconic game piece that reads at 48 pixels: large, simple masses of saturated colour, very few small details, clear light and dark separation between head, torso, legs and gear, the role's signature clothing and armour unmistakable. Warm key light from the upper left and a cool rim light along the right edges.",
+  "rules": {
+    "item": "One full-body figure. Image 1 is the pixel-art sprite this art replaces: keep its stance and leg position, but the figure always faces the right side of the picture: a three-quarter view with the body, the head and the eyes all turned toward the viewer's right; the nose points to the right side of the picture. Never turn the head or the body to the left. Use stylized, chunky game proportions: a big head about one quarter of the height, a sturdy body, big hands and feet. Both hands are completely empty: the arms hang relaxed and slightly away from the body, hands at hip height, fingers loosely curled as if about to grip a handle. Nothing is held or carried in the hands, and there are no weapons anywhere: no sword, axe, shield, staff, whip, tool, sheathed or slung blade, and no magic effects; ignore the weapons in image 1, because the game draws them on top separately. Paint it as hand-painted art and ignore the blocky pixels. Fully transparent background: no ground, no cast shadow, no text, no frame."
+  },
+  "items": [
+    {
+      "name": "human_archeologist_male",
+      "kind": "item",
+      "ref": "pxm_archeologist_male",
+      "prompt": "A human archeologist, a man. A battered brown fedora, a worn brown leather jacket over a khaki shirt, khaki trousers, sturdy boots, a leather satchel on a shoulder strap.",
+      "fit": {
+        "matchRef": "pxm_archeologist_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/archeologist_male",
+            "player/human_archeologist_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_archeologist_female",
+      "kind": "item",
+      "ref": "pxm_archeologist_female",
+      "prompt": "A human archeologist, a woman. A battered brown fedora, a worn brown leather jacket over a khaki shirt, khaki trousers, sturdy boots, a leather satchel on a shoulder strap.",
+      "fit": {
+        "matchRef": "pxm_archeologist_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/archeologist_female",
+            "player/human_archeologist_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dwarf_archeologist_male",
+      "kind": "item",
+      "ref": "pxm_archeologist_male",
+      "prompt": "A dwarven archeologist, a man. A dwarf: short and very stocky, broad shoulders, big hands, a large nose and a long braided russet beard. A battered brown fedora, a worn leather jacket over a khaki shirt, khaki trousers, a leather satchel on a shoulder strap.",
+      "fit": {
+        "matchRef": "pxm_archeologist_male",
+        "anchor": "bottom",
+        "scale": 0.82
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "flipX": true,
+      "outputs": [
+        {
+          "key": [
+            "player/dwarf_archeologist_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dwarf_archeologist_female",
+      "kind": "item",
+      "ref": "pxm_archeologist_female",
+      "prompt": "A dwarvish archeologist, a woman. A dwarf: short and very stocky, broad shoulders, big hands, a strong face and thick hair in heavy braids. A battered brown fedora, a worn brown leather jacket over a khaki shirt, khaki trousers, sturdy boots, a leather satchel on a shoulder strap.",
+      "fit": {
+        "matchRef": "pxm_archeologist_female",
+        "anchor": "bottom",
+        "scale": 0.82
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/dwarf_archeologist_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gnome_archeologist_male",
+      "kind": "item",
+      "ref": "pxm_archeologist_male",
+      "prompt": "A gnomish archeologist, a man. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and a bushy beard. A battered brown fedora, a worn brown leather jacket over a khaki shirt, khaki trousers, sturdy boots, a leather satchel on a shoulder strap.",
+      "fit": {
+        "matchRef": "pxm_archeologist_male",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_archeologist_male"
+          ]
+        }
+      ],
+      "pick": 2
+    },
+    {
+      "name": "gnome_archeologist_female",
+      "kind": "item",
+      "ref": "pxm_archeologist_female",
+      "prompt": "A gnomish archeologist, a woman. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and curly hair. A battered brown fedora, a worn brown leather jacket over a khaki shirt, khaki trousers, sturdy boots, a leather satchel on a shoulder strap.",
+      "fit": {
+        "matchRef": "pxm_archeologist_female",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_archeologist_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_barbarian_male",
+      "kind": "item",
+      "ref": "pxm_barbarian_male",
+      "prompt": "A human barbarian, a man. Bare-chested and powerful, with war paint, a fur loincloth, leather bracers and heavy fur-topped boots. Savage.",
+      "fit": {
+        "matchRef": "pxm_barbarian_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/barbarian_male",
+            "player/human_barbarian_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_barbarian_female",
+      "kind": "item",
+      "ref": "pxm_barbarian_female",
+      "prompt": "A human barbarian, a woman. Powerful and battle-scarred, a fur breast wrap and fur loincloth, leather bracers and heavy fur-topped boots, war paint. Savage.",
+      "fit": {
+        "matchRef": "pxm_barbarian_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/barbarian_female",
+            "player/human_barbarian_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orc_barbarian_male",
+      "kind": "item",
+      "ref": "pxm_barbarian_male",
+      "prompt": "An orcish barbarian, a man. An orc: hulking and muscular, grey-green skin, small tusks, a heavy brow, coarse black hair. Bare-chested with red war paint, a fur loincloth, leather bracers and heavy fur-topped boots. Savage.",
+      "fit": {
+        "matchRef": "pxm_barbarian_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "pick": 2,
+      "outputs": [
+        {
+          "key": [
+            "player/orc_barbarian_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orc_barbarian_female",
+      "kind": "item",
+      "ref": "pxm_barbarian_female",
+      "prompt": "An orcish barbarian, a woman. An orc: strong and muscular, grey-green skin, small tusks, a heavy brow, coarse black hair tied back. Powerful and battle-scarred, a fur breast wrap and fur loincloth, leather bracers and heavy fur-topped boots, war paint. Savage.",
+      "fit": {
+        "matchRef": "pxm_barbarian_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/orc_barbarian_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_cave_dweller_male",
+      "kind": "item",
+      "ref": "pxm_cave_dweller_male",
+      "prompt": "A human cave dweller, a man. Wild shaggy hair, a rough tunic of spotted brown animal hide tied with a cord, bare arms and bare feet. Primitive and hardy.",
+      "fit": {
+        "matchRef": "pxm_cave_dweller_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/cave_dweller_male",
+            "player/human_cave_dweller_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_cave_dweller_female",
+      "kind": "item",
+      "ref": "pxm_cave_dweller_female",
+      "prompt": "A human cave dweller, a woman. Wild hair tied with a bone, a rough tunic of spotted brown animal hide tied with a cord, bare arms and bare feet. Primitive and hardy.",
+      "fit": {
+        "matchRef": "pxm_cave_dweller_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/cave_dweller_female",
+            "player/human_cave_dweller_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dwarf_cave_dweller_male",
+      "kind": "item",
+      "ref": "pxm_cave_dweller_male",
+      "prompt": "A dwarvish cave dweller, a man. A dwarf: short and very stocky, broad shoulders, big hands, a large nose and a long braided beard. Wild shaggy hair, a rough tunic of spotted brown animal hide tied with a cord, bare arms and bare feet. Primitive and hardy.",
+      "fit": {
+        "matchRef": "pxm_cave_dweller_male",
+        "anchor": "bottom",
+        "scale": 0.82
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/dwarf_cave_dweller_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dwarf_cave_dweller_female",
+      "kind": "item",
+      "ref": "pxm_cave_dweller_female",
+      "prompt": "A dwarvish cave dweller, a woman. A dwarf: short and very stocky, broad shoulders, big hands, a strong face and thick hair in heavy braids. Wild hair tied with a bone, a rough tunic of spotted brown animal hide tied with a cord, bare arms and bare feet. Primitive and hardy.",
+      "fit": {
+        "matchRef": "pxm_cave_dweller_female",
+        "anchor": "bottom",
+        "scale": 0.82
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/dwarf_cave_dweller_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gnome_cave_dweller_male",
+      "kind": "item",
+      "ref": "pxm_cave_dweller_male",
+      "prompt": "A gnomish cave dweller, a man. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and a bushy beard. Wild shaggy hair, a rough tunic of spotted brown animal hide tied with a cord, bare arms and bare feet. Primitive and hardy.",
+      "fit": {
+        "matchRef": "pxm_cave_dweller_male",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_cave_dweller_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gnome_cave_dweller_female",
+      "kind": "item",
+      "ref": "pxm_cave_dweller_female",
+      "prompt": "A gnomish cave dweller, a woman. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and curly hair. Wild hair tied with a bone, a rough tunic of spotted brown animal hide tied with a cord, bare arms and bare feet. Primitive and hardy.",
+      "fit": {
+        "matchRef": "pxm_cave_dweller_female",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_cave_dweller_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_healer_male",
+      "kind": "item",
+      "ref": "pxm_healer_male",
+      "prompt": "A human healer, a man. A pale sage-green hooded healer's robe, a white apron with a green leaf emblem, a stethoscope around the neck, a leather satchel of herbs at the hip. Kind and calm.",
+      "fit": {
+        "matchRef": "pxm_healer_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/healer_male",
+            "player/human_healer_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_healer_female",
+      "kind": "item",
+      "ref": "pxm_healer_female",
+      "prompt": "A human healer, a woman. A pale sage-green hooded healer's robe, a white apron with a green leaf emblem, a stethoscope around the neck, a leather satchel of herbs at the hip. Kind and calm.",
+      "fit": {
+        "matchRef": "pxm_healer_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/healer_female",
+            "player/human_healer_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gnome_healer_male",
+      "kind": "item",
+      "ref": "pxm_healer_male",
+      "prompt": "A gnomish healer, a man. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and a bushy beard. A pale sage-green hooded healer's robe, a white apron with a green leaf emblem, a stethoscope around the neck, a leather satchel of herbs at the hip. Kind and calm.",
+      "fit": {
+        "matchRef": "pxm_healer_male",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_healer_male"
+          ]
+        }
+      ],
+      "pick": 2
+    },
+    {
+      "name": "gnome_healer_female",
+      "kind": "item",
+      "ref": "pxm_healer_female",
+      "prompt": "A gnomish healer, a woman. A gnome: small, with a big round nose, rosy cheeks, large ears and bright eyes, curly brown hair. A pale sage-green hooded healer's robe, a white apron with a green leaf emblem, a stethoscope around her neck, a leather satchel of herbs at her hip.",
+      "fit": {
+        "matchRef": "pxm_healer_female",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_healer_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_knight_male",
+      "kind": "item",
+      "ref": "pxm_knight_male",
+      "prompt": "A human knight, a man: polished steel plate armour, an open-faced steel helmet, a deep-blue surcoat with a white heraldic lion on the chest, steel gauntlets. Noble and disciplined.",
+      "fit": {
+        "matchRef": "pxm_knight_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/knight_male",
+            "player/human_knight_male"
+          ]
+        }
+      ],
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      }
+    },
+    {
+      "name": "human_knight_female",
+      "kind": "item",
+      "ref": "pxm_knight_female",
+      "prompt": "A human knight, a woman. Polished steel plate armour, an open-faced steel helmet, a deep-blue surcoat with a white heraldic lion on the chest, steel gauntlets. Noble and disciplined.",
+      "fit": {
+        "matchRef": "pxm_knight_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/knight_female",
+            "player/human_knight_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_monk_male",
+      "kind": "item",
+      "ref": "pxm_monk_male",
+      "prompt": "A human monk, a man. A shaved head, a saffron-orange monk's robe wrapped over one shoulder, a dark brown sash, simple sandals, bare forearms wrapped in cloth. Serene, poised for martial arts.",
+      "fit": {
+        "matchRef": "pxm_monk_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/monk_male",
+            "player/human_monk_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_monk_female",
+      "kind": "item",
+      "ref": "pxm_monk_female",
+      "prompt": "A human monk, a woman. Dark hair in a tight bun, a saffron-orange monk's robe wrapped over one shoulder, a dark brown sash, simple sandals, bare forearms wrapped in cloth. Serene, poised for martial arts.",
+      "fit": {
+        "matchRef": "pxm_monk_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/monk_female",
+            "player/human_monk_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_cleric_male",
+      "kind": "item",
+      "ref": "pxm_cleric_male",
+      "prompt": "A human priest, a man. Long pale grey-white priestly vestments with a deep red stole, a silver holy symbol on a chain at the chest, a rope belt. Devout and stern.",
+      "fit": {
+        "matchRef": "pxm_cleric_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/cleric_male",
+            "player/human_cleric_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_cleric_female",
+      "kind": "item",
+      "ref": "pxm_cleric_female",
+      "prompt": "A human priest, a woman. Long pale grey-white priestly vestments with a deep red stole, a silver holy symbol on a chain at the chest, a rope belt. Devout and stern.",
+      "fit": {
+        "matchRef": "pxm_cleric_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/cleric_female",
+            "player/human_cleric_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "elf_cleric_male",
+      "kind": "item",
+      "ref": "pxm_cleric_male",
+      "prompt": "An elven priest, a man. An elf: tall and slender, long pointed ears, fine sharp features, pale skin, long straight hair. Long pale grey-white priestly vestments with a deep red stole, a silver holy symbol on a chain at the chest, a rope belt. Devout and stern.",
+      "fit": {
+        "matchRef": "pxm_cleric_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/elf_cleric_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "elf_cleric_female",
+      "kind": "item",
+      "ref": "pxm_cleric_female",
+      "prompt": "An elven priest, a woman. An elf: tall and slender, long pointed ears, fine sharp features, pale skin, long straight hair. Long pale grey-white priestly vestments with a deep red stole, a silver holy symbol on a chain at the chest, a rope belt. Devout and stern.",
+      "fit": {
+        "matchRef": "pxm_cleric_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/elf_cleric_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_rogue_male",
+      "kind": "item",
+      "ref": "pxm_rogue_male",
+      "prompt": "A human rogue, a man. A dark blue-grey hooded short cloak, a fitted black leather vest, dark trousers, soft boots, many small pouches on the belt. Sly and quick.",
+      "fit": {
+        "matchRef": "pxm_rogue_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/rogue_male",
+            "player/human_rogue_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_rogue_female",
+      "kind": "item",
+      "ref": "pxm_rogue_female",
+      "prompt": "A human rogue, a woman. A dark blue-grey hooded short cloak, a fitted black leather vest, dark trousers, soft boots, many small pouches on the belt. Sly and quick.",
+      "fit": {
+        "matchRef": "pxm_rogue_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/rogue_female",
+            "player/human_rogue_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orc_rogue_male",
+      "kind": "item",
+      "ref": "pxm_rogue_male",
+      "prompt": "An orcish rogue, a man. An orc: hulking and muscular, grey-green skin, small tusks, a heavy brow, coarse black hair. A dark blue-grey hooded short cloak, a fitted black leather vest, dark trousers, soft boots, many small pouches on the belt. Sly and quick.",
+      "fit": {
+        "matchRef": "pxm_rogue_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/orc_rogue_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orc_rogue_female",
+      "kind": "item",
+      "ref": "pxm_rogue_female",
+      "prompt": "An orcish rogue, a woman. An orc: strong and muscular, grey-green skin, small tusks, a heavy brow, coarse black hair tied back. A dark blue-grey hooded short cloak, a fitted black leather vest, dark trousers, soft boots, many small pouches on the belt. Sly and quick.",
+      "fit": {
+        "matchRef": "pxm_rogue_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/orc_rogue_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_ranger_male",
+      "kind": "item",
+      "ref": "pxm_ranger_male",
+      "prompt": "A human ranger, a man. A deep forest-green hooded cloak, a brown leather jerkin, leather bracers on the forearms, tall soft boots. Watchful, a woodland hunter.",
+      "fit": {
+        "matchRef": "pxm_ranger_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/ranger_male",
+            "player/human_ranger_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_ranger_female",
+      "kind": "item",
+      "ref": "pxm_ranger_female",
+      "prompt": "A human ranger, a woman. A deep forest-green hooded cloak, a brown leather jerkin, leather bracers on the forearms, tall soft boots. Watchful, a woodland hunter.",
+      "fit": {
+        "matchRef": "pxm_ranger_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/ranger_female",
+            "player/human_ranger_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "elf_ranger_male",
+      "kind": "item",
+      "ref": "pxm_ranger_male",
+      "prompt": "An elven ranger, a man. An elf: tall and slender, long pointed ears, fine sharp features, pale skin, long straight hair. A deep forest-green hooded cloak, a brown leather jerkin, leather bracers on the forearms, tall soft boots. Watchful, a woodland hunter.",
+      "fit": {
+        "matchRef": "pxm_ranger_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/elf_ranger_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "elf_ranger_female",
+      "kind": "item",
+      "ref": "pxm_ranger_female",
+      "prompt": "An elven ranger, a woman. An elf: tall and slender, long pointed ears, fine sharp features, pale skin, long straight hair. A deep forest-green hooded cloak, a brown leather jerkin, leather bracers on the forearms, tall soft boots. Watchful, a woodland hunter.",
+      "fit": {
+        "matchRef": "pxm_ranger_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/elf_ranger_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gnome_ranger_male",
+      "kind": "item",
+      "ref": "pxm_ranger_male",
+      "prompt": "A gnomish ranger, a man. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and a bushy beard. A deep forest-green hooded cloak, a brown leather jerkin, leather bracers on the forearms, tall soft boots. Watchful, a woodland hunter.",
+      "fit": {
+        "matchRef": "pxm_ranger_male",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_ranger_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gnome_ranger_female",
+      "kind": "item",
+      "ref": "pxm_ranger_female",
+      "prompt": "A gnomish ranger, a woman. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and curly hair. A deep forest-green hooded cloak, a brown leather jerkin, leather bracers on the forearms, tall soft boots. Watchful, a woodland hunter.",
+      "fit": {
+        "matchRef": "pxm_ranger_female",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_ranger_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orc_ranger_male",
+      "kind": "item",
+      "ref": "pxm_ranger_male",
+      "prompt": "An orcish ranger, a man. An orc: hulking and muscular, grey-green skin, small tusks, a heavy brow, coarse black hair. A deep forest-green hooded cloak, a brown leather jerkin, leather bracers on the forearms, tall soft boots. Watchful, a woodland hunter.",
+      "fit": {
+        "matchRef": "pxm_ranger_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/orc_ranger_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orc_ranger_female",
+      "kind": "item",
+      "ref": "pxm_ranger_female",
+      "prompt": "An orcish ranger, a woman. An orc: strong and muscular, grey-green skin, small tusks, a heavy brow, coarse black hair tied back. A deep forest-green hooded cloak, a brown leather jerkin, leather bracers on the forearms, tall soft boots. Watchful, a woodland hunter.",
+      "fit": {
+        "matchRef": "pxm_ranger_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/orc_ranger_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_samurai_male",
+      "kind": "item",
+      "ref": "pxm_samurai_male",
+      "prompt": "A human samurai, a man: black hair in a topknot, a deep indigo kimono and wide hakama, lacquered red armour plates on the shoulders and forearms, a red sash. Calm and deadly.",
+      "fit": {
+        "matchRef": "pxm_samurai_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/samurai_male",
+            "player/human_samurai_male"
+          ]
+        }
+      ],
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "pick": 2
+    },
+    {
+      "name": "human_samurai_female",
+      "kind": "item",
+      "ref": "pxm_samurai_female",
+      "prompt": "A human samurai, a woman. Black hair tied up high, a deep indigo kimono and wide hakama, lacquered red armour plates on the shoulders and forearms, a red sash. Calm and deadly.",
+      "fit": {
+        "matchRef": "pxm_samurai_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/samurai_female",
+            "player/human_samurai_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_tourist_male",
+      "kind": "item",
+      "ref": "pxm_tourist_male",
+      "prompt": "A human tourist, a man. A loud red Hawaiian shirt with big yellow flowers, khaki shorts, sandals with socks, a straw sun hat, an expensive camera on a strap around the neck. Cheerful and clueless.",
+      "fit": {
+        "matchRef": "pxm_tourist_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/tourist_male",
+            "player/human_tourist_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_tourist_female",
+      "kind": "item",
+      "ref": "pxm_tourist_female",
+      "prompt": "A human tourist, a woman. A loud red Hawaiian shirt with big yellow flowers, khaki shorts, sandals with socks, a straw sun hat, an expensive camera on a strap around the neck. Cheerful and clueless.",
+      "fit": {
+        "matchRef": "pxm_tourist_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/tourist_female",
+            "player/human_tourist_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_valkyrie_female",
+      "kind": "item",
+      "ref": "pxm_valkyrie_female",
+      "prompt": "A human valkyrie, a woman: a fierce Norse shieldmaiden with long golden braided hair, steel scale armour over a pale linen tunic, a grey fur mantle on the shoulders and a short red cloak, leather bracers and boots. Bold and proud.",
+      "fit": {
+        "matchRef": "pxm_valkyrie_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/valkyrie_female",
+            "player/human_valkyrie_female"
+          ]
+        }
+      ],
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "pick": 2,
+      "flipX": true
+    },
+    {
+      "name": "dwarf_valkyrie_female",
+      "kind": "item",
+      "ref": "pxm_valkyrie_female",
+      "prompt": "A dwarvish valkyrie, a woman. A dwarf: short and very stocky, broad shoulders, big hands, a strong face and thick hair in heavy braids. Long golden braided hair, steel scale armour over a pale linen tunic, a grey fur mantle on the shoulders and a short red cloak, leather bracers and boots. Bold and proud.",
+      "fit": {
+        "matchRef": "pxm_valkyrie_female",
+        "anchor": "bottom",
+        "scale": 0.82
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/dwarf_valkyrie_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_wizard_male",
+      "kind": "item",
+      "ref": "pxm_wizard_male",
+      "prompt": "A human wizard, a man. A deep-blue hooded robe with silver embroidery and wide sleeves, a belt with small pouches. Mysterious and learned.",
+      "fit": {
+        "matchRef": "pxm_wizard_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/wizard_male",
+            "player/human_wizard_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "human_wizard_female",
+      "kind": "item",
+      "ref": "pxm_wizard_female",
+      "prompt": "A human wizard, a woman. A deep-blue hooded robe with silver embroidery and wide sleeves, a belt with small pouches. Mysterious and learned.",
+      "fit": {
+        "matchRef": "pxm_wizard_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "mon/wizard_female",
+            "player/human_wizard_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "elf_wizard_male",
+      "kind": "item",
+      "ref": "pxm_wizard_male",
+      "prompt": "An elven wizard, a man. An elf: tall and slender, long pointed ears, fine sharp features, pale skin, long straight hair. A deep-blue hooded robe with silver embroidery and wide sleeves, a belt with small pouches. Mysterious and learned.",
+      "fit": {
+        "matchRef": "pxm_wizard_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/elf_wizard_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "elf_wizard_female",
+      "kind": "item",
+      "ref": "pxm_wizard_female",
+      "prompt": "An elven wizard, a woman. An elf: tall and slender, long pointed ears, fine sharp features, pale skin, long silver-white hair. A deep-blue hooded robe with silver embroidery and wide sleeves, a belt with small pouches.",
+      "fit": {
+        "matchRef": "pxm_wizard_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "pick": 2,
+      "outputs": [
+        {
+          "key": [
+            "player/elf_wizard_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gnome_wizard_male",
+      "kind": "item",
+      "ref": "pxm_wizard_male",
+      "prompt": "A gnomish wizard, a man. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and a bushy beard. A deep-blue hooded robe with silver embroidery and wide sleeves, a belt with small pouches. Mysterious and learned.",
+      "fit": {
+        "matchRef": "pxm_wizard_male",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_wizard_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gnome_wizard_female",
+      "kind": "item",
+      "ref": "pxm_wizard_female",
+      "prompt": "A gnomish wizard, a woman. A gnome: small, with a big round nose, rosy cheeks, large ears, bright eyes and curly hair. A deep-blue hooded robe with silver embroidery and wide sleeves, a belt with small pouches. Mysterious and learned.",
+      "fit": {
+        "matchRef": "pxm_wizard_female",
+        "anchor": "bottom",
+        "scale": 0.72
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/gnome_wizard_female"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orc_wizard_male",
+      "kind": "item",
+      "ref": "pxm_wizard_male",
+      "prompt": "An orcish wizard, a man. An orc: hulking and muscular, grey-green skin, small tusks, a heavy brow, coarse black hair. A deep-blue hooded robe with silver embroidery and wide sleeves, a belt with small pouches. Mysterious and learned.",
+      "fit": {
+        "matchRef": "pxm_wizard_male",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/orc_wizard_male"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orc_wizard_female",
+      "kind": "item",
+      "ref": "pxm_wizard_female",
+      "prompt": "An orcish wizard, a woman. An orc: strong and muscular, grey-green skin, small tusks, a heavy brow, coarse black hair tied back. A deep-blue hooded robe with silver embroidery and wide sleeves, a belt with small pouches. Mysterious and learned.",
+      "fit": {
+        "matchRef": "pxm_wizard_female",
+        "anchor": "bottom"
+      },
+      "outline": 3.5,
+      "relief": {
+        "contrast": 0.25,
+        "contrastRadius": 0.06
+      },
+      "grade": {
+        "saturation": 1.3,
+        "brightness": 1.08,
+        "gamma": 0.85
+      },
+      "shadow": {
+        "width": 0.8,
+        "height": 0.09,
+        "opacity": 0.55
+      },
+      "outputs": [
+        {
+          "key": [
+            "player/orc_wizard_female"
+          ]
+        }
+      ]
+    }
+  ]
+}

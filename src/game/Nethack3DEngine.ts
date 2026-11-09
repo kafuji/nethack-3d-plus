@@ -558,6 +558,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
       previous.fpsHeldWeaponSpriteFlipX !== normalized.fpsHeldWeaponSpriteFlipX;
     const tilesetModeChanged = previous.tilesetMode !== normalized.tilesetMode;
     const tilesetAspectChanged = previous.tilesetUseTileAspectRatio !== normalized.tilesetUseTileAspectRatio;
+    const hiResTilesChanged = previous.tilesetUseHiResTiles !== normalized.tilesetUseHiResTiles;
     const animatedMovementChanged =
       previous.animatedMovement !== normalized.animatedMovement;
     const asciiColorModeChanged =
@@ -641,6 +642,8 @@ class Nethack3DEngine implements Nethack3DEngineController {
     if (tilesetPathChanged) {
       this.systems.menuPreviews.clearMenuTilePreviewCache();
       this.systems.tilesetAssets.loadTilesetTexture(normalized);
+    } else if (hiResTilesChanged || tilesetModeChanged) {
+      this.systems.tilesetAssets.applyHiResTilesOption();
     }
     if (tilesetBackgroundTileChanged && !tilesetPathChanged) {
       this.systems.tilesetAssets.captureTilesetBackgroundReferenceTile(

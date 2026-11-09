@@ -1098,7 +1098,7 @@ export class TileMaterials {
       material.color.set(normalizedColor);
     }
     material.needsUpdate = true;
-    this.dependencies.lighting.patchMaterialForVignette(material);
+    this.dependencies.lighting.patchMaterialForVignette(material, { faceShade: true });
     this.inferredDarkWallSolidColorMaterialCache.set(cacheKey, {
       material,
       texture,
