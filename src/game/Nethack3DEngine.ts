@@ -512,6 +512,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     const wasUsingVultureTiles = this.systems.tilesetAssets.isVultureTilesActive(previous);
     const isUsingVultureTiles = this.systems.tilesetAssets.isVultureTilesActive(normalized);
     const playModeChanged = previous.fpsMode !== normalized.fpsMode;
+    const roundedWallsChanged = previous.roundedWalls !== normalized.roundedWalls;
     const fpsFovChanged = previous.fpsFov !== normalized.fpsFov;
     const lightingEnabledChanged =
       previous.lightingEnabled !== normalized.lightingEnabled;
@@ -731,6 +732,12 @@ class Nethack3DEngine implements Nethack3DEngineController {
     }
     if (!isUsingVultureTiles) {
       this.systems.tileContextActions.clearVultureMouseHoverHighlight();
+    }
+    if (roundedWallsChanged && !playModeChanged) {
+      // Wall shapes, corner floor fills and the AO around them all change.
+      this.systems.floorOcclusion.clearFloorBlockAmbientOcclusion();
+      this.systems.wallGeometry.clearFpsWallChamferFloorMeshes();
+      this.systems.tileUpdates.refreshTilesFromStateCache();
     }
     if (!this.systems.wallGeometry.shouldUseChamferedWallGeometry()) {
       this.systems.wallGeometry.clearFpsWallChamferFloorMeshes();

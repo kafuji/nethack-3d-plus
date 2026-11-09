@@ -673,6 +673,11 @@ export const zhCnOverrides = {
           description:
             "让已探索区域的边缘平滑地融入黑暗，而不是止于方形格子边界。",
         },
+        roundedWalls: {
+          label: "圆角墙壁",
+          description:
+            "将可以斜向通过的墙角变圆：孤立的墙变成柱子，斜向缝隙清晰可见。门旁边的墙保持方形。",
+        },
         blockAmbientOcclusion: {
           label: "环境光遮蔽",
           description: "为地面和墙体方块之间添加细微的接触阴影。",

@@ -936,6 +936,11 @@ export const fr = {
           description:
             "Fond les bords des zones explorees dans l'obscurite au lieu de les arreter sur des bords de cases carres.",
         },
+        roundedWalls: {
+          label: "Murs arrondis",
+          description:
+            "Arrondit les coins de mur que l'on peut contourner en diagonale : les murs isoles deviennent des colonnes et les passages en diagonale apparaissent. Les murs a cote des portes restent carres.",
+        },
         blockAmbientOcclusion: {
           label: "Occlusion ambiante",
           description:

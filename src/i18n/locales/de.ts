@@ -898,6 +898,11 @@ export const deOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Lässt die Ränder erkundeter Bereiche weich in die Dunkelheit übergehen, statt an eckigen Kachelgrenzen zu enden.",
         },
+        roundedWalls: {
+          label: "Abgerundete Wände",
+          description:
+            "Rundet Wandecken ab, an denen man diagonal vorbeigehen kann: einzelne Wände werden zu Säulen und diagonale Lücken werden sichtbar. Wände neben Türen bleiben eckig.",
+        },
         blockAmbientOcclusion: {
           label: "Ambient Occlusion",
           description:

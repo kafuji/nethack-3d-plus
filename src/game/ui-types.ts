@@ -304,6 +304,8 @@ export type Nh3dClientOptions = {
   lightingEnabled: boolean;
   /** Fade the edge of explored areas into the unexplored void. */
   smoothExploredEdges: boolean;
+  /** Round off wall corners that a diagonal step can pass, in every camera mode. */
+  roundedWalls: boolean;
   fpsFlattenEntityBillboards: boolean;
   showItemsUnderPlayerInOverheadTilesMode: boolean;
   controllerEnabled: boolean;
@@ -472,6 +474,7 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   fpsWasdKeyboardMovementEnabled: true,
   lightingEnabled: true,
   smoothExploredEdges: true,
+  roundedWalls: true,
   fpsFlattenEntityBillboards: false,
   showItemsUnderPlayerInOverheadTilesMode: true,
   controllerEnabled: false,
@@ -1208,6 +1211,10 @@ export function normalizeNh3dClientOptions(
       typeof overrides?.smoothExploredEdges === "boolean"
         ? overrides.smoothExploredEdges
         : defaultNh3dClientOptions.smoothExploredEdges,
+    roundedWalls:
+      typeof overrides?.roundedWalls === "boolean"
+        ? overrides.roundedWalls
+        : defaultNh3dClientOptions.roundedWalls,
     fpsFlattenEntityBillboards:
       typeof overrides?.fpsFlattenEntityBillboards === "boolean"
         ? overrides.fpsFlattenEntityBillboards

@@ -904,6 +904,11 @@ export const fiOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Häivyttää tutkittujen alueiden reunat pimeyteen sen sijaan, että ne päättyisivät kulmikkaisiin ruutujen rajoihin.",
         },
+        roundedWalls: {
+          label: "Pyöristetyt seinät",
+          description:
+            "Pyöristää seinien kulmat, joiden ohi voi kulkea vinottain: yksittäisistä seinistä tulee pylväitä ja vinot raot näkyvät. Ovien viereiset seinät pysyvät kulmikkaina.",
+        },
         blockAmbientOcclusion: {
           label: "Ympäristön varjostus",
           description:

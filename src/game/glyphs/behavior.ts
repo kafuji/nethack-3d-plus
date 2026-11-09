@@ -200,6 +200,11 @@ export function isDoorwayCmapGlyph(glyph: number): boolean {
   );
 }
 
+/** A doorway with no door, or a broken one (both show as S_ndoor); diagonal moves through it are allowed. */
+export function isDoorlessDoorwayCmapGlyph(glyph: number): boolean {
+  return getCmapIndex(glyph, null) === 12;
+}
+
 export function isVerticalDoorCmapGlyph(glyph: number): boolean {
   const cmapIndex = getCmapIndex(glyph, null);
   return cmapIndex === 13 || cmapIndex === 15;

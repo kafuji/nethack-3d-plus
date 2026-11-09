@@ -430,6 +430,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get lighting() { return lighting; },
     get movementInput() { return movementInput; },
     get renderPipeline() { return renderPipeline; },
+    get terminalRendering() { return terminalRendering; },
     get tileMaterials() { return tileMaterials; },
     get tileRendering() { return tileRendering; },
     get tilesetAssets() { return tilesetAssets; },

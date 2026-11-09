@@ -908,6 +908,11 @@ export const ko = {
           description:
             "탐색한 영역의 가장자리를 네모난 타일 경계로 끊지 않고 어둠 속으로 부드럽게 녹아들게 합니다.",
         },
+        roundedWalls: {
+          label: "둥근 벽",
+          description:
+            "대각선으로 지나갈 수 있는 벽 모서리를 둥글게 만듭니다. 홀로 선 벽은 기둥이 되고 대각선 틈이 보입니다. 문 옆의 벽은 네모난 채로 남습니다.",
+        },
         blockAmbientOcclusion: {
           label: "앰비언트 오클루전",
           description:

@@ -927,6 +927,11 @@ export const ptBrOverrides = {
           description:
             "Faz as bordas das áreas exploradas se dissolverem na escuridão em vez de terminarem em bordas quadradas de blocos.",
         },
+        roundedWalls: {
+          label: "Paredes arredondadas",
+          description:
+            "Arredonda os cantos de paredes que podem ser contornados na diagonal: paredes isoladas viram colunas e as passagens diagonais ficam visíveis. Paredes ao lado de portas continuam quadradas.",
+        },
         blockAmbientOcclusion: {
           label: "Oclusão de ambiente",
           description:

@@ -884,6 +884,11 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "探索済みの範囲の端を四角いタイルの境目で切らず、暗闇へなめらかに溶け込ませます。",
         },
+        roundedWalls: {
+          label: "丸みのある壁",
+          description:
+            "斜めに通り抜けられる壁の角を丸めます。孤立した壁は円柱になり、斜めの隙間が見えるようになります。扉の隣の壁は四角いままです。",
+        },
         blockAmbientOcclusion: {
           label: "アンビエントオクルージョン",
           description:

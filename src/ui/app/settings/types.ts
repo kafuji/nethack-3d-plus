@@ -129,6 +129,7 @@ export type ClientOptionToggleKey =
   | "fpsMode"
   | "lightingEnabled"
   | "smoothExploredEdges"
+  | "roundedWalls"
   | "fpsFlattenEntityBillboards"
   | "fpsHeldWeaponVisible"
   | "playerHeldWeaponOverlayVisible"

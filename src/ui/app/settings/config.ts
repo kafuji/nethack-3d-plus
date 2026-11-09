@@ -266,6 +266,12 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "roundedWalls",
+    label: t.clientOptions.config.roundedWalls.label,
+    description: t.clientOptions.config.roundedWalls.description,
+    type: "boolean",
+  },
+  {
     key: "blockAmbientOcclusion",
     label: t.clientOptions.config.blockAmbientOcclusion.label,
     description: t.clientOptions.config.blockAmbientOcclusion.description,

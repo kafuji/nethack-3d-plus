@@ -921,6 +921,11 @@ export const en = {
           description:
             "Fade the edges of explored areas into darkness instead of ending them on square tile borders.",
         },
+        roundedWalls: {
+          label: "Rounded walls",
+          description:
+            "Round off wall corners you can step past diagonally: lone walls become columns and diagonal gaps show. Walls beside doors stay square.",
+        },
         blockAmbientOcclusion: {
           label: "Ambient occlusion",
           description:

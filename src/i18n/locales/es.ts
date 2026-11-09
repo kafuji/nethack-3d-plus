@@ -866,6 +866,11 @@ export const esOverrides = {
                     description:
                       "Difumina los bordes de las zonas exploradas hacia la oscuridad en lugar de cortarlos en los bordes cuadrados de las casillas.",
                 },
+                roundedWalls: {
+                    label: "Paredes redondeadas",
+                    description:
+                      "Redondea las esquinas de las paredes que se pueden sortear en diagonal: las paredes sueltas se vuelven columnas y se ven los huecos diagonales. Las paredes junto a puertas siguen siendo cuadradas.",
+                },
                 blockAmbientOcclusion: {
                     label: "Oclusi\u00F3n ambiental",
                     description: "Agrega un sutil sombreado de contacto entre los bloques de piso y pared.",

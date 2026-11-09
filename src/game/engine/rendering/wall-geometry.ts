@@ -7,6 +7,7 @@ import {
   getDefaultDarkFloorGlyph,
   getDefaultFloorGlyph,
   getOpenDoorGlyphFrom,
+  isDoorlessDoorwayCmapGlyph,
   isDoorwayCmapGlyph,
   isVerticalDoorCmapGlyph
 } from "../../glyphs/behavior";
@@ -14,6 +15,11 @@ import { CLASSIC_ASCII_BACKGROUND_HEX } from "../../ascii-color-mode";
 import { TERMINAL_BACKGROUND_HEX } from "../../terminal/terminal-display";
 import type { TileMaterialKind } from "../../glyphs";
 import type { FpsChamferWallUvRotation } from "../shared/types";
+import {
+  createRoundedWallFloorFillGeometry,
+  createRoundedWallGeometry,
+  type RoundedWallShapeOptions,
+} from "./rounded-wall-shape";
 import type { DarkCorridorInference } from "../world/dark-corridor-inference";
 import type { EngineState } from "../runtime/engine-state";
 import type { FloorOcclusion } from "./floor-occlusion";
@@ -21,6 +27,7 @@ import type { GlyphTextures } from "./glyph-textures";
 import type { Lighting } from "./lighting";
 import type { MovementInput } from "../input/movement-input";
 import type { RenderPipeline } from "./render-pipeline";
+import type { TerminalRendering } from "./terminal-rendering";
 import type { TileMaterials } from "./tile-materials";
 import type { TileRendering } from "./tile-rendering";
 import type { TilesetAssets } from "./tileset-assets";
@@ -66,6 +73,10 @@ export interface WallGeometryDependencies {
   readonly renderPipeline: Pick<
     RenderPipeline,
     "scene"
+  >;
+  readonly terminalRendering: Pick<
+    TerminalRendering,
+    "isTerminalDisplayMode"
   >;
   readonly tileMaterials: Pick<
     TileMaterials,
@@ -142,6 +153,14 @@ export class WallGeometry {
 
   readonly fpsWallChamferInset = TILE_SIZE * 0.25;
 
+  /** Rounded walls: a corner radius of half a tile makes a lone wall a full column. */
+  readonly roundedWallShape: RoundedWallShapeOptions = {
+    tileSize: TILE_SIZE,
+    wallHeight: WALL_HEIGHT,
+    radius: TILE_SIZE / 2,
+    arcSegments: 12,
+  };
+
   readonly fpsWallChamferFloorZ = 0.0;
 
   wallGeometry = this.createUprightWallBlockGeometry();
@@ -161,11 +180,20 @@ export class WallGeometry {
     return wallOrientationChar === "|" ? "lr_ccw" : "none";
   }
 
+  /**
+   * Whether a diagonal step may start or end on this tile, which decides if a
+   * neighbouring wall corner is cut. NetHack forbids diagonal moves into or out
+   * of a doorway that has a door (open or closed), but allows them through an
+   * empty or broken doorway. With rounded walls that rule is honoured, so walls
+   * beside a door stay square; the classic FPS chamfer treats every doorway as
+   * open ground.
+   */
   isPassableTileForFpsDiagonal(tileX: number, tileY: number): boolean {
     const key = `${tileX},${tileY}`;
     const mesh = this.dependencies.tileRendering.tileMap.get(key);
-    if (this.isDoorwayTileForFpsChamfer(tileX, tileY)) {
-      return true;
+    const doorway = this.resolveDoorwayKindForFpsChamfer(tileX, tileY);
+    if (doorway) {
+      return doorway === "doorless" || !this.usesRoundedWallShape();
     }
     if (!mesh) {
       return false;
@@ -174,43 +202,31 @@ export class WallGeometry {
   }
 
   isDoorwayTileForFpsChamfer(tileX: number, tileY: number): boolean {
-    const key = `${tileX},${tileY}`;
-    const mesh = this.dependencies.tileRendering.tileMap.get(key);
-    if (mesh) {
-      const materialKind =
-        typeof mesh.userData?.materialKind === "string"
-          ? (mesh.userData.materialKind as TileMaterialKind)
-          : null;
-      if (materialKind === "door") {
-        return true;
-      }
-      const tileTextureSourceGlyph =
-        typeof mesh.userData?.tileTextureSourceGlyph === "number" &&
-        Number.isFinite(mesh.userData.tileTextureSourceGlyph)
-          ? Math.trunc(mesh.userData.tileTextureSourceGlyph)
-          : null;
-      if (
-        tileTextureSourceGlyph !== null &&
-        isDoorwayCmapGlyph(tileTextureSourceGlyph)
-      ) {
-        return true;
-      }
-      const sourceGlyph =
-        typeof mesh.userData?.sourceGlyph === "number" &&
-        Number.isFinite(mesh.userData.sourceGlyph)
-          ? Math.trunc(mesh.userData.sourceGlyph)
-          : null;
-      if (sourceGlyph !== null && isDoorwayCmapGlyph(sourceGlyph)) {
-        return true;
-      }
-    }
+    return this.resolveDoorwayKindForFpsChamfer(tileX, tileY) !== null;
+  }
 
+  /** "door" for an open or closed door, "doorless" for an empty or broken doorway. */
+  resolveDoorwayKindForFpsChamfer(
+    tileX: number,
+    tileY: number,
+  ): "door" | "doorless" | null {
+    const key = `${tileX},${tileY}`;
+    const kindOf = (glyph: unknown): "door" | "doorless" | null => {
+      if (typeof glyph !== "number" || !Number.isFinite(glyph)) return null;
+      const normalized = Math.trunc(glyph);
+      if (!isDoorwayCmapGlyph(normalized)) return null;
+      return isDoorlessDoorwayCmapGlyph(normalized) ? "doorless" : "door";
+    };
+    const mesh = this.dependencies.tileRendering.tileMap.get(key);
     const knownTerrain = this.dependencies.darkCorridorInference.getKnownTerrainSnapshotForInferenceAtKey(key);
-    return Boolean(
-      knownTerrain &&
-      typeof knownTerrain.glyph === "number" &&
-      isDoorwayCmapGlyph(Math.trunc(knownTerrain.glyph)),
-    );
+    const fromGlyphs =
+      kindOf(mesh?.userData?.tileTextureSourceGlyph) ??
+      kindOf(mesh?.userData?.sourceGlyph) ??
+      kindOf(knownTerrain?.glyph);
+    if (fromGlyphs) {
+      return fromGlyphs;
+    }
+    return mesh?.userData?.materialKind === "door" ? "door" : null;
   }
 
   isSolidWallTileForFpsChamfer(tileX: number, tileY: number): boolean {
@@ -411,8 +427,25 @@ export class WallGeometry {
     this.dependencies.floorOcclusion.refreshFpsWallChamferFloorAmbientOcclusionNear(tileX, tileY);
   }
 
+  /**
+   * Rounded walls replace the FPS chamfer and also apply in the overhead view.
+   * Vulture tiles draw their own wall art, so they keep the classic shapes.
+   */
+  usesRoundedWallShape(): boolean {
+    return (
+      this.dependencies.engineState.clientOptions.roundedWalls === true &&
+      !this.dependencies.tilesetAssets.shouldUseVultureTiles()
+    );
+  }
+
   shouldUseChamferedWallGeometry(): boolean {
-    return this.dependencies.movementInput.isFpsMode();
+    if (this.dependencies.movementInput.isFpsMode()) {
+      return true;
+    }
+    return (
+      this.usesRoundedWallShape() &&
+      !this.dependencies.terminalRendering.isTerminalDisplayMode()
+    );
   }
 
   shouldChamferFpsWallCorner(
@@ -936,12 +969,18 @@ export class WallGeometry {
     if (mask === 0) {
       return this.wallGeometry;
     }
-    const cacheKey = `${mask}:${sideUvRotation}`;
+    const rounded = this.usesRoundedWallShape();
+    const cacheKey = `${rounded ? "round" : "chamfer"}:${mask}:${sideUvRotation}`;
     const cached = this.fpsWallChamferGeometryCache.get(cacheKey);
     if (cached) {
       return cached;
     }
-    const geometry = this.createFpsChamferedWallGeometry(mask, sideUvRotation);
+    const geometry = rounded
+      ? createRoundedWallGeometry(mask, {
+          ...this.roundedWallShape,
+          rotateSideUv: sideUvRotation !== "none",
+        })
+      : this.createFpsChamferedWallGeometry(mask, sideUvRotation);
     this.fpsWallChamferGeometryCache.set(cacheKey, geometry);
     return geometry;
   }
@@ -952,9 +991,19 @@ export class WallGeometry {
     if (mask === 0) {
       return null;
     }
-    const cached = this.fpsWallChamferFloorGeometryCache.get(mask);
+    // Masks are 4 bits; rounded fills are cached above them.
+    const rounded = this.usesRoundedWallShape();
+    const cacheKey = rounded ? mask + 16 : mask;
+    const cached = this.fpsWallChamferFloorGeometryCache.get(cacheKey);
     if (cached) {
       return cached;
+    }
+    if (rounded) {
+      const roundedFill = createRoundedWallFloorFillGeometry(mask, this.roundedWallShape);
+      if (roundedFill) {
+        this.fpsWallChamferFloorGeometryCache.set(cacheKey, roundedFill);
+      }
+      return roundedFill;
     }
 
     const half = TILE_SIZE / 2;
