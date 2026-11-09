@@ -879,6 +879,11 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "動的なシーン照明とダンジョンの暗さ表現を有効にします。無効にすると常時明るい平坦な描画になります。",
         },
+        dynamicLighting: {
+          label: "部屋と光源のライティング",
+          description:
+            "明るい部屋は四隅から照らされ、持っているランプ・ろうそく・ランタンが見える範囲を揺らめく光で照らします。記憶だけの場所や暗い場所は薄暗くなります。「ライティング」が必要です。",
+        },
         smoothExploredEdges: {
           label: "探索範囲の境界をぼかす",
           description:

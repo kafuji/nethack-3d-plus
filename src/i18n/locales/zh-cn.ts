@@ -668,6 +668,11 @@ export const zhCnOverrides = {
           label: "光照",
           description: "启用动态场景光照和地城变暗效果。关闭后会使用始终明亮的平面渲染。",
         },
+        dynamicLighting: {
+          label: "房间与光源照明",
+          description:
+            "明亮的房间从四角照亮，携带的灯、蜡烛和提灯会以摇曳的火光照亮视野内的区域。仅存于记忆或无光的区域保持昏暗。需要开启光照。",
+        },
         smoothExploredEdges: {
           label: "柔化探索边界",
           description:

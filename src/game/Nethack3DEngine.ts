@@ -33,6 +33,10 @@ import {
   DEFAULT_EXPLORED_MASK_TUNING,
   type ExploredMaskTuning,
 } from "./engine/rendering/explored-mask";
+import {
+  DEFAULT_LIGHT_FIELD_TUNING,
+  type LightFieldTuning,
+} from "./engine/rendering/light-field";
 
 /** Main engine composition, ordered lifecycle, and public UI controller. */
 class Nethack3DEngine implements Nethack3DEngineController {
@@ -218,6 +222,18 @@ class Nethack3DEngine implements Nethack3DEngineController {
       get: () => ({ ...mask.tuning }),
       set: (tuning: Partial<ExploredMaskTuning>) => mask.setTuning(tuning),
       reset: () => mask.setTuning(DEFAULT_EXPLORED_MASK_TUNING),
+    };
+    /**
+     * Devtools helper for tuning room and carried-light lighting:
+     *   __nh3dLightField.get() / set({ ambient: 0.6 }) / reset()
+     *   __nh3dLightField.state()  // detected rooms and carried light
+     */
+    const lights = this.systems.lightField;
+    (window as unknown as Record<string, unknown>).__nh3dLightField = {
+      get: () => ({ ...lights.tuning }),
+      set: (tuning: Partial<LightFieldTuning>) => lights.setTuning(tuning),
+      reset: () => lights.setTuning(DEFAULT_LIGHT_FIELD_TUNING),
+      state: () => ({ active: lights.isActive(), rooms: lights.rooms, carriedLight: lights.carriedLight }),
     };
   }
 
@@ -1605,6 +1621,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     });
     this.systems.tileRendering.tileMap.clear();
     this.systems.exploredMask.reset();
+    this.systems.lightField.reset();
     this.systems.floorOcclusion.clearFloorBlockAmbientOcclusion();
     this.systems.wallGeometry.fpsWallChamferFloorMeshes.forEach((mesh) => {
       this.systems.renderPipeline.scene.remove(mesh);
@@ -1786,6 +1803,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     if (typeof window !== "undefined") {
       delete (window as unknown as Record<string, unknown>).__nh3dMusic;
       delete (window as unknown as Record<string, unknown>).__nh3dExploredMask;
+      delete (window as unknown as Record<string, unknown>).__nh3dLightField;
     }
     this.systems.audioHapticsPlatform.clearPendingIncomingDamageRumble();
     this.systems.audioHapticsPlatform.webHaptics?.destroy();
@@ -1850,6 +1868,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.vultureProjectionDebug.vultureWallProjectionDebugDrag = null;
 
     this.systems.exploredMask.dispose();
+    this.systems.lightField.dispose();
     this.systems.renderPipeline.disposeAntialiasingPipeline();
     this.systems.renderPipeline.renderer.domElement.remove();
     this.systems.renderPipeline.renderer.forceContextLoss();
@@ -1940,6 +1959,8 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.tileUpdates.flushPendingDarkCorridorInference();
     // After all tile changes for this frame, so the mask matches what is drawn.
     this.systems.exploredMask.update(timeMs);
+    // After updateLightingCenter, which places the hero's light.
+    this.systems.lightField.update(timeMs);
     this.systems.camera.compensateTerminalWorldSpriteAspect();
     const xrCamera = this.systems.webXrPresentation.prepareRender();
     if (xrCamera) {

@@ -17,6 +17,7 @@ import { TileFaceTextureRotationDebug } from "./diagnostics/tile-face-texture-ro
 import { VultureProjectionDebug } from "./diagnostics/vulture-projection-debug";
 import { Lighting } from "./rendering/lighting";
 import { ExploredMask } from "./rendering/explored-mask";
+import { LightField } from "./rendering/light-field";
 import { RenderPipeline } from "./rendering/render-pipeline";
 import { WebXrPresentation } from "./rendering/webxr-presentation";
 import { QuestSceneExport } from "./rendering/quest-scene-export-system";
@@ -81,6 +82,7 @@ export interface EngineSystems {
   readonly vultureProjectionDebug: VultureProjectionDebug;
   readonly lighting: Lighting;
   readonly exploredMask: ExploredMask;
+  readonly lightField: LightField;
   readonly renderPipeline: RenderPipeline;
   readonly questSceneExport: QuestSceneExport;
   readonly webXrPresentation: WebXrPresentation;
@@ -893,6 +895,17 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get tileRendering() { return tileRendering; },
     get tilesetAssets() { return tilesetAssets; },
   });
+  const lightField = new LightField({
+    get camera() { return camera; },
+    get engineState() { return engineState; },
+    get lighting() { return lighting; },
+    get movementInput() { return movementInput; },
+    get playerMovement() { return playerMovement; },
+    get promptDialogs() { return promptDialogs; },
+    get terminalRendering() { return terminalRendering; },
+    get tileRendering() { return tileRendering; },
+    get tilesetAssets() { return tilesetAssets; },
+  });
   const bloodParticles: BloodParticles = new BloodParticles({
     get bloodGround() { return bloodGround; },
     get engineState() { return engineState; },
@@ -946,6 +959,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     vultureProjectionDebug,
     lighting,
     exploredMask,
+    lightField,
     renderPipeline,
     bloodGround,
     tilesetAssets,

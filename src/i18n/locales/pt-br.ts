@@ -922,6 +922,11 @@ export const ptBrOverrides = {
           description:
             "Ativa iluminação dinâmica da cena e escurecimento da masmorra. Desative para uma renderização plana e sempre iluminada.",
         },
+        dynamicLighting: {
+          label: "Iluminação de salas e fontes de luz",
+          description:
+            "Salas iluminadas brilham a partir dos cantos, e lâmpadas, velas e lanternas que você carrega iluminam o que você vê com uma chama tremeluzente. Áreas lembradas ou sem luz ficam na penumbra. Requer Iluminação.",
+        },
         smoothExploredEdges: {
           label: "Bordas exploradas suaves",
           description:

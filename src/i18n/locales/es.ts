@@ -861,6 +861,11 @@ export const esOverrides = {
                     label: "Iluminaci\u00F3n",
                     description: "Habilite la iluminaci\u00F3n din\u00E1mica de la escena y el oscurecimiento de las mazmorras. Desact\u00EDvelo para obtener una representaci\u00F3n m\u00E1s plana y siempre iluminada.",
                 },
+                dynamicLighting: {
+                    label: "Iluminación de salas y fuentes de luz",
+                    description:
+                      "Las salas iluminadas brillan desde sus esquinas, y las lámparas, velas y linternas que llevas iluminan lo que puedes ver con una llama parpadeante. Las zonas recordadas o sin luz quedan en penumbra. Requiere Iluminación.",
+                },
                 smoothExploredEdges: {
                     label: "Bordes explorados suaves",
                     description:

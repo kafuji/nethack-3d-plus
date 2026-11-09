@@ -260,6 +260,12 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "dynamicLighting",
+    label: t.clientOptions.config.dynamicLighting.label,
+    description: t.clientOptions.config.dynamicLighting.description,
+    type: "boolean",
+  },
+  {
     key: "smoothExploredEdges",
     label: t.clientOptions.config.smoothExploredEdges.label,
     description: t.clientOptions.config.smoothExploredEdges.description,

@@ -893,6 +893,11 @@ export const deOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Aktiviert dynamische Szenenbeleuchtung und Abdunkelung des Dungeons. Deaktivieren f\u00fcr flacheres, stets beleuchtetes Rendering.",
         },
+        dynamicLighting: {
+          label: "Raum- und Lichtquellenbeleuchtung",
+          description:
+            "Beleuchtete Räume leuchten von ihren Ecken aus, und getragene Lampen, Kerzen und Laternen erhellen mit flackernder Flamme, was du sehen kannst. Erinnerte und unbeleuchtete Bereiche bleiben dunkel. Benötigt Beleuchtung.",
+        },
         smoothExploredEdges: {
           label: "Weiche Erkundungsränder",
           description:

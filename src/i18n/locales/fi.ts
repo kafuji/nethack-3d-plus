@@ -899,6 +899,11 @@ export const fiOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Ota käyttöön dynaaminen kohtausvalaistus ja luolaston tummennus. Poista käytöstä saadaksesi tasaisemman aina valaistun renderöinnin.",
         },
+        dynamicLighting: {
+          label: "Huoneiden ja valonlähteiden valaistus",
+          description:
+            "Valaistut huoneet hehkuvat nurkistaan, ja kantamasi lamput, kynttilät ja lyhdyt valaisevat näkemäsi lepattavalla liekillä. Muistetut ja valaisemattomat alueet jäävät hämäriksi. Vaatii valaistuksen.",
+        },
         smoothExploredEdges: {
           label: "Pehmeät tutkitun alueen reunat",
           description:

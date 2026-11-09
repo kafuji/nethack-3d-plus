@@ -185,6 +185,17 @@ export function getOpenDoorGlyphFrom(glyph: number): number | null {
   return null;
 }
 
+/**
+ * Floor the hero currently sees lit: room floor (S_room) or a lit corridor
+ * (S_litcorr). Remembered or unlit floor shows as S_darkroom / S_corr.
+ */
+export function isLitFloorCmapGlyph(glyph: number): "room" | "corridor" | null {
+  const cmapIndex = getCmapIndex(glyph, null);
+  if (cmapIndex === 19) return "room";
+  if (cmapIndex === 22) return "corridor";
+  return null;
+}
+
 export function isDarkCorridorCmapGlyph(glyph: number): boolean {
   return getCmapIndex(glyph, null) === 21;
 }

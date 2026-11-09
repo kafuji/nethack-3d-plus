@@ -72,6 +72,59 @@ const EXPLORED_MASK_GLSL = `
         }
 `;
 
+/**
+ * Light from the game world (see LightField). The light texture holds room
+ * light in RGB (scaled down by uLightParams.z) and, in alpha, where the hero's
+ * own light reaches. Side faces read the cell they face, so a wall lights up
+ * on its room side and stays dark on the side facing rock. The hero's light
+ * falls off with distance and, on terrain, with the angle to each face.
+ * uLightParams holds (maximum light, how much the hero's light dims inside a
+ * lit room, texture range, unused).
+ */
+const LIGHT_FIELD_PREFIX_GLSL = `
+        uniform sampler2D uLightField;
+        uniform float uLightFieldEnabled;
+        uniform vec2 uLightFieldGrid;
+        uniform vec3 uAmbientLight;
+        uniform vec3 uPlayerLightPos;
+        uniform vec3 uPlayerLightColor;
+        uniform float uPlayerLightRadius;
+        uniform vec4 uLightParams;
+`;
+
+function lightFieldGlsl(useSurfaceNormal: boolean): string {
+  const normal = useSurfaceNormal
+    ? `
+          lightNormal = normalize(cross(dFdx(vWorldPos), dFdy(vWorldPos)));
+          if (dot(lightNormal, cameraPosition - vWorldPos) < 0.0) lightNormal = -lightNormal;`
+    : "";
+  const facing = useSurfaceNormal
+    ? "clamp(dot(lightNormal, toPlayerLight / max(playerLightDistance, 0.0001)) * 0.75 + 0.25, 0.0, 1.0)"
+    : "1.0";
+  return `
+        if (uLightFieldEnabled > 0.0) {
+          vec3 lightPoint = vec3(logicalWorldPosition, vWorldPos.z);
+          vec3 lightNormal = vec3(0.0, 0.0, 1.0);${normal}
+          float lightUpness = clamp(lightNormal.z, 0.0, 1.0);
+          vec2 lightCell = vec2(lightPoint.x, -lightPoint.y) / ${TILE_SIZE.toFixed(6)} +
+            vec2(lightNormal.x, -lightNormal.y) * (1.0 - lightUpness) * 0.5;
+          vec4 lightSample = texture2D(uLightField, (lightCell + 0.5) / uLightFieldGrid);
+          vec3 roomLight = lightSample.rgb * uLightParams.z;
+          vec3 lightBase = max(uAmbientLight, roomLight);
+          vec3 toPlayerLight = uPlayerLightPos - lightPoint;
+          float playerLightDistance = length(toPlayerLight);
+          float playerLightFalloff = clamp(1.0 - playerLightDistance / max(uPlayerLightRadius, 0.001), 0.0, 1.0);
+          playerLightFalloff *= playerLightFalloff;
+          float playerLightFacing = ${facing};
+          float roomBrightness = clamp(max(roomLight.r, max(roomLight.g, roomLight.b)), 0.0, 1.0);
+          vec3 playerLight = uPlayerLightColor * playerLightFalloff * playerLightFacing * lightSample.a *
+            (1.0 - uLightParams.y * roomBrightness);
+          vec3 worldLight = min(lightBase + playerLight, vec3(uLightParams.x));
+          gl_FragColor.rgb *= mix(vec3(1.0), worldLight, uLightFieldEnabled);
+        }
+`;
+}
+
 export interface WorldShadingInitialValues {
   readonly maxDarkAlpha: number;
   readonly bloodGroundStrength: number;
@@ -97,6 +150,17 @@ export function createWorldShadingUniforms(initial: WorldShadingInitialValues) {
     /** Map size in cells that the mask texture covers. */
     uExploredMaskGrid: { value: new THREE.Vector2(80, 21) },
     uExploredFade: { value: new THREE.Vector4(0.45, 0.95, 0.12, 2.4) },
+    uLightField: { value: null as THREE.Texture | null },
+    /** 0 = off, 1 = on. */
+    uLightFieldEnabled: { value: 0 },
+    uLightFieldGrid: { value: new THREE.Vector2(80, 21) },
+    uAmbientLight: { value: new THREE.Vector3(1, 1, 1) },
+    /** Logical world position of the hero's light (x, -y in tiles, height). */
+    uPlayerLightPos: { value: new THREE.Vector3(0, 0, 0.75) },
+    /** Colour times intensity times flicker. */
+    uPlayerLightColor: { value: new THREE.Vector3(0, 0, 0) },
+    uPlayerLightRadius: { value: 1 },
+    uLightParams: { value: new THREE.Vector4(1.35, 0.6, 2, 0) },
   };
 }
 
@@ -152,12 +216,15 @@ export class WorldShading {
       : "";
     const faceShade = options.faceShade === true;
     const faceShadeKeySuffix = faceShade ? "_face_shade_v1" : "";
-    const exploredMask =
+    // Terrain (not entities or sprites) gets surface-aware lighting and the explored fade.
+    const terrain =
       options.entity !== true && !(material instanceof THREE.SpriteMaterial);
+    const exploredMask = terrain;
     const exploredMaskKeySuffix = exploredMask ? "_explored_mask_v1" : "";
+    const lightNormalKeySuffix = terrain ? "_light_normal" : "";
     // Force Three.js to compile a unique shader for this patch
     material.customProgramCacheKey = () =>
-      `vignette_patch_v10${shaderKeySuffix}${bloodGroundGuardKeySuffix}${faceShadeKeySuffix}${exploredMaskKeySuffix}`;
+      `vignette_patch_v11${shaderKeySuffix}${bloodGroundGuardKeySuffix}${faceShadeKeySuffix}${exploredMaskKeySuffix}${lightNormalKeySuffix}`;
 
     material.onBeforeCompile = (shader) => {
       // Bind our class-level uniforms to this specific shader
@@ -172,6 +239,14 @@ export class WorldShading {
         this.uniforms.uBloodGroundStrength;
       shader.uniforms.uBloodGroundSpecularReferenceStrength =
         this.uniforms.uBloodGroundSpecularReferenceStrength;
+      shader.uniforms.uLightField = this.uniforms.uLightField;
+      shader.uniforms.uLightFieldEnabled = this.uniforms.uLightFieldEnabled;
+      shader.uniforms.uLightFieldGrid = this.uniforms.uLightFieldGrid;
+      shader.uniforms.uAmbientLight = this.uniforms.uAmbientLight;
+      shader.uniforms.uPlayerLightPos = this.uniforms.uPlayerLightPos;
+      shader.uniforms.uPlayerLightColor = this.uniforms.uPlayerLightColor;
+      shader.uniforms.uPlayerLightRadius = this.uniforms.uPlayerLightRadius;
+      shader.uniforms.uLightParams = this.uniforms.uLightParams;
       if (exploredMask) {
         shader.uniforms.uExploredMask = this.uniforms.uExploredMask;
         shader.uniforms.uExploredMaskEnabled = this.uniforms.uExploredMaskEnabled;
@@ -707,6 +782,7 @@ export class WorldShading {
         uniform vec4 uFaceShade;
         varying vec3 vWorldPos;
         ${bloodGroundSpecularPrefix}
+        ${LIGHT_FIELD_PREFIX_GLSL}
         ${exploredMask ? EXPLORED_MASK_PREFIX_GLSL : ""}
         ${shader.fragmentShader}
       `.replace(
@@ -729,6 +805,7 @@ export class WorldShading {
         float effectiveFalloff = uIsFpsMode ? (uFalloffPower / 2.0) : uFalloffPower;
         float alpha = pow(t, effectiveFalloff) * uMaxDarkAlpha;
         gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.0), alpha);
+        ${lightFieldGlsl(terrain)}
         ${exploredMask ? EXPLORED_MASK_GLSL : ""}`,
       );
     };

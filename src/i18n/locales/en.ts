@@ -916,6 +916,11 @@ export const en = {
           description:
             "Enable dynamic scene lighting and dungeon darkening. Turn off for flatter always-lit rendering.",
         },
+        dynamicLighting: {
+          label: "Room and light-source lighting",
+          description:
+            "Lit rooms glow from their corners, and lamps, candles and lanterns you carry light what you can see, with a flickering flame. Remembered and unlit areas stay dim. Needs Lighting.",
+        },
         smoothExploredEdges: {
           label: "Soft explored edges",
           description:

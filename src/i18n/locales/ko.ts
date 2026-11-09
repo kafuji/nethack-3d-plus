@@ -903,6 +903,11 @@ export const ko = {
           description:
             "동적 장면 조명과 던전 어둡게 하기를 활성화합니다. 끄면 항상 밝은 평면 렌더링이 됩니다.",
         },
+        dynamicLighting: {
+          label: "방과 광원 조명",
+          description:
+            "밝은 방은 네 모서리에서 빛나고, 들고 있는 램프·양초·랜턴이 보이는 곳을 일렁이는 불빛으로 비춥니다. 기억만 하는 곳과 어두운 곳은 어둑하게 남습니다. 조명이 필요합니다.",
+        },
         smoothExploredEdges: {
           label: "탐색 경계 부드럽게",
           description:
