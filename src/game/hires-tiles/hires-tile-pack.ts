@@ -4,6 +4,11 @@ import {
   type HiResTileFilter,
   type HiResTileManifestEntry,
 } from "./manifest";
+import {
+  HIRES_TERRAIN_STYLE_KEYS,
+  HIRES_TERRAIN_STYLE_TILE_KEYS,
+  type HiResTerrainStyle,
+} from "./terrain-styles";
 
 export const builtinHiResTilePackManifestUrl =
   "assets/hires/pixelhack-hd/manifest.json";
@@ -112,7 +117,7 @@ export class HiResTilePack {
     const manifest = parseHiResTileManifest(await fetchJson(this.options.manifestUrl));
     if (this.disposed) return;
     this.label = manifest.label;
-    const knownKeys = new Set(NH5_TILE_KEYS);
+    const knownKeys = new Set([...NH5_TILE_KEYS, ...HIRES_TERRAIN_STYLE_KEYS]);
     const pending = [...manifest.tiles].filter(([key]) => knownKeys.has(key));
     const worker = async (): Promise<void> => {
       for (let next = pending.shift(); next && !this.disposed; next = pending.shift()) {
@@ -134,12 +139,21 @@ export class HiResTilePack {
     this.options.onTilesReady();
   }
 
-  /** The first frame of the tile; animation playback comes later. */
-  getTile(runtimeTileIndex: number): HiResTileFrame | null {
+  /**
+   * The first frame of the tile; animation playback comes later. With a
+   * terrain style, the style's replacement is used when the pack has it.
+   */
+  getTile(
+    runtimeTileIndex: number,
+    style: HiResTerrainStyle | null = null,
+  ): HiResTileFrame | null {
     if (!Number.isInteger(runtimeTileIndex) || runtimeTileIndex < 0) return null;
-    const key = NH5_TILE_KEYS[runtimeTileIndex];
-    const tile = key ? this.tiles.get(key) : undefined;
-    if (!key || !tile) return null;
+    const baseKey = NH5_TILE_KEYS[runtimeTileIndex];
+    if (!baseKey) return null;
+    const styleKey = style ? HIRES_TERRAIN_STYLE_TILE_KEYS[style][baseKey] : undefined;
+    const key = styleKey && this.tiles.has(styleKey) ? styleKey : baseKey;
+    const tile = this.tiles.get(key);
+    if (!tile) return null;
     if (tile.translucent === undefined) {
       tile.translucent = hasTranslucentPixels(tile.image, tile.frameWidth);
     }

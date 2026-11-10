@@ -37,6 +37,10 @@ const TILE_KEYS_FILE = resolve(
   PROJECT_ROOT,
   "src/game/hires-tiles/tile-keys.5.generated.ts",
 );
+const TERRAIN_STYLES_FILE = resolve(
+  PROJECT_ROOT,
+  "src/game/hires-tiles/terrain-styles.ts",
+);
 const DEFAULT_PACK_DIR = resolve(PROJECT_ROOT, "public/assets/hires/pixelhack-hd");
 const ATLAS_COLUMNS = 40;
 const MANIFEST_FORMAT = 1;
@@ -44,6 +48,12 @@ const MANIFEST_FORMAT = 1;
 function loadTileKeys() {
   const text = readFileSync(TILE_KEYS_FILE, "utf8");
   return [...text.matchAll(/^ {2}"(.*)",$/gm)].map((match) => match[1]);
+}
+
+/** Pack files a terrain style uses in place of a tile, e.g. the Mines floor. */
+function loadTerrainStyleKeys() {
+  const text = readFileSync(TERRAIN_STYLES_FILE, "utf8");
+  return [...text.matchAll(/"[^"]+":\s*"([^"]+)"/g)].map((match) => match[1]);
 }
 
 function parseArgs(argv) {
@@ -177,7 +187,7 @@ function manifest({ positional }) {
   const previous = existsSync(manifestPath)
     ? JSON.parse(readFileSync(manifestPath, "utf8"))
     : {};
-  const knownKeys = new Set(loadTileKeys());
+  const knownKeys = new Set([...loadTileKeys(), ...loadTerrainStyleKeys()]);
   const tiles = {};
   const unknown = [];
   for (const file of listImageFiles(packDir).sort()) {

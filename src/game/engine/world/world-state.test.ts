@@ -74,6 +74,7 @@ function createWorldFixture() {
     } },
     tileRendering,
     tileUpdates,
+    tilesetAssets: { setHiResTerrainStyle: vi.fn() },
     vultureWalls: { pendingVultureWallMaterialRefreshKeys: new Set(), flushPendingVultureWallMaterialRefreshes: vi.fn() },
     worldClassification,
   };

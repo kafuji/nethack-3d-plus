@@ -3694,6 +3694,12 @@
       "height": 256,
       "frames": 1
     },
+    "other/iron_bars": {
+      "file": "other/iron_bars.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "other/land_mine": {
       "file": "other/land_mine.png",
       "width": 256,
@@ -3796,70 +3802,82 @@
       "height": 256,
       "frames": 1
     },
+    "other/mines_dark_part_of_a_room": {
+      "file": "other/mines_dark_part_of_a_room.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "other/mines_floor_of_a_room": {
+      "file": "other/mines_floor_of_a_room.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "other/mines_walls_blcorn": {
       "file": "other/mines_walls_blcorn.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_brcorn": {
       "file": "other/mines_walls_brcorn.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_cross_wall": {
       "file": "other/mines_walls_cross_wall.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_horizontal": {
       "file": "other/mines_walls_horizontal.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_tdwall": {
       "file": "other/mines_walls_tdwall.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_tlcorn": {
       "file": "other/mines_walls_tlcorn.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_tlwall": {
       "file": "other/mines_walls_tlwall.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_trcorn": {
       "file": "other/mines_walls_trcorn.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_trwall": {
       "file": "other/mines_walls_trwall.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_tuwall": {
       "file": "other/mines_walls_tuwall.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/mines_walls_vertical": {
       "file": "other/mines_walls_vertical.png",
-      "width": 128,
-      "height": 128,
+      "width": 256,
+      "height": 256,
       "frames": 1
     },
     "other/neutral_altar": {
@@ -3960,6 +3978,12 @@
     },
     "other/trap_door": {
       "file": "other/trap_door.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "other/tree": {
+      "file": "other/tree.png",
       "width": 256,
       "height": 256,
       "frames": 1

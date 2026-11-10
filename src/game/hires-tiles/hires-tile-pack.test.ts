@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { GLYPH_CATALOG } from "../glyphs/glyph-catalog.5.generated";
 import { HiResTilePack } from "./hires-tile-pack";
 import { parseHiResTileManifest } from "./manifest";
+import { HIRES_TERRAIN_STYLE_TILE_KEYS, resolveHiResTerrainStyle } from "./terrain-styles";
 import { NH5_TILE_KEYS } from "./tile-keys.5.generated";
 
 const manifest = (tiles: Record<string, unknown>, extra: Record<string, unknown> = {}) => ({
@@ -33,6 +34,23 @@ describe("NetHack 5 tile keys", () => {
     expect(mismatches).toEqual([]);
     expect(NH5_TILE_KEYS[789]).toBe("obj/strange_object");
     expect(NH5_TILE_KEYS[1272]).toBe("other/stone");
+  });
+});
+
+describe("resolveHiResTerrainStyle", () => {
+  it("uses the Mines style in the Gnomish Mines only", () => {
+    expect(resolveHiResTerrainStyle({ branchTag: "mines", dungeonName: null })).toBe("mines");
+    expect(resolveHiResTerrainStyle({ branchTag: null, dungeonName: "The Gnomish Mines" })).toBe("mines");
+    expect(resolveHiResTerrainStyle({ branchTag: "dungeons_of_doom", dungeonName: "The Dungeons of Doom" })).toBeNull();
+    expect(resolveHiResTerrainStyle(null)).toBeNull();
+  });
+
+  it("replaces only tiles that exist", () => {
+    for (const replacements of Object.values(HIRES_TERRAIN_STYLE_TILE_KEYS)) {
+      for (const tileKey of Object.keys(replacements)) {
+        expect(NH5_TILE_KEYS).toContain(tileKey);
+      }
+    }
   });
 });
 
@@ -88,6 +106,33 @@ describe("HiResTilePack", () => {
     expect(pack.getTile(NH5_TILE_KEYS.indexOf("obj/long_sword"))).toBeNull();
     expect(pack.getTile(1)).toBeNull();
     expect(pack.getTile(-1)).toBeNull();
+  });
+
+  it("draws a terrain style's own tiles where the pack has them", async () => {
+    const images = new Map<string, HTMLImageElement>([
+      ["p/other/floor_of_a_room.png", { width: 64, height: 64 } as HTMLImageElement],
+      ["p/other/dark_part_of_a_room.png", { width: 64, height: 64 } as HTMLImageElement],
+      ["p/other/mines_floor_of_a_room.png", { width: 256, height: 256 } as HTMLImageElement],
+    ]);
+    const pack = new HiResTilePack({
+      manifestUrl: "p/manifest.json",
+      onTilesReady: () => {},
+      fetchJson: async () => manifest({
+        "other/floor_of_a_room": { file: "other/floor_of_a_room.png" },
+        "other/dark_part_of_a_room": { file: "other/dark_part_of_a_room.png" },
+        "other/mines_floor_of_a_room": { file: "other/mines_floor_of_a_room.png" },
+      }),
+      loadImage: async (url) => images.get(url)!,
+    });
+    await pack.load();
+
+    const floor = NH5_TILE_KEYS.indexOf("other/floor_of_a_room");
+    const darkFloor = NH5_TILE_KEYS.indexOf("other/dark_part_of_a_room");
+    expect(pack.getTile(floor)).toMatchObject({ key: "other/floor_of_a_room", width: 64 });
+    expect(pack.getTile(floor, "mines")).toMatchObject({ key: "other/mines_floor_of_a_room", width: 256 });
+    // No Mines version of the dark floor in this pack: the plain one is used.
+    expect(pack.getTile(darkFloor, "mines")).toMatchObject({ key: "other/dark_part_of_a_room" });
+    expect(pack.getTile(0, "mines")).toBeNull();
   });
 
   it("stops notifying once disposed", async () => {
