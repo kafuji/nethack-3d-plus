@@ -12,8 +12,10 @@ import type { DarkCorridorInference } from "./dark-corridor-inference";
 import type { PlayerStatus } from "../ui/player-status";
 import type { TileRendering } from "../rendering/tile-rendering";
 import type { TileUpdates } from "./tile-updates";
+import type { TilesetAssets } from "../rendering/tileset-assets";
 import type { VultureWalls } from "../rendering/vulture-walls";
 import type { WorldClassification } from "./world-classification";
+import { resolveHiResTerrainStyle } from "../../hires-tiles/terrain-styles";
 
 type ParsedTileState = {
   glyph: number;
@@ -56,6 +58,7 @@ export interface LevelTerrainCacheDependencies {
     | "refreshTilesFromStateCache"
     | "tileStateCache"
   >;
+  readonly tilesetAssets: Pick<TilesetAssets, "setHiResTerrainStyle">;
   readonly vultureWalls: Pick<
     VultureWalls,
     "flushPendingVultureWallMaterialRefreshes"
@@ -219,6 +222,8 @@ export class LevelTerrainCache {
     }
 
     this.latestRuntimeLevelIdentity = identity;
+    // The Gnomish Mines draw their floors from the pack's cave floor tiles.
+    this.dependencies.tilesetAssets.setHiResTerrainStyle(resolveHiResTerrainStyle(identity));
     // nh3d-plus: exact level for trial-and-error snapshots.
     this.dependencies.playerStatus.playerStats.levelLedgerNo = identity.ledgerNo;
     this.dependencies.playerStatus.playerStats.levelDepth = identity.depth;

@@ -1,0 +1,117 @@
+{
+  "label": "Gnomish Mines: cave walls and floor, plus the tree and iron bars of Minetown.",
+  "work": "../../../.hires-tmp/terrain",
+  "pack": "../../../public/assets/hires/pixelhack-hd",
+  "model": "gpt-image-2.5-sunburst",
+  "quality": "medium",
+  "size": 256,
+  "style": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: muted earthy palette, believable weathered stone, oak and iron, painterly but precise. Shapes must stay readable when the image is shrunk to 64 pixels.",
+  "rules": {
+    "texture": "A square game texture, orthographic: no perspective, no vanishing point, no horizon. Strong value contrast for a small, high-resolution game tile: light falls evenly from straight above, with no gradient, vignette or darker corners across the image, but deep ambient occlusion: every joint, gap and crack sinks into dark, almost black shadow, and the raised faces are lit, so each stone, plank or clod reads with a crisp dark outline. No text, no border, no frame.",
+    "overlay": "A game texture seen straight on from the front, orthographic, filling the whole square image edge to edge. Everything between the solid parts is fully transparent. Flat, even light from the front, no cast shadow. No text, no border."
+  },
+  "items": [
+    {
+      "name": "mines_wall",
+      "kind": "texture",
+      "ref": "px_mines_wall",
+      "refNote": "Image 1 is the pixel-art tile this art replaces: keep its warm ochre, rust and dark brown colours and its feel of rough, lumpy natural rock; ignore the blocky pixels.",
+      "prompt": "A natural cave wall in the Gnomish Mines, seen straight on: a rough-hewn face of fractured warm ochre, rust and brown rock, lumpy and uneven, broken into irregular chunks by deep, nearly black cracks and crevices, with a few glints of ore and thin mineral veins and some old pick marks. No bricks, no courses, no regular joints. Detail spread evenly with nothing large or distinctive, so copies placed side by side and on top of each other join without a seam.",
+      "seamless": 0.12,
+      "relief": {
+        "bevel": 0.8,
+        "depth": 8,
+        "cavity": 1.5,
+        "contrast": 0.3
+      },
+      "outputs": [
+        {
+          "key": [
+            "mines_walls_horizontal",
+            "mines_walls_tlcorn",
+            "mines_walls_trcorn",
+            "mines_walls_blcorn",
+            "mines_walls_brcorn",
+            "mines_walls_cross_wall",
+            "mines_walls_tuwall",
+            "mines_walls_tdwall",
+            "mines_walls_tlwall",
+            "mines_walls_trwall"
+          ]
+        },
+        {
+          "key": "mines_walls_vertical",
+          "rotate": 90
+        }
+      ],
+      "pick": 2
+    },
+    {
+      "name": "mines_floor",
+      "kind": "texture",
+      "ref": "mines_wall",
+      "refNote": "Image 1 is the cave wall this floor sits beside: use the same rock and the same warm palette, but lower in contrast and darker.",
+      "prompt": "The floor of a cave in the Gnomish Mines seen from directly above: uneven packed earth and flat, worn natural rock in warm grey-brown and dull ochre, scattered gravel and small broken stones, shallow cracks, each stone sitting in its own dark shadowed hollow. No flagstones, no tiles, no joints, no pattern. Calmer and less busy than the wall. Detail spread evenly with nothing large or distinctive, so it repeats seamlessly.",
+      "seamless": 0.12,
+      "relief": {
+        "bevel": 0.6,
+        "depth": 6,
+        "cavity": 1.2,
+        "contrast": 0.25
+      },
+      "outputs": [
+        {
+          "key": "mines_floor_of_a_room",
+          "tint": [
+            0.84,
+            0.8,
+            0.76
+          ]
+        },
+        {
+          "key": "mines_dark_part_of_a_room",
+          "tint": [
+            0.34,
+            0.35,
+            0.39
+          ]
+        }
+      ],
+      "pick": 2
+    },
+    {
+      "name": "tree",
+      "kind": "texture",
+      "ref": [
+        "px_tree",
+        "mines_floor#2"
+      ],
+      "refNote": "Image 1 is the pixel-art tile this art replaces: keep its layout, a whole tree filling the tile. Image 2 is the ground it grows from.",
+      "prompt": "A whole old tree seen from the front, filling the square: a thick, gnarled brown trunk with roots spreading over rocky earth at the bottom, and a full, rounded crown of dense dark green leaves filling the top two thirds, lit from above with deep shadow between the leaf clusters. Behind and around the tree, dark rocky earth fills every corner, so the square has no empty background.",
+      "relief": {
+        "bevel": 0.6,
+        "depth": 6,
+        "cavity": 1.2,
+        "contrast": 0.3
+      },
+      "outputs": [
+        {
+          "key": "tree"
+        }
+      ]
+    },
+    {
+      "name": "iron_bars",
+      "kind": "overlay",
+      "ref": "px_iron_bars",
+      "refNote": "Image 1 is the pixel-art tile this art replaces: keep its layout of upright bars held by horizontal crossbars; ignore its background.",
+      "prompt": "A grate of iron bars seen straight on: six thick, round, upright wrought-iron bars evenly spaced across the full width, held by three flat horizontal iron crossbars riveted to them, dark grey-black iron with rust streaks and worn bright edges. The bars and crossbars reach all four edges of the image. Only the iron is painted; the gaps between bars are fully transparent.",
+      "outline": 1.2,
+      "outputs": [
+        {
+          "key": "iron_bars"
+        }
+      ]
+    }
+  ]
+}

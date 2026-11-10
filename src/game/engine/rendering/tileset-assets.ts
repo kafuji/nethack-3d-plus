@@ -26,6 +26,7 @@ import {
   HiResTilePack,
   type HiResTileFrame,
 } from "../../hires-tiles/hires-tile-pack";
+import type { HiResTerrainStyle } from "../../hires-tiles/terrain-styles";
 import type { EngineState } from "../runtime/engine-state";
 import type { EntityBillboards } from "./entity-billboards";
 import type { GlyphTextures } from "./glyph-textures";
@@ -173,6 +174,23 @@ export class TilesetAssets {
 
   hiResTilePack: HiResTilePack | null = null;
 
+  /** Part of the dungeon whose own pack tiles replace some terrain. */
+  hiResTerrainStyle: HiResTerrainStyle | null = null;
+
+  /**
+   * Switches the pack's terrain style for the current level. Textures are
+   * rebuilt only when the style changes and the pack is in use.
+   */
+  setHiResTerrainStyle(style: HiResTerrainStyle | null): void {
+    if (this.hiResTerrainStyle === style) {
+      return;
+    }
+    this.hiResTerrainStyle = style;
+    if (this.hiResTilePack?.ready && this.isHiResTilesActive()) {
+      this.refreshTilesetDependentTextures();
+    }
+  }
+
   /** High-resolution tiles are keyed by NetHack 5 tile index and replace atlas
    * cells one by one; Vulture packs have their own per-file art. */
   isHiResTilesActive(
@@ -190,7 +208,7 @@ export class TilesetAssets {
     if (!this.hiResTilePack || !this.isHiResTilesActive()) {
       return null;
     }
-    return this.hiResTilePack.getTile(Math.trunc(runtimeTileIndex));
+    return this.hiResTilePack.getTile(Math.trunc(runtimeTileIndex), this.hiResTerrainStyle);
   }
 
   readonly handleHiResTilesReady = (): void => {

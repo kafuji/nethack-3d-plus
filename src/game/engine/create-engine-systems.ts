@@ -139,6 +139,7 @@ export function createEngineSystems(coordinator: EngineCoordinator): EngineSyste
     get playerStatus() { return playerStatus; },
     get tileRendering() { return tileRendering; },
     get tileUpdates() { return tileUpdates; },
+    get tilesetAssets() { return tilesetAssets; },
     get vultureWalls() { return vultureWalls; },
     get worldClassification() { return worldClassification; },
   });
