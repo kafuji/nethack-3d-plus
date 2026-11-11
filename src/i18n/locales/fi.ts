@@ -914,6 +914,11 @@ export const fiOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Pyöristää seinien kulmat, joiden ohi voi kulkea vinottain: yksittäisistä seinistä tulee pylväitä ja vinot raot näkyvät. Ovien viereiset seinät pysyvät kulmikkaina.",
         },
+        darkWallTops: {
+          label: "Tummat seinien yläpinnat",
+          description:
+            "Tummentaa seinälohkojen yläpinnat, jotta vain seinäpinnat erottuvat. Lattian puoleisiin reunoihin jää kapea reunus, jotta seinät erottuvat suoraan ylhäältäkin. Ovet eivät muutu.",
+        },
         blockAmbientOcclusion: {
           label: "Ympäristön varjostus",
           description:

@@ -172,6 +172,8 @@ describe("WorldShading explored fade", () => {
     const shading = new WorldShading({ maxDarkAlpha: 0.8, bloodGroundStrength: 1, bloodGroundSpecularReferenceStrength: 1 });
     const terrain = compile(shading, new THREE.MeshBasicMaterial(), { faceShade: true });
     expect(terrain.shader.fragmentShader).toContain("uExploredMask");
+    // Side faces read the cell they face.
+    expect(terrain.shader.fragmentShader).toContain("exploredSample");
     expect(terrain.shader.uniforms.uExploredMask).toBe(shading.uniforms.uExploredMask);
     expect(terrain.key).toContain("_explored_mask_v1");
 

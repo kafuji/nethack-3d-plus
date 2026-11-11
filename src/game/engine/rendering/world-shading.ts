@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { TILE_SIZE } from "../../constants";
+import { TILE_SIZE, WALL_HEIGHT } from "../../constants";
 
 /**
  * World z is up. The face normal comes from screen-space derivatives of the
@@ -27,7 +27,58 @@ const FACE_SHADE_GLSL = `
 `;
 
 /**
- * Explored-area fade. The mask holds, for every map cell, how far that cell
+ * Dark wall tops. The top face of a wall block (see WallTops for the per-cell
+ * grid) goes dark, and lightens on a smooth curve toward edges that face open
+ * floor, so the wall faces carry the look and walls still read from straight
+ * above. Edges against another wall, a door or unknown rock get no light, so a
+ * run of wall stays one dark band; with rounded walls a corner cut on both
+ * sides follows the curve, and an inner corner (floor only diagonally) glows
+ * from its corner point. uWallTop holds (enabled, top brightness, gradient
+ * width in tiles, brightness at the edge).
+ */
+const WALL_TOP_PREFIX_GLSL = `
+        uniform sampler2D uWallTopGrid;
+        uniform vec2 uWallTopGridSize;
+        uniform vec4 uWallTop;
+        uniform float uWallTopRounded;
+        float nh3dWallTopCell(vec2 cell) {
+          return texture2D(uWallTopGrid, (cell + 0.5) / uWallTopGridSize).r;
+        }
+`;
+
+const WALL_TOP_GLSL = `
+        if (uWallTop.x > 0.0) {
+          vec3 topNormal = normalize(cross(dFdx(vWorldPos), dFdy(vWorldPos)));
+          if (dot(topNormal, cameraPosition - vWorldPos) < 0.0) topNormal = -topNormal;
+          if (topNormal.z > 0.7 && vWorldPos.z > ${(WALL_HEIGHT * 0.5).toFixed(6)}) {
+            vec2 topPoint = vec2(vWorldPos.x / max(uWorldTileScaleX, 0.000001), -vWorldPos.y) / ${TILE_SIZE.toFixed(6)};
+            vec2 topCell = floor(topPoint + 0.5);
+            if (nh3dWallTopCell(topCell) > 0.75) {
+              vec2 topOffset = topPoint - topCell;
+              vec2 topSide = vec2(topOffset.x >= 0.0 ? 1.0 : -1.0, topOffset.y >= 0.0 ? 1.0 : -1.0);
+              bool openX = nh3dWallTopCell(topCell + vec2(topSide.x, 0.0)) < 0.25;
+              bool openY = nh3dWallTopCell(topCell + vec2(0.0, topSide.y)) < 0.25;
+              float edgeDistance = 1.0;
+              if (openX) edgeDistance = min(edgeDistance, 0.5 - abs(topOffset.x));
+              if (openY) edgeDistance = min(edgeDistance, 0.5 - abs(topOffset.y));
+              if (openX && openY && uWallTopRounded > 0.5) {
+                edgeDistance = min(edgeDistance, max(0.5 - length(topOffset), 0.0));
+              }
+              // An inner corner: wall on both sides and floor only diagonally.
+              // Light from the corner point so the neighbours' edges join up.
+              if (!openX && !openY && nh3dWallTopCell(topCell + topSide) < 0.25) {
+                edgeDistance = min(edgeDistance, length(vec2(0.5) - abs(topOffset)));
+              }
+              float rim = 1.0 - smoothstep(0.0, max(uWallTop.z, 0.001), edgeDistance);
+              gl_FragColor.rgb *= mix(uWallTop.y, uWallTop.w, rim);
+            }
+          }
+        }
+`;
+
+/**
+ * Explored-area fade. Side faces read the cell they face, so the back of a
+ * wall bordering unexplored rock goes dark instead of half-fading. The mask holds, for every map cell, how far that cell
  * is known (1) or still unexplored (0), already blurred on the CPU so the
  * value reaches 0.5 exactly on the boundary between the two. Fragments at the
  * boundary go fully dark and reach their painted colour a fraction of a tile
@@ -62,7 +113,13 @@ const EXPLORED_MASK_GLSL = `
         if (uExploredMaskEnabled > 0.0) {
           // Tile centres sit on integer cells; +y in the world is -y on the map.
           vec2 exploredCell = vec2(logicalWorldPosition.x, -logicalWorldPosition.y) / ${TILE_SIZE.toFixed(6)};
-          float explored = texture2D(uExploredMask, (exploredCell + 0.5) / uExploredMaskGrid).r;
+          // A wall face takes the explored state of the cell it faces: one that
+          // looks into unexplored rock is solid ground there, so it stays dark.
+          vec3 exploredNormal = normalize(cross(dFdx(vWorldPos), dFdy(vWorldPos)));
+          if (dot(exploredNormal, cameraPosition - vWorldPos) < 0.0) exploredNormal = -exploredNormal;
+          float exploredSide = 1.0 - clamp(exploredNormal.z, 0.0, 1.0);
+          vec2 exploredSample = exploredCell + vec2(exploredNormal.x, -exploredNormal.y) * exploredSide * 0.5;
+          float explored = texture2D(uExploredMask, (exploredSample + 0.5) / uExploredMaskGrid).r;
           float exploredNoise =
             nh3dExploredNoise(exploredCell * uExploredFade.w) * 0.65 +
             nh3dExploredNoise(exploredCell * uExploredFade.w * 2.3 + 19.7) * 0.35;
@@ -229,6 +286,12 @@ export function createWorldShadingUniforms(initial: WorldShadingInitialValues) {
     uMemoryLook: { value: new THREE.Vector4(1, 1, 1, 1) },
     /** Seconds; drives moving liquid surfaces. */
     uWorldTime: { value: 0 },
+    uWallTopGrid: { value: null as THREE.Texture | null },
+    uWallTopGridSize: { value: new THREE.Vector2(80, 21) },
+    /** (enabled, top brightness, rim width in tiles, rim brightness). */
+    uWallTop: { value: new THREE.Vector4(0, 0, 0.32, 0.9) },
+    /** 1 when rounded wall corners are drawn. */
+    uWallTopRounded: { value: 0 },
   };
 }
 
@@ -288,7 +351,7 @@ export class WorldShading {
       ? "_blood_ground_color_guard_v1"
       : "";
     const faceShade = options.faceShade === true;
-    const faceShadeKeySuffix = faceShade ? "_face_shade_v1" : "";
+    const faceShadeKeySuffix = faceShade ? "_face_shade_v2" : "";
     // Terrain (not entities or sprites) gets surface-aware lighting and the explored fade.
     const terrain =
       options.entity !== true && !(material instanceof THREE.SpriteMaterial);
@@ -328,6 +391,12 @@ export class WorldShading {
       shader.uniforms.uPlayerLightRadius = this.uniforms.uPlayerLightRadius;
       shader.uniforms.uLightParams = this.uniforms.uLightParams;
       shader.uniforms.uMemoryLook = this.uniforms.uMemoryLook;
+      if (faceShade) {
+        shader.uniforms.uWallTopGrid = this.uniforms.uWallTopGrid;
+        shader.uniforms.uWallTopGridSize = this.uniforms.uWallTopGridSize;
+        shader.uniforms.uWallTop = this.uniforms.uWallTop;
+        shader.uniforms.uWallTopRounded = this.uniforms.uWallTopRounded;
+      }
       if (liquidUniform) {
         shader.uniforms.uLiquid = liquidUniform;
         shader.uniforms.uWorldTime = this.uniforms.uWorldTime;
@@ -872,6 +941,7 @@ export class WorldShading {
         varying vec3 vWorldPos;
         ${bloodGroundSpecularPrefix}
         ${LIGHT_FIELD_PREFIX_GLSL}
+        ${faceShade ? WALL_TOP_PREFIX_GLSL : ""}
         ${liquid ? LIQUID_PREFIX_GLSL : ""}
         ${exploredMask ? EXPLORED_MASK_PREFIX_GLSL : ""}
         ${shader.fragmentShader}
@@ -879,7 +949,7 @@ export class WorldShading {
         "#include <fog_fragment>",
         `${bloodGroundSpecularLogic}
         #include <fog_fragment>
-        ${faceShade ? FACE_SHADE_GLSL : ""}
+        ${faceShade ? FACE_SHADE_GLSL + WALL_TOP_GLSL : ""}
         
         ${damageFlashLogic}
         if (uDamageFlash > 0.0) {

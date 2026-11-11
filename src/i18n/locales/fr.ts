@@ -946,6 +946,11 @@ export const fr = {
           description:
             "Arrondit les coins de mur que l'on peut contourner en diagonale : les murs isoles deviennent des colonnes et les passages en diagonale apparaissent. Les murs a cote des portes restent carres.",
         },
+        darkWallTops: {
+          label: "Dessus des murs sombres",
+          description:
+            "Assombrit le dessus des blocs de mur pour que seules leurs faces ressortent. Un fin liseré reste le long des bords donnant sur le sol pour que les murs se lisent vus de dessus. Les portes ne sont pas concernees.",
+        },
         blockAmbientOcclusion: {
           label: "Occlusion ambiante",
           description:

@@ -918,6 +918,11 @@ export const ko = {
           description:
             "대각선으로 지나갈 수 있는 벽 모서리를 둥글게 만듭니다. 홀로 선 벽은 기둥이 되고 대각선 틈이 보입니다. 문 옆의 벽은 네모난 채로 남습니다.",
         },
+        darkWallTops: {
+          label: "벽 윗면 어둡게",
+          description:
+            "벽 블록의 윗면을 어둡게 해 벽면만 드러나게 합니다. 바로 위에서 봐도 알 수 있도록 바닥에 면한 가장자리는 얇게 남깁니다. 문은 제외됩니다.",
+        },
         blockAmbientOcclusion: {
           label: "앰비언트 오클루전",
           description:

@@ -130,6 +130,7 @@ export type ClientOptionToggleKey =
   | "lightingEnabled"
   | "smoothExploredEdges"
   | "roundedWalls"
+  | "darkWallTops"
   | "dynamicLighting"
   | "fpsFlattenEntityBillboards"
   | "fpsHeldWeaponVisible"

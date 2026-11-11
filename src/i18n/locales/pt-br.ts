@@ -937,6 +937,11 @@ export const ptBrOverrides = {
           description:
             "Arredonda os cantos de paredes que podem ser contornados na diagonal: paredes isoladas viram colunas e as passagens diagonais ficam visíveis. Paredes ao lado de portas continuam quadradas.",
         },
+        darkWallTops: {
+          label: "Topo das paredes escuro",
+          description:
+            "Escurece o topo dos blocos de parede para que apenas as faces se destaquem. Uma borda fina permanece nas bordas voltadas para o chão para que as paredes sejam reconhecíveis vistas de cima. Portas não são afetadas.",
+        },
         blockAmbientOcclusion: {
           label: "Oclusão de ambiente",
           description:

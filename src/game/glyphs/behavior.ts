@@ -198,6 +198,12 @@ export function isLitFloorCmapGlyph(glyph: number): "room" | "corridor" | null {
   return null;
 }
 
+/** Stone and the wall pieces (S_stone..S_trwall); the same indices in every runtime. */
+export function isWallBlockCmapGlyph(glyph: number): boolean {
+  const cmapIndex = getCmapIndex(glyph, null);
+  return cmapIndex !== null && cmapIndex >= 0 && cmapIndex <= 11;
+}
+
 /** Room floor shown as remembered or unlit (S_darkroom); the same index in every runtime. */
 export function isDarkRoomFloorCmapGlyph(glyph: number): boolean {
   return getCmapIndex(glyph, null) === 20;
