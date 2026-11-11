@@ -24,9 +24,9 @@ env:
   CORE_PACKAGING_REPO: JamesIV4/neth4ck-monorepo
   CORE_PACKAGING_SHA: 6dcb69a0dc6d675af6193b58b45dbbc7499865a6
   CORE_NETHACK_SHA: e76b93423a3dd4432e2a46bc47066a8ba529f468
-  # The Emscripten version of the shipped build was not recorded. Pin this
-  # once a version is confirmed to build and run.
-  EMSDK_VERSION: latest
+  # The Emscripten version of the shipped build was not recorded. 7.0.0 is
+  # the first version confirmed to build this source and start a game.
+  EMSDK_VERSION: 7.0.0
 
 jobs:
   build:
