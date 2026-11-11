@@ -1,0 +1,119 @@
+name: Build NetHack 5 core (WASM)
+
+# Rebuilds the NetHack 5 WebAssembly core from source and compares it with the
+# artifacts checked in under public/. This only verifies that the build is
+# reproducible from public sources; it does not replace the shipped files.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/build-core-wasm.yml
+      - scripts/wasm/compare-core-build.mjs
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-core-wasm-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Packaging repo and NetHack source the shipped public/nethack-5.wasm was
+  # built from (see docs/nethack-5-upstream-update-2026-09-23.md).
+  CORE_PACKAGING_REPO: JamesIV4/neth4ck-monorepo
+  CORE_PACKAGING_SHA: 6dcb69a0dc6d675af6193b58b45dbbc7499865a6
+  CORE_NETHACK_SHA: e76b93423a3dd4432e2a46bc47066a8ba529f468
+  # The Emscripten version of the shipped build was not recorded. Pin this
+  # once a version is confirmed to build and run.
+  EMSDK_VERSION: latest
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout shell
+        uses: actions/checkout@v4
+        with:
+          path: shell
+
+      - name: Checkout core packaging
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.CORE_PACKAGING_REPO }}
+          ref: ${{ env.CORE_PACKAGING_SHA }}
+          path: core
+          persist-credentials: false
+
+      - name: Fetch NetHack 5 source
+        working-directory: core
+        run: |
+          git submodule update --init --depth 1 packages/wasm-5/NetHack
+          actual="$(git -C packages/wasm-5/NetHack rev-parse HEAD)"
+          echo "NetHack source: $actual"
+          test "$actual" = "$CORE_NETHACK_SHA"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Emscripten
+        run: |
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git
+          ./emsdk/emsdk install "$EMSDK_VERSION"
+          ./emsdk/emsdk activate "$EMSDK_VERSION"
+
+      - name: Keep the committed reference build
+        run: |
+          mkdir -p reference
+          cp core/packages/wasm-5/build/nethack.js core/packages/wasm-5/build/nethack.wasm reference/
+
+      - name: Build
+        working-directory: core/packages/wasm-5
+        run: |
+          source "$GITHUB_WORKSPACE/emsdk/emsdk_env.sh"
+          emcc --version | head -n 1
+          rm -f build/nethack.js build/nethack.wasm
+          bash ./build-wasm.sh
+
+      - name: Compare with the shipped artifacts
+        run: |
+          {
+            echo '### Emscripten'
+            echo '```'
+            source emsdk/emsdk_env.sh >/dev/null 2>&1
+            emcc --version | head -n 1
+            echo '```'
+            echo '### SHA-256'
+            echo '```'
+            sha256sum shell/public/nethack-5.js shell/public/nethack-5.wasm \
+              reference/nethack.js reference/nethack.wasm \
+              core/packages/wasm-5/build/nethack.js core/packages/wasm-5/build/nethack.wasm
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          cmp shell/public/nethack-5.wasm reference/nethack.wasm
+          node shell/scripts/wasm/compare-core-build.mjs shell/public core/packages/wasm-5/build
+
+      - name: Start a game with the built core
+        working-directory: core/packages/wasm-5
+        run: |
+          node test/run-game.mjs > "$RUNNER_TEMP/run-game.json"
+          node -e '
+            const result = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+            console.log(JSON.stringify(result, null, 2));
+            if (result.error) throw new Error(result.error);
+            if (!(result.callbackCount > 0)) throw new Error("No window callbacks were received");
+            if (!result.callbackNames.includes("shim_print_glyph") && !result.callbackNames.includes("shim_player_selection_cb"))
+              throw new Error("Game never reached player selection or map output");
+          ' "$RUNNER_TEMP/run-game.json"
+
+      - name: Upload built core
+        uses: actions/upload-artifact@v4
+        with:
+          name: nethack-5-core-wasm
+          path: |
+            core/packages/wasm-5/build/nethack.js
+            core/packages/wasm-5/build/nethack.wasm
+          if-no-files-found: error
