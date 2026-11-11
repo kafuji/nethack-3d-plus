@@ -1,23 +1,8 @@
 {
   "total": 483,
-  "complete": 469,
+  "complete": 483,
   "old": [],
-  "missing": [
-    "obj/lump_of_royal_jelly",
-    "obj/zinc__opening",
-    "obj/aluminum__locking",
-    "obj/uranium__probing",
-    "obj/iron__digging",
-    "obj/steel__magic_missile",
-    "obj/hexagonal__fire",
-    "obj/short__cold",
-    "obj/runed__sleep",
-    "obj/long__death",
-    "obj/curved__lightning",
-    "obj/forked",
-    "obj/spiked",
-    "obj/jeweled"
-  ],
+  "missing": [],
   "errors": [],
   "sharedGroups": 24,
   "unassigned": []

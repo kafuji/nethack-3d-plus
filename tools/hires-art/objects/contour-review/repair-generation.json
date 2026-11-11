@@ -1,0 +1,261 @@
+{
+  "completedAt": "2026-11-11",
+  "generator": "built-in image_gen; no external API calls",
+  "method": "Edit preserved high-resolution inputs; retain symbolic recognition at 48px; finish using fit.matchRef, outline and relief from items.json.",
+  "originalCount": 13,
+  "outputKeyCount": 16,
+  "jobs": [
+    {
+      "name": "wooden_shield",
+      "key": "wooden_shield__small_shield",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/wooden_shield__small_shield.png",
+        "public/assets/hires/pixelhack-hd/obj/plate_mail.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Warm-brown wooden shield: vertical planks, straight upper edge, dark edging, smooth rounded-pointed lower perimeter.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nReplace lower stair steps with one gentle continuous curve tapering to a rounded center point. Preserve plank divisions, straight top and clear shield symbol. No added boss or emblem.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nWarm-brown wooden shield: vertical planks, straight upper edge, dark edging, smooth rounded-pointed lower perimeter.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nReplace lower stair steps with one gentle continuous curve tapering to a rounded center point. Preserve plank divisions, straight top and clear shield symbol. No added boss or emblem.",
+      "rawDestination": ".hires-tmp/objects/raw_wooden_shield.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only wooden_shield",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/wooden_shield__small_shield",
+        "obj/wooden_shield__shield_of_drain_resistance",
+        "obj/wooden_shield__shield_of_shock_resistance"
+      ]
+    },
+    {
+      "name": "whistle",
+      "key": "whistle__tin_whistle",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/whistle__tin_whistle.png",
+        "public/assets/hires/pixelhack-hd/obj/plate_mail.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Bluish-grey metal pea whistle: round resonating chamber on left, short mouthpiece pointing right with a dark rectangular air opening.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nRound the chamber into a smooth circular/oval volume, naturally joined to the mouthpiece. Remove block-cut top, bottom notches and stair-step transitions. Keep the rectangular mouth opening and instantly readable whistle profile.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nBluish-grey metal pea whistle: round resonating chamber on left, short mouthpiece pointing right with a dark rectangular air opening.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nRound the chamber into a smooth circular/oval volume, naturally joined to the mouthpiece. Remove block-cut top, bottom notches and stair-step transitions. Keep the rectangular mouth opening and instantly readable whistle profile.",
+      "rawDestination": ".hires-tmp/objects/raw_whistle.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only whistle",
+      "status": "superseded",
+      "outputKeys": [
+        "obj/whistle__tin_whistle",
+        "obj/whistle__magic_whistle"
+      ],
+      "supersededBy": "mechanical-remake.json"
+    },
+    {
+      "name": "triangular__amulet_of_restful_sleep",
+      "key": "triangular__amulet_of_restful_sleep",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/triangular__amulet_of_restful_sleep.png",
+        "public/assets/hires/pixelhack-hd/obj/circular__amulet_of_esp.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Dark metal TRIANGULAR pendant with a contrasting smaller triangular inset, hanging from its golden braided cord.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nRetain the TRIANGLE symbol. Outer triangle and smaller central triangle must each have three continuous straight edges with slightly softened metal corners, no stair tiers. Preserve cord, bail, colors and strong contrast.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nDark metal TRIANGULAR pendant with a contrasting smaller triangular inset, hanging from its golden braided cord.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nRetain the TRIANGLE symbol. Outer triangle and smaller central triangle must each have three continuous straight edges with slightly softened metal corners, no stair tiers. Preserve cord, bail, colors and strong contrast.",
+      "rawDestination": ".hires-tmp/objects/raw_triangular__amulet_of_restful_sleep.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only triangular__amulet_of_restful_sleep",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/triangular__amulet_of_restful_sleep"
+      ]
+    },
+    {
+      "name": "beartrap",
+      "key": "beartrap",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/beartrap.png",
+        "public/assets/hires/pixelhack-hd/obj/plate_mail.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Open worn iron bear trap with two curved toothed jaws, one low and one raised, a clear hinge and spring.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nRebuild jaws as curved semicircular iron arcs viewed obliquely, opened about the same angle, one low across bottom and the other rising at right. Keep a few large distinct triangular teeth and lower-right hinge/spring. Continuous jaw curvature, not two straight square bars forming an L. Retain clear open-trap symbol at 48px.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nOpen worn iron bear trap with two curved toothed jaws, one low and one raised, a clear hinge and spring.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nRebuild jaws as curved semicircular iron arcs viewed obliquely, opened about the same angle, one low across bottom and the other rising at right. Keep a few large distinct triangular teeth and lower-right hinge/spring. Continuous jaw curvature, not two straight square bars forming an L. Retain clear open-trap symbol at 48px.",
+      "rawDestination": ".hires-tmp/objects/raw_beartrap.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only beartrap",
+      "status": "superseded",
+      "outputKeys": [
+        "obj/beartrap"
+      ],
+      "supersededBy": "mechanical-remake.json"
+    },
+    {
+      "name": "candelabrum__candelabrum_of_invocation",
+      "key": "candelabrum__candelabrum_of_invocation",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/candelabrum__candelabrum_of_invocation.png",
+        "public/assets/hires/pixelhack-hd/obj/lamp__oil_lamp.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Symmetrical golden SEVEN-branched candelabrum with seven broad cups, central stem, two lower curls and round foot.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nExactly SEVEN distinct cups: three left, one center, three right. Retain alternating heights and clear spacing. Smooth continuous rounded arm bends, natural junctions and ROUND lower scroll curls. Preserve clear seven-branch symbol, gold and pedestal. No stepped elbows, square spirals, candles or extra branches.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nSymmetrical golden SEVEN-branched candelabrum with seven broad cups, central stem, two lower curls and round foot.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nExactly SEVEN distinct cups: three left, one center, three right. Retain alternating heights and clear spacing. Smooth continuous rounded arm bends, natural junctions and ROUND lower scroll curls. Preserve clear seven-branch symbol, gold and pedestal. No stepped elbows, square spirals, candles or extra branches.",
+      "rawDestination": ".hires-tmp/objects/raw_candelabrum__candelabrum_of_invocation.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only candelabrum__candelabrum_of_invocation",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/candelabrum__candelabrum_of_invocation"
+      ]
+    },
+    {
+      "name": "chest",
+      "key": "chest",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/chest.png",
+        "public/assets/hires/pixelhack-hd/obj/bag__sack.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Closed treasure chest with domed golden upper lid, dark horizontal iron bands, warm brown planks and central lock.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve chest silhouette, gold dome, dark bands and central lock. Replace giant rectangular crenellation/pixel pattern with a continuous smooth gold band bearing a restrained pair of curved engraved lines. Keep broad readable value divisions, no square-tooth ornament or mosaic.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nClosed treasure chest with domed golden upper lid, dark horizontal iron bands, warm brown planks and central lock.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve chest silhouette, gold dome, dark bands and central lock. Replace giant rectangular crenellation/pixel pattern with a continuous smooth gold band bearing a restrained pair of curved engraved lines. Keep broad readable value divisions, no square-tooth ornament or mosaic.",
+      "rawDestination": ".hires-tmp/objects/raw_chest.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only chest",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/chest"
+      ]
+    },
+    {
+      "name": "cloth__light",
+      "key": "cloth__light",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/cloth__light.png",
+        "public/assets/hires/pixelhack-hd/obj/red__force_bolt.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Blue cloth-bound spellbook with pale blue embroidered cross motifs, dark blue edging and cream pages.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep BLUE CLOTH BOOK identity and large readable pale-blue CROSS motifs in similar arrangement. Redraw crosses as soft woven cross-stitches of continuous threads with rounded/tapered ends and fine natural fabric weave. Do not erase the symbols or leave a plain cover. No hard pixel-plus tiles.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nBlue cloth-bound spellbook with pale blue embroidered cross motifs, dark blue edging and cream pages.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep BLUE CLOTH BOOK identity and large readable pale-blue CROSS motifs in similar arrangement. Redraw crosses as soft woven cross-stitches of continuous threads with rounded/tapered ends and fine natural fabric weave. Do not erase the symbols or leave a plain cover. No hard pixel-plus tiles.",
+      "rawDestination": ".hires-tmp/objects/raw_cloth__light.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only cloth__light",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/cloth__light"
+      ]
+    },
+    {
+      "name": "glittering__create_familiar",
+      "key": "glittering__create_familiar",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/glittering__create_familiar.png",
+        "public/assets/hires/pixelhack-hd/obj/red__force_bolt.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Silvery pale spellbook with fine pastel iridescent glitter and a few strong tiny glints.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve glittering-book identity, silvery brightness, pastel pink/yellow/green colors and small high-contrast glints readable at 48px. Replace square confetti mosaic with irregular fine particles in a continuous surface. No rectangular tiles, grid, large crystal blocks or external sparkles.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nSilvery pale spellbook with fine pastel iridescent glitter and a few strong tiny glints.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve glittering-book identity, silvery brightness, pastel pink/yellow/green colors and small high-contrast glints readable at 48px. Replace square confetti mosaic with irregular fine particles in a continuous surface. No rectangular tiles, grid, large crystal blocks or external sparkles.",
+      "rawDestination": ".hires-tmp/objects/raw_glittering__create_familiar.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only glittering__create_familiar",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/glittering__create_familiar"
+      ]
+    },
+    {
+      "name": "t_shirt",
+      "key": "t_shirt",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/t_shirt.png",
+        "public/assets/hires/pixelhack-hd/obj/bag__sack.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Cream cotton T-shirt with brown short sleeves and a simple red T-like chest emblem flanked by two ochre accents.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep T-SHIRT silhouette, brown sleeves, cream torso and RED T-LIKE EMBLEM with ochre accents. Redraw emblem as coherent intentional printing, smooth slightly rounded strokes and subtle wear following cloth folds. Preserve the simple broad T arrangement; do not delete it. No random chunky rectangles or extra lettering.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nCream cotton T-shirt with brown short sleeves and a simple red T-like chest emblem flanked by two ochre accents.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep T-SHIRT silhouette, brown sleeves, cream torso and RED T-LIKE EMBLEM with ochre accents. Redraw emblem as coherent intentional printing, smooth slightly rounded strokes and subtle wear following cloth folds. Preserve the simple broad T arrangement; do not delete it. No random chunky rectangles or extra lettering.",
+      "rawDestination": ".hires-tmp/objects/raw_t_shirt.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only t_shirt",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/t_shirt"
+      ]
+    },
+    {
+      "name": "k_ration",
+      "key": "k_ration",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/k_ration.png",
+        "public/assets/hires/pixelhack-hd/obj/food_ration.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Compact creased tan military ration box with one bold red capital K and small soft pink printed flecks.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep readable red capital \"K\" exactly, tan package, folds and composition. Natural bold printed sans-serif K with continuous strokes, restrained ink wear. Convert pink square pixels into a few small rounded printed flecks preserving approximate grouping and color. No pixel font, extra text or objects.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nCompact creased tan military ration box with one bold red capital K and small soft pink printed flecks.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep readable red capital \"K\" exactly, tan package, folds and composition. Natural bold printed sans-serif K with continuous strokes, restrained ink wear. Convert pink square pixels into a few small rounded printed flecks preserving approximate grouping and color. No pixel font, extra text or objects.",
+      "rawDestination": ".hires-tmp/objects/raw_k_ration.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only k_ration",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/k_ration"
+      ]
+    },
+    {
+      "name": "crystal_helmet__helm_of_brilliance",
+      "key": "crystal_helmet__helm_of_brilliance",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/crystal_helmet__helm_of_brilliance.png",
+        "public/assets/hires/pixelhack-hd/obj/etched_helmet__helm_of_caution.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Pointed pale translucent crystal helmet with faceted crown, arched brow and curved tapering cheek guards.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve CRYSTAL HELMET identity, pointed faceted icy crown, subtle iridescence, visor opening and facing direction. Keep crystal facets but make brow, temples and cheek guards follow a wearable curved helmet shape. Remove rectangular pillars, slab ledge and square-ended cheek posts. Do not replace crystal with metal or erase pointed crown.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nPointed pale translucent crystal helmet with faceted crown, arched brow and curved tapering cheek guards.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve CRYSTAL HELMET identity, pointed faceted icy crown, subtle iridescence, visor opening and facing direction. Keep crystal facets but make brow, temples and cheek guards follow a wearable curved helmet shape. Remove rectangular pillars, slab ledge and square-ended cheek posts. Do not replace crystal with metal or erase pointed crown.",
+      "rawDestination": ".hires-tmp/objects/raw_crystal_helmet__helm_of_brilliance.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only crystal_helmet__helm_of_brilliance",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/crystal_helmet__helm_of_brilliance"
+      ]
+    },
+    {
+      "name": "key__skeleton_key",
+      "key": "key__skeleton_key",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/key__skeleton_key.png",
+        "public/assets/hires/pixelhack-hd/obj/plate_mail.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Old golden-brass skeleton key with smooth round bow and round hole, diagonal shaft and toothed bit at upper right.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep clear key symbol, golden brass, lower-left bow, upper-right bit and diagonal direction. Make bow a continuous round ring around a smooth oval/round hole, no inward angular lobes or pixel notches. Preserve sharply defined functional key teeth.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nOld golden-brass skeleton key with smooth round bow and round hole, diagonal shaft and toothed bit at upper right.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep clear key symbol, golden brass, lower-left bow, upper-right bit and diagonal direction. Make bow a continuous round ring around a smooth oval/round hole, no inward angular lobes or pixel notches. Preserve sharply defined functional key teeth.",
+      "rawDestination": ".hires-tmp/objects/raw_key__skeleton_key.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only key__skeleton_key",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/key__skeleton_key"
+      ]
+    },
+    {
+      "name": "c_ration",
+      "key": "c_ration",
+      "references": [
+        "tools/hires-art/objects/contour-review/before/c_ration.png",
+        "public/assets/hires/pixelhack-hd/obj/food_ration.png"
+      ],
+      "transparent_background": true,
+      "subjectPrompt": "Compact creased tan military ration box with one bold dark blue-grey capital C.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "additionalPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep readable dark blue-grey capital \"C\" exactly, tan box, folds, orientation and size. Redraw C as natural bold printed sans-serif, smooth continuous rounded inner/outer curves open at right. Strong contrast at 48px. No square pixel-font corners, step-built glyph or extra words.",
+      "prompt": "Use case: precise-object-edit\n\nHand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the CURRENT HIGH-RESOLUTION EDIT TARGET, NOT pixel art. Image 2 is a supporting PAINTING STYLE reference. Repair Image 1 while preserving its identity, palette, facing direction, angle, relative scale and placement. Do not borrow Image 2's subject or composition.\n\nCompact creased tan military ration box with one bold dark blue-grey capital C.\n\nRetain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep readable dark blue-grey capital \"C\" exactly, tan box, folds, orientation and size. Redraw C as natural bold printed sans-serif, smooth continuous rounded inner/outer curves open at right. Strong contrast at 48px. No square pixel-font corners, step-built glyph or extra words.",
+      "rawDestination": ".hires-tmp/objects/raw_c_ration.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only c_ration",
+      "status": "adopted",
+      "outputKeys": [
+        "obj/c_ration"
+      ]
+    }
+  ]
+}

@@ -778,6 +778,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/aluminum__locking": {
+      "file": "obj/aluminum__locking.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/amulet__generic_amulet": {
       "file": "obj/amulet__generic_amulet.png",
       "width": 256,
@@ -1384,6 +1390,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/curved__lightning": {
+      "file": "obj/curved__lightning.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/curved_sword__scimitar": {
       "file": "obj/curved_sword__scimitar.png",
       "width": 256,
@@ -1672,6 +1684,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/forked": {
+      "file": "obj/forked.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/forked_polearm__spetum": {
       "file": "obj/forked_polearm__spetum.png",
       "width": 256,
@@ -1936,6 +1954,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/hexagonal__fire": {
+      "file": "obj/hexagonal__fire.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/hiking_boots__jumping_boots": {
       "file": "obj/hiking_boots__jumping_boots.png",
       "width": 256,
@@ -2002,6 +2026,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/iron__digging": {
+      "file": "obj/iron__digging.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/iron__fire_resistance": {
       "file": "obj/iron__fire_resistance.png",
       "width": 256,
@@ -2046,6 +2076,12 @@
     },
     "obj/jade__stealth": {
       "file": "obj/jade__stealth.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/jeweled": {
+      "file": "obj/jeweled.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -2230,6 +2266,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/long__death": {
+      "file": "obj/long__death.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/long_bow__yumi": {
       "file": "obj/long_bow__yumi.png",
       "width": 256,
@@ -2262,6 +2304,12 @@
     },
     "obj/lorem_ipsum": {
       "file": "obj/lorem_ipsum.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/lump_of_royal_jelly": {
+      "file": "obj/lump_of_royal_jelly.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -2776,6 +2824,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/runed__sleep": {
+      "file": "obj/runed__sleep.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/runed_arrow__elven_arrow": {
       "file": "obj/runed_arrow__elven_arrow.png",
       "width": 256,
@@ -2874,6 +2928,12 @@
     },
     "obj/shiny__protection_from_shape_changers": {
       "file": "obj/shiny__protection_from_shape_changers.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/short__cold": {
+      "file": "obj/short__cold.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -3010,6 +3070,12 @@
       "height": 256,
       "frames": 1
     },
+    "obj/spiked": {
+      "file": "obj/spiked.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
     "obj/splash_of_venom__splash_of_acid_venom": {
       "file": "obj/splash_of_venom__splash_of_acid_venom.png",
       "width": 256,
@@ -3060,6 +3126,12 @@
     },
     "obj/statue": {
       "file": "obj/statue.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/steel__magic_missile": {
+      "file": "obj/steel__magic_missile.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -3270,6 +3342,12 @@
     },
     "obj/unlabeled__blank_paper": {
       "file": "obj/unlabeled__blank_paper.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/uranium__probing": {
+      "file": "obj/uranium__probing.png",
       "width": 256,
       "height": 256,
       "frames": 1
@@ -3570,6 +3648,12 @@
     },
     "obj/zelgo_mer__enchant_armor": {
       "file": "obj/zelgo_mer__enchant_armor.png",
+      "width": 256,
+      "height": 256,
+      "frames": 1
+    },
+    "obj/zinc__opening": {
+      "file": "obj/zinc__opening.png",
       "width": 256,
       "height": 256,
       "frames": 1
