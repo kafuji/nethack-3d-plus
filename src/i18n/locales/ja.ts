@@ -894,6 +894,11 @@ export const jaOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "斜めに通り抜けられる壁の角を丸めます。孤立した壁は円柱になり、斜めの隙間が見えるようになります。扉の隣の壁は四角いままです。",
         },
+        darkWallTops: {
+          label: "壁の上面を暗くする",
+          description:
+            "壁ブロックの上面を暗くして、壁面だけが見えるようにします。真上から見ても分かるよう、床に面した縁は細く残します。扉は対象外です。",
+        },
         blockAmbientOcclusion: {
           label: "アンビエントオクルージョン",
           description:

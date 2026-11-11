@@ -37,6 +37,10 @@ import {
   DEFAULT_LIGHT_FIELD_TUNING,
   type LightFieldTuning,
 } from "./engine/rendering/light-field";
+import {
+  DEFAULT_WALL_TOPS_TUNING,
+  type WallTopsTuning,
+} from "./engine/rendering/wall-tops";
 
 /** Main engine composition, ordered lifecycle, and public UI controller. */
 class Nethack3DEngine implements Nethack3DEngineController {
@@ -234,6 +238,16 @@ class Nethack3DEngine implements Nethack3DEngineController {
       set: (tuning: Partial<LightFieldTuning>) => lights.setTuning(tuning),
       reset: () => lights.setTuning(DEFAULT_LIGHT_FIELD_TUNING),
       state: () => ({ active: lights.isActive(), rooms: lights.rooms, carriedLight: lights.carriedLight }),
+    };
+    /**
+     * Devtools helper for dark wall tops:
+     *   __nh3dWallTops.get() / set({ topBrightness: 0.3, rimWidth: 0.1 }) / reset()
+     */
+    const wallTops = this.systems.wallTops;
+    (window as unknown as Record<string, unknown>).__nh3dWallTops = {
+      get: () => ({ ...wallTops.tuning }),
+      set: (tuning: Partial<WallTopsTuning>) => wallTops.setTuning(tuning),
+      reset: () => wallTops.setTuning(DEFAULT_WALL_TOPS_TUNING),
     };
   }
 
@@ -1812,6 +1826,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
       delete (window as unknown as Record<string, unknown>).__nh3dMusic;
       delete (window as unknown as Record<string, unknown>).__nh3dExploredMask;
       delete (window as unknown as Record<string, unknown>).__nh3dLightField;
+      delete (window as unknown as Record<string, unknown>).__nh3dWallTops;
     }
     this.systems.audioHapticsPlatform.clearPendingIncomingDamageRumble();
     this.systems.audioHapticsPlatform.webHaptics?.destroy();
@@ -1877,6 +1892,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
 
     this.systems.exploredMask.dispose();
     this.systems.lightField.dispose();
+    this.systems.wallTops.dispose();
     this.systems.renderPipeline.disposeAntialiasingPipeline();
     this.systems.renderPipeline.renderer.domElement.remove();
     this.systems.renderPipeline.renderer.forceContextLoss();
@@ -1969,6 +1985,7 @@ class Nethack3DEngine implements Nethack3DEngineController {
     this.systems.exploredMask.update(timeMs);
     // After updateLightingCenter, which places the hero's light.
     this.systems.lightField.update(timeMs);
+    this.systems.wallTops.update();
     this.systems.lighting.setWorldTime(timeMs);
     this.systems.camera.compensateTerminalWorldSpriteAspect();
     const xrCamera = this.systems.webXrPresentation.prepareRender();

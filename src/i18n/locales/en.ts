@@ -931,6 +931,11 @@ export const en = {
           description:
             "Round off wall corners you can step past diagonally: lone walls become columns and diagonal gaps show. Walls beside doors stay square.",
         },
+        darkWallTops: {
+          label: "Dark wall tops",
+          description:
+            "Darken the tops of wall blocks so only the wall faces stand out. A thin rim stays along edges facing the floor so walls still read from straight above. Doors are not affected.",
+        },
         blockAmbientOcclusion: {
           label: "Ambient occlusion",
           description:

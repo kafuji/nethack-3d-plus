@@ -278,6 +278,12 @@ export const clientOptionsConfig: ClientOption[] = [
     type: "boolean",
   },
   {
+    key: "darkWallTops",
+    label: t.clientOptions.config.darkWallTops.label,
+    description: t.clientOptions.config.darkWallTops.description,
+    type: "boolean",
+  },
+  {
     key: "blockAmbientOcclusion",
     label: t.clientOptions.config.blockAmbientOcclusion.label,
     description: t.clientOptions.config.blockAmbientOcclusion.description,

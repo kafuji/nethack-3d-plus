@@ -683,6 +683,11 @@ export const zhCnOverrides = {
           description:
             "将可以斜向通过的墙角变圆：孤立的墙变成柱子，斜向缝隙清晰可见。门旁边的墙保持方形。",
         },
+        darkWallTops: {
+          label: "墙顶变暗",
+          description:
+            "将墙块的顶面变暗，只突出墙面。朝向地面的边缘保留一条细边，从正上方看也能辨认墙壁。门不受影响。",
+        },
         blockAmbientOcclusion: {
           label: "环境光遮蔽",
           description: "为地面和墙体方块之间添加细微的接触阴影。",

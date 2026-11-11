@@ -908,6 +908,11 @@ export const deOverrides: LocaleOverrides<TranslationDictionary> = {
           description:
             "Rundet Wandecken ab, an denen man diagonal vorbeigehen kann: einzelne Wände werden zu Säulen und diagonale Lücken werden sichtbar. Wände neben Türen bleiben eckig.",
         },
+        darkWallTops: {
+          label: "Dunkle Wandoberseiten",
+          description:
+            "Dunkelt die Oberseiten von Wandblöcken ab, sodass nur die Wandflächen hervortreten. Ein schmaler Rand an Kanten zum Boden bleibt, damit Wände auch von direkt oben erkennbar sind. Türen sind nicht betroffen.",
+        },
         blockAmbientOcclusion: {
           label: "Ambient Occlusion",
           description:

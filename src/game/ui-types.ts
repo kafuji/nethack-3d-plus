@@ -306,6 +306,8 @@ export type Nh3dClientOptions = {
   smoothExploredEdges: boolean;
   /** Round off wall corners that a diagonal step can pass, in every camera mode. */
   roundedWalls: boolean;
+  /** Darken wall tops so the wall faces stand out, keeping a thin rim. */
+  darkWallTops: boolean;
   /** Light lit rooms and the hero's carried light sources (needs lightingEnabled). */
   dynamicLighting: boolean;
   fpsFlattenEntityBillboards: boolean;
@@ -477,6 +479,7 @@ export const defaultNh3dClientOptions: Nh3dClientOptions = {
   lightingEnabled: true,
   smoothExploredEdges: true,
   roundedWalls: true,
+  darkWallTops: true,
   dynamicLighting: true,
   fpsFlattenEntityBillboards: false,
   showItemsUnderPlayerInOverheadTilesMode: true,
@@ -1218,6 +1221,10 @@ export function normalizeNh3dClientOptions(
       typeof overrides?.roundedWalls === "boolean"
         ? overrides.roundedWalls
         : defaultNh3dClientOptions.roundedWalls,
+    darkWallTops:
+      typeof overrides?.darkWallTops === "boolean"
+        ? overrides.darkWallTops
+        : defaultNh3dClientOptions.darkWallTops,
     dynamicLighting:
       typeof overrides?.dynamicLighting === "boolean"
         ? overrides.dynamicLighting

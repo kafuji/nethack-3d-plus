@@ -876,6 +876,11 @@ export const esOverrides = {
                     description:
                       "Redondea las esquinas de las paredes que se pueden sortear en diagonal: las paredes sueltas se vuelven columnas y se ven los huecos diagonales. Las paredes junto a puertas siguen siendo cuadradas.",
                 },
+                darkWallTops: {
+                    label: "Partes superiores de muros oscuras",
+                    description:
+                      "Oscurece la parte superior de los bloques de muro para que solo destaquen sus caras. Se mantiene un borde fino junto al suelo para que los muros se distingan desde arriba. No afecta a las puertas.",
+                },
                 blockAmbientOcclusion: {
                     label: "Oclusi\u00F3n ambiental",
                     description: "Agrega un sutil sombreado de contacto entre los bloques de piso y pared.",
