@@ -1,0 +1,212 @@
+{
+  "reviewedAt": "2026-11-11",
+  "method": "Visual review of 335 non-weapon representative outputs and 71 weapon outputs, followed by source comparison of candidates. Pixel-art influence is a visual inference, not an automated defect verdict.",
+  "priorityOriginals": 10,
+  "borderlineOriginals": 3,
+  "affectedKeys": 16,
+  "candidates": [
+    {
+      "name": "wooden_shield__small_shield",
+      "item": "wooden_shield",
+      "outputs": [
+        "obj/wooden_shield__small_shield",
+        "obj/wooden_shield__shield_of_drain_resistance",
+        "obj/wooden_shield__shield_of_shock_resistance"
+      ],
+      "priority": "high",
+      "kind": "shape",
+      "reason": "盾の下辺が、元絵の丸みを表す画素の段差に沿った左右対称の階段状になっている。板の長さの違いとも解釈できるが、元絵との一致が強い。",
+      "direction": "構図・木の板・色を維持し、下辺を自然な盾の曲線または連続する斜辺にする。",
+      "reference": ".hires-tmp/pixelhack-split/obj/wooden_shield__small_shield.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/wooden_shield__small_shield.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/wooden_shield__small_shield.png"
+    },
+    {
+      "name": "whistle__tin_whistle",
+      "item": "whistle",
+      "outputs": [
+        "obj/whistle__tin_whistle",
+        "obj/whistle__magic_whistle"
+      ],
+      "priority": "high",
+      "kind": "shape",
+      "reason": "丸い共鳴室の上端と下端が大きな角で切られ、胴体と吹き口の接続も段差状。元絵の画素の形を厚みのある金属に置き換えたように見える。",
+      "direction": "共鳴室を丸くし、吹き口への接続を実物の笛として自然につなぐ。吹き口の矩形の穴は残す。",
+      "reference": ".hires-tmp/pixelhack-split/obj/whistle__tin_whistle.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/whistle__tin_whistle.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/whistle__tin_whistle.png",
+      "latestRepairRecord": "mechanical-remake.json"
+    },
+    {
+      "name": "triangular__amulet_of_restful_sleep",
+      "item": "triangular__amulet_of_restful_sleep",
+      "outputs": [
+        "obj/triangular__amulet_of_restful_sleep"
+      ],
+      "priority": "high",
+      "kind": "shape",
+      "reason": "三角形であるはずの本体と中央の意匠に水平・垂直の階段状の段差が残り、ピラミッドを積んだように見える。",
+      "direction": "本体の三角形を連続した斜辺で描く。中央の意匠も画素を拡大した形にしない。",
+      "reference": ".hires-tmp/pixelhack-split/obj/triangular__amulet_of_restful_sleep.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/triangular__amulet_of_restful_sleep.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/triangular__amulet_of_restful_sleep.png"
+    },
+    {
+      "name": "beartrap",
+      "item": "beartrap",
+      "outputs": [
+        "obj/beartrap"
+      ],
+      "priority": "high",
+      "kind": "shape",
+      "reason": "開いた顎の画素表現を、そのまま直角に折れたL字形の厚い金属枠として立体化している。",
+      "direction": "元絵の開閉角度と歯の配置を保ち、顎の形・厚み・蝶番を実物として自然にする。歯は尖った形を維持する。",
+      "reference": ".hires-tmp/pixelhack-split/obj/beartrap.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/beartrap.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/beartrap.png",
+      "latestRepairRecord": "mechanical-remake.json"
+    },
+    {
+      "name": "candelabrum__candelabrum_of_invocation",
+      "item": "candelabrum__candelabrum_of_invocation",
+      "outputs": [
+        "obj/candelabrum__candelabrum_of_invocation"
+      ],
+      "priority": "high",
+      "kind": "shape",
+      "reason": "枝の曲がりが直角の段差になり、下側の渦巻きも角張った四角い巻き形になっている。元絵の段差との対応が強い。",
+      "direction": "7本の枝の配置を維持し、枝の分岐と渦巻きを滑らかな金属の曲線で描く。",
+      "reference": ".hires-tmp/pixelhack-split/obj/candelabrum__candelabrum_of_invocation.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/candelabrum__candelabrum_of_invocation.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/candelabrum__candelabrum_of_invocation.png"
+    },
+    {
+      "name": "chest",
+      "item": "chest",
+      "outputs": [
+        "obj/chest"
+      ],
+      "priority": "high",
+      "kind": "surface",
+      "reason": "蓋の金帯に元絵の交互の明暗を拡大したような、大きな矩形の凹凸模様がある。人工的な装飾とも読めるため、修正時は形を単純化する。",
+      "direction": "蓋の曲面と帯を保ち、画素由来に見える矩形の凹凸を連続した金属帯や自然な細工へ置き換える。",
+      "reference": ".hires-tmp/pixelhack-split/obj/chest.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/chest.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/chest.png"
+    },
+    {
+      "name": "cloth__light",
+      "item": "cloth__light",
+      "outputs": [
+        "obj/cloth__light"
+      ],
+      "priority": "high",
+      "kind": "surface",
+      "reason": "織布の質感が、元絵の画素を写した大きな十字・プラス記号の反復模様になっている。",
+      "direction": "青い布表紙の色と構図を保ち、細い縦横の織り目で表現する。",
+      "reference": ".hires-tmp/pixelhack-split/obj/cloth__light.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/cloth__light.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/cloth__light.png"
+    },
+    {
+      "name": "glittering__create_familiar",
+      "item": "glittering__create_familiar",
+      "outputs": [
+        "obj/glittering__create_familiar"
+      ],
+      "priority": "high",
+      "kind": "surface",
+      "reason": "細かなきらめきが、四角い色タイルを敷き詰めたモザイクになっている。",
+      "direction": "色調を保ちながら、細かな粒と小さい反射光に置き換える。外側の発光は加えない。",
+      "reference": ".hires-tmp/pixelhack-split/obj/glittering__create_familiar.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/glittering__create_familiar.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/glittering__create_familiar.png"
+    },
+    {
+      "name": "t_shirt",
+      "item": "t_shirt",
+      "outputs": [
+        "obj/t_shirt"
+      ],
+      "priority": "high",
+      "kind": "surface",
+      "reason": "胸の元絵の画素模様が、大きな長方形を組み合わせた図柄として残っている。服の輪郭やしわは自然。",
+      "direction": "胸の模様は同じ配色の自然な印刷・擦れとしてまとめ、画素のブロック構造を残さない。",
+      "reference": ".hires-tmp/pixelhack-split/obj/t_shirt.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/t_shirt.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/t_shirt.png"
+    },
+    {
+      "name": "k_ration",
+      "item": "k_ration",
+      "outputs": [
+        "obj/k_ration"
+      ],
+      "priority": "high",
+      "kind": "surface",
+      "reason": "包装前面のピンクの点が四角い画素模様のまま残っている。箱の輪郭自体は自然。",
+      "direction": "包装の色とKの識別性を維持し、ピンクの四角は印刷の斑点・紙の質感として自然にする。",
+      "reference": ".hires-tmp/pixelhack-split/obj/k_ration.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/k_ration.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/k_ration.png"
+    },
+    {
+      "name": "crystal_helmet__helm_of_brilliance",
+      "item": "crystal_helmet__helm_of_brilliance",
+      "outputs": [
+        "obj/crystal_helmet__helm_of_brilliance"
+      ],
+      "priority": "borderline",
+      "kind": "shape",
+      "reason": "額の庇・側頭部・頬当てが直方体を組んだように見える。ただし結晶の面や角は本来の材質表現でもあり、角があるだけでは不良と断定できない。",
+      "direction": "結晶のファセットは維持し、兜全体の輪郭と頬当てを頭に沿う自然な形へ整える。",
+      "reference": ".hires-tmp/pixelhack-split/obj/crystal_helmet__helm_of_brilliance.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/crystal_helmet__helm_of_brilliance.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/crystal_helmet__helm_of_brilliance.png"
+    },
+    {
+      "name": "key__skeleton_key",
+      "item": "key__skeleton_key",
+      "outputs": [
+        "obj/key__skeleton_key"
+      ],
+      "priority": "borderline",
+      "kind": "shape",
+      "reason": "丸い持ち手の穴に大きな切れ込みと角がある。古い鍵の装飾的な輪とも解釈でき、元絵の段差を写したものと断定はしにくい。",
+      "direction": "歯の形は維持し、持ち手の輪と穴を自然な連続曲線で描く。",
+      "reference": ".hires-tmp/pixelhack-split/obj/key__skeleton_key.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/key__skeleton_key.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/key__skeleton_key.png"
+    },
+    {
+      "name": "c_ration",
+      "item": "c_ration",
+      "outputs": [
+        "obj/c_ration"
+      ],
+      "priority": "borderline",
+      "kind": "surface",
+      "reason": "Cの文字が水平・垂直の段差で構成されている。ただし軍用の角張ったステンシル書体とも解釈できる。箱の輪郭は自然。",
+      "direction": "文字を残す場合は自然な印刷またはステンシルとして統一する。",
+      "reference": ".hires-tmp/pixelhack-split/obj/c_ration.png",
+      "asset": "public/assets/hires/pixelhack-hd/obj/c_ration.png",
+      "status": "repaired",
+      "beforeAsset": "tools/hires-art/objects/contour-review/before/c_ration.png"
+    }
+  ],
+  "status": "repaired",
+  "repairedAt": "2026-11-11",
+  "repairRecord": "repair-generation.json"
+}

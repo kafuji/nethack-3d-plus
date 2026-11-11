@@ -1,210 +1,35 @@
 {
-  "status": "incomplete",
-  "completedKeys": 469,
+  "status": "complete",
+  "completedAt": "2026-11-11",
+  "completedKeys": 483,
   "totalKeys": 483,
-  "missingCount": 14,
+  "missingCount": 0,
   "old128Count": 0,
-  "usageResetAt": "2026-11-10T15:43:44+09:00",
   "generator": "built-in image_gen; no external API calls",
-  "jobs": [
-    {
-      "name": "lump_of_royal_jelly",
-      "status": "missing",
-      "reason": "initial_generation_rejected; resume_after_usage_reset",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/lump_of_royal_jelly.png",
-        "public/assets/hires/pixelhack-hd/obj/food_ration.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA glistening golden-yellow lump of royal jelly, soft translucent rounded shape with creamy highlights.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.\n\nThis is ordinary edible ROYAL JELLY made by bees: a small compact mound of golden-yellow food jelly with a softly irregular rounded outline and a subtle glossy surface. A neutral fantasy inventory food icon, without people, body parts, containers or unrelated objects. Preserve the source composition and match the food-ration painting style.",
-      "additionalPrompt": "This is ordinary edible ROYAL JELLY made by bees: a small compact mound of golden-yellow food jelly with a softly irregular rounded outline and a subtle glossy surface. A neutral fantasy inventory food icon, without people, body parts, containers or unrelated objects. Preserve the source composition and match the food-ration painting style.",
-      "rawDestination": ".hires-tmp/objects/raw_lump_of_royal_jelly.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only lump_of_royal_jelly"
-    },
-    {
-      "name": "zinc__opening",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/zinc__opening.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from dull bluish-grey zinc. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_zinc__opening.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only zinc__opening"
-    },
-    {
-      "name": "aluminum__locking",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/aluminum__locking.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from light pale silver aluminum. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_aluminum__locking.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only aluminum__locking"
-    },
-    {
-      "name": "uranium__probing",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/uranium__probing.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from muted dark grey-green metal, no glow or radiation symbol. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_uranium__probing.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only uranium__probing"
-    },
-    {
-      "name": "iron__digging",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/iron__digging.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from dark rough iron. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_iron__digging.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only iron__digging"
-    },
-    {
-      "name": "steel__magic_missile",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/steel__magic_missile.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from cool polished steel. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_steel__magic_missile.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only steel__magic_missile"
-    },
-    {
-      "name": "hexagonal__fire",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/hexagonal__fire.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from a rod with a clearly hexagonal cross-section. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_hexagonal__fire.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only hexagonal__fire"
-    },
-    {
-      "name": "short__cold",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/short__cold.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from a visibly SHORT rod in the reference's colour and material. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_short__cold.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only short__cold"
-    },
-    {
-      "name": "runed__sleep",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/runed__sleep.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from a rod with a few shallow engraved rune-like marks, no legible letters or glow. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_runed__sleep.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only runed__sleep"
-    },
-    {
-      "name": "long__death",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/long__death.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from a visibly LONG slender rod in the reference's colour and material. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_long__death.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only long__death"
-    },
-    {
-      "name": "curved__lightning",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/curved__lightning.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from a visibly curved rod, following exactly the reference's curve. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_curved__lightning.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only curved__lightning"
-    },
-    {
-      "name": "forked",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/forked.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from a rod with the clearly forked end shown in the reference. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_forked.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only forked"
-    },
-    {
-      "name": "spiked",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/spiked.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from a rod with the small spikes shown in the reference. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_spiked.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only spiked"
-    },
-    {
-      "name": "jeweled",
-      "status": "missing",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/jeweled.png",
-        "public/assets/hires/pixelhack-hd/obj/oak__nothing.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nA slender wand made from a rod set with small contrasting gems as shown in the reference. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.",
-      "rawDestination": ".hires-tmp/objects/raw_jeweled.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only jeweled"
-    }
+  "jobs": [],
+  "refinements": [],
+  "completedJobs": [
+    "lump_of_royal_jelly",
+    "zinc__opening",
+    "aluminum__locking",
+    "uranium__probing",
+    "iron__digging",
+    "steel__magic_missile",
+    "hexagonal__fire",
+    "short__cold",
+    "runed__sleep",
+    "long__death",
+    "curved__lightning",
+    "forked",
+    "spiked",
+    "jeweled"
   ],
-  "refinements": [
-    {
-      "name": "papyrus__book_of_the_dead",
-      "status": "existing_image_refinement_pending",
-      "reason": "built_in_usage_limit",
-      "references": [
-        ".hires-tmp/pixelhack-split/obj/papyrus__book_of_the_dead.png",
-        "public/assets/hires/pixelhack-hd/obj/red__force_bolt.png"
-      ],
-      "transparent_background": true,
-      "prompt": "Hand-painted, realistic dark-fantasy game art in the manner of a gritty tactical RPG: believable metal, wood, leather, cloth, glass and stone, painterly but precise, strong value contrast. Shapes must stay readable when the image is shrunk to 48 pixels, and each object must be told apart from similar objects at a glance by its silhouette and colours.\n\nA single object for a game inventory icon. Soft light from the upper left. Fully transparent background: no table, no ground, no cast shadow, no text, no frame.\n\nImage 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.\n\nAn ancient papyrus-bound tome, weathered tan reed-paper cover, dark worn binding and the exact symbols and silhouette present in the reference. No extra skull, aura or readable text.\n\nUse Image 1's colours unless a magenta colour key is explicitly requested. No decorative identity marks not present on the reference. Ignore any background-coloured streaks, identification dashes, floor or water behind Image 1's object. Transparent background throughout.\n\nSYMBOL RENDERING CORRECTION: Keep the reference's single small ivory SKULL EMBLEM at the centre of the dark weathered papyrus cover. Reinterpret its few pixels as a simple hand-painted rounded skull pictogram with two dark rounded eye sockets, a small nasal notch and a short simple jaw. The outer skull contour must be softly rounded and organically painted, NOT a square pixel-art Space Invader, a stepped cross or a block-built skull. No additional skulls, bones, glyphs, writing or decorations. Keep the book view, diagonal angle, page block, dark brown-grey cover, small emblem scale and placement, and the manual sample's realistic painterly treatment.",
-      "additionalPrompt": "SYMBOL RENDERING CORRECTION: Keep the reference's single small ivory SKULL EMBLEM at the centre of the dark weathered papyrus cover. Reinterpret its few pixels as a simple hand-painted rounded skull pictogram with two dark rounded eye sockets, a small nasal notch and a short simple jaw. The outer skull contour must be softly rounded and organically painted, NOT a square pixel-art Space Invader, a stepped cross or a block-built skull. No additional skulls, bones, glyphs, writing or decorations. Keep the book view, diagonal angle, page block, dark brown-grey cover, small emblem scale and placement, and the manual sample's realistic painterly treatment.",
-      "rawDestination": ".hires-tmp/objects/raw_papyrus__book_of_the_dead.png",
-      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only papyrus__book_of_the_dead"
-    }
-  ]
+  "completedRefinements": [
+    "papyrus__book_of_the_dead"
+  ],
+  "generationRecord": "tools/hires-art/objects/completion-generation.json",
+  "validation": "tools/hires-art/objects/validation.json",
+  "lastRefinementRecord": "tools/hires-art/objects/contour-review/mechanical-remake.json",
+  "lastRefinementOriginals": 2,
+  "lastRefinementKeys": 3
 }

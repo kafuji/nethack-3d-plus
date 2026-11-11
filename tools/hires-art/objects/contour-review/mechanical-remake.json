@@ -1,0 +1,44 @@
+{
+  "completedAt": "2026-11-11",
+  "generator": "built-in image_gen; no external API calls",
+  "method": "Re-created from real mechanical construction with a painting-style reference only. Rejected prior shapes and PixelHack were not supplied as shape references.",
+  "originalCount": 2,
+  "outputKeyCount": 3,
+  "jobs": [
+    {
+      "name": "beartrap",
+      "key": "beartrap",
+      "subjectPrompt": "A museum-style illustration of an EMPTY antique mechanical foothold trap for a fantasy game inventory. It is set open and unoccupied, shown from an elevated three-quarter view, with two opposed semicircular iron jaws forming an oval perimeter around the round central pressure plate, a flat base, two side pivots and a small external leaf spring.",
+      "instructions": "Both semicircular jaws lie lowered around a central pressure pan; opposed pivots, flat base and leaf spring. A compact empty historical artifact, with simple readable serrations and no upright jaw.",
+      "status": "adopted",
+      "references": [
+        "public/assets/hires/pixelhack-hd/obj/plate_mail.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Generate a fresh isolated game inventory icon. The sole input image is a STYLE reference for painterly metal, lighting and edges only. Do not copy its subject.\n\nHand-painted realistic antique iron artifact, restrained worn metal texture, upper-left soft lighting, strong broad values, naturally smooth construction and a clear simple silhouette readable at 48px.\n\nA museum-style illustration of an EMPTY antique mechanical foothold trap for a fantasy game inventory. It is set open and unoccupied, shown from an elevated three-quarter view, with two opposed semicircular iron jaws forming an oval perimeter around the round central pressure plate, a flat base, two side pivots and a small external leaf spring.\n\nDepict a complete compact oval mechanism, its two half-ring jaws both lying lowered nearly horizontal on opposite sides of the visible circular pressure pan. A few simple triangular serrations along each inner edge indicate its function. Opposite hinge pivots and a compact leaf-spring lever sit outside the ring. The open central space and round treadle plate must be clear. Orient the artifact diagonally, lower left to upper right, roughly square overall. Dark iron, lighter rim highlights, dark pan. This is an isolated unoccupied historical object illustration, without people, animals, injury or scene. Fully transparent background, no floor, cast shadow, frame or writing. No upright jaw or L-shaped clamp.",
+      "rawDestination": ".hires-tmp/objects/raw_beartrap.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only beartrap",
+      "outputKeys": [
+        "obj/beartrap"
+      ]
+    },
+    {
+      "name": "whistle",
+      "key": "whistle__tin_whistle",
+      "subjectPrompt": "A recognizable traditional nickel-plated metal sports/police PEA WHISTLE, viewed from a slightly elevated three-quarter side angle. A compact cylindrical resonating drum at left has a clearly circular side plate and thin rolled rim. A SHORT straight narrow flattened rectangular blowing tube exits tangentially from the upper-right part of the drum.",
+      "instructions": "Draw the actual construction of a classic metal pea whistle: a round drum made of two circular side plates enclosing a short cylindrical chamber, a short straight flattened tubular mouthpiece about HALF the drum diameter in length, and a small clearly visible rectangular fipple/air window on TOP at the tube-to-drum junction. The mouthpiece has parallel straight sides and a dark small end opening facing right. Distinguish the round chamber, short blow tube and top sound window. A tiny rear attachment eyelet is acceptable but no lanyard or chain. Bluish silver worn tin/nickel. Round body on left, mouthpiece right, nearly horizontal overall. The clear round side plate must remain visible. Not a long tapered snout, spoon, frying pan, shoe, bird, melted blob, bulbous teardrop, or a single hollow rectangular nozzle. Do not use any previously generated whistle shape.",
+      "status": "adopted",
+      "references": [
+        "public/assets/hires/pixelhack-hd/obj/plate_mail.png"
+      ],
+      "transparent_background": true,
+      "prompt": "Create a NEW anatomically/mechanically coherent object from scratch. The attached image is ONLY a painting/material/lighting style sample; do not copy its subject. Hand-painted realistic dark-fantasy inventory art, precise painterly metal, upper-left soft light, dark readable edges and strong broad values. Simple clear object identity at 48px, restrained worn texture. Continuous smooth silhouettes and plausible construction. A single isolated object, fully transparent background, no floor, no cast shadow, no frame, no text, no labels. No pixel art, block steps or melted amorphous forms.\n\nA recognizable traditional nickel-plated metal sports/police PEA WHISTLE, viewed from a slightly elevated three-quarter side angle. A compact cylindrical resonating drum at left has a clearly circular side plate and thin rolled rim. A SHORT straight narrow flattened rectangular blowing tube exits tangentially from the upper-right part of the drum.\n\nDraw the actual construction of a classic metal pea whistle: a round drum made of two circular side plates enclosing a short cylindrical chamber, a short straight flattened tubular mouthpiece about HALF the drum diameter in length, and a small clearly visible rectangular fipple/air window on TOP at the tube-to-drum junction. The mouthpiece has parallel straight sides and a dark small end opening facing right. Distinguish the round chamber, short blow tube and top sound window. A tiny rear attachment eyelet is acceptable but no lanyard or chain. Bluish silver worn tin/nickel. Round body on left, mouthpiece right, nearly horizontal overall. The clear round side plate must remain visible. Not a long tapered snout, spoon, frying pan, shoe, bird, melted blob, bulbous teardrop, or a single hollow rectangular nozzle. Do not use any previously generated whistle shape.",
+      "rawDestination": ".hires-tmp/objects/raw_whistle.png",
+      "finishCommand": "node tools/hires-art/terrain-gen.mjs build --spec tools/hires-art/objects/items.json --only whistle",
+      "outputKeys": [
+        "obj/whistle__tin_whistle",
+        "obj/whistle__magic_whistle"
+      ]
+    }
+  ]
+}

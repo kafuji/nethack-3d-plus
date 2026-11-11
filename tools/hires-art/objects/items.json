@@ -661,8 +661,8 @@
       "kind": "item",
       "ref": "px_wooden_shield__small_shield",
       "styleRef": "obj/plate_mail",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "An ordinary small wooden shield made from warm brown vertical planks, simple dark edging and the exact silhouette of Image 1. No added boss, rune or decoration revealing identity; the same image is shared by three wooden shields.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Warm-brown wooden shield: vertical planks, straight upper edge, dark edging, smooth rounded-pointed lower perimeter.",
       "fit": {
         "matchRef": "px_wooden_shield__small_shield"
       },
@@ -679,7 +679,8 @@
             "obj/wooden_shield__shield_of_shock_resistance"
           ]
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nReplace lower stair steps with one gentle continuous curve tapering to a rounded center point. Preserve plank divisions, straight top and clear shield symbol. No added boss or emblem."
     },
     {
       "name": "amulet_yendor",
@@ -733,9 +734,9 @@
       "name": "whistle",
       "kind": "item",
       "ref": "px_whistle__tin_whistle",
-      "styleRef": "obj/bag__sack",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A small ordinary metal whistle with a mouthpiece and simple hole, retaining the reference shape and colour. Same image for ordinary and magic whistles.",
+      "styleRef": "obj/plate_mail",
+      "refNote": "Image 1 is a coarse PixelHack reference for palette and approximate placement ONLY. Do not copy its sampled silhouette or infer machinery from its pixels. The real mechanical construction described in the prompt takes precedence over the coarse source depiction. Image 2 is the painting/material style reference only.",
+      "prompt": "A recognizable traditional nickel-plated metal sports/police PEA WHISTLE, viewed from a slightly elevated three-quarter side angle. A compact cylindrical resonating drum at left has a clearly circular side plate and thin rolled rim. A SHORT straight narrow flattened rectangular blowing tube exits tangentially from the upper-right part of the drum.",
       "fit": {
         "matchRef": "px_whistle__tin_whistle"
       },
@@ -751,7 +752,8 @@
             "obj/whistle__magic_whistle"
           ]
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Draw the actual construction of a classic metal pea whistle: a round drum made of two circular side plates enclosing a short cylindrical chamber, a short straight flattened tubular mouthpiece about HALF the drum diameter in length, and a small clearly visible rectangular fipple/air window on TOP at the tube-to-drum junction. The mouthpiece has parallel straight sides and a dark small end opening facing right. Distinguish the round chamber, short blow tube and top sound window. A tiny rear attachment eyelet is acceptable but no lanyard or chain. Bluish silver worn tin/nickel. Round body on left, mouthpiece right, nearly horizontal overall. The clear round side plate must remain visible. Not a long tapered snout, spoon, frying pan, shoe, bird, melted blob, bulbous teardrop, or a single hollow rectangular nozzle. Do not use any previously generated whistle shape. Keep the immediately recognizable object identity at 48px through broad simple shapes and strong values. Smooth continuous real contours, no pixel stairs. Fully transparent background."
     },
     {
       "name": "flute",
@@ -1229,8 +1231,8 @@
       "kind": "item",
       "ref": "px_crystal_helmet__helm_of_brilliance",
       "styleRef": "obj/plate_mail",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A helmet made of translucent pale icy crystal, faceted dome and clear hard edges, retaining the reference's helmet silhouette.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Pointed pale translucent crystal helmet with faceted crown, arched brow and curved tapering cheek guards.",
       "fit": {
         "matchRef": "px_crystal_helmet__helm_of_brilliance"
       },
@@ -1243,7 +1245,8 @@
         {
           "key": "obj/crystal_helmet__helm_of_brilliance"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve CRYSTAL HELMET identity, pointed faceted icy crown, subtle iridescence, visor opening and facing direction. Keep crystal facets but make brow, temples and cheek guards follow a wearable curved helmet shape. Remove rectangular pillars, slab ledge and square-ended cheek posts. Do not replace crystal with metal or erase pointed crown."
     },
     {
       "name": "etched_helmet__helm_of_caution",
@@ -1671,8 +1674,8 @@
       "kind": "item",
       "ref": "px_t_shirt",
       "styleRef": "obj/plate_mail",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A simple short-sleeved cotton T-shirt, soft folds, round collar and the reference's plain colours. No legible lettering.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Cream cotton T-shirt with brown short sleeves and a simple red T-like chest emblem flanked by two ochre accents.",
       "fit": {
         "matchRef": "px_t_shirt"
       },
@@ -1685,7 +1688,8 @@
         {
           "key": "obj/t_shirt"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep T-SHIRT silhouette, brown sleeves, cream torso and RED T-LIKE EMBLEM with ochre accents. Redraw emblem as coherent intentional printing, smooth slightly rounded strokes and subtle wear following cloth folds. Preserve the simple broad T arrangement; do not delete it. No random chunky rectangles or extra lettering."
     },
     {
       "name": "mummy_wrapping",
@@ -2992,8 +2996,8 @@
       "kind": "item",
       "ref": "px_triangular__amulet_of_restful_sleep",
       "styleRef": "obj/circular__amulet_of_esp",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A triangular amulet: a pendant whose main body is clearly triangular, made from the exact metal or stone colours of Image 1, with its original cord or chain placement and central details. Preserve the geometric silhouette; do not add symbols or a magical aura to suggest its effect.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Dark metal TRIANGULAR pendant with a contrasting smaller triangular inset, hanging from its golden braided cord.",
       "fit": {
         "matchRef": "px_triangular__amulet_of_restful_sleep"
       },
@@ -3006,7 +3010,8 @@
         {
           "key": "obj/triangular__amulet_of_restful_sleep"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nRetain the TRIANGLE symbol. Outer triangle and smaller central triangle must each have three continuous straight edges with slightly softened metal corners, no stair tiers. Preserve cord, bail, colors and strong contrast."
     },
     {
       "name": "pyramidal__amulet_versus_poison",
@@ -3181,8 +3186,8 @@
       "kind": "item",
       "ref": "px_chest",
       "styleRef": "obj/bag__sack",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A sturdy wooden treasure chest with the exact reference lid shape, heavy dark iron bands, hinges and central lock.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Closed treasure chest with domed golden upper lid, dark horizontal iron bands, warm brown planks and central lock.",
       "fit": {
         "matchRef": "px_chest"
       },
@@ -3195,7 +3200,8 @@
         {
           "key": "obj/chest"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve chest silhouette, gold dome, dark bands and central lock. Replace giant rectangular crenellation/pixel pattern with a continuous smooth gold band bearing a restrained pair of curved engraved lines. Keep broad readable value divisions, no square-tooth ornament or mosaic."
     },
     {
       "name": "ice_box",
@@ -3223,8 +3229,8 @@
       "kind": "item",
       "ref": "px_key__skeleton_key",
       "styleRef": "obj/bag__sack",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "An old iron skeleton key, rounded bow, long thin shaft and simple toothed bit. Preserve which end points where.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Old golden-brass skeleton key with smooth round bow and round hole, diagonal shaft and toothed bit at upper right.",
       "fit": {
         "matchRef": "px_key__skeleton_key"
       },
@@ -3237,7 +3243,8 @@
         {
           "key": "obj/key__skeleton_key"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep clear key symbol, golden brass, lower-left bow, upper-right bit and diagonal direction. Make bow a continuous round ring around a smooth oval/round hole, no inward angular lobes or pixel notches. Preserve sharply defined functional key teeth."
     },
     {
       "name": "lock_pick",
@@ -3622,9 +3629,9 @@
       "name": "beartrap",
       "kind": "item",
       "ref": "px_beartrap",
-      "styleRef": "obj/bag__sack",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "An open iron bear trap, two toothed jaws, heavy pivot and spring plate, all shapes arranged as in the reference.",
+      "styleRef": "obj/plate_mail",
+      "refNote": "Image 1 is a coarse PixelHack reference for palette and approximate placement ONLY. Do not copy its sampled silhouette or infer machinery from its pixels. The real mechanical construction described in the prompt takes precedence over the coarse source depiction. Image 2 is the painting/material style reference only.",
+      "prompt": "A museum-style illustration of an EMPTY antique mechanical foothold trap for a fantasy game inventory. It is set open and unoccupied, shown from an elevated three-quarter view, with two opposed semicircular iron jaws forming an oval perimeter around the round central pressure plate, a flat base, two side pivots and a small external leaf spring.",
       "fit": {
         "matchRef": "px_beartrap"
       },
@@ -3637,7 +3644,8 @@
         {
           "key": "obj/beartrap"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Both semicircular jaws lie lowered around a central pressure pan; opposed pivots, flat base and leaf spring. A compact empty historical artifact, with simple readable serrations and no upright jaw. Keep the immediately recognizable object identity at 48px through broad simple shapes and strong values. Smooth continuous real contours, no pixel stairs. Fully transparent background."
     },
     {
       "name": "bell",
@@ -3749,8 +3757,8 @@
       "kind": "item",
       "ref": "px_candelabrum__candelabrum_of_invocation",
       "styleRef": "obj/bag__sack",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A tall seven-branched metal candelabrum with candle holders and base in the reference arrangement, worn golden metal. Do not add more branches or extra candles.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Symmetrical golden SEVEN-branched candelabrum with seven broad cups, central stem, two lower curls and round foot.",
       "fit": {
         "matchRef": "px_candelabrum__candelabrum_of_invocation"
       },
@@ -3763,7 +3771,8 @@
         {
           "key": "obj/candelabrum__candelabrum_of_invocation"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nExactly SEVEN distinct cups: three left, one center, three right. Retain alternating heights and clear spacing. Smooth continuous rounded arm bends, natural junctions and ROUND lower scroll curls. Preserve clear seven-branch symbol, gold and pedestal. No stepped elbows, square spirals, candles or extra branches."
     },
     {
       "name": "silver_bell__bell_of_opening",
@@ -4169,7 +4178,7 @@
       "kind": "item",
       "ref": "px_lump_of_royal_jelly",
       "styleRef": "obj/food_ration",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
       "prompt": "A glistening golden-yellow lump of royal jelly, soft translucent rounded shape with creamy highlights.",
       "fit": {
         "matchRef": "px_lump_of_royal_jelly"
@@ -4184,7 +4193,7 @@
           "key": "obj/lump_of_royal_jelly"
         }
       ],
-      "builtinExtraPrompt": "This is ordinary edible ROYAL JELLY made by bees: a small compact mound of golden-yellow food jelly with a softly irregular rounded outline and a subtle glossy surface. A neutral fantasy inventory food icon, without people, body parts, containers or unrelated objects. Preserve the source composition and match the food-ration painting style."
+      "builtinExtraPrompt": "This is ordinary edible ROYAL JELLY made by bees: a small compact mound of golden-yellow food jelly with a softly irregular rounded outline and a subtle glossy surface. A neutral fantasy inventory food icon, without people, body parts, containers or unrelated objects. Preserve the source composition and match the food-ration painting style.\n\nCONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "cream_pie",
@@ -4317,8 +4326,8 @@
       "kind": "item",
       "ref": "px_k_ration",
       "styleRef": "obj/food_ration",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A wrapped military K-ration food package, compact rectangular paper or tin package in the reference palette, creased edges and no legible text.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Compact creased tan military ration box with one bold red capital K and small soft pink printed flecks.",
       "fit": {
         "matchRef": "px_k_ration"
       },
@@ -4331,15 +4340,16 @@
         {
           "key": "obj/k_ration"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep readable red capital \"K\" exactly, tan package, folds and composition. Natural bold printed sans-serif K with continuous strokes, restrained ink wear. Convert pink square pixels into a few small rounded printed flecks preserving approximate grouping and color. No pixel font, extra text or objects."
     },
     {
       "name": "c_ration",
       "kind": "item",
       "ref": "px_c_ration",
       "styleRef": "obj/food_ration",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A military C-ration food package, sturdy tin or rectangular package exactly as shown in the reference, dull metal and paper surfaces, no legible text.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Compact creased tan military ration box with one bold dark blue-grey capital C.",
       "fit": {
         "matchRef": "px_c_ration"
       },
@@ -4352,7 +4362,8 @@
         {
           "key": "obj/c_ration"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep readable dark blue-grey capital \"C\" exactly, tan box, folds, orientation and size. Redraw C as natural bold printed sans-serif, smooth continuous rounded inner/outer curves open at right. Strong contrast at 48px. No square pixel-font corners, step-built glyph or extra words."
     },
     {
       "name": "tin",
@@ -4718,8 +4729,8 @@
       "kind": "item",
       "ref": "px_cloth__light",
       "styleRef": "obj/red__force_bolt",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A closed spellbook with plain woven cloth cover with visible crosswoven fibers. Preserve Image 1's exact cover colour palette, spine, page-block shape, orientation and proportions. Small worn edges and restrained material detail in the manual example's style. No readable text, title or extra effect indicating the spell.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Blue cloth-bound spellbook with pale blue embroidered cross motifs, dark blue edging and cream pages.",
       "fit": {
         "matchRef": "px_cloth__light"
       },
@@ -4732,7 +4743,8 @@
         {
           "key": "obj/cloth__light"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nKeep BLUE CLOTH BOOK identity and large readable pale-blue CROSS motifs in similar arrangement. Redraw crosses as soft woven cross-stitches of continuous threads with rounded/tapered ends and fine natural fabric weave. Do not erase the symbols or leave a plain cover. No hard pixel-plus tiles."
     },
     {
       "name": "leathery__detect_monsters",
@@ -4844,8 +4856,8 @@
       "kind": "item",
       "ref": "px_glittering__create_familiar",
       "styleRef": "obj/red__force_bolt",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A closed spellbook with a cover with fine embedded glittering flecks, restrained pinpoint highlights and no external sparkles. Preserve Image 1's exact cover colour palette, spine, page-block shape, orientation and proportions. Small worn edges and restrained material detail in the manual example's style. No readable text, title or extra effect indicating the spell.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep identity, palette, angle, facing direction, scale and placement. Square pixels and stairs are sampling artifacts, not physical geometry. Reconstruct continuous real shapes while retaining readable symbolic features. Image 2 is the hand-painted dark-fantasy style reference; do not copy its subject.",
+      "prompt": "Silvery pale spellbook with fine pastel iridescent glitter and a few strong tiny glints.",
       "fit": {
         "matchRef": "px_glittering__create_familiar"
       },
@@ -4858,7 +4870,8 @@
         {
           "key": "obj/glittering__create_familiar"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "Retain visual symbolism and immediate recognition at 48px: simple broad silhouette, clear material/color/value separation and a few distinct details. Keep intentional triangles, teeth, lettering, crosses and seven branches. Remove accidental pixel stairs and block-built round parts. Naturally continuous contours and coherent three-dimensional volume, restrained painterly detail. Preserve input object's placement, angle, facing direction, scale relationships and palette. Fully transparent background, no floor, cast shadow, frame or new identity-revealing magic effects.\n\nPreserve glittering-book identity, silvery brightness, pastel pink/yellow/green colors and small high-contrast glints readable at 48px. Replace square confetti mosaic with irregular fine particles in a continuous surface. No rectangular tiles, grid, large crystal blocks or external sparkles."
     },
     {
       "name": "shining__cancellation",
@@ -5013,7 +5026,7 @@
       "kind": "item",
       "ref": "px_papyrus__book_of_the_dead",
       "styleRef": "obj/red__force_bolt",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
       "prompt": "An ancient papyrus-bound tome, weathered tan reed-paper cover, dark worn binding and the exact symbols and silhouette present in the reference. No extra skull, aura or readable text.",
       "fit": {
         "matchRef": "px_papyrus__book_of_the_dead"
@@ -5027,7 +5040,8 @@
         {
           "key": "obj/papyrus__book_of_the_dead"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "SYMBOL RENDERING CORRECTION: Keep the reference's single small ivory SKULL EMBLEM at the centre of the dark weathered papyrus cover. Reinterpret its few pixels as a simple hand-painted rounded skull pictogram with two dark rounded eye sockets, a small nasal notch and a short simple jaw. The outer skull contour must be softly rounded and organically painted, NOT a square pixel-art Space Invader, a stepped cross or a block-built skull. No additional skulls, bones, glyphs, writing or decorations. Keep the book view, diagonal angle, page block, dark brown-grey cover, small emblem scale and placement, and the manual sample's realistic painterly treatment.\n\nCONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "glass__light",
@@ -5328,8 +5342,8 @@
       "kind": "item",
       "ref": "px_zinc__opening",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from dull bluish-grey zinc. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from dull bluish-grey zinc. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_zinc__opening"
       },
@@ -5342,15 +5356,16 @@
         {
           "key": "obj/zinc__opening"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "aluminum__locking",
       "kind": "item",
       "ref": "px_aluminum__locking",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from light pale silver aluminum. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from light pale silver aluminum. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_aluminum__locking"
       },
@@ -5363,15 +5378,16 @@
         {
           "key": "obj/aluminum__locking"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "uranium__probing",
       "kind": "item",
       "ref": "px_uranium__probing",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from muted dark grey-green metal, no glow or radiation symbol. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from muted dark grey-green metal, no glow or radiation symbol. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_uranium__probing"
       },
@@ -5384,15 +5400,16 @@
         {
           "key": "obj/uranium__probing"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "iron__digging",
       "kind": "item",
       "ref": "px_iron__digging",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from dark rough iron. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from dark rough iron. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_iron__digging"
       },
@@ -5405,15 +5422,16 @@
         {
           "key": "obj/iron__digging"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "steel__magic_missile",
       "kind": "item",
       "ref": "px_steel__magic_missile",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from cool polished steel. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from cool polished steel. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_steel__magic_missile"
       },
@@ -5426,15 +5444,16 @@
         {
           "key": "obj/steel__magic_missile"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "hexagonal__fire",
       "kind": "item",
       "ref": "px_hexagonal__fire",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from a rod with a clearly hexagonal cross-section. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from a rod with a clearly hexagonal cross-section. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_hexagonal__fire"
       },
@@ -5447,15 +5466,16 @@
         {
           "key": "obj/hexagonal__fire"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background.\n\nSHAPE CLARIFICATION: The long warm-brown shaft has six continuous straight planar facets and a small pale metal end cap toward the lower left as in the source. Render a real hexagonal cross-section with clean perspective edges, never a stepped pixel contour."
     },
     {
       "name": "short__cold",
       "kind": "item",
       "ref": "px_short__cold",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from a visibly SHORT rod in the reference's colour and material. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from a visibly SHORT rod in the reference's colour and material. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_short__cold"
       },
@@ -5468,15 +5488,16 @@
         {
           "key": "obj/short__cold"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "runed__sleep",
       "kind": "item",
       "ref": "px_runed__sleep",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from a rod with a few shallow engraved rune-like marks, no legible letters or glow. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from a rod with a few shallow engraved rune-like marks, no legible letters or glow. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_runed__sleep"
       },
@@ -5489,15 +5510,16 @@
         {
           "key": "obj/runed__sleep"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "long__death",
       "kind": "item",
       "ref": "px_long__death",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from a visibly LONG slender rod in the reference's colour and material. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from a visibly LONG slender rod in the reference's colour and material. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_long__death"
       },
@@ -5510,15 +5532,16 @@
         {
           "key": "obj/long__death"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background."
     },
     {
       "name": "curved__lightning",
       "kind": "item",
       "ref": "px_curved__lightning",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from a visibly curved rod, following exactly the reference's curve. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from a visibly curved rod, following exactly the reference's curve. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_curved__lightning"
       },
@@ -5531,15 +5554,16 @@
         {
           "key": "obj/curved__lightning"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background.\n\nSHAPE CLARIFICATION: One uninterrupted slender brown rod with a smooth sweeping bend, especially toward the lower-left end. Interpret the reference's few bent pixels as a continuous natural curve, without staircase segments, sharp elbows, joints or broken sections."
     },
     {
       "name": "forked",
       "kind": "item",
       "ref": "px_forked",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from a rod with the clearly forked end shown in the reference. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from a rod with the clearly forked end shown in the reference. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_forked"
       },
@@ -5552,15 +5576,16 @@
         {
           "key": "obj/forked"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background.\n\nSHAPE CLARIFICATION: One slender dark red-brown wand with a smoothly grown Y-shaped fork at its upper-right tip. Two short tapered prongs diverge naturally with rounded transitions into the shaft. No square block branches, right-angle L construction or pixel-step corners. Ignore all blue-grey horizontal background dashes."
     },
     {
       "name": "spiked",
       "kind": "item",
       "ref": "px_spiked",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from a rod with the small spikes shown in the reference. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from a rod with the small spikes shown in the reference. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_spiked"
       },
@@ -5573,15 +5598,16 @@
         {
           "key": "obj/spiked"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background.\n\nSHAPE CLARIFICATION: A slender grey wand with a few small tapered thorn-like spikes along its shaft, in the locations suggested by the source. Smooth coherent shaft and believable pointed spikes with organic transitions; no square teeth, cuboids, sawtooth pixel stair-steps or block construction."
     },
     {
       "name": "jeweled",
       "kind": "item",
       "ref": "px_jeweled",
       "styleRef": "obj/oak__nothing",
-      "refNote": "Image 1 is the pixel-art icon this art replaces: preserve its orientation, facing direction, angle, view, relative size, placement and proportions. Ignore blocky pixels and detached tiny identification marks. Image 2 is ONLY the finished manual example for PAINTING STYLE: match its restrained hand-painted realistic dark-fantasy rendering, material texture, dark edges, lighting, contrast and detail density; do not copy its object or change Image 1's silhouette.",
-      "prompt": "A slender wand made from a rod set with small contrasting gems as shown in the reference. Keep precisely Image 1's original straight or curved silhouette, thickness, length, direction, angle, end treatment and colours. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
+      "refNote": "Image 1 is a COARSE COMPOSITION REFERENCE ONLY: keep the object's identity, material colours, view, facing direction, angle, overall proportions, relative size and placement. Its square pixels and stair-steps are sampling artifacts, NOT physical edges or construction details. Infer the actual continuous object underneath. Image 2 is the PAINTING STYLE reference: match its realistic hand-painted dark-fantasy materials, precise painterly modelling, lighting, dark edges and detail density. Do not trace Image 1's pixel contours.",
+      "prompt": "A slender wand made from a rod set with small contrasting gems as shown in the reference. Keep Image 1's overall straight or curved form, thickness, length, direction, angle, end treatment and colours, interpreted as a real smooth continuous object. No spell effect, magical glow, external sparks, extra ornament or handle unless shown in the reference.",
       "fit": {
         "matchRef": "px_jeweled"
       },
@@ -5594,7 +5620,8 @@
         {
           "key": "obj/jeweled"
         }
-      ]
+      ],
+      "builtinExtraPrompt": "CONTOUR QUALITY: Draw the real object at high resolution with continuous, naturally smooth contours and coherent three-dimensional volume. No pixel stairs, voxel or Minecraft forms, block-built outlines, squared-off round parts or mosaic texture copied from the source pixels. Retain intentional structural features such as a hexagonal shaft, a fork, spikes or a cut gemstone as believable geometry; these are not an excuse to reproduce pixel stepping. Rounded objects must have rounded contours; a curved wand must curve smoothly. Ignore detached identification marks and all background streaks. Fully transparent background.\n\nDETAIL CLARIFICATION: Keep the warm ochre-gold slender shaft and the small contrasting green and red jewel accents toward the lower-left section. Render the stones as tiny polished/faceted gems set into the surface, with natural settings and smooth shaft contours, not square coloured pixels or a mosaic."
     },
     {
       "name": "rock",
