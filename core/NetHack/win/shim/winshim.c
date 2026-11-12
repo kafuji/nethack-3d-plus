@@ -22,6 +22,169 @@
 #define debugf(...)
 #endif /* SHIM_DEBUG */
 
+#define NH3D_TRACKED_MONSTER_NONE (-1)
+#define NH3D_TRACKED_PLAYER_ID 0
+#define NH3D_MONSTER_ATTACK_TRACKING_MAX 128
+#define NH3D_MONSTER_KILLER_STACK_MAX 8
+
+struct nh3d_recent_attack {
+    unsigned attacker_id;
+    int target_id;
+    long turn;
+};
+
+static struct nh3d_recent_attack
+    nh3d_recent_attacks[NH3D_MONSTER_ATTACK_TRACKING_MAX];
+static int nh3d_monster_killer_stack[NH3D_MONSTER_KILLER_STACK_MAX];
+static int nh3d_monster_killer_depth = 0;
+
+static boolean nh3d_monster_has_trackable_glyph(struct monst *);
+static int nh3d_monster_id_from_tile(coordxy, coordxy, int);
+static int nh3d_get_recent_attack_target_id(int);
+static void nh3d_record_recent_attack(unsigned, int);
+static void nh3d_queue_shim_notification(const char *, int, int, int, int);
+
+static boolean
+nh3d_monster_has_trackable_glyph(struct monst *mtmp)
+{
+    return (boolean) (mtmp && (mtmp == u.usteed || canspotmon(mtmp)));
+}
+
+static int
+nh3d_monster_id_from_tile(coordxy x, coordxy y, int glyph)
+{
+    struct monst *mtmp;
+
+    if (glyph_is_ridden_monster(glyph) && u.usteed && x == u.ux && y == u.uy)
+        return (int) u.usteed->m_id;
+    if (x == u.ux && y == u.uy)
+        return NH3D_TRACKED_PLAYER_ID;
+    if (!glyph_is_monster(glyph))
+        return NH3D_TRACKED_MONSTER_NONE;
+
+    mtmp = m_at(x, y);
+    return mtmp ? (int) mtmp->m_id : NH3D_TRACKED_MONSTER_NONE;
+}
+
+static int
+nh3d_get_recent_attack_target_id(int monster_id)
+{
+    int i;
+
+    if (monster_id <= 0)
+        return NH3D_TRACKED_MONSTER_NONE;
+    for (i = 0; i < NH3D_MONSTER_ATTACK_TRACKING_MAX; ++i)
+        if (nh3d_recent_attacks[i].attacker_id == (unsigned) monster_id
+            && nh3d_recent_attacks[i].turn == svm.moves)
+            return nh3d_recent_attacks[i].target_id;
+    return NH3D_TRACKED_MONSTER_NONE;
+}
+
+static void
+nh3d_record_recent_attack(unsigned attacker_id, int target_id)
+{
+    int i, empty_slot = -1;
+
+    if (!attacker_id)
+        return;
+
+    for (i = 0; i < NH3D_MONSTER_ATTACK_TRACKING_MAX; ++i) {
+        if (nh3d_recent_attacks[i].attacker_id == attacker_id) {
+            nh3d_recent_attacks[i].target_id = target_id;
+            nh3d_recent_attacks[i].turn = svm.moves;
+            return;
+        }
+        if (empty_slot < 0 && nh3d_recent_attacks[i].attacker_id == 0)
+            empty_slot = i;
+    }
+
+    if (empty_slot < 0)
+        empty_slot = (int) (attacker_id % NH3D_MONSTER_ATTACK_TRACKING_MAX);
+    nh3d_recent_attacks[empty_slot].attacker_id = attacker_id;
+    nh3d_recent_attacks[empty_slot].target_id = target_id;
+    nh3d_recent_attacks[empty_slot].turn = svm.moves;
+}
+
+void nh3d_note_monster_attack(struct monst *, struct monst *);
+void nh3d_push_monster_killer(struct monst *);
+void nh3d_pop_monster_killer(void);
+int nh3d_get_current_monster_killer_id(void);
+void nh3d_emit_monster_killed(int, int, int, int);
+
+void
+nh3d_note_monster_attack(struct monst *attacker, struct monst *target)
+{
+    boolean attacker_visible, target_visible;
+    int attacker_id, target_id, target_x, target_y, emitted_attacker_id;
+
+    if (!attacker || !attacker->m_id)
+        return;
+
+    attacker_visible = nh3d_monster_has_trackable_glyph(attacker);
+    target_visible = target ? nh3d_monster_has_trackable_glyph(target) : TRUE;
+    if (!attacker_visible && !target_visible)
+        return;
+
+    attacker_id = (int) attacker->m_id;
+    if (target) {
+        target_id =
+            target->m_id ? (int) target->m_id : NH3D_TRACKED_MONSTER_NONE;
+        target_x = target->mx;
+        target_y = target->my;
+    } else {
+        target_id = NH3D_TRACKED_PLAYER_ID;
+        target_x = u.ux;
+        target_y = u.uy;
+    }
+
+    if (attacker_visible && (!target || target_visible))
+        nh3d_record_recent_attack(attacker->m_id, target_id);
+
+    if (!(!target || target_visible))
+        return;
+
+    emitted_attacker_id =
+        attacker_visible ? attacker_id : NH3D_TRACKED_MONSTER_NONE;
+    nh3d_queue_shim_notification("shim_monster_attack", emitted_attacker_id,
+                                 target_id, target_x, target_y);
+}
+
+void
+nh3d_push_monster_killer(struct monst *killer)
+{
+    int killer_id = NH3D_TRACKED_MONSTER_NONE;
+
+    if (killer && nh3d_monster_has_trackable_glyph(killer) && killer->m_id)
+        killer_id = (int) killer->m_id;
+
+    if (nh3d_monster_killer_depth < NH3D_MONSTER_KILLER_STACK_MAX)
+        nh3d_monster_killer_stack[nh3d_monster_killer_depth++] = killer_id;
+}
+
+void
+nh3d_pop_monster_killer(void)
+{
+    if (nh3d_monster_killer_depth > 0)
+        --nh3d_monster_killer_depth;
+}
+
+int
+nh3d_get_current_monster_killer_id(void)
+{
+    return (nh3d_monster_killer_depth > 0)
+               ? nh3d_monster_killer_stack[nh3d_monster_killer_depth - 1]
+               : NH3D_TRACKED_MONSTER_NONE;
+}
+
+void
+nh3d_emit_monster_killed(int monster_id, int killer_id, int x, int y)
+{
+    if (monster_id <= 0)
+        return;
+    nh3d_queue_shim_notification("shim_monster_killed", monster_id, killer_id,
+                                 x, y);
+}
+
 
 /* shim_graphics_callback is the primary interface to shim graphics,
  * call this function with your declared callback function
@@ -31,7 +194,6 @@
 /************
  * WASM interface
  ************/
-EMSCRIPTEN_KEEPALIVE
 static char *shim_callback_name = NULL;
 void shim_graphics_set_callback(char *cbName);
 
@@ -114,8 +276,32 @@ void name fn_args { \
 }
 #endif /* __EMSCRIPTEN__ */
 
+static void
+nh3d_queue_shim_notification(const char *name, int a, int b, int c, int d)
+{
+#ifdef __EMSCRIPTEN__
+    EM_ASM({
+        globalThis.nethackGlobal = globalThis.nethackGlobal || {};
+        if (!Array.isArray(globalThis.nethackGlobal.pendingShimNotifications)) {
+            globalThis.nethackGlobal.pendingShimNotifications = [];
+        }
+        globalThis.nethackGlobal.pendingShimNotifications.push([
+            UTF8ToString($0),
+            $1,
+            $2,
+            $3,
+            $4,
+        ]);
+    }, name, a, b, c, d);
+#else
+    if (!shim_graphics_callback)
+        return;
+    shim_graphics_callback(name, NULL, "viiii", a, b, c, d);
+#endif
+}
+
 VDECLCB(shim_init_nhwindows,(int *argcp, char **argv), "vpp", P2V argcp, P2V argv)
-DECLCB(boolean, shim_player_selection_or_tty,(void), "b")
+DECLCB(boolean, shim_player_selection_cb,(void), "b")
 VDECLCB(shim_askname,(void), "v")
 VDECLCB(shim_get_nh_event,(void), "v")
 VDECLCB(shim_exit_nhwindows,(const char *str), "vs", P2V str)
@@ -141,7 +327,6 @@ VDECLCB(shim_mark_synch,(void), "v")
 VDECLCB(shim_wait_synch,(void), "v")
 VDECLCB(shim_cliparound,(int x, int y), "vii", A2P x, A2P y)
 VDECLCB(shim_update_positionbar,(char *posbar), "vs", P2V posbar)
-VDECLCB(shim_print_glyph,(winid w, coordxy x, coordxy y, const glyph_info *glyphinfo, const glyph_info *bkglyphinfo), "vi11pp", A2P w, A2P x, A2P y, P2V glyphinfo, P2V bkglyphinfo)
 VDECLCB(shim_raw_print,(const char *str), "vs", P2V str)
 VDECLCB(shim_raw_print_bold,(const char *str), "vs", P2V str)
 DECLCB(int, shim_nhgetch,(void), "i")
@@ -171,18 +356,50 @@ VDECLCB(shim_status_update,
     (int fldidx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks),
     "vipiiip",
     A2P fldidx, P2V ptr, A2P chg, A2P percent, A2P color, P2V colormasks)
+
+void
+shim_print_glyph(winid w, coordxy x, coordxy y, const glyph_info *glyphinfo,
+                 const glyph_info *bkglyphinfo)
+{
+    int glyph = glyphinfo ? glyphinfo->glyph : NO_GLYPH;
+    int monster_id = nh3d_monster_id_from_tile(x, y, glyph);
+    int attacking_target_id = nh3d_get_recent_attack_target_id(monster_id);
+
+    debugf("SHIM GRAPHICS: shim_print_glyph\n");
 #ifdef __EMSCRIPTEN__
-/* XXX: calling repopulate_perminvent() from shim_update_inventory() causes reentrancy that breaks emscripten Asyncify */
-/* this should be fine since according to windows.doc, the only purpose of shim_update_inventory() is to call repopulate_perminvent() */
+    if (shim_callback_name) {
+        void *args[] = { A2P w, A2P x, A2P y, P2V glyphinfo, P2V bkglyphinfo,
+                         A2P monster_id, A2P attacking_target_id };
+        local_callback(shim_callback_name, "shim_print_glyph", NULL,
+                       "vi11ppii", args);
+    }
+#else
+    if (shim_graphics_callback)
+        shim_graphics_callback("shim_print_glyph", NULL, "vi11ppii", w, x, y,
+                               glyphinfo, bkglyphinfo, monster_id,
+                               attacking_target_id);
+#endif
+    debugf("SHIM GRAPHICS: shim_print_glyph done.\n");
+}
+#ifdef __EMSCRIPTEN__
+/* update_inventory is called by the game engine during command processing,
+ * while a shim callback can still be on the Asyncify stack. Calling back into
+ * the browser from here risks Asyncify reentrancy, so queue a non-blocking
+ * notification for delivery by local_callback() instead.
+ */
 void shim_update_inventory(int a1 UNUSED) {
-    if(iflags.perm_invent) {
-        repopulate_perminvent();
+    if (iflags.perm_invent) {
+        EM_ASM({
+            globalThis.nethackGlobal = globalThis.nethackGlobal || {};
+            globalThis.nethackGlobal.pendingInventoryUpdate = true;
+        });
     }
 }
 
 void shim_player_selection() {
-    boolean do_genl_player_setup = shim_player_selection_or_tty();
+    boolean do_genl_player_setup = shim_player_selection_cb();
     if (do_genl_player_setup) {
+        /* 80 = column width for text-mode role/race selection menus */
         genl_player_setup(80);
     }
 }
@@ -262,6 +479,32 @@ struct window_procs shim_procs = {
 #ifdef __EMSCRIPTEN__
 /* convert the C callback to a JavaScript callback */
 EM_JS(void, local_callback, (const char *cb_name, const char *shim_name, void *ret_ptr, const char *fmt_str, void *args), {
+    /* Dispatch any inventory update that was queued since the last callback.
+     * This runs before handleSleep, so there is no Asyncify stack to re-enter.
+     * The notification Promise is intentionally not awaited.
+     */
+    if (globalThis.nethackGlobal && globalThis.nethackGlobal.pendingInventoryUpdate) {
+        globalThis.nethackGlobal.pendingInventoryUpdate = false;
+        let pendingCbName = UTF8ToString(cb_name);
+        let pendingCb = globalThis[pendingCbName];
+        if (pendingCb) {
+            pendingCb.call(null, 'shim_update_inventory', 0);
+        }
+    }
+    if (globalThis.nethackGlobal
+        && Array.isArray(globalThis.nethackGlobal.pendingShimNotifications)
+        && globalThis.nethackGlobal.pendingShimNotifications.length > 0) {
+        let pendingCbName = UTF8ToString(cb_name);
+        let pendingCb = globalThis[pendingCbName];
+        if (pendingCb) {
+            const pendingNotifications =
+                globalThis.nethackGlobal.pendingShimNotifications.splice(0);
+            for (const pendingArgs of pendingNotifications) {
+                pendingCb.call(null, ...pendingArgs);
+            }
+        }
+    }
+
     // Asyncify.handleAsync() is the more logical choice here; however, the stack unrolling in Asyncify is performed by
     // function call analysis during compilation. Since we are using an indirect callback (cb_name), it can't predict the stack
     // unrolling and it crashes. Thus we use Asyncify.handleSleep() and wakeUp() to make sure that async doesn't break
@@ -277,7 +520,7 @@ EM_JS(void, local_callback, (const char *cb_name, const char *shim_name, void *r
         let getPointerValue = globalThis.nethackGlobal.helpers.getPointerValue;
         let setPointerValue = globalThis.nethackGlobal.helpers.setPointerValue;
 
-        reentryMutexLock(name);
+        reentryGuardEnter(name);
 
         let argTypes = fmt.split("");
         let retType = argTypes.shift();
@@ -292,22 +535,29 @@ EM_JS(void, local_callback, (const char *cb_name, const char *shim_name, void *r
 
         // do the callback
         let userCallback = globalThis[cbName];
-        userCallback.call(this, name, ... jsArgs).then((retVal) => {
+        globalThis.nethackGlobal.nh3dSynchronousGlyphCallbacks = 1;
+        const complete = retVal => {
             // save the return value
             setPointerValue(name, ret_ptr, retType, retVal);
-            reentryMutexUnlock();
+            reentryGuardExit();
             try {
                 wakeUp();
             } catch (e) {
-                
+                console.error("Asyncify wakeUp failed:", e);
             }
-        });
+        };
+        const result = userCallback.call(this, name, ...jsArgs);
+        if (result && typeof result.then === "function") {
+            result.then(complete);
+        } else {
+            complete(result);
+        }
 
         function getArg(name, ptr, type) {
             return (type === "p") ? getValue(ptr, "*") : getPointerValue(name, getValue(ptr, "*"), type);
         }
 
-        function reentryMutexLock(name) {
+        function reentryGuardEnter(name) {
             globalThis.nethackGlobal = globalThis.nethackGlobal || {};
             if(globalThis.nethackGlobal.shimFunctionRunning) {
                 console.error(`'${name}' attempting second call to 'local_callback' before '${globalThis.nethackGlobal.shimFunctionRunning}' has finished, will crash emscripten Asyncify. For details see: emscripten.org/docs/porting/asyncify.html#reentrancy`);
@@ -315,7 +565,7 @@ EM_JS(void, local_callback, (const char *cb_name, const char *shim_name, void *r
             globalThis.nethackGlobal.shimFunctionRunning = name;
         }
 
-        function reentryMutexUnlock() {
+        function reentryGuardExit() {
             globalThis.nethackGlobal.shimFunctionRunning = null;
         }
     });

@@ -320,13 +320,19 @@ EMCC_LFLAGS += -DHACKDIR=\"$(HACKDIR)\"
 EMCC_LFLAGS += -s WASM=1
 EMCC_LFLAGS += -s ALLOW_TABLE_GROWTH
 EMCC_LFLAGS += -s ASYNCIFY -s ASYNCIFY_IMPORTS='["local_callback"]'
+EMCC_LFLAGS += -s SUPPORT_LONGJMP=emscripten
+# ^^^ Emscripten 3.1.73+ defaults to WASM-based setjmp/longjmp which is incompatible
+# with ASYNCIFY. Use the JS-based (emscripten) implementation instead.
 EMCC_LFLAGS += -O3
 EMCC_LFLAGS += -s MODULARIZE
-EMCC_LFLAGS += -s EXPORTED_FUNCTIONS='["_main", "_shim_graphics_set_callback", "_repopulate_perminvent", "_malloc"]'
+EMCC_LFLAGS += -s EXPORTED_FUNCTIONS='["_main", "_shim_graphics_set_callback", "_repopulate_perminvent", "_malloc", "_free", "_map_glyphinfo", "_glyph_to_tile_index", "_glyph_at_position", "_nh_top_item_glyph_under_player", "_nh_top_item_tile_index_under_player", "_recover_savefile", "_resume_checkpoint_save"]'
 EMCC_LFLAGS += -s EXPORTED_RUNTIME_METHODS='["cwrap", "ccall", "addFunction", \
 			"removeFunction", "UTF8ToString", "stringToUTF8", "getValue", \
 			"setValue", "ENV", "FS", "IDBFS"]'
 EMCC_LFLAGS += -s ERROR_ON_UNDEFINED_SYMBOLS=0
+# ^^^ Required: EM_JS functions (js_helpers_init, create_global, local_callback) are
+# resolved during JS generation, not at wasm-ld link time. Emscripten 3.1.x treats
+# them as undefined symbols without this flag.
 EMCC_LFLAGS += -s EXPORT_ES6=1
 EMCC_LFLAGS += -lidbfs.js
 # XXX: the "@/" at the end of "--embed-file" tells emscripten to embed the files
@@ -339,6 +345,11 @@ EMCC_LFLAGS += --embed-file $(WASM_DATA_DIR)@/
 EMCC_CFLAGS =
 EMCC_CFLAGS += -Wall
 EMCC_CFLAGS += -Werror
+EMCC_CFLAGS += -Wno-error=js-compiler
+# ^^^ Emscripten 3.1.73+ emits JS library warnings for saveSetjmp/testSetjmp
+# symbols which are resolved at runtime. Since CFLAGS are passed to the linker,
+# -Werror would turn these into fatal errors without this override.
+EMCC_CFLAGS += -s SUPPORT_LONGJMP=emscripten
 EMCC_CFLAGS += -DNO_SIGNAL
 #EMCC_CFLAGS += -s DISABLE_EXCEPTION_CATCHING=0
 EMCC_DEBUG_LFLAGS += -s ASSERTIONS=1
@@ -377,10 +388,12 @@ WASM_CFLAGS += -DSYSCF -DSYSCF_FILE=\"/sysconf\" -DSECURE -DNHUUID
 WASM_CFLAGS += -I../include
 # NetHack sources control
 WASM_CFLAGS += -DDLB
+WASM_CFLAGS += -DTILES_IN_GLYPHMAP
 WASM_CFLAGS += -DHACKDIR=\"$(HACKDIR)\"
 WASM_CFLAGS += -DDEFAULT_WINDOW_SYS=\"shim\" \
 #override TARGET_CFLAGS += -DGREPPATH=\"/usr/bin/grep\"
 WASM_CFLAGS += -DNOMAIL
+WASM_CFLAGS += -DSELF_RECOVER
 WASM_CFLAGS += $(LUAINCL)
 WASM_CFLAGS += -DNOTTYGRAPHICS -DSHIM_GRAPHICS -DLIBNH
 WASM_CFLAGS += -DCROSSCOMPILE
@@ -396,16 +409,16 @@ override TARGET_LFLAGS= $(EMCC_LFLAGS)
 override SYSSRC = ../sys/libnh/libnhmain.c \
 		../sys/share/ioctl.c ../sys/share/unixtty.c \
 		../sys/unix/unixunix.c ../sys/unix/unixres.c \
-		../win/shim/winshim.c
+		../win/shim/winshim.c ../resume_checkpoint_save.c
 override SYSOBJ= $(TARGETPFX)libnhmain.o \
 		$(TARGETPFX)ioctl.o $(TARGETPFX)unixtty.o \
 		$(TARGETPFX)unixunix.o $(TARGETPFX)unixres.o \
-		$(TARGETPFX)winshim.o
+		$(TARGETPFX)winshim.o $(TARGETPFX)resume_checkpoint_save.o
 override WINLIB = emranlib
 override LUALIB=
 override LUATOPLIB=
 override REGEXOBJ = $(TARGETPFX)posixregex.o
-override WINOBJ=
+override WINOBJ= $(TARGETPFX)tile.o
 override UUIDOBJ=
 # don't bother Making regular NetHack executable
 override GAME=
@@ -422,6 +435,9 @@ $(TARGETPFX)%.o : ../sys/unix/%.c
 	$(TARGET_CC) $(TARGET_CFLAGS) -c -o$@ $<
 # Rule for file in sys/libnh
 $(TARGETPFX)%.o : ../sys/libnh/%.c
+	$(TARGET_CC) $(TARGET_CFLAGS) -c -o$@ $<
+# Rule for resume checkpoint bridge in NetHack root
+$(TARGETPFX)resume_checkpoint_save.o : ../resume_checkpoint_save.c $(HACK_H)
 	$(TARGET_CC) $(TARGET_CFLAGS) -c -o$@ $<
 # Rule for files in win/shim
 $(TARGETPFX)%.o : ../win/shim/%.c
@@ -621,4 +637,5 @@ endif  # BUILD_TARGET_LUA
 #
 # End of cross-compiling -PRE section
 #===============-=================================================
+
 

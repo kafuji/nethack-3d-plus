@@ -74,10 +74,6 @@ nhmain(int argc, char *argv[])
     boolean exact_username;
     boolean resuming = FALSE; /* assume new game */
     boolean plsel_once = FALSE;
-    // int i;
-    // for (i = 0; i < argc; i++) {
-    //     printf ("argv[%d]: %s\n", i, argv[i]);
-    // }
 
     early_init(argc, argv);
 
@@ -298,6 +294,9 @@ nhmain(int argc, char *argv[])
                     nh_compress(fq_save);
                 }
             }
+        }
+        if (program_state.in_self_recover) {
+            program_state.in_self_recover = FALSE;
         }
     }
 
@@ -574,6 +573,15 @@ sethanguphandler(void (*handler)(int))
 #endif
 #endif /* ?SA_RESTART */
 }
+#else /* NO_SIGNAL */
+/* Stub for WASM builds where signals are not available.
+ * Referenced by various parts of the codebase but never functional. */
+void
+sethanguphandler(void (*handler)(int))
+{
+    /* no-op: signals not supported in WASM */
+    nhUse(handler);
+}
 #endif /* !NO_SIGNAL */
 
 #ifdef PORT_HELP
@@ -840,6 +848,67 @@ free_nhuuid(void)
 }
 
 #ifdef __EMSCRIPTEN__
+/* tile index lookup for glyphs (used by JS helpers) */
+extern glyph_map glyphmap[MAX_GLYPH];
+
+EMSCRIPTEN_KEEPALIVE
+int
+glyph_to_tile_index(int glyph)
+{
+    if (glyph < 0 || glyph >= MAX_GLYPH)
+        return -1;
+#ifdef TILES_IN_GLYPHMAP
+    return (int) glyphmap[glyph].tileidx;
+#else
+    return -1;
+#endif
+}
+
+/* Return the currently displayed glyph (top-of-pile when visible). */
+EMSCRIPTEN_KEEPALIVE
+int
+glyph_at_position(int x, int y)
+{
+    return glyph_at((coordxy) x, (coordxy) y);
+}
+
+/* Return underlying terrain/background glyph at map position. */
+EMSCRIPTEN_KEEPALIVE
+int
+floor_glyph_at_position(int x, int y)
+{
+    if (x < 0 || y < 0 || x >= COLNO || y >= ROWNO)
+        return -1;
+    return back_to_glyph((coordxy) x, (coordxy) y);
+}
+
+EMSCRIPTEN_KEEPALIVE
+int
+nh_top_item_glyph_under_player(void)
+{
+    struct obj *item;
+
+    if (Blind)
+        return -1;
+
+    item = vobj_at(u.ux, u.uy);
+    if (!item || covers_objects(u.ux, u.uy))
+        return -1;
+
+    return obj_to_glyph(item, rn2_on_display_rng);
+}
+
+EMSCRIPTEN_KEEPALIVE
+int
+nh_top_item_tile_index_under_player(void)
+{
+    int glyph = nh_top_item_glyph_under_player();
+
+    if (glyph < 0)
+        return -1;
+    return glyph_to_tile_index(glyph);
+}
+
 /***
  * Helpers
  ***/
@@ -850,17 +919,54 @@ EM_JS(void, js_helpers_init, (), {
     installHelper(displayInventory, "displayInventory");
     installHelper(getPointerValue, "getPointerValue");
     installHelper(setPointerValue, "setPointerValue");
+    installHelper(mapglyphHelper, "mapglyphHelper");
+    installHelper(mapGlyphInfoHelper, "mapGlyphInfoHelper");
+    installHelper(tileIndexForGlyph, "tileIndexForGlyph");
+    installHelper(glyphAtHelper, "glyphAtHelper");
+    installHelper(floorGlyphAtHelper, "floorGlyphAtHelper");
+    installHelper(topItemGlyphUnderPlayer, "topItemGlyphUnderPlayer");
+    installHelper(topItemTileIndexUnderPlayer, "topItemTileIndexUnderPlayer");
 
-    // used by update_inventory
     function displayInventory() {
-        // Asyncify.handleAsync(async () => {
-            return _repopulate_perminvent();
-        // });
+        return _repopulate_perminvent();
     }
 
-    // convert 'ptr' to the type indicated by 'type'
+    function mapglyphHelper(glyph, x, y, mgflags) {
+        const info = mapGlyphInfoHelper(glyph, x, y, mgflags);
+        return {
+            glyph: info.glyph,
+            ch: info.ch,
+            color: info.color,
+            special: info.glyphflags,
+            tileIdx: info.tileidx,
+            tileidx: info.tileidx,
+            x: x,
+            y: y,
+            mgflags: mgflags || 0
+        };
+    }
+
+    function tileIndexForGlyph(glyph) {
+        return _glyph_to_tile_index(glyph);
+    }
+
+    function glyphAtHelper(x, y) {
+        return _glyph_at_position(x, y);
+    }
+
+    function floorGlyphAtHelper(x, y) {
+        return _floor_glyph_at_position(x, y);
+    }
+
+    function topItemGlyphUnderPlayer() {
+        return _nh_top_item_glyph_under_player();
+    }
+
+    function topItemTileIndexUnderPlayer() {
+        return _nh_top_item_tile_index_under_player();
+    }
+
     function getPointerValue(name, ptr, type) {
-        // console.log("getPointerValue", name, "0x" + ptr.toString(16), type);
         switch(type) {
         case "s": // string
             // var value = UTF8ToString(getValue(ptr, "*"));
@@ -891,9 +997,7 @@ EM_JS(void, js_helpers_init, (), {
         }
     }
 
-    // sets the return value of the function to the type expected
     function setPointerValue(name, ptr, type, value = 0) {
-        // console.log("setPointerValue", name, "0x" + ptr.toString(16), type, value);
         switch (type) {
         case "p":
             setValue(ptr, value, "*");
@@ -901,9 +1005,7 @@ EM_JS(void, js_helpers_init, (), {
         case "s":
             if(typeof value !== "string")
                 throw new TypeError(`expected ${name} return type to be string`);
-            // value=value?value:"(no value)";
-            // var strPtr = getValue(ptr, "i32");
-            stringToUTF8(value, ptr, 1024); // TODO: uhh... danger will robinson
+            stringToUTF8(value, ptr, 256);
             break;
         case "i":
             if(typeof value !== "number" || !Number.isInteger(value))
@@ -921,31 +1023,46 @@ EM_JS(void, js_helpers_init, (), {
             setValue(ptr, value, "i8");
             break;
         case "f":
-            if(typeof value !== "number" || isFloat(value))
-                throw new TypeError(`expected ${name} return type to be float`);
-            // XXX: I'm not sure why 'double' works and 'float' doesn't
-            setValue(ptr, value, "double");
-            break;
         case "d":
-            if(typeof value !== "number" || isFloat(value))
-                throw new TypeError(`expected ${name} return type to be double`);
+            if(typeof value !== "number")
+                throw new TypeError(`expected ${name} return type to be number`);
             setValue(ptr, value, "double");
             break;
         case "b":
             if (typeof value !== "boolean")
                 throw new TypeError(`expected ${name} return type to be boolean`);
             setValue(ptr, value ? 1 : 0, "i8");
+            break;
         case "v":
             break;
         default:
             throw new Error("unknown type");
         }
-
-        function isFloat(n){
-            return n === +n && n !== (n|0) && !Number.isInteger(n);
-        }
     }
 
+
+    function mapGlyphInfoHelper(glyph, x, y, mgflags) {
+        /* sizeof(glyph_info) = 36 on WASM32 with ENHANCED_SYMBOLS */
+        mgflags = mgflags || 0;
+        var ptr = _malloc(36);
+        _map_glyphinfo(x, y, glyph, mgflags, ptr);
+        var result = {
+            glyph:       getValue(ptr +  0, "i32"),
+            ttychar:     getValue(ptr +  4, "i32"),
+            framecolor:  getValue(ptr +  8, "i32"),
+            glyphflags:  getValue(ptr + 12, "i32"),
+            color:       getValue(ptr + 16, "i32"),
+            symidx:      getValue(ptr + 20, "i32"),
+            customcolor: getValue(ptr + 24, "i32"),
+            color256idx: getValue(ptr + 28, "i16"),
+            tileidx:     getValue(ptr + 30, "i16"),
+            x: x, y: y, mgflags: mgflags
+        };
+        result.ch = String.fromCharCode(result.ttychar & 0xFF);
+        result.tileIdx = result.tileidx;
+        _free(ptr);
+        return result;
+    }
 
     function installHelper(fn, name) {
         name = name || fn.name;
@@ -989,14 +1106,14 @@ void js_constants_init() {
         globalThis.nethackGlobal.pointers = globalThis.nethackGlobal.pointers || {};
     });
 
-    // create_nhwindow
+    /* create_nhwindow */
     SET_CONSTANT("WIN_TYPE", NHW_MESSAGE)
     SET_CONSTANT("WIN_TYPE", NHW_STATUS)
     SET_CONSTANT("WIN_TYPE", NHW_MAP)
     SET_CONSTANT("WIN_TYPE", NHW_MENU)
     SET_CONSTANT("WIN_TYPE", NHW_TEXT)
 
-    // status_update
+    /* status_update */
     SET_CONSTANT("STATUS_FIELD", BL_CHARACTERISTICS)
     SET_CONSTANT("STATUS_FIELD", BL_RESET)
     SET_CONSTANT("STATUS_FIELD", BL_FLUSH)
@@ -1025,7 +1142,7 @@ void js_constants_init() {
     SET_CONSTANT("STATUS_FIELD", BL_CONDITION)
     SET_CONSTANT("STATUS_FIELD", MAXBLSTATS)
 
-    // text attributes
+    /* text attributes */
     SET_CONSTANT("ATTR", ATR_NONE);
     SET_CONSTANT("ATTR", ATR_BOLD);
     SET_CONSTANT("ATTR", ATR_DIM);
@@ -1035,7 +1152,7 @@ void js_constants_init() {
     SET_CONSTANT("ATTR", ATR_URGENT);
     SET_CONSTANT("ATTR", ATR_NOHISTORY);
 
-    // conditions
+    /* conditions */
     SET_CONSTANT("CONDITION", BL_MASK_BAREH);
     SET_CONSTANT("CONDITION", BL_MASK_BLIND);
     SET_CONSTANT("CONDITION", BL_MASK_BUSY);
@@ -1067,18 +1184,18 @@ void js_constants_init() {
     SET_CONSTANT("CONDITION", BL_MASK_WOUNDEDL);
     SET_CONSTANT("CONDITION", BL_MASK_HOLDING);
 
-    // menu
+    /* menu */
     SET_CONSTANT("MENU_SELECT", PICK_NONE);
     SET_CONSTANT("MENU_SELECT", PICK_ONE);
     SET_CONSTANT("MENU_SELECT", PICK_ANY);
 
-    // copyright
+    /* copyright */
     SET_CONSTANT_STRING("COPYRIGHT", COPYRIGHT_BANNER_A);
     SET_CONSTANT_STRING("COPYRIGHT", COPYRIGHT_BANNER_B);
     set_const_str("COPYRIGHT", "COPYRIGHT_BANNER_C", (char*) COPYRIGHT_BANNER_C);
     SET_CONSTANT_STRING("COPYRIGHT", COPYRIGHT_BANNER_D);
 
-    // glyphs
+    /* glyphs */
     SET_CONSTANT("GLYPH", GLYPH_MON_OFF);
     SET_CONSTANT("GLYPH", GLYPH_PET_OFF);
     SET_CONSTANT("GLYPH", GLYPH_INVIS_OFF);
@@ -1101,7 +1218,7 @@ void js_constants_init() {
     SET_CONSTANT("GLYPH", GLYPH_UNEXPLORED);
     SET_CONSTANT("GLYPH", GLYPH_NOTHING);
 
-    // colors
+    /* colors */
     SET_CONSTANT("COLORS", CLR_BLACK);
     SET_CONSTANT("COLORS", CLR_RED);
     SET_CONSTANT("COLORS", CLR_GREEN);
@@ -1120,7 +1237,7 @@ void js_constants_init() {
     SET_CONSTANT("COLORS", CLR_WHITE);
     SET_CONSTANT("COLORS", CLR_MAX);
 
-    // color attributes (?)
+    /* color attributes */
     SET_CONSTANT("COLOR_ATTR", HL_ATTCLR_BOLD);
     SET_CONSTANT("COLOR_ATTR", HL_ATTCLR_DIM);
     SET_CONSTANT("COLOR_ATTR", HL_ATTCLR_ITALIC);
@@ -1247,6 +1364,7 @@ void js_constants_init() {
  * Globals
  ***/
 #define CREATE_GLOBAL(var, type) create_global(#var, (void *)&var, type);
+#define CREATE_GLOBAL_PATH(name, ptr, type) create_global(name, (void *)(ptr), type);
 #define CREATE_GLOBAL_FROM_ARRAY(base, iter, path, end_expr, type) \
     for(iter = 0; end_expr; iter++) { \
         snprintf(buf, BUFSZ, #base ".%d." #path, iter); \
@@ -1256,8 +1374,8 @@ void js_constants_init() {
 void create_global (char *name, void *ptr, char *type);
 
 void js_globals_init() {
-    // int i;
-    // char buf[BUFSZ];
+    int iter;
+    char buf[BUFSZ];
 
     EM_ASM({
         globalThis.nethackGlobal = globalThis.nethackGlobal || {};
@@ -1286,6 +1404,34 @@ void js_globals_init() {
     CREATE_GLOBAL(flags.initalign, "i");
     CREATE_GLOBAL(flags.showexp, "b");
     CREATE_GLOBAL(flags.time, "b");
+
+    /* tombstone / end-of-game globals (3.6 compatibility names) */
+    CREATE_GLOBAL_PATH("done_money", &(gd.done_money), "i");
+    CREATE_GLOBAL_PATH("killer.format", &(svk.killer.format), "i");
+    CREATE_GLOBAL_PATH("killer.name", svk.killer.name, "s");
+
+    /* level identity globals expected by external runtimes */
+    CREATE_GLOBAL_PATH("u.uz.dnum", &(u.uz.dnum), "1");
+    CREATE_GLOBAL_PATH("u.uz.dlevel", &(u.uz.dlevel), "1");
+    CREATE_GLOBAL_PATH("dungeon_topology.d_mines_dnum",
+                       &(svd.dungeon_topology.d_mines_dnum), "1");
+    CREATE_GLOBAL_PATH("dungeon_topology.d_quest_dnum",
+                       &(svd.dungeon_topology.d_quest_dnum), "1");
+    CREATE_GLOBAL_PATH("dungeon_topology.d_sokoban_dnum",
+                       &(svd.dungeon_topology.d_sokoban_dnum), "1");
+    CREATE_GLOBAL_PATH("dungeon_topology.d_tower_dnum",
+                       &(svd.dungeon_topology.d_tower_dnum), "1");
+    CREATE_GLOBAL_PATH("dungeon_topology.d_astral_level.dnum",
+                       &(svd.dungeon_topology.d_astral_level.dnum), "1");
+
+    for (iter = 0; iter < MAXDUNGEON; iter++) {
+        snprintf(buf, BUFSZ, "dungeons.%d.dname", iter);
+        create_global(buf, (void *) svd.dungeons[iter].dname, "s");
+        snprintf(buf, BUFSZ, "dungeons.%d.ledger_start", iter);
+        create_global(buf, (void *) &(svd.dungeons[iter].ledger_start), "i");
+        snprintf(buf, BUFSZ, "dungeons.%d.depth_start", iter);
+        create_global(buf, (void *) &(svd.dungeons[iter].depth_start), "i");
+    }
 }
 
 EM_JS(void, create_global, (char *name_str, void *ptr, char *type_str), {

@@ -53,7 +53,7 @@ GENERICUSERS=play player game games nethack nethacker ec2-user
 # but number of different players is not limited.
 # Setting this to any other value constructs the lock files with
 # letter and "lock" (eg. alock, block, ...)
-MAXPLAYERS=10
+MAXPLAYERS=0
 
 # Limit the number of rerolls per second when using the reroll option.
 # 0 means that there is no limit on how quickly the user can reroll.
