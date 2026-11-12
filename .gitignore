@@ -1,5 +1,6 @@
 node_modules/
 dist/
+core/build/
 dist-quest/
 quest/.gradle/
 quest/.kotlin/
