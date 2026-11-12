@@ -62,6 +62,8 @@ This is a living steering doc. Update it whenever architecture, file ownership, 
 - `src/update/types.ts`: update type definitions.
 - `public/assets/*`: shipped images, UI icons, and Vulture asset roots.
 - `public/nethack-367.js`, `public/nethack-367.wasm`, `public/nethack-5.js`, `public/nethack-5.wasm`, `public/slashem.js`, `public/slashem.wasm`: checked-in runtime artifacts consumed by the browser build.
+- `core/NetHack/*`: the game core's C source (NetHack 5.0 plus this project's changes), vendored with `git subtree`. `core/build-wasm.sh` builds it to `core/build/`; the build runs in CI (`.github/workflows/build-core-wasm.yml`), not on Windows. See [core/README.md](../../core/README.md). `public/nethack-5.*` are not yet produced from it.
+- `scripts/wasm/compare-core-build.mjs`, `scripts/wasm/smoke-core.mjs`: interface comparison and boot check for a built core.
 - `imported/nethack-3.6.7/*`: A few imported NetHack 3.6.7 source code files needed to run the UI properly.
 - `\\wsl.localhost\Ubuntu\home\james\Repos\forked\neth4ck-monorepo`: forked NetHack WASM monorepo reference in WSL.
 - `\\wsl.localhost\Ubuntu\home\james\Repos\forked\neth4ck-monorepo\packages\wasm-367`: forked wasm-367 package reference in WSL.

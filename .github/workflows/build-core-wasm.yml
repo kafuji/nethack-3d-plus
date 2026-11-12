@@ -1,0 +1,80 @@
+name: Build game core (WASM)
+
+# Builds the game core in core/NetHack to WebAssembly, checks that it still
+# offers the interface of the artifacts shipped under public/, and starts a
+# game on it. The shipped files are not replaced; the build is uploaded as an
+# artifact.
+
+on:
+  workflow_dispatch:
+  # Every branch, so core changes are built before a pull request exists.
+  push:
+    paths:
+      - core/**
+      - scripts/wasm/compare-core-build.mjs
+      - scripts/wasm/smoke-core.mjs
+      - .github/workflows/build-core-wasm.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-core-wasm-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # First version confirmed to build this source and start a game. The
+  # version used for the artifacts currently under public/ was not recorded.
+  EMSDK_VERSION: 7.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Emscripten
+        run: |
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git "$RUNNER_TEMP/emsdk"
+          "$RUNNER_TEMP/emsdk/emsdk" install "$EMSDK_VERSION"
+          "$RUNNER_TEMP/emsdk/emsdk" activate "$EMSDK_VERSION"
+
+      - name: Build
+        run: |
+          source "$RUNNER_TEMP/emsdk/emsdk_env.sh"
+          emcc --version | head -n 1
+          bash core/build-wasm.sh
+
+      - name: Compare with the shipped artifacts
+        run: |
+          {
+            echo '### SHA-256'
+            echo '```'
+            sha256sum public/nethack-5.js public/nethack-5.wasm core/build/nethack.js core/build/nethack.wasm
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          node scripts/wasm/compare-core-build.mjs public core/build
+
+      - name: Start a game on the built core
+        run: node scripts/wasm/smoke-core.mjs core/build
+
+      - name: Upload built core
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-core-wasm
+          path: |
+            core/build/nethack.js
+            core/build/nethack.wasm
+          if-no-files-found: error
+
+      - name: Source tree is unchanged by the build
+        run: |
+          git status --short
+          test -z "$(git status --porcelain)"
