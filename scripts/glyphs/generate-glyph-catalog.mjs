@@ -7,9 +7,19 @@ import {
   resolveProjectRoot,
 } from "./catalog-generator.mjs";
 
+// Optional arguments name the versions to regenerate (for example `5.0`);
+// with none, every catalog is regenerated in one process, which stalls when
+// the 3.6.7 runtime starts after another one.
 async function main() {
   const projectRoot = resolveProjectRoot();
-  for (const target of getGlyphCatalogTargets()) {
+  const requested = process.argv.slice(2);
+  const targets = getGlyphCatalogTargets().filter(
+    (target) => requested.length === 0 || requested.includes(target.version),
+  );
+  if (targets.length === 0) {
+    throw new Error(`No glyph catalog for: ${requested.join(", ")}`);
+  }
+  for (const target of targets) {
     const outputPath = getGeneratedCatalogPathForVersion(
       projectRoot,
       target.version,

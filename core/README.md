@@ -38,8 +38,27 @@ On such a host:
 bash core/build-wasm.sh
 ```
 
-The client still loads the checked-in `public/nethack-5.js` and
-`public/nethack-5.wasm`; a build is not shipped until those files are replaced.
+## Shipping a build
+
+The client loads the checked-in `public/nethack-5.js` and
+`public/nethack-5.wasm`, so a core change reaches players only when those
+files are replaced with a CI build of it:
+
+1. Download the `game-core-wasm` artifact of the workflow run for the commit
+   (`gh run download <run-id> --name game-core-wasm --dir <dir>`).
+2. Copy `nethack.js` to `public/nethack-5.js` and `nethack.wasm` to
+   `public/nethack-5.wasm`.
+3. Regenerate the glyph catalog with `npm run glyphs:generate -- 5.0`; it
+   records the hashes of both files and must otherwise come out unchanged.
+4. Check saves made before the change still load (the workflow does this for
+   the build; `scripts/wasm/save-compat-core.mjs` runs it by hand).
+
+The build is not bit-reproducible, so the shipped files cannot be verified by
+rebuilding; note the workflow run they came from in the commit message.
+
+The first build shipped this way (2026-11-13) differs from the earlier
+binaries only in the Emscripten version (7.0.0): same glyph catalog, saves load
+in both directions.
 
 ## Taking upstream changes
 

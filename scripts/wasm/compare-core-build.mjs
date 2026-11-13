@@ -29,13 +29,25 @@ async function describe(dir) {
   const bytes = readFileSync(wasm);
   const module = new WebAssembly.Module(bytes);
   const { default: createModule } = await import(pathToFileURL(js).href);
+  // locateFile rather than wasmBinary, so a build that dropped wasmBinary
+  // still loads here and is reported below instead of crashing the comparison.
   const instance = await createModule({
     noInitialRun: true,
-    wasmBinary: bytes,
+    locateFile: (path) => (path.endsWith(".wasm") ? wasm : path),
     print: () => {},
     printErr: () => {},
   });
+  // Every `Module["x"]` the glue reads or writes: the options it accepts from
+  // the caller plus what it exposes back.
+  const moduleProperties = [
+    ...new Set(
+      [...readFileSync(js, "utf8").matchAll(/Module\["([A-Za-z_$][\w$]*)"\]/g)].map(
+        (match) => match[1],
+      ),
+    ),
+  ].sort();
   return {
+    moduleProperties,
     js,
     wasm,
     jsSha256: sha256(js),
@@ -67,7 +79,31 @@ const added = built.glueExports.filter(
   (name) => !reference.glueExports.includes(name),
 );
 
-console.log(JSON.stringify({ reference, built, missing, added }, null, 2));
+// Dropped by newer Emscripten and not used by the client: calledRun was only
+// logged, preloadPlugins belongs to the unused file packager.
+const IGNORED_MODULE_PROPERTIES = new Set(["calledRun", "preloadPlugins"]);
+const missingModuleProperties = reference.moduleProperties.filter(
+  (name) =>
+    !built.moduleProperties.includes(name) && !IGNORED_MODULE_PROPERTIES.has(name),
+);
+const summarize = ({ moduleProperties, ...rest }) => ({
+  ...rest,
+  modulePropertyCount: moduleProperties.length,
+});
+
+console.log(
+  JSON.stringify(
+    {
+      reference: summarize(reference),
+      built: summarize(built),
+      missing,
+      added,
+      missingModuleProperties,
+    },
+    null,
+    2,
+  ),
+);
 console.log(
   reference.wasmSha256 === built.wasmSha256
     ? "WASM is byte-identical to the reference."
@@ -76,6 +112,10 @@ console.log(
 
 if (missing.length > 0) {
   console.error(`Built core is missing exports: ${missing.join(", ")}`);
-  process.exit(1);
 }
-process.exit(0);
+if (missingModuleProperties.length > 0) {
+  console.error(
+    `Built glue no longer handles Module properties: ${missingModuleProperties.join(", ")}`,
+  );
+}
+process.exit(missing.length > 0 || missingModuleProperties.length > 0 ? 1 : 0);
