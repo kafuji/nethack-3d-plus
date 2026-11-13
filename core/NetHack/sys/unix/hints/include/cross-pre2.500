@@ -329,6 +329,19 @@ EMCC_LFLAGS += -s EXPORTED_FUNCTIONS='["_main", "_shim_graphics_set_callback", "
 EMCC_LFLAGS += -s EXPORTED_RUNTIME_METHODS='["cwrap", "ccall", "addFunction", \
 			"removeFunction", "UTF8ToString", "stringToUTF8", "getValue", \
 			"setValue", "ENV", "FS", "IDBFS"]'
+# Polypiled, 2026-11-13: Emscripten 6.0.2 dropped wasmBinary from the default
+# INCOMING_MODULE_JS_API, so a module built with it silently ignores the
+# option and fetches nethack.wasm by name instead. The client's glyph catalog
+# generator and Node harnesses pass wasmBinary; this is the 7.0.0 default list
+# with wasmBinary added back.
+EMCC_LFLAGS += -s INCOMING_MODULE_JS_API='["ENVIRONMENT", "arguments", \
+			"canvas", "dynamicLibraries", "elementPointerLock", \
+			"instantiateWasm", "locateFile", "monitorRunDependencies", \
+			"noExitRuntime", "noInitialRun", "onAbort", "onExit", \
+			"onRuntimeInitialized", "postRun", "preInit", "preRun", \
+			"print", "printErr", "setStatus", "statusMessage", "stderr", \
+			"stdin", "stdout", "thisProgram", "wasm", "websocket", \
+			"wasmBinary"]'
 EMCC_LFLAGS += -s ERROR_ON_UNDEFINED_SYMBOLS=0
 # ^^^ Required: EM_JS functions (js_helpers_init, create_global, local_callback) are
 # resolved during JS generation, not at wasm-ld link time. Emscripten 3.1.x treats
