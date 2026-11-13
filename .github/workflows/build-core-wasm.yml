@@ -11,7 +11,9 @@ on:
   push:
     paths:
       - core/**
+      - public/nethack-5.*
       - scripts/wasm/compare-core-build.mjs
+      - scripts/wasm/save-compat-core.mjs
       - scripts/wasm/smoke-core.mjs
       - .github/workflows/build-core-wasm.yml
 
@@ -64,6 +66,13 @@ jobs:
 
       - name: Start a game on the built core
         run: node scripts/wasm/smoke-core.mjs core/build
+
+      # Fails when a core change makes existing players' saves unloadable. If
+      # that is intended, say so in the pull request and ship it knowingly.
+      - name: Saves from the shipped core load in the built core
+        run: |
+          node scripts/wasm/save-compat-core.mjs save public "$RUNNER_TEMP/shipped-save"
+          node scripts/wasm/save-compat-core.mjs restore core/build "$RUNNER_TEMP/shipped-save"
 
       - name: Upload built core
         uses: actions/upload-artifact@v4
